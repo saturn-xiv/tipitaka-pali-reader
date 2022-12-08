@@ -58,10 +58,23 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
         focusNode: FocusNode(
           canRequestFocus: false,
         ),
-        selectionControls:
-            CustomTextSelectionControls(shareButton: (start, end) {
-          debugPrint("called button:  $start and $end ");
-        }),
+        selectionControls: FlutterSelectionControls(toolBarItems: [
+          ToolBarItem(
+            item: const Text('Copy'),
+            itemControl: ToolBarItemControl.copy,
+          ),
+          ToolBarItem(
+            item: const Text('Select All'),
+            itemControl: ToolBarItemControl.selectAll,
+          ),
+          ToolBarItem(
+            item: const Text('Share'),
+            onItemPressed: (selectedText) {
+              // do sharing
+              print(selectedText);
+            },
+          ),
+        ]),
         child: HtmlWidget(
           html,
           factoryBuilder: () => _myFactory,
