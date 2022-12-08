@@ -315,8 +315,8 @@ class DownloadService {
         batch = db.batch();
         downloadNotifier.message = "$counter of ${uniqueWords.length}";
       }
-      await batch.commit();
     }
+    await batch.commit();
     downloadNotifier.message = "English wordlist is complete";
   }
 }

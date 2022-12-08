@@ -114,17 +114,30 @@ class DictionaryController with ChangeNotifier {
     // looking up using estimated stem word
     final dictionaryProvider =
         DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
-    final definitions =
-        await dictionaryProvider.getDefinition(word, isAlreadyStem: false);
+    // now get the headword all times.
+    final String dpdHeadWords = await dictionaryProvider.getDpdHeadwords(word);
+    // if we find the word.. then we isAlreadyStem = true;
+    // make the lookup word that new dpdHeadWord.
+
+    bool isAlreadyStem = false;
+    if (dpdHeadWords.isNotEmpty) {
+      // TODO get list from ven Bodhirasa for exceptions Bhagavaa and bhikkhave etc.
+
+      List<String> dpdList = dpdHeadWords.split(RegExp(r"[, ]"));
+      // remove the left bracket and single quotes
+      word = dpdList[0].replaceAll(RegExp(r"[\'\[\]]"), "");
+      isAlreadyStem = false;
+    }
+
+    final definitions = await dictionaryProvider.getDefinition(word,
+        isAlreadyStem: isAlreadyStem);
 
     // check to see if dpd is used.
     // separate table and process for dpd
     if (Prefs.isDpdOn) {
-      final String dpdHeadWord = await dictionaryProvider.getDpdHeadwords(word);
-
-      if (dpdHeadWord.isNotEmpty) {
+      if (dpdHeadWords.isNotEmpty) {
         Definition dpdDefinition =
-            await dictionaryProvider.getDpdDefinition(dpdHeadWord);
+            await dictionaryProvider.getDpdDefinition(dpdHeadWords);
         definitions.insert(0, dpdDefinition);
         definitions.sort((a, b) => a.userOrder.compareTo(b.userOrder));
       }

@@ -10,6 +10,7 @@ import '../../../../data/constants.dart';
 import '../../../../services/provider/theme_change_notifier.dart';
 import '../../../../utils/pali_script.dart';
 import '../../../../utils/pali_script_converter.dart';
+import '../../../widgets/custom_text_selection_control.dart';
 
 class PaliPageWidget extends StatefulWidget {
   final int pageNumber;
@@ -57,7 +58,10 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
         focusNode: FocusNode(
           canRequestFocus: false,
         ),
-        selectionControls: MaterialTextSelectionControls(),
+        selectionControls:
+            CustomTextSelectionControls(shareButton: (start, end) {
+          debugPrint("called button:  $start and $end ");
+        }),
         child: HtmlWidget(
           html,
           factoryBuilder: () => _myFactory,

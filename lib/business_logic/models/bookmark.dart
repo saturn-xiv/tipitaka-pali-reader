@@ -4,4 +4,14 @@ class Bookmark {
   String note;
   String? bookName;
   Bookmark(this.bookID, this.pageNumber, this.note, [this.bookName]);
+
+  @override
+  String toString() {
+    return '''bookID: $bookID
+              bookName: $bookName
+              pageNumber: $pageNumber
+              note: $note
+
+    ''';
+  }
 }

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import '../../../business_logic/models/bookmark.dart';
 import '../../../business_logic/view_models/bookmark_page_view_model.dart';
 import '../../../services/dao/bookmark_dao.dart';
 import '../../../services/database/database_helper.dart';
 import '../../../services/repositories/bookmark_repo.dart';
 import '../../dialogs/confirm_dialog.dart';
 import 'widgets/bookmark_list_tile.dart';
+import 'package:share_plus/share_plus.dart';
 
 class BookmarkPage extends StatelessWidget {
   const BookmarkPage({Key? key}) : super(key: key);
@@ -54,13 +56,24 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(AppLocalizations.of(context)!.bookmark),
       actions: [
         IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () async {
+              String bookMarkText = "";
+              final List<Bookmark> bookmarks =
+                  context.read<BookmarkPageViewModel>().bookmarks;
+              for (var book in bookmarks) {
+                bookMarkText += book.toString();
+              }
+              Share.share(bookMarkText, subject: 'TPR Bookmarks and Notes');
+            }),
+        IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
               final result = await _getConfirmataion(context);
               if (result == OkCancelAction.ok) {
                 context.read<BookmarkPageViewModel>().deleteAll();
               }
-            })
+            }),
       ],
     );
   }
