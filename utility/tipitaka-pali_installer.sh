@@ -35,7 +35,7 @@ done
 
 cat > $desktopfile <<EOF
 [Desktop Entry]
-Name=Tipitaki Pali Reader
+Name=Tipitaka Pali Reader
 # Name[my]=.
 # Name[th]=.
 # Name[zh]=.
