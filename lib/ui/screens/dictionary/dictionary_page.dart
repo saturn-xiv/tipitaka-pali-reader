@@ -25,6 +25,14 @@ class _DictionaryPageState extends State<DictionaryPage>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dictionary'),
+        actions: [
+          IconButton(
+              icon: Icon(
+                Icons.history,
+                color: Theme.of(context).appBarTheme.foregroundColor,
+              ),
+              onPressed: _doDictionaryHistory()),
+        ],
       ),
       body: ChangeNotifierProvider<DictionaryController>(
         create: (context) => DictionaryController(
@@ -80,4 +88,5 @@ class _DictionaryPageState extends State<DictionaryPage>
 
   @override
   bool get wantKeepAlive => true;
+  _doDictionaryHistory() {}
 }
