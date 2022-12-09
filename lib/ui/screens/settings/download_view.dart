@@ -3,6 +3,7 @@ import '../../../business_logic/models/download_list_item.dart';
 import 'download_service.dart';
 import 'download_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 
 class DownloadView extends StatelessWidget {
@@ -15,7 +16,7 @@ class DownloadView extends StatelessWidget {
         child: SafeArea(
           child: Scaffold(
             appBar: AppBar(
-              title: const Text('Downloads'),
+              title: Text(AppLocalizations.of(context)!.downloadTitle),
             ),
             body: Consumer<DownloadNotifier>(
                 builder: (context, downloadModel, child) {

@@ -5,6 +5,7 @@ import 'package:tipitaka_pali/ui/screens/settings/download_view.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import '../../widgets/colored_text.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum Startup { quoteOfDay, restoreLastRead }
 
@@ -91,7 +92,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
     return Padding(
       padding: const EdgeInsets.only(left: 32.0),
       child: ElevatedButton(
-          child: const Text('Download Pali/English Books'),
+          child: Text(AppLocalizations.of(context)!.downloadTitle),
           onPressed: () {
             Navigator.push(
               context,
@@ -120,7 +121,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
 
   Widget _getAboutTile(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 32.0),
+      padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
         title: ColoredText(AppLocalizations.of(context)!.about),
         focusColor: Theme.of(context).focusColor,
@@ -140,7 +141,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
 
   Widget _getHelpTile(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 32.0),
+      padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
         title: ColoredText(AppLocalizations.of(context)!.help),
         focusColor: Theme.of(context).focusColor,
@@ -154,7 +155,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
 
   Widget _getReportIssueTile(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 32.0),
+      padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
         title: ColoredText(AppLocalizations.of(context)!.reportIssue),
         focusColor: Theme.of(context).focusColor,

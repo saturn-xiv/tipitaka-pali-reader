@@ -5,6 +5,7 @@ import '../../../../business_logic/models/search_result.dart';
 import '../../home/widgets/search_result_list_tile.dart';
 import '../controller/search_result_provider.dart';
 import 'search_filter_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ResultListView extends StatelessWidget {
   const ResultListView(
@@ -46,7 +47,7 @@ class ResultListView extends StatelessWidget {
                 return FloatingActionButton.extended(
                   onPressed: () => Scaffold.of(context)
                       .showBottomSheet((context) => const SearchFilterView()),
-                  label: const Text('Filter'),
+                  label: Text(AppLocalizations.of(context)!.filter),
                   icon: const Icon(Icons.filter_list),
                 );
               }))

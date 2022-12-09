@@ -3,7 +3,6 @@
 
 // Shared prefs package import
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/material.dart';
 
 // preference names
 const String localeValPref = "localeVal";

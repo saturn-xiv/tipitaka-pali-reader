@@ -38,9 +38,6 @@ class SearchResultListTile extends StatelessWidget {
         script: context.read<ScriptLanguageProvider>().currentScript,
         romanText: result.pageNumber.toString());
 
-    // TODO - page translation must be based on script
-    // not on localization
-
     final bookNameAndPageNumber =
         '$bookName (${AppLocalizations.of(context)!.page} - $pageNumber)';
 
@@ -67,13 +64,12 @@ class SearchResultListTile extends StatelessWidget {
                 // description text
                 StyledText(
                   text: PaliScript.getScriptOf(
-                    script:
-                        context.read<ScriptLanguageProvider>().currentScript,
-                    romanText: result.description,
-                    // <highlight> are used for highlight
-                    // text is somehow html
-                    isHtmlText: true
-                  ),
+                      script:
+                          context.read<ScriptLanguageProvider>().currentScript,
+                      romanText: result.description,
+                      // <highlight> are used for highlight
+                      // text is somehow html
+                      isHtmlText: true),
                   // overflow: TextOverflow.ellipsis,
                   // maxLines: 4,
                   style: style,

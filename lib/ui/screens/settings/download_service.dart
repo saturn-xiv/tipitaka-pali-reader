@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -14,7 +12,6 @@ import 'download_notifier.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:dio/dio.dart';
-import 'package:tipitaka_pali/services/repositories/page_content_repo.dart';
 import 'package:tipitaka_pali/business_logic/models/page_content.dart';
 
 class DownloadService {
@@ -177,7 +174,7 @@ class DownloadService {
         counter++;
         if (counter % maxWrites == 1) {
           await batch.commit(noResult: true);
-          String pcent = (counter / maps.length * 100).toStringAsFixed(0);
+//          String pcent = (counter / maps.length * 100).toStringAsFixed(0);
           downloadNotifier.message = "inserted $counter";
           batch = db.batch();
         }

@@ -41,9 +41,8 @@ class RecentListTile extends StatelessWidget {
                     if (onTap != null) onTap!(recent);
                   },
                   title: Text(PaliScript.getScriptOf(
-                      script: context
-                          .read<ScriptLanguageProvider>()
-                          .currentScript,
+                      script:
+                          context.read<ScriptLanguageProvider>().currentScript,
                       romanText: recent.bookName!)),
                   trailing: SizedBox(
                     width: 105,

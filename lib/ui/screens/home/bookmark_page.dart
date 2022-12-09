@@ -85,11 +85,11 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
     return await showDialog<OkCancelAction>(
         context: context,
         builder: (context) {
-          return const ConfirmDialog(
-            title: 'Comfirmation',
-            message: 'မှတ်သားထားသမျှ အားလုံးကို ဖျက်ရန် သေချာပြီလား',
-            okLabel: 'ဖျက်မယ်',
-            cancelLabel: 'မဖျက်တော့ဘူး',
+          return ConfirmDialog(
+            title: AppLocalizations.of(context)!.confirmation,
+            message: AppLocalizations.of(context)!.areSureDelete,
+            okLabel: AppLocalizations.of(context)!.delete,
+            cancelLabel: AppLocalizations.of(context)!.cancel,
           );
         });
   }

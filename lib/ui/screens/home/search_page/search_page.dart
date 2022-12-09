@@ -81,6 +81,7 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.filter_list),
+                        tooltip: AppLocalizations.of(context)!.filter,
                         onPressed: () {
                           setState(() {
                             isShowingSearchModeView = !isShowingSearchModeView;

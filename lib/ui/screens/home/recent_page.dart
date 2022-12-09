@@ -15,9 +15,9 @@ class RecentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<RecentPageViewModel>(
-      create: (_) =>
-          RecentPageViewModel(RecentDatabaseRepository(DatabaseHelper(), RecentDao()))
-            ..fetchRecents(),
+      create: (_) => RecentPageViewModel(
+          RecentDatabaseRepository(DatabaseHelper(), RecentDao()))
+        ..fetchRecents(),
       child: Scaffold(
         appBar: const RecentAppBar(),
         body: Consumer<RecentPageViewModel>(builder: (context, vm, child) {
@@ -70,11 +70,11 @@ class RecentAppBar extends StatelessWidget implements PreferredSizeWidget {
     return await showDialog<OkCancelAction>(
         context: context,
         builder: (context) {
-          return const ConfirmDialog(
-            title: 'Comfirmation',
-            message: 'ဖတ်လက်စစာအုပ်စာရင်း အားလုံးကို ဖျက်ရန် သေချာပြီလား',
-            cancelLabel: 'မဖျက်တော့ဘူး',
-            okLabel: 'ဖျက်မယ်',
+          return ConfirmDialog(
+            title: AppLocalizations.of(context)!.confirmation,
+            message: AppLocalizations.of(context)!.areSureDelete,
+            okLabel: AppLocalizations.of(context)!.delete,
+            cancelLabel: AppLocalizations.of(context)!.cancel,
           );
         });
   }

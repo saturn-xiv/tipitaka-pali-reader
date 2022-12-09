@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/data/flex_theme_data.dart';
-import 'package:tipitaka_pali/data/constants.dart';
 
 class ThemeChangeNotifier extends ChangeNotifier {
   ThemeMode themeMode = (Prefs.darkThemeOn) ? ThemeMode.dark : ThemeMode.light;

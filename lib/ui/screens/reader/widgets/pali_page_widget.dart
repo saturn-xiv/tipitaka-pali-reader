@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tipitaka_pali/providers/font_provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/script_language_provider.dart';
@@ -71,7 +72,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
             item: const Text('Share'),
             onItemPressed: (selectedText) {
               // do sharing
-              print(selectedText);
+              Share.share(selectedText, subject: 'Pāḷi text from TPR');
             },
           ),
         ]),
