@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../business_logic/models/definition.dart';
+import '../../../../business_logic/models/dictionary_history.dart';
 import '../../../../services/database/database_helper.dart';
 import '../../../../services/database/dictionary_service.dart';
 import '../../../../services/repositories/dictionary_repo.dart';
@@ -106,6 +107,10 @@ class DictionaryController with ChangeNotifier {
     final after = DateTime.now();
     final differnt = after.difference(before);
     debugPrint('compute time: $differnt');
+
+    final dp = DictionaryDatabaseRepository(DatabaseHelper());
+    final dh = DictionaryHistory(word: word);
+    await dp.insertOrReplace(dh);
 
     return definition;
   }

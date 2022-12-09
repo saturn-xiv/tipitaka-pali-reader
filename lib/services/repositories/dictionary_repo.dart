@@ -5,6 +5,8 @@ import 'package:tipitaka_pali/business_logic/models/dictionary.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
+import '../../business_logic/models/dictionary_history.dart';
+
 abstract class DictionaryRepository {
   Future<List<Definition>> getDefinition(String id);
   Future<Definition> getDpdDefinition(String headwords);
@@ -12,6 +14,13 @@ abstract class DictionaryRepository {
   Future<String> getDprBreakup(String word);
   Future<String> getDprStem(String word);
   Future<String> getDpdHeadwords(String word);
+  Future<int> insertOrReplace(DictionaryHistory DictionaryHistory);
+
+  Future<int> delete(DictionaryHistory DictionaryHistory);
+
+  Future<int> deleteAll();
+
+  Future<List<DictionaryHistory>> getDictionaryHistory();
 }
 
 class DictionaryDatabaseRepository implements DictionaryRepository {
@@ -276,5 +285,47 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
 
     List<Map> list = await db.rawQuery(sql);
     return list.map((dictionary) => Dictionary.fromJson(dictionary)).toList();
+  }
+
+  @override
+  Future<int> insertOrReplace(DictionaryHistory dh) async {
+    final db = await databaseHelper.database;
+    final dt = DateTime.now();
+    String now = dt.year.toString() +
+        dt.month.toString() +
+        dt.day.toString() +
+        dt.hour.toString() +
+        dt.minute.toString();
+
+    var result = await db
+        .rawDelete("DELETE FROM dictionary_history WHERE word = '${dh.word}';");
+    result = await db.rawInsert(
+        "INSERT INTO dictionary_history (word, date) VALUES('${dh.word}', '$now')");
+    return result;
+  }
+
+  @override
+  Future<int> delete(DictionaryHistory dh) async {
+    final db = await databaseHelper.database;
+
+    return await db
+        .rawDelete("DELETE FROM dictionary_history WHERE word = '${dh.word}';");
+  }
+
+  @override
+  Future<int> deleteAll() async {
+    final db = await databaseHelper.database;
+    return await db.rawDelete("DELETE FROM dictionary_history';");
+  }
+
+  @override
+  Future<List<DictionaryHistory>> getDictionaryHistory() async {
+    final db = await databaseHelper.database;
+
+    List<Map<String, dynamic>> maps = await db.rawQuery('''
+      SELECT word, context, date, book_id, page_number
+      FROM dictionary_history ORDER BY date;
+      ''');
+    return maps.map((x) => DictionaryHistory.fromJson(x)).toList();
   }
 }
