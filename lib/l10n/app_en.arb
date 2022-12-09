@@ -1,5 +1,5 @@
 {
-  "tipitaka_pali_reader": "Tipitaka Pali Reader",
+  "tipitaka_pali_reader": "Tipitaka Pāḷi Reader",
   "home":                 "Home",
   "bookmark":             "Bookmark",
   "recent":               "Recent",
@@ -48,7 +48,15 @@
   "scriptLanguage":       "Script Language",
   "dictionaryToClipboard": "Dictionary to Clipboard",
   "help":                  "Help",
-  "reportIssue":           "Report Issue"
+  "reportIssue":           "Report Issue",
+  "areSureDelete":         "Are you sure you want to delete all items?",
+  "delete":                "Delete",
+  "confirmation":          "Confirmation",
+  "dictionarHistory":      "Dictionary History",
+  "share":                 "Share",
+  "downloadTitle":         "Download Extended Texts & Dictionaries",
+  "filter":                "Filter"
+
 }
 
 

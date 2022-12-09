@@ -47,5 +47,8 @@
     "gotoPageParagraph":  "စာမျက်နှာအပိုဒ်သို့သွားရန်",
     "gotoPageParagraph":    "စာမျက်နှာ သို့မဟုတ် စာပိုဒ်သို့",
     "scriptLanguage":       "ဘာသာစကား",
-    "dictionaryToClipboard": "အဘိဓာန် ကူးရန်"   
+    "dictionaryToClipboard": "အဘိဓာန် ကူးရန်",
+    "areSureDelete":         "မှတ်သားထားသမျှ အားလုံးကို ဖျက်ရန် သေချာပြီလား", 
+    "delete":                "ဖျက်မယ်",
+    "confirmation":          "အတည်ပြုချက်"
 }
