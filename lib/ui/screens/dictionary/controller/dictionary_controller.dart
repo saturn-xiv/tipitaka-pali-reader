@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
 // global variable
-ValueNotifier<String?> globalLookupWord = ValueNotifier<String?>(null);
+final ValueNotifier<String?> globalLookupWord = ValueNotifier<String?>(null);
 
 enum DictAlgorithm { Auto, TPR, DPR }
 

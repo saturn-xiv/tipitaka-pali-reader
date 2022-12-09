@@ -130,8 +130,9 @@ class _DictionaryPageState extends State<DictionaryPage>
 
                           return Card(
                             child: ListTile(
-                              leading: ColoredText(dictHistory.word),
-                              title: ColoredText("($index}) $sFormattedDate"),
+                              leading: ColoredText(
+                                  '${index + 1}) ${dictHistory.word}'),
+                              //title: ColoredText(" $sFormattedDate"),
                               onTap: () {
                                 // cause a lookup
                                 globalLookupWord.value =
