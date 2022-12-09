@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
-import 'package:tipitaka_pali/services/repositories/dictionary_history_repo.dart';
-
+import 'package:tipitaka_pali/services/repositories/dictionary_repo.dart';
 import '../../../business_logic/models/dictionary_history.dart';
 import '../../widgets/colored_text.dart';
 import 'controller/dictionary_controller.dart';
@@ -98,7 +97,7 @@ class _DictionaryPageState extends State<DictionaryPage>
   bool get wantKeepAlive => true;
   Future<void> _showDictionaryHistoryDlg(BuildContext context) async {
     final dbService = DatabaseHelper();
-    final dbDHR = DictionaryHistoryDatabaseRepository(dbh: dbService);
+    final dbDHR = DictionaryDatabaseRepository(dbService);
 
     return showDialog<void>(
       context: context,
@@ -135,7 +134,8 @@ class _DictionaryPageState extends State<DictionaryPage>
                               title: ColoredText("($index}) $sFormattedDate"),
                               onTap: () {
                                 // cause a lookup
-                                snapshot.data![index].word;
+                                globalLookupWord.value =
+                                    snapshot.data![index].word;
                                 Navigator.of(context).pop();
                               },
                             ),

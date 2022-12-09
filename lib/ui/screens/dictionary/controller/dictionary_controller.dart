@@ -278,14 +278,7 @@ class DictionaryController with ChangeNotifier {
 
     word = word.toLowerCase();
     _lookupWord = word;
-/*
-    if (!words.contains(_lookupWord) //&&
-        /*globalLookupWord.value != lastWord*/) {
-      words.add(_lookupWord!);
-      //lastWord = globalLookupWord.value!;
-    }
-// if not null
-*/
+
     _lookupDefinition();
   }
 
