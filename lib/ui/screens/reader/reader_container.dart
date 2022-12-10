@@ -17,35 +17,6 @@ class ReaderContainer extends StatefulWidget {
   State<ReaderContainer> createState() => _ReaderContainerState();
 }
 
-class TargetIconProvider implements IconProvider {
-  TargetIconProvider(this.iconData, this.onTap);
-
-  final Function(int index) onTap;
-
-  @override
-  final IconData? iconData;
-
-  @override
-  Widget buildIcon(Color color, double size) {
-    return DragTarget(
-      builder: (
-        BuildContext context,
-        List<dynamic> accepted,
-        List<dynamic> rejected,
-      ) {
-        return Icon(iconData, color: color, size: size);
-      },
-      onAccept: (int index) {
-        debugPrint('accepted $index');
-        onTap(index);
-      },
-    );
-  }
-
-  @override
-  IconPath? get iconPath => null;
-}
-
 class _ReaderContainerState extends State<ReaderContainer> {
   var tabsVisibility = {};
 
@@ -106,19 +77,8 @@ class _ReaderContainerState extends State<ReaderContainer> {
               romanText: book.name),
           buttons: [
             TabButton(
-                icon: TargetIconProvider(
-                    isVisible ? Icons.visibility : Icons.visibility_off,
-                    (int sourceIndex) {
-                  debugPrint('Will move $sourceIndex to $index');
-                  context.read<OpenningBooksProvider>().swap(
-                      sourceIndex,
-                      index);
-                }),
-                onPressed: () => {
-                      setState(() {
-                        tabsVisibility[book.id] = !isVisible;
-                      })
-                    })
+                icon: IconProvider.data(
+                    isVisible ? Icons.visibility : Icons.visibility_off)),
           ],
           keepAlive: false);
     }).toList();
@@ -188,6 +148,26 @@ Etaṃ buddhānasāsanaṃ
                   },
                   draggableTabBuilder:
                       (int tabIndex, TabData tab, Widget tabWidget) {
+                    // tabWidget actually is a MouseRegion in the tabbed_view
+                    // library. The following code is only used to make tabs
+                    // selectable on "tap down" instead of "on tap" (which is
+                    // "on tap down" + "on tap up").
+                    //
+                    final mr = tabWidget as MouseRegion;
+                    final gd = mr.child as GestureDetector;
+
+                    GestureDetector gestureDetector = GestureDetector(
+                        onTapDown: (_) {
+                          gd.onTap?.call();
+                        },
+                        child: gd.child);
+
+                    MouseRegion mouseRegion = MouseRegion(
+                        cursor: mr.cursor,
+                        onHover: mr.onHover,
+                        onExit: mr.onExit,
+                        child: gestureDetector);
+
                     return Draggable<int>(
                         feedback: Material(
                             child: Container(
@@ -199,7 +179,21 @@ Etaṃ buddhānasāsanaṃ
                             BuildContext context, Offset position) {
                           return Offset.zero;
                         },
-                        child: tabWidget);
+                        child: DragTarget(
+                          builder: (
+                            BuildContext context,
+                            List<dynamic> accepted,
+                            List<dynamic> rejected,
+                          ) {
+                            return mouseRegion;
+                          },
+                          onAccept: (int index) {
+                            debugPrint('Will move $tabIndex to $index');
+                            context
+                                .read<OpenningBooksProvider>()
+                                .swap(tabIndex, index);
+                          },
+                        ));
                   }),
             );
           }),
