@@ -52,10 +52,13 @@
   "areSureDelete":         "Are you sure you want to delete all items?",
   "delete":                "Delete",
   "confirmation":          "Confirmation",
-  "dictionarHistory":      "Dictionary History",
+  "dictionaryHistory":     "Dictionary History",
   "share":                 "Share",
   "downloadTitle":         "Download Extended Texts & Dictionaries",
-  "filter":                "Filter"
+  "filter":                "Filter",
+  "doYouWantToLeave":      "Are you sure you want to leave the App?  Your opened books be closed.",
+  "yes":                   "Yes",
+  "no" :                   "No"
 
 }
 

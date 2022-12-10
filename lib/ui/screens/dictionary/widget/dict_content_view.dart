@@ -27,6 +27,12 @@ class DictionaryContentView extends StatelessWidget {
                 child: SelectionArea(
                   child: HtmlWidget(
                     content,
+                    customStylesBuilder: (element) {
+                      if (element.classes.contains('dpdheader')) {
+                        return {'font-weight:': 'bold'};
+                      }
+                      return null;
+                    },
                     customWidgetBuilder: (element) {
                       final href = element.attributes['href'];
                       if (href != null) {

@@ -104,7 +104,7 @@ class _DictionaryPageState extends State<DictionaryPage>
       //barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: ColoredText(AppLocalizations.of(context)!.dictionarHistory),
+          title: ColoredText(AppLocalizations.of(context)!.dictionaryHistory),
           content: Container(
             width: double.maxFinite,
             child: SingleChildScrollView(
