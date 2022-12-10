@@ -223,11 +223,15 @@ class __SelectionToolBarState extends State<_SelectionToolBar> {
   @override
   void didUpdateWidget(_SelectionToolBar oldWidget) {
     super.didUpdateWidget(oldWidget);
+    final cs = widget.clipboardStatus;
+    if (null == cs) {
+      return;
+    }
     if (widget.clipboardStatus != oldWidget.clipboardStatus) {
-      widget.clipboardStatus!.addListener(_onChangedClipboardStatus);
+      cs.addListener(_onChangedClipboardStatus);
       oldWidget.clipboardStatus!.removeListener(_onChangedClipboardStatus);
     }
-    widget.clipboardStatus!.update();
+    cs.update();
   }
 
   @override
