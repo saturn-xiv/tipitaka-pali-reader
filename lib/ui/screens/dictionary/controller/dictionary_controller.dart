@@ -130,7 +130,37 @@ class DictionaryController with ChangeNotifier {
 
       List<String> dpdList = dpdHeadWords.split(RegExp(r"[, ]"));
       // remove the left bracket and single quotes
-      word = dpdList[0].replaceAll(RegExp(r"[\'\[\]]"), "");
+      String dpdword = dpdList[0].replaceAll(RegExp(r"[\'\[\]]"), "");
+
+//small case switch.. little hack.
+      switch (dpdword) {
+        case "bhagavant":
+          word = "bhagavantu";
+          break;
+        case "āyasmant":
+          word = "āyasmantu";
+          break;
+        case "bhikkhave":
+          word = "bhikkhu";
+          break;
+        default:
+          if (word.contains("āyasm")) {
+            dpdword = "āyasmantu";
+          }
+
+          // total hack for ending in vant change to vantu
+          // works in most cases.
+          if (dpdword.length > 4) {
+            if (dpdword.substring(dpdword.length - 4, dpdword.length) ==
+                "vant") {
+              dpdword = dpdword.substring(0, dpdword.length - 4) + "vantu";
+            }
+          }
+
+          word = dpdword;
+          break;
+      }
+
       isAlreadyStem = false;
     }
 
