@@ -57,7 +57,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       padding: const EdgeInsets.all(8.0),
       child: SelectionArea(
         focusNode: FocusNode(
-          canRequestFocus: false,
+          canRequestFocus: true,
         ),
         selectionControls: FlutterSelectionControls(toolBarItems: [
           ToolBarItem(
@@ -76,61 +76,67 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
             },
           ),
         ]),
-        child: HtmlWidget(
-          html,
-          factoryBuilder: () => _myFactory,
-          textStyle: TextStyle(
-              fontSize: fontSize.toDouble(),
-              inherit: true,
-              fontFamily: fontName),
-          customStylesBuilder: (element) {
-            // if (element.className == 'title' ||
-            //     element.className == 'book' ||
-            //     element.className == 'chapter' ||
-            //     element.className == 'subhead' ||
-            //     element.className == 'nikaya') {
-            //   return {
-            //     'text-align': 'center',
-            //     // 'text-decoration': 'none',
-            //   };
-            // }
-            if (element.localName == 'a') {
-              // print('found a tag: ${element.outerHtml}');
-              if (context.read<ThemeChangeNotifier>().isDarkMode) {
+        // clicking on blank area in html widget lose focus, and it is normal.
+        // Container Widget with color can be used to acquire foucs
+        // The color value is required for this container in order to acquire focus.
+        child: Container(
+          color: Colors.transparent,
+          child: HtmlWidget(
+            html,
+            factoryBuilder: () => _myFactory,
+            textStyle: TextStyle(
+                fontSize: fontSize.toDouble(),
+                inherit: true,
+                fontFamily: fontName),
+            customStylesBuilder: (element) {
+              // if (element.className == 'title' ||
+              //     element.className == 'book' ||
+              //     element.className == 'chapter' ||
+              //     element.className == 'subhead' ||
+              //     element.className == 'nikaya') {
+              //   return {
+              //     'text-align': 'center',
+              //     // 'text-decoration': 'none',
+              //   };
+              // }
+              if (element.localName == 'a') {
+                // print('found a tag: ${element.outerHtml}');
+                if (context.read<ThemeChangeNotifier>().isDarkMode) {
+                  return {
+                    'color': 'white',
+                    'text-decoration': 'none',
+                  };
+                } else {
+                  return {
+                    'color': 'black',
+                    'text-decoration': 'none',
+                  };
+                }
+              }
+              if (element.className == 'highlighted') {
+                String styleColor = (Prefs.darkThemeOn) ? "white" : "black";
+                Color c = Theme.of(context).primaryColorLight;
                 return {
-                  'color': 'white',
-                  'text-decoration': 'none',
-                };
-              } else {
-                return {
-                  'color': 'black',
-                  'text-decoration': 'none',
+                  'background': 'rgb(${c.red},${c.green},${c.blue})',
+                  'color': styleColor,
                 };
               }
-            }
-            if (element.className == 'highlighted') {
-              String styleColor = (Prefs.darkThemeOn) ? "white" : "black";
-              Color c = Theme.of(context).primaryColorLight;
-              return {
-                'background': 'rgb(${c.red},${c.green},${c.blue})',
-                'color': styleColor,
-              };
-            }
-            // no style
-            return {'text-decoration': 'none'};
-          },
-          onTapUrl: (word) {
-            if (widget.onClick != null) {
-              // #goto is used for scrolling to selected text
-              if (word != '#goto') {
-                setState(() {
-                  highlightedWord = word;
-                  widget.onClick!(word);
-                });
+              // no style
+              return {'text-decoration': 'none'};
+            },
+            onTapUrl: (word) {
+              if (widget.onClick != null) {
+                // #goto is used for scrolling to selected text
+                if (word != '#goto') {
+                  setState(() {
+                    highlightedWord = word;
+                    widget.onClick!(word);
+                  });
+                }
               }
-            }
-            return false;
-          },
+              return false;
+            },
+          ),
         ),
       ),
     );
