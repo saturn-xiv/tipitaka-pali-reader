@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/ui/screens/home/openning_books_provider.dart';
 
 import 'providers/font_provider.dart';
@@ -34,11 +35,14 @@ class App extends StatelessWidget {
   final String _viLocale = 'vi';
   final String _hiLocale = 'hi';
 
-  const App({Key? key}) : super(key: key);
+  final StreamingSharedPreferences rxPref;
+
+  const App({required this.rxPref,Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => MultiProvider(
           providers: [
+            Provider.value(value: rxPref,),
             // placing at top of MaterialApp to access in differnt routes
             ChangeNotifierProvider<ThemeChangeNotifier>(
                 create: (_) => ThemeChangeNotifier()),

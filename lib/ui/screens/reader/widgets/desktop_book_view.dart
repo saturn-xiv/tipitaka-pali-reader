@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/app.dart';
+import 'package:tipitaka_pali/services/rx_prefs.dart';
 import 'package:tipitaka_pali/ui/screens/reader/widgets/vertical_book_slider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
@@ -178,7 +180,8 @@ class _DesktopBookViewState extends State<DesktopBookView> {
     }
 
     // displaying dictionary in dialog
-    const sideSheetWidth = 350.0;
+    final sideSheetWidth = context.read<StreamingSharedPreferences>().getDouble(panelSizeKey, defaultValue: defaultPanelSize).getValue();
+    
     showGeneralDialog(
       context: context,
       barrierLabel: 'TOC',

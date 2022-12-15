@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'app.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -26,7 +27,9 @@ void main() async {
   // set the prefs to the current local if any OS but Win (not supported.)
   await setScriptAndLanguageByLocal();
 
-  runApp(const App());
+  final rxPref = await StreamingSharedPreferences.instance;
+
+  runApp( App(rxPref: rxPref));
 }
 
 setScriptAndLanguageByLocal() async {
