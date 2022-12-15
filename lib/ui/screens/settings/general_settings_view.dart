@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:tipitaka_pali/ui/screens/settings/download_view.dart';
 
 import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:tipitaka_pali/ui/screens/settings/panel_size_setting_view.dart';
 import '../../widgets/colored_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -34,6 +35,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
         title: Text(AppLocalizations.of(context)!.generalSettings,
             style: Theme.of(context).textTheme.headline6),
         children: [
+          const PanelSizeControlView(),
           _getDictionaryToClipboardSwitch(),
           const SizedBox(
             height: 20,
@@ -49,6 +51,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
       ),
     );
   }
+
 
   Widget _getAnimationsSwitch() {
     return Padding(
