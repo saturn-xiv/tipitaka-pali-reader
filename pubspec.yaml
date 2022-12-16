@@ -73,6 +73,7 @@ dependencies:
   share_plus: ^6.3.0
   move_to_background: ^1.0.2
   streaming_shared_preferences: ^2.0.0
+  ms_material_color: ^1.0.0
   
   
 

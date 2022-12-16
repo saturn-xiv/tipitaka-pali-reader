@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ms_material_color/ms_material_color.dart';
 import 'package:provider/provider.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
@@ -108,6 +109,35 @@ Etaṃ buddhānasāsanaṃ
       );
     }
 
+
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final surface = Theme.of(context).colorScheme.surfaceTint;
+    final materialColor = MsMaterialColor(primaryColor.value);
+    final TabbedViewThemeData themeData =
+        TabbedViewThemeData.minimalist(colorSet: materialColor);
+    Radius radius = const Radius.circular(8.0);
+    BorderRadiusGeometry? borderRadius =
+        BorderRadius.only(topLeft: radius, topRight: radius);
+    themeData.tabsArea
+      ..border = const Border(bottom: BorderSide(color: Colors.grey))
+      ..middleGap = .0;
+
+    themeData.tab
+      ..margin = const EdgeInsets.only(top: 2)
+      ..textStyle = TextStyle(color: Theme.of(context).colorScheme.onBackground)
+      ..padding = const EdgeInsets.all(4)
+      ..buttonsOffset = 18
+      ..decoration = BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: Theme.of(context).colorScheme.background,
+          border: Border.all(color: Colors.grey),
+          borderRadius: borderRadius)
+      ..selectedStatus.decoration = BoxDecoration(
+          color: primaryColor.withOpacity(0.6), borderRadius: borderRadius)
+      ..highlightedStatus.decoration = BoxDecoration(
+          color: surface.withOpacity(0.5), borderRadius: borderRadius);
+
+
     // cannot watch two notifiers simultaneity in a single widget
     // so warp in consumer for watching theme change
     return Stack(
@@ -118,14 +148,7 @@ Etaṃ buddhānasāsanaṃ
             // need to watch theme change and rebuild TabbedViewTheme with new one
 
             return TabbedViewTheme(
-              data: themeChangeNotifier.isDarkMode
-                  ? TabbedViewThemeData.dark()
-                  : TabbedViewThemeData.mobile(
-                      accentColor:
-                          Theme.of(context).appBarTheme.backgroundColor ??
-                              Colors.blue,
-                    ),
-              // data: TabbedViewThemeData.minimalist(),
+              data: themeData,
               child: TabbedView(
                   controller: TabbedViewController(tabs),
                   contentBuilder: (_, index) {
