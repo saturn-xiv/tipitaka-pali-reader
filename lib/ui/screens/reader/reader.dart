@@ -103,8 +103,8 @@ class ReaderView extends StatelessWidget {
                       // don't const these two guys, otherwise theme changes
                       // won't be reflected, alternatively: get notified about
                       // changes in the views themselves
-                      ? const DesktopBookView()
-                      : const MobileBookView(),
+                      ?  DesktopBookView()
+                      :  MobileBookView(),
                 ),
               ))),
       // bottomNavigationBar: SafeArea(child: ControlBar()),
