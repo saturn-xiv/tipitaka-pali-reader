@@ -20,6 +20,7 @@ class GeneralSettingsView extends StatefulWidget {
 class _GeneralSettingsViewState extends State<GeneralSettingsView> {
   bool _clipboard = Prefs.saveClickToClipboard;
   double _currentSliderValue = 1;
+  double _currentPanelFontSizeValue = 11;
   @override
   void initState() {
     _clipboard = Prefs.saveClickToClipboard;
@@ -35,12 +36,22 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
         title: Text(AppLocalizations.of(context)!.generalSettings,
             style: Theme.of(context).textTheme.headline6),
         children: [
-          const PanelSizeControlView(),
-          _getDictionaryToClipboardSwitch(),
-          const SizedBox(
-            height: 20,
-          ),
           _getAnimationsSwitch(),
+          const SizedBox(
+            height: 10,
+          ),
+          Divider(),
+          const SizedBox(
+            height: 10,
+          ),
+          const PanelSizeControlView(),
+          Divider(),
+          _getPanelFontSizeSlider(),
+          const SizedBox(
+            height: 10,
+          ),
+          Divider(),
+          _getDictionaryToClipboardSwitch(),
           _getHelpTile(context),
           _getAboutTile(context),
           _getDownloadTile(context),
@@ -51,7 +62,6 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
       ),
     );
   }
-
 
   Widget _getAnimationsSwitch() {
     return Padding(
@@ -70,6 +80,29 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
               },
             ),
             Text(AppLocalizations.of(context)!.animationSpeed),
+          ],
+        ));
+  }
+
+  Widget _getPanelFontSizeSlider() {
+    return Padding(
+        padding: const EdgeInsets.only(left: 32.0),
+        child: Column(
+          children: [
+            Slider(
+              value: Prefs.panelFontSize.toDouble(),
+              min: 10,
+              max: 30,
+              divisions: 10,
+              label: _currentPanelFontSizeValue.round().toString(),
+              onChanged: (double value) {
+                setState(() {
+                  _currentPanelFontSizeValue = value;
+                  Prefs.panelFontSize = value.toInt();
+                });
+              },
+            ),
+            const Text("Dictionary Font Size"),
           ],
         ));
   }

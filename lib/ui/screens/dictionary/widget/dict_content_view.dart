@@ -55,7 +55,7 @@ class DictionaryContentView extends StatelessWidget {
                       return null;
                     },
                     textStyle: TextStyle(
-                        fontSize: Prefs.fontSize.toDouble(),
+                        fontSize: Prefs.panelFontSize.toDouble(),
                         color: context.watch<ThemeChangeNotifier>().isDarkMode
                             ? Colors.white
                             : Colors.black,

@@ -34,20 +34,21 @@ class _PanelSizeControlViewState extends State<PanelSizeControlView> {
       return Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Expanded(
+          Expanded(child: _getPanelSlider()),
+/*          Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 32.0),
               child: Text('left panel width'),
             ),
           ),
           IconButton(
-            onPressed: () async{
+            onPressed: () async {
               setState(() {
                 size = size - 10;
                 if (size < 100) size = mininalSize;
                 // todo show message to user
               });
-                await rxPrefs.setDouble(panelSizeKey, size);
+              await rxPrefs.setDouble(panelSizeKey, size);
             },
             icon: const Icon(Icons.remove),
           ),
@@ -55,16 +56,41 @@ class _PanelSizeControlViewState extends State<PanelSizeControlView> {
             size.toInt().toString(),
           ),
           IconButton(
-            onPressed: () async{
+            onPressed: () async {
               setState(() {
                 size = size + 10;
               });
-                await rxPrefs.setDouble(panelSizeKey, size);
+              await rxPrefs.setDouble(panelSizeKey, size);
             },
             icon: const Icon(Icons.add),
           ),
+
+          */
         ],
       );
     });
+  }
+
+  Widget _getPanelSlider() {
+    return Padding(
+        padding: const EdgeInsets.only(left: 32.0),
+        child: Column(
+          children: [
+            Slider(
+              value: size,
+              min: 250,
+              max: 800,
+              divisions: 20,
+              label: size.round().toString(),
+              onChanged: (double value) async {
+                setState(() {
+                  size = value;
+                });
+                await rxPrefs.setDouble(panelSizeKey, size);
+              },
+            ),
+            Text("Panel Size"),
+          ],
+        ));
   }
 }

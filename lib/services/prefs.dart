@@ -9,6 +9,7 @@ const String localeValPref = "localeVal";
 const String themeIndexPref = "themeIndex";
 const String darkThemeOnPref = "darkThemeOn";
 const String fontSizePref = "fontSize";
+const String panelFontSizePref = "panelFontSize";
 const String databaseVersionPref = "databaseVersion";
 const String isDatabaseSavedPref = "isDatabaseSaved";
 const String isShowAlternatePaliPref = 'showAlternatePali';
@@ -34,6 +35,7 @@ const int defaultThemeIndex = 24;
 const bool defaultDarkThemeOn = false;
 //ToDo something is not right with release and font size
 const int defaultFontSize = 14;
+const int defaultPanelFontSize = 14;
 const int defaultDatabaseVersion = 1;
 const bool defaultIsDatabaseSaved = false;
 const bool defaultShowAlternatePali = false;
@@ -91,6 +93,11 @@ class Prefs {
 
   static int get fontSize => instance.getInt(fontSizePref) ?? defaultFontSize;
   static set fontSize(int value) => instance.setInt(fontSizePref, value);
+
+  static int get panelFontSize =>
+      instance.getInt(panelFontSizePref) ?? defaultPanelFontSize;
+  static set panelFontSize(int value) =>
+      instance.setInt(panelFontSizePref, value);
 
   static int get databaseVersion =>
       instance.getInt(databaseVersionPref) ?? defaultDatabaseVersion;
