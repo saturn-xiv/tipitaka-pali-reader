@@ -79,7 +79,12 @@ class _ReaderContainerState extends State<ReaderContainer> {
           buttons: [
             TabButton(
                 icon: IconProvider.data(
-                    isVisible ? Icons.visibility : Icons.visibility_off)),
+                    isVisible ? Icons.visibility : Icons.visibility_off),
+                onPressed: () => {
+                      setState(() {
+                        tabsVisibility[book.id] = !isVisible;
+                      })
+                    }),
           ],
           keepAlive: false);
     }).toList();
@@ -109,7 +114,6 @@ Etaṃ buddhānasāsanaṃ
       );
     }
 
-
     final primaryColor = Theme.of(context).colorScheme.primary;
     final surface = Theme.of(context).colorScheme.surfaceTint;
     final materialColor = MsMaterialColor(primaryColor.value);
@@ -136,7 +140,6 @@ Etaṃ buddhānasāsanaṃ
           color: primaryColor.withOpacity(0.6), borderRadius: borderRadius)
       ..highlightedStatus.decoration = BoxDecoration(
           color: surface.withOpacity(0.5), borderRadius: borderRadius);
-
 
     // cannot watch two notifiers simultaneity in a single widget
     // so warp in consumer for watching theme change
