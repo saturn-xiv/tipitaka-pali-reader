@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/services/rx_prefs.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PanelSizeControlView extends StatefulWidget {
   const PanelSizeControlView({Key? key}) : super(key: key);
@@ -80,7 +81,7 @@ class _PanelSizeControlViewState extends State<PanelSizeControlView> {
               value: size,
               min: 250,
               max: 800,
-              divisions: 20,
+              divisions: 30,
               label: size.round().toString(),
               onChanged: (double value) async {
                 setState(() {
@@ -89,7 +90,7 @@ class _PanelSizeControlViewState extends State<PanelSizeControlView> {
                 await rxPrefs.setDouble(panelSizeKey, size);
               },
             ),
-            Text("Panel Size"),
+            Text(AppLocalizations.of(context)!.panelSize),
           ],
         ));
   }

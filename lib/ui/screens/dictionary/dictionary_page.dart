@@ -30,6 +30,7 @@ class _DictionaryPageState extends State<DictionaryPage>
       appBar: AppBar(
         title: const Text('Dictionary'),
         actions: [
+          /*
           IconButton(
             icon: Icon(
               Icons.history,
@@ -38,7 +39,9 @@ class _DictionaryPageState extends State<DictionaryPage>
             onPressed: () async {
               await _showDictionaryHistoryDlg(context);
             },
+            
           ),
+        */
         ],
       ),
       body: ChangeNotifierProvider<DictionaryController>(

@@ -110,7 +110,8 @@ class DictionaryController with ChangeNotifier {
 
     final dp = DictionaryDatabaseRepository(DatabaseHelper());
     final dh = DictionaryHistory(word: word);
-    await dp.insertOrReplace(dh);
+    //await dp.insertOrReplace(dh);
+    // Todo removed for release.  fix later.
 
     return definition;
   }
@@ -134,9 +135,6 @@ class DictionaryController with ChangeNotifier {
 
 //small case switch.. little hack.
       switch (dpdword) {
-        case "bhagavant":
-          word = "bhagavantu";
-          break;
         case "āyasmant":
           word = "āyasmantu";
           break;

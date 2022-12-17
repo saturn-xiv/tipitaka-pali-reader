@@ -6,7 +6,6 @@ import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/ui/screens/settings/panel_size_setting_view.dart';
 import '../../widgets/colored_text.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum Startup { quoteOfDay, restoreLastRead }
 
@@ -40,17 +39,17 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           const SizedBox(
             height: 10,
           ),
-          Divider(),
+          const Divider(),
           const SizedBox(
             height: 10,
           ),
           const PanelSizeControlView(),
-          Divider(),
-          _getPanelFontSizeSlider(),
+          const Divider(),
+          _getDictionaryFontSizeSlider(),
           const SizedBox(
             height: 10,
           ),
-          Divider(),
+          const Divider(),
           _getDictionaryToClipboardSwitch(),
           _getHelpTile(context),
           _getAboutTile(context),
@@ -84,25 +83,25 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
         ));
   }
 
-  Widget _getPanelFontSizeSlider() {
+  Widget _getDictionaryFontSizeSlider() {
     return Padding(
         padding: const EdgeInsets.only(left: 32.0),
         child: Column(
           children: [
             Slider(
-              value: Prefs.panelFontSize.toDouble(),
-              min: 10,
-              max: 30,
-              divisions: 10,
+              value: Prefs.dictionaryFontSize.toDouble(),
+              min: 8,
+              max: 20,
+              divisions: 12,
               label: _currentPanelFontSizeValue.round().toString(),
               onChanged: (double value) {
                 setState(() {
                   _currentPanelFontSizeValue = value;
-                  Prefs.panelFontSize = value.toInt();
+                  Prefs.dictionaryFontSize = value.toInt();
                 });
               },
             ),
-            const Text("Dictionary Font Size"),
+            Text(AppLocalizations.of(context)!.dictionaryFontSize),
           ],
         ));
   }
@@ -171,7 +170,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
     showAboutDialog(
         context: context,
         applicationName: AppLocalizations.of(context)!.tipitaka_pali_reader,
-        applicationVersion: 'Version 1.6',
+        applicationVersion: 'Version 1.7',
         children: [ColoredText(AppLocalizations.of(context)!.about_info)]);
   }
 

@@ -11,7 +11,6 @@ import 'mobile_navigation_bar.dart';
 import 'navigation_pane.dart';
 import 'openning_books_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:move_to_background/move_to_background.dart';
 
 // enum Screen { Home, Bookmark, Recent, Search }
 
@@ -59,10 +58,6 @@ class Home extends StatelessWidget {
   }
 
   Future<bool> _onWillPop(BuildContext context) async {
-    if (Platform.isAndroid) {
-      MoveToBackground.moveTaskToBack();
-      return false;
-    }
     return (await showDialog(
           context: context,
           builder: (context) => AlertDialog(

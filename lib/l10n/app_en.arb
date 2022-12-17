@@ -58,8 +58,9 @@
   "filter":                "Filter",
   "doYouWantToLeave":      "Are you sure you want to leave the App?  Your opened books be closed.",
   "yes":                   "Yes",
-  "no" :                   "No"
-
+  "no" :                   "No",
+  "dictionaryFontSize":    "Dictionary Font Size",
+  "panelSize":             "Panel Size"
 }
 
 

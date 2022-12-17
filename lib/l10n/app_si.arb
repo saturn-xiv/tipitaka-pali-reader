@@ -46,7 +46,21 @@
   "openLinkedBook":       "සබැඳි පොත විවර කරන්න",
   "gotoPageParagraph":    "පිටුව හෝ පරිච්චේදය වෙත",
   "scriptLanguage":       "අකුරු වර්ගය",
-  "dictionaryToClipboard":   "ශබ්දකෝෂය copy කරගන්න"
+  "dictionaryToClipboard":   "ශබ්දකෝෂය copy කරගන්න",
+  "help":                  "උදව්",
+  "reportIssue":           "වරදක් දැනුම් දෙන්න",
+  "areSureDelete":         "සියල්ල මකා දැමිය යුතු බවට තහවුරු කරන්න",
+  "delete":                "මකන්න",
+  "confirmation":          "තහවුරු කිරීම",
+  "dictionaryHistory":     "ශබ්දකෝෂ ඉතිහාසය",
+  "share":                 "ශෙයා කරන්න",
+  "downloadTitle":         "අමතර පොත් සහ ශබ්ද කෝෂ බාගත කරන්න",
+  "filter":                "පෙරනය",
+  "doYouWantToLeave":      "Aඔබ විසින් විවෘත කළ පොත් වැසෙනු ඇත. මෘදුකාංගයෙන් පිට වීම තහවුරු කරන්න",
+  "yes":                   "ඔව්",
+  "no" :                   "නැහැ",
+  "dictionaryFontSize":    "ශබ්දකෝෂ අකුරු විශාලත්වය",
+  "panelSize":             "ලබා දෙන ඉඩ ප්‍රමාණය"
 }
 
 
