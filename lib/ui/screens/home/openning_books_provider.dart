@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../business_logic/models/book.dart';
 
@@ -10,8 +11,10 @@ class OpenningBooksProvider extends ChangeNotifier {
   int get selectedBookIndex => _selectedBookIndex;
 
   void add({required Book book, int? currentPage, String? textToHighlight}) {
+    var uuid = const Uuid().v4();
     _books.insert(0, {
       'book': book,
+      'uuid': uuid,
       'current_page': currentPage,
       'text_to_highlight': textToHighlight,
     });

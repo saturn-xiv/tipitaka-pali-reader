@@ -330,11 +330,13 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     textToHighlight = PaliScript.getScriptOf(
         script: context.read<ScriptLanguageProvider>().currentScript,
         romanText: textToHighlight);
+
     if (!textToHighlight.contains(' ')) {
-      final pattern = RegExp('(?<=\\s)$textToHighlight(?=\\s)');
+      final pattern = RegExp('(?<=[\\s", ])$textToHighlight(?=[\\s", ])');
       if (content.contains(pattern)) {
         final replace = '<span class = "highlighted">$textToHighlight</span>';
         content = content.replaceAll(pattern, replace);
+
         // adding id to scroll
         content = content.replaceFirst('<span class = "highlighted">',
             '<span id="$kGotoID" class="highlighted">');

@@ -73,7 +73,7 @@ dependencies:
   share_plus: ^6.3.0
   streaming_shared_preferences: ^2.0.0
   ms_material_color: ^1.0.0
-  
+  uuid: ^3.0.6
   
 
 dev_dependencies:

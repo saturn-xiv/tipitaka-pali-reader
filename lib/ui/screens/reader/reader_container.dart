@@ -56,22 +56,23 @@ class _ReaderContainerState extends State<ReaderContainer> {
     final tabs = books.asMap().entries.map((entry) {
       final book = entry.value['book'] as Book;
       final index = entry.key;
+      final uuid = entry.value['uuid'];
       // Newly opened tab always becomes visible and hides the last visible book
-      if (index == 0 && !tabsVisibility.containsKey(book.id)) {
-        tabsVisibility[book.id] = true;
+      if (index == 0 && !tabsVisibility.containsKey(uuid)) {
+        tabsVisibility[uuid] = true;
 
         if (books.length > 3) {
           for (var i = books.length - 1; i > 1; i--) {
-            final revBook = books[i]['book'] as Book;
-            if (tabsVisibility.containsKey(revBook.id) &&
-                tabsVisibility[revBook.id] == true) {
-              tabsVisibility[revBook.id] = false;
+            final revUuid = books[i]['uuid'];
+            if (tabsVisibility.containsKey(revUuid) &&
+                tabsVisibility[revUuid] == true) {
+              tabsVisibility[revUuid] = false;
               break;
             }
           }
         }
       }
-      final isVisible = (tabsVisibility[book.id] ?? false) == true;
+      final isVisible = (tabsVisibility[uuid] ?? false) == true;
       return TabData(
           text: PaliScript.getScriptOf(
               script: context.watch<ScriptLanguageProvider>().currentScript,
@@ -82,7 +83,7 @@ class _ReaderContainerState extends State<ReaderContainer> {
                     isVisible ? Icons.visibility : Icons.visibility_off),
                 onPressed: () => {
                       setState(() {
-                        tabsVisibility[book.id] = !isVisible;
+                        tabsVisibility[uuid] = !isVisible;
                       })
                     }),
           ],
@@ -236,7 +237,7 @@ Etaṃ buddhānasāsanaṃ
           mainAxisAlignment: MainAxisAlignment.center,
           children: Iterable.generate(books.length)
               .map((i) {
-                final isVisible = tabsVisibility[books[i]['book'].id] ?? false;
+                final isVisible = tabsVisibility[books[i]['uuid']] ?? false;
                 if (isVisible) {
                   return Expanded(child: readerAt(i, books));
                 } else {
