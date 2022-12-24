@@ -46,5 +46,20 @@
   "openLinkedBook":       "关联书籍",
   "gotoPageParagraph":     "前往页码或段落",
   "scriptLanguage":       "脚本语言",
-  "dictionaryToClipboard": "复制字典内容到剪贴板"
+  "dictionaryToClipboard": "复制字典内容到剪贴板",
+  "help":                  "帮助",
+  "reportIssue":           "问题反馈",
+  "areSureDelete":         "是否确定删除全部项目?",
+  "delete":                "删除",
+  "confirmation":          "确认",
+  "dictionaryHistory":     "字典查询历史",
+  "share":                 "分享",
+  "downloadTitle":         "下载扩展文本和字典",
+  "filter":                "筛选",
+  "doYouWantToLeave":      "是否确定退出？  您所打开的页面将退出.",
+  "yes":                   "是",
+  "no" :                   "否",
+  "dictionaryFontSize":    "文字大小",
+  "panelSize":             "控制面板大小"
+
 }
