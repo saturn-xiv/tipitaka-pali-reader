@@ -14,6 +14,33 @@ Function Requirements Document (FRC)
 
 The Tipitaka Pali Projector will be overhauled and rewritten with the tpp used as a functional requirement model and partial design.  Many things will be redesigned from the base upwards.  The new TPP will be referred to as TPP2 and perhaps renamed to TUPR
 
+# New Road Map
+* 1.)  Dictionary History and management items
+* 2.)  Search History and management of items
+* 3.)  Change management of recent and notes to be multiselect and more standard
+* 4.)  FIrebase for personal settings (recent, dictionary, search, and notes history
+* 5.)  Fuzzy search (need to improve search like TPP)  switch to ignore and find all combinations of diacritical marks.  samanera will find the right word (sāmaṇera)
+* 6.)  Fuzzy Dictionary lookup  samanera will find (sāmaṇera)
+* 7.)  Quick jump
+* 8.)  Right click word "To search"
+* 9.)  Include 2 or 3 dpd features
+* 10.) use expanded widgets with html for dictionary instead of raw html
+* 11.)  Import the MAT tables and have true MAT path by MM Paranum
+* 12.) Put extra books as a basket.. use db instead of hardcode
+* 13.) Add chanting book Theragatha, Therigatha, DhpA (english), JaA (english)  to downloads
+* 14.) System menu so that if anki is installed, we can see it on system menu?
+* 15.) Deep links.. add system menu to have TPR work
+* 16.) Better dictionary lookup vaharatiiti vaharatii'ti
+* 17.) Fix highlight (click to dict) highlights all words
+* 18.) Have TOC pop up before open book
+* 19.) Have TPR remember last place for each book and go there on open.
+* 20.) Include word count on dictionary
+* 21.) Include search button on dictionary.
+* 22.) Keyboard shortcuts
+* 23.) sticky highlights as bookmarks.. like kindle
+* 24.) search in page
+
+Old Road Map below:
 
 # Phase 1:  
 Decide on a new name:  Tipitaka Pali Reader
