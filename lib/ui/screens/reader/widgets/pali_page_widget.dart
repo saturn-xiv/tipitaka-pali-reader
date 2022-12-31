@@ -33,7 +33,7 @@ class PaliPageWidget extends StatefulWidget {
 }
 
 class _PaliPageWidgetState extends State<PaliPageWidget> {
-  final _myFactory = _MyFactory();
+  final _myFactory = WidgetFactory();
   String? highlightedWord;
 
   @override
@@ -147,6 +147,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       content = _addHighlight(content, highlightedWord!);
     }
     content = _makeClickable(content, script);
+    print(content);
     content = _changeToInlineStyle(content);
     content = _formatWithUserSetting(content);
     return content;
@@ -156,6 +157,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     // pali word not inside html tag
     // final regexPaliWord = RegExp(r'[a-zA-ZāīūṅñṭḍṇḷṃĀĪŪṄÑṬḌHṆḶṂ]+(?![^<>]*>)');
     final regexPaliWord = _getPaliWordRegexp(script);
+    print(regexPaliWord);
     return content.replaceAllMapped(regexPaliWord,
         (match) => '<a href="${match.group(0)}">${match.group(0)}</a>');
     /*
@@ -252,7 +254,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       case Script.laos:
         return RegExp('[\u0E80-\u0EFF]+(?![^<>]*>)');
       case Script.khmer:
-        return RegExp('\u1780-\u17FF]+(?![^<>]*>)');
+        return RegExp('[\u1780-\u17FF]+(?![^<>]*>)');
       case Script.bengali:
         return RegExp('[\u0980-\u09FF]+(?![^<>]*>)');
       case Script.gurmukhi:
@@ -338,8 +340,8 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
         content = content.replaceAll(pattern, replace);
 
         // adding id to scroll
-        content = content.replaceFirst('<span class = "highlighted">',
-            '<span id="$kGotoID" class="highlighted">');
+        // content = content.replaceFirst('<span class = "highlighted">',
+        //     '<span id="$kGotoID" class="highlighted">');
         return content;
       }
     }
