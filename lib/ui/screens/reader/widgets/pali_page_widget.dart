@@ -147,7 +147,6 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       content = _addHighlight(content, highlightedWord!);
     }
     content = _makeClickable(content, script);
-    print(content);
     content = _changeToInlineStyle(content);
     content = _formatWithUserSetting(content);
     return content;
@@ -157,7 +156,6 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     // pali word not inside html tag
     // final regexPaliWord = RegExp(r'[a-zA-ZāīūṅñṭḍṇḷṃĀĪŪṄÑṬḌHṆḶṂ]+(?![^<>]*>)');
     final regexPaliWord = _getPaliWordRegexp(script);
-    print(regexPaliWord);
     return content.replaceAllMapped(regexPaliWord,
         (match) => '<a href="${match.group(0)}">${match.group(0)}</a>');
     /*
