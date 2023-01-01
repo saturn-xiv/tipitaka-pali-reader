@@ -32,10 +32,7 @@ class DownloadView extends StatelessWidget {
                     const SizedBox(
                       height: 60,
                     ),
-                    SizedBox(
-                      // height: 400,
-                      child: getFutureBuilder(context, downloadModel),
-                    ),
+                    getFutureBuilder(context, downloadModel),
                   ],
                 ),
               );
@@ -56,9 +53,7 @@ class DownloadView extends StatelessWidget {
     if (downloadModel.downloading) {
       return const SizedBox.shrink();
     } else {
-      return SizedBox(
-        height: MediaQuery.of(context).size.height * 0.65,
-        width: MediaQuery.of(context).size.width * 0.65,
+      return Expanded(
         child: FutureBuilder(
           future: http.get(Uri.parse(
               'https://github.com/bksubhuti/tpr_downloads/raw/master/download_source_files/download_list.json')),
@@ -73,7 +68,7 @@ class DownloadView extends StatelessWidget {
             // return Text('see');
             return ListView.builder(
               scrollDirection: Axis.vertical,
-              shrinkWrap: true,
+              shrinkWrap: false,
               itemCount: dlList.length,
               itemBuilder: (context, index) {
                 //      print(stores[index][index]['name']);

@@ -141,6 +141,9 @@ class DictionaryController with ChangeNotifier {
         case "bhikkhave":
           word = "bhikkhu";
           break;
+        case "ambho":
+          isAlreadyStem = true;
+          break;
         default:
           if (word.contains("āyasm")) {
             dpdword = "āyasmantu";
@@ -158,8 +161,6 @@ class DictionaryController with ChangeNotifier {
           word = dpdword;
           break;
       }
-
-      isAlreadyStem = false;
     }
 
     final definitions = await dictionaryProvider.getDefinition(word,
