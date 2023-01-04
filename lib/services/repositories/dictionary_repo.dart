@@ -107,14 +107,66 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
   @override
   Future<List<String>> getSuggestions(String word) async {
     final db = await databaseHelper.database;
-    final sql = '''
+    String sql = '';
+    bool dpd = true;
+
+    // if dpd is selected
+    sql = '''
+  SELECT dpd.word as word , length(word) as si from dictionary_books, dpd
+      WHERE dpd.word LIKE '$word%' AND dictionary_books.id = 11
+      AND dictionary_books.user_choice = 1
+      ORDER by si
+	    LIMIT 80
+    ''';
+    List<Map<String, dynamic>> maps = await db.rawQuery(sql);
+    List<String> list = maps.map((e) => e['word'] as String).toList();
+
+    // because sqlflite does not support regex, we need to fix this
+    // manually in code from the resultant dataset.
+    for (int x = 0; x < list.length; x++) {
+      String s = list[x];
+      if (s.contains(RegExp(r'[0-9]'))) {
+        // remove the number and add it back.
+        List<String> pureWords = s.split(' ');
+        if (pureWords.isNotEmpty) {
+          list[x] = pureWords[0];
+        }
+      }
+    }
+    for (int x = 0; x < list.length; x++) {
+      String s = list[x];
+      if (s.contains(RegExp(r'[0-9]'))) {
+        // remove the number and add it back.
+        List<String> pureWords = s.split(' ');
+        if (pureWords.isNotEmpty) {
+          list[x] = pureWords[0];
+        }
+      }
+    }
+
+    // we are in hack mode.. to tweak things better
+    // we have two tables.. and dpd is its own table.. so
+    // now need to get from the original dictionary table and merge
+    sql = '''
       SELECT word from dictionary, dictionary_books 
       WHERE word LIKE '$word%' AND dictionary.book_id = dictionary_books.id
       AND dictionary_books.user_choice = 1
       ORDER BY dictionary_books.user_order LIMIT 200
     ''';
-    List<Map<String, dynamic>> maps = await db.rawQuery(sql);
-    return maps.map((e) => e['word'] as String).toList();
+    List<Map<String, dynamic>> maps2 = await db.rawQuery(sql);
+    List<String> list2 = maps2.map((e) => e['word'] as String).toList();
+
+    for (String x in list2) {
+      list.add(x);
+    }
+
+    // remove duplicates (code from SO)  easiest way..
+    // and sort'em
+    List<String> distinctIds = list.toSet().toList();
+    distinctIds.sort();
+    // Sort the list of strings according to the length of each string
+    distinctIds.sort((a, b) => a.length.compareTo(b.length));
+    return distinctIds;
   }
 
   @override

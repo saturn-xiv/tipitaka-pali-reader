@@ -1,0 +1,29 @@
+ instruction file is here.
+ https://odilondamasceno.medium.com/creating-appimage-with-flutter-d19ef8b53158
+
+ 
+ 
+ sudo snap install flutter --classic
+ https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
+ 
+ 
+ appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage
+
+
+chmod +x appimagetool-x86_64.AppImage
+
+
+ flutter precache
+ 
+TipitakaPaliReader.AppDir
+sudo apt install p7zip-full p7zip-rar unzip
+sudo apt-get -y install python3-pip
+git clone https://github.com/bksubhuti/tipitaka-pali-reader.git
+pip install gdown
+gdown <ID>
+scp ~/Desktop/flutterstuff.zip root@64.227.144.214:/root/tipitaka-pali-reader/
+
+
+
+
+
