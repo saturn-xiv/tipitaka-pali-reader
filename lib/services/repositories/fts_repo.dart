@@ -88,7 +88,8 @@ class FtsDatabaseRepository implements FtsRespository {
         );
         results.add(searchResult);
       } else if (queryMode == QueryMode.exact ||
-          queryMode == QueryMode.prefix || queryMode == QueryMode.anywhere) {
+          queryMode == QueryMode.prefix ||
+          queryMode == QueryMode.anywhere) {
         // debugPrint('finding match in page:${allMatches.length}');
 
         final matches = regexMatchWords.allMatches(content);
@@ -172,12 +173,13 @@ class FtsDatabaseRepository implements FtsRespository {
   }
 
   RegExp _createExactMatch(String phrase) {
-    final patterns = <String>[];
-    final words = phrase.split(' ');
-    for (var word in words) {
-      patterns.add('<$highlightTagName>$word</$highlightTagName>');
-    }
-    return RegExp(patterns.join(' '));
+    // final patterns = <String>[];
+    // final words = phrase.split(' ');
+    // for (var word in words) {
+    //   patterns.add('<$highlightTagName>$word</$highlightTagName>');
+    // }
+    // return RegExp(patterns.join(' '));
+    return RegExp('<$highlightTagName>$phrase</$highlightTagName>');
   }
 
   RegExp _createPrefixMatch(String phrase) {
@@ -190,16 +192,18 @@ class FtsDatabaseRepository implements FtsRespository {
   }
 
   String _buildHighlight(String content, String phrase) {
-    final words = phrase.split(' ');
-    for (var word in words) {
-      content = content.replaceAllMapped(
-          // ignore: unnecessary_string_escapes
-          RegExp('($word\S*)'),
-          (match) =>
-              '<$highlightTagName>${match.group(1)}</$highlightTagName>');
+    // final words = phrase.split(' ');
+    // for (var word in words) {
+    //   content = content.replaceAllMapped(
+    //       // ignore: unnecessary_string_escapes
+    //       RegExp('($word\S*)'),
+    //       (match) =>
+    //           '<$highlightTagName>${match.group(1)}</$highlightTagName>');
 
-      // content.replaceAll(word, '<$_highlightTag>$word</_highlightTag>');
-    }
+    //   // content.replaceAll(word, '<$_highlightTag>$word</_highlightTag>');
+    // }
+    content = content.replaceAll(
+        phrase, '<$highlightTagName>$phrase</$highlightTagName>');
     return content;
   }
 }
