@@ -36,7 +36,16 @@ class Reader extends StatelessWidget {
     // logger.i('textToHighlight in Reader Screen: $textToHighlight');
 
     return ChangeNotifierProvider<ReaderViewController>(
-      key: Key(book.id),
+      // this key prevents a refresh and the refresh is needed for this
+      // no highlight bug to not show up.
+      // open 2 book in two tabs, close one tab.. the remaining tab will
+      // not allow highlighting if key(book.id) code is there.
+      // it is good in many cases, but a bug somewhere causes
+      // the highlight to fail
+      // TODO try to fix this bug later
+      //////////////////////////////////
+      //key: Key(book.id),
+      ////////////////////////
       create: (context) => ReaderViewController(
           context: context,
           bookRepository: BookDatabaseRepository(DatabaseHelper()),
@@ -103,8 +112,8 @@ class ReaderView extends StatelessWidget {
                       // don't const these two guys, otherwise theme changes
                       // won't be reflected, alternatively: get notified about
                       // changes in the views themselves
-                      ?  DesktopBookView()
-                      :  MobileBookView(),
+                      ? DesktopBookView()
+                      : MobileBookView(),
                 ),
               ))),
       // bottomNavigationBar: SafeArea(child: ControlBar()),
