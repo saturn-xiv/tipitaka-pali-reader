@@ -90,7 +90,7 @@ class LowerRow extends StatelessWidget {
               tooltip: AppLocalizations.of(context)!.bookmark),
           IconButton(
               onPressed: () => _openTocDialog(context),
-              icon: const Icon(Icons.list_outlined),
+              icon: const Icon(Icons.list),
               tooltip: AppLocalizations.of(context)!.table_of_contents),
           if (!PlatformInfo.isDesktop)
             IconButton(
