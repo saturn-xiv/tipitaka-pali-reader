@@ -41,7 +41,10 @@ class FtsDatabaseRepository implements FtsRespository {
     }
 
     if (queryMode == QueryMode.distance) {
-      final value = phrase.replaceAll(' ', ' NEAR/$wordDistance ');
+      // adding * to word to match prefix or suffix query
+      var value = phrase.replaceAllMapped(
+          RegExp(r'([^\s]+)'), ((match) => '*${match.group(1)}*'));
+      value = value.replaceAll(' ', ' NEAR/$wordDistance ');
       sql = '''
       SELECT fts_pages.id, bookid, name, page,
       SNIPPET(fts_pages, '<$highlightTagName>', '</$highlightTagName>', '',-15, 25) AS content
