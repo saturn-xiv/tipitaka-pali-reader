@@ -51,6 +51,7 @@ class _SearchPageState extends State<SearchPage> {
                     children: [
                       Expanded(
                         child: SearchBar(
+                          hint: getHint(vm.queryMode),
                           controller: controller,
                           onSubmitted: (searchWord) {
                             // checking input
@@ -144,6 +145,10 @@ class _SearchPageState extends State<SearchPage> {
       // so to hide keyboard, provide this
       onTap: () => FocusScope.of(context).unfocus(),
     );
+  }
+
+  String getHint(QueryMode queryMode) {
+    return queryMode.toString();
   }
 
   // _showSearchTypeSelectDialog(QueryMode queryMode) {
