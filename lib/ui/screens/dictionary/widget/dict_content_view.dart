@@ -34,8 +34,22 @@ class DictionaryContentView extends StatelessWidget {
                       return null;
                     },
                     customWidgetBuilder: (element) {
+                      /*             if (element.localName == "button") {
+                        final value = element.attributes['value'];
+                        if (value != null) {
+                          debugPrint("found button: $value");
+                          return TextButton(
+                              onPressed: showDeclension(context),
+                              child: const Text("Declension"));
+                        }
+                      }
+                      */
                       final href = element.attributes['href'];
                       if (href != null) {
+                        String linkText = href.contains("wikipedia")
+                            ? "Wikipedia"
+                            : "Submit a correction";
+
                         return InkWell(
                           onTap: () {
                             launchUrl(Uri.parse(href),
@@ -43,9 +57,9 @@ class DictionaryContentView extends StatelessWidget {
 
                             debugPrint('will launch $href.');
                           },
-                          child: const Text(
-                            "Submit a correction",
-                            style: TextStyle(
+                          child: Text(
+                            linkText,
+                            style: const TextStyle(
                                 decoration: TextDecoration.underline,
                                 color: Colors.blue,
                                 fontSize: 10),
@@ -73,6 +87,23 @@ class DictionaryContentView extends StatelessWidget {
         noData: () => const SizedBox(
               height: 100,
               child: Center(child: Text('Not found')),
+            ));
+  }
+
+  showDeclension(BuildContext context) {
+    const String declension = '''Hellow world
+''';
+
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('Oh No'),
+              content: const HtmlWidget(declension),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('OK'))
+              ],
             ));
   }
 }

@@ -44,7 +44,7 @@ class Reader extends StatelessWidget {
       // the highlight to fail
       // TODO try to fix this bug later
       //////////////////////////////////
-      //key: Key(book.id),
+      key: Key(book.id),
       ////////////////////////
       create: (context) => ReaderViewController(
           context: context,
