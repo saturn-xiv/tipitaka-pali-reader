@@ -60,7 +60,9 @@
   "yes":                   "Yes",
   "no" :                   "No",
   "dictionaryFontSize":    "Dictionary Font Size",
-  "panelSize":             "Panel Size"
+  "panelSize":             "Panel Size",
+  "multiTabMode":          "Multiple Tabs",
+  "numVisibleTabs":        "Number Of Visible Tabs"
 }
 
 

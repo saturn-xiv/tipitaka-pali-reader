@@ -18,11 +18,14 @@ class GeneralSettingsView extends StatefulWidget {
 
 class _GeneralSettingsViewState extends State<GeneralSettingsView> {
   bool _clipboard = Prefs.saveClickToClipboard;
+  bool _multiTab = Prefs.multiTabMode;
+  int _tabsVisible = Prefs.tabsVisible;
   double _currentSliderValue = 1;
   double _currentPanelFontSizeValue = 11;
   @override
   void initState() {
     _clipboard = Prefs.saveClickToClipboard;
+
     super.initState();
   }
 
@@ -51,6 +54,9 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           ),
           const Divider(),
           _getDictionaryToClipboardSwitch(),
+          const Divider(),
+          _getMultiTabsModeSwitch(),
+          const Divider(),
           _getHelpTile(context),
           _getAboutTile(context),
           _getDownloadTile(context),
@@ -120,6 +126,67 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           value: _clipboard,
         ),
       ),
+    );
+  }
+
+  Widget _getMultiTabsModeSwitch() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(AppLocalizations.of(context)!.multiTabMode),
+            trailing: Switch(
+              onChanged: (value) {
+                setState(() {
+                  _multiTab = Prefs.multiTabMode = value;
+                });
+              },
+              value: _multiTab,
+            ),
+          ),
+          (!Prefs.multiTabMode)
+              ? const SizedBox.shrink()
+              : _getNumTabsVisibleWidget(),
+        ],
+      ),
+    );
+  }
+
+  Widget _getNumTabsVisibleWidget() {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 32.0),
+          child: Text(AppLocalizations.of(context)!.numVisibleTabs),
+        ),
+        IconButton(
+          onPressed: () async {
+            setState(() {
+              if (_tabsVisible > 2) {
+                _tabsVisible = _tabsVisible - 1;
+                Prefs.tabsVisible = _tabsVisible;
+              }
+            });
+          },
+          icon: const Icon(Icons.remove),
+        ),
+        Text(
+          _tabsVisible.toInt().toString(),
+        ),
+        IconButton(
+          onPressed: () async {
+            setState(() {
+              if (_tabsVisible < 5) {
+                _tabsVisible = _tabsVisible + 1;
+                Prefs.tabsVisible = _tabsVisible;
+              }
+            });
+          },
+          icon: const Icon(Icons.add),
+        ),
+      ],
     );
   }
 

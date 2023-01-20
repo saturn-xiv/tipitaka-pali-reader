@@ -24,6 +24,7 @@ const String isDpdPref = "isDpdOn";
 const String selectedPageColorPref = "selectedPageColor";
 const String databaseDirPathPref = "databaseDirPath";
 const String saveClickToClipboardPref = "saveClickToClipbard";
+const String multiTabModePref = "multiTabMode";
 const String animationSpeedPref = "animationSpeed";
 const String selectedMainCategoryFiltersPref = "selectedMainCategoryFilters";
 const String selectedSubCategoryFiltersPref = "selectedSubCategoryFilters";
@@ -50,6 +51,7 @@ const bool defaultIsDpdOn = true;
 int defaultSelectedPageColor = 0;
 const String defaultDatabaseDirPath = "";
 const bool defaultSaveClickToClipboard = false;
+const bool defaultmultiTabMode = false;
 const double defaultAnimationSpeed = 400;
 const int defaultTabsVisible = 3;
 List<String> defaultSelectedMainCategoryFilters = [
@@ -163,6 +165,11 @@ class Prefs {
       instance.getBool(saveClickToClipboardPref) ?? defaultSaveClickToClipboard;
   static set saveClickToClipboard(bool value) =>
       instance.setBool(saveClickToClipboardPref, value);
+
+  static bool get multiTabMode =>
+      instance.getBool(multiTabModePref) ?? defaultmultiTabMode;
+  static set multiTabMode(bool value) =>
+      instance.setBool(multiTabModePref, value);
 
   static double get animationSpeed =>
       instance.getDouble(animationSpeedPref) ?? defaultAnimationSpeed;
