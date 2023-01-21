@@ -35,7 +35,7 @@ class Reader extends StatelessWidget {
     // logger.i('pass parameter: book: ${book.id} --- ${book.name}');
     // logger.i('current Page in Reader Screen: $currentPage');
     // logger.i('textToHighlight in Reader Screen: $textToHighlight');
-    final openedBookProvider = context.watch<OpenningBooksProvider>();
+    final openedBookProvider = context.read<OpenningBooksProvider>();
     final combo = openedBookProvider.books.map((e) => e['book'].id).join('-');
     return ChangeNotifierProvider<ReaderViewController>(
       // this key prevents a refresh and the refresh is needed for this
