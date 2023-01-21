@@ -47,6 +47,8 @@ class _ReaderContainerState extends State<ReaderContainer> {
 
   @override
   Widget build(BuildContext context) {
+    final multiWindowMode = Prefs.multiTabMode && !Mobile.isPhone(context);
+
     // TODO: There are two states, empty state and data state
     // only rebuild when states are not equal.
     // when previous and new state is same,
@@ -79,14 +81,15 @@ class _ReaderContainerState extends State<ReaderContainer> {
               script: context.watch<ScriptLanguageProvider>().currentScript,
               romanText: book.name),
           buttons: [
-            TabButton(
-                icon: IconProvider.data(
-                    isVisible ? Icons.visibility : Icons.visibility_off),
-                onPressed: () => {
-                      setState(() {
-                        tabsVisibility[uuid] = !isVisible;
-                      })
-                    }),
+            if (multiWindowMode)
+              TabButton(
+                  icon: IconProvider.data(
+                      isVisible ? Icons.visibility : Icons.visibility_off),
+                  onPressed: () => {
+                        setState(() {
+                          tabsVisibility[uuid] = !isVisible;
+                        })
+                      }),
           ],
           keepAlive: false);
     }).toList();
@@ -145,89 +148,95 @@ Etaṃ buddhānasāsanaṃ
 
     // cannot watch two notifiers simultaneity in a single widget
     // so warp in consumer for watching theme change
-    return Stack(
-      children: [
-        Consumer<ThemeChangeNotifier>(
-          builder: ((context, themeChangeNotifier, child) {
-            // tabbed view uses custom theme and provide TabbedViewTheme.
-            // need to watch theme change and rebuild TabbedViewTheme with new one
+    final tabsArea = getTabArea(themeData, multiWindowMode, tabs, books);
+    if (multiWindowMode) {
+      return Stack(
+        children: [tabsArea, getColumns(books)],
+      );
+    } else {
+      return tabsArea;
+    }
+  }
 
-            return TabbedViewTheme(
-              data: themeData,
-              child: TabbedView(
-                  controller: TabbedViewController(tabs),
-                  contentBuilder: (_, index) {
-                    if (Mobile.isPhone(context)) {
-                      return readerAt(index, books);
-                    } else {
-                      return Container();
-                    }
-                  },
-                  onTabClose: (index, tabData) {
-                    tabsVisibility.remove(books[index]['book'].id);
-                    context.read<OpenningBooksProvider>().remove(index: index);
-                  },
-                  onTabSelection: (selectedIndex) {
-                    if (selectedIndex != null) {
-                      context
-                          .read<OpenningBooksProvider>()
-                          .updateSelectedBookIndex(selectedIndex);
-                    }
-                  },
-                  draggableTabBuilder:
-                      (int tabIndex, TabData tab, Widget tabWidget) {
-                    // tabWidget actually is a MouseRegion in the tabbed_view
-                    // library. The following code is only used to make tabs
-                    // selectable on "tap down" instead of "on tap" (which is
-                    // "on tap down" + "on tap up").
-                    //
-                    final mr = tabWidget as MouseRegion;
-                    final gd = mr.child as GestureDetector;
+  Widget getTabArea(themeData, multiWindowMode, tabs, books) {
+    return Consumer<ThemeChangeNotifier>(
+      builder: ((context, themeChangeNotifier, child) {
+        // tabbed view uses custom theme and provide TabbedViewTheme.
+        // need to watch theme change and rebuild TabbedViewTheme with new one
 
-                    GestureDetector gestureDetector = GestureDetector(
-                        onTapDown: (_) {
-                          gd.onTap?.call();
-                        },
-                        child: gd.child);
+        return TabbedViewTheme(
+          data: themeData,
+          child: TabbedView(
+              controller: TabbedViewController(tabs),
+              contentBuilder: (_, index) {
+                if (multiWindowMode) {
+                  return Container();
+                } else {
+                  return readerAt(index, books);
+                }
+              },
+              onTabClose: (index, tabData) {
+                tabsVisibility.remove(books[index]['book'].id);
+                context.read<OpenningBooksProvider>().remove(index: index);
+              },
+              onTabSelection: (selectedIndex) {
+                if (selectedIndex != null) {
+                  context
+                      .read<OpenningBooksProvider>()
+                      .updateSelectedBookIndex(selectedIndex);
+                }
+              },
+              draggableTabBuilder:
+                  (int tabIndex, TabData tab, Widget tabWidget) {
+                // tabWidget actually is a MouseRegion in the tabbed_view
+                // library. The following code is only used to make tabs
+                // selectable on "tap down" instead of "on tap" (which is
+                // "on tap down" + "on tap up").
+                //
+                final mr = tabWidget as MouseRegion;
+                final gd = mr.child as GestureDetector;
 
-                    MouseRegion mouseRegion = MouseRegion(
-                        cursor: mr.cursor,
-                        onHover: mr.onHover,
-                        onExit: mr.onExit,
-                        child: gestureDetector);
+                GestureDetector gestureDetector = GestureDetector(
+                    onTapDown: (_) {
+                      gd.onTap?.call();
+                    },
+                    child: gd.child);
 
-                    return Draggable<int>(
-                        feedback: Material(
-                            child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(border: Border.all()),
-                                child: Text(tab.text))),
-                        data: tabIndex,
-                        dragAnchorStrategy: (Draggable<Object> draggable,
-                            BuildContext context, Offset position) {
-                          return Offset.zero;
-                        },
-                        child: DragTarget(
-                          builder: (
-                            BuildContext context,
-                            List<dynamic> accepted,
-                            List<dynamic> rejected,
-                          ) {
-                            return mouseRegion;
-                          },
-                          onAccept: (int index) {
-                            debugPrint('Will move $tabIndex to $index');
-                            context
-                                .read<OpenningBooksProvider>()
-                                .swap(tabIndex, index);
-                          },
-                        ));
-                  }),
-            );
-          }),
-        ),
-        if (!Mobile.isPhone(context)) getColumns(books)
-      ],
+                MouseRegion mouseRegion = MouseRegion(
+                    cursor: mr.cursor,
+                    onHover: mr.onHover,
+                    onExit: mr.onExit,
+                    child: gestureDetector);
+
+                return Draggable<int>(
+                    feedback: Material(
+                        child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(border: Border.all()),
+                            child: Text(tab.text))),
+                    data: tabIndex,
+                    dragAnchorStrategy: (Draggable<Object> draggable,
+                        BuildContext context, Offset position) {
+                      return Offset.zero;
+                    },
+                    child: DragTarget(
+                      builder: (
+                        BuildContext context,
+                        List<dynamic> accepted,
+                        List<dynamic> rejected,
+                      ) {
+                        return mouseRegion;
+                      },
+                      onAccept: (int index) {
+                        debugPrint('Will move $tabIndex to $index');
+                        context
+                            .read<OpenningBooksProvider>()
+                            .swap(tabIndex, index);
+                      },
+                    ));
+              }),
+        );
+      }),
     );
   }
 

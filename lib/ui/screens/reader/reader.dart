@@ -10,6 +10,7 @@ import '../../../services/database/database_helper.dart';
 import '../../../services/repositories/book_repo.dart';
 import '../../../services/repositories/page_content_repo.dart';
 import '../../../utils/platform_info.dart';
+import '../home/openning_books_provider.dart';
 import 'controller/reader_view_controller.dart';
 import 'widgets/desktop_book_view.dart';
 import 'widgets/mobile_book_view.dart';
@@ -34,7 +35,8 @@ class Reader extends StatelessWidget {
     // logger.i('pass parameter: book: ${book.id} --- ${book.name}');
     // logger.i('current Page in Reader Screen: $currentPage');
     // logger.i('textToHighlight in Reader Screen: $textToHighlight');
-
+    final openedBookProvider = context.watch<OpenningBooksProvider>();
+    final combo = openedBookProvider.books.map((e) => e['book'].id).join('-');
     return ChangeNotifierProvider<ReaderViewController>(
       // this key prevents a refresh and the refresh is needed for this
       // no highlight bug to not show up.
@@ -44,7 +46,7 @@ class Reader extends StatelessWidget {
       // the highlight to fail
       // TODO try to fix this bug later
       //////////////////////////////////
-      key: Key(book.id),
+      key: Key('${book.id}@$combo'),
       ////////////////////////
       create: (context) => ReaderViewController(
           context: context,
