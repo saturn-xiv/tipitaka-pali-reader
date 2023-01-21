@@ -10,6 +10,7 @@ import '../../../utils/pali_script.dart';
 import '../../../utils/platform_info.dart';
 import '../home/openning_books_provider.dart';
 import 'reader.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 
 class ReaderContainer extends StatefulWidget {
   const ReaderContainer({Key? key}) : super(key: key);
@@ -61,7 +62,7 @@ class _ReaderContainerState extends State<ReaderContainer> {
       if (index == 0 && !tabsVisibility.containsKey(uuid)) {
         tabsVisibility[uuid] = true;
 
-        if (books.length > 3) {
+        if (books.length > Prefs.tabsVisible) {
           for (var i = books.length - 1; i > 1; i--) {
             final revUuid = books[i]['uuid'];
             if (tabsVisibility.containsKey(revUuid) &&
