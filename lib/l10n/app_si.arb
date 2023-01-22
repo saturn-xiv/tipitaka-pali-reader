@@ -60,7 +60,14 @@
   "yes":                   "ඔව්",
   "no" :                   "නැහැ",
   "dictionaryFontSize":    "ශබ්දකෝෂ අකුරු විශාලත්වය",
-  "panelSize":             "ලබා දෙන ඉඩ ප්‍රමාණය"
+  "panelSize":             "ලබා දෙන ඉඩ ප්‍රමාණය",
+  "multiViewsMode":        "බහු පෙන්වීම්",
+  "numVisibleViews":       "පෙන්වීම් ගණන"
+
+
+
+
+
 }
 
 

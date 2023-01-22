@@ -60,6 +60,9 @@
   "yes":                   "是",
   "no" :                   "否",
   "dictionaryFontSize":    "文字大小",
-  "panelSize":             "控制面板大小"
+  "panelSize":             "控制面板大小",
+  "multiViewsMode":         "多视图",
+  "numVisibleViews":        "可见视图"
+
 
 }

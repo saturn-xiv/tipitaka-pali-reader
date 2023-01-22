@@ -135,7 +135,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
       child: Column(
         children: [
           ListTile(
-            title: Text(AppLocalizations.of(context)!.multiTabMode),
+            title: Text(AppLocalizations.of(context)!.multiViewsMode),
             trailing: Switch(
               onChanged: (value) {
                 setState(() {
@@ -158,8 +158,8 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
       mainAxisSize: MainAxisSize.max,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 32.0),
-          child: Text(AppLocalizations.of(context)!.numVisibleTabs),
+          padding: const EdgeInsets.only(left: 15.0),
+          child: Text(AppLocalizations.of(context)!.numVisibleViews),
         ),
         IconButton(
           onPressed: () async {
