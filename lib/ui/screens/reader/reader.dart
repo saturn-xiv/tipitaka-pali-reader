@@ -88,6 +88,7 @@ class ReaderView extends StatelessWidget {
           builder: ((context, themeChangeNotifier, child) => Container(
                 color: getChosenColor(),
                 child: SlidableBar(
+                  slidableController: SlidableBarController(initialStatus: true),
                   side: Side.bottom,
                   barContent: const ReaderToolbar(),
                   size: 100,
