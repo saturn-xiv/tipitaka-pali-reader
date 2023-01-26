@@ -12,7 +12,8 @@ class SelectLanguageWidget extends StatelessWidget {
     'සිංහල',
     '中文',
     'Tiếng Việt',
-    'हिंदी'
+    'हिंदी',
+    'русский'
   ];
 
   @override
