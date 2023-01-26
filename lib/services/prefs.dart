@@ -29,6 +29,7 @@ const String animationSpeedPref = "animationSpeed";
 const String selectedMainCategoryFiltersPref = "selectedMainCategoryFilters";
 const String selectedSubCategoryFiltersPref = "selectedSubCategoryFilters";
 const String tabsVisiblePref = "tabsVisible";
+const String controlBarShowPref = "controlBarShow";
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -54,6 +55,8 @@ const bool defaultSaveClickToClipboard = false;
 const bool defaultmultiTabMode = false;
 const double defaultAnimationSpeed = 400;
 const int defaultTabsVisible = 3;
+const bool defaultControlBarShow = true;
+
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
   "annya",
@@ -191,4 +194,9 @@ class Prefs {
   static int get tabsVisible =>
       instance.getInt(tabsVisiblePref) ?? defaultTabsVisible;
   static set tabsVisible(int value) => instance.setInt(tabsVisiblePref, value);
+
+  static bool get controlBarShow =>
+      instance.getBool(controlBarShowPref) ?? defaultControlBarShow;
+  static set controlBarShow(bool value) =>
+      instance.setBool(controlBarShowPref, value);
 }

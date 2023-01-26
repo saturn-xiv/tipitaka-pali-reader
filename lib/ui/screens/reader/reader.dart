@@ -57,13 +57,14 @@ class Reader extends StatelessWidget {
           initialPage: initialPage,
           textToHighlight: textToHighlight)
         ..loadDocument(),
-      child: const ReaderView(),
+      child: ReaderView(),
     );
   }
 }
 
 class ReaderView extends StatelessWidget {
-  const ReaderView({Key? key}) : super(key: key);
+  ReaderView({Key? key}) : super(key: key);
+  final _sc = SlidableBarController(initialStatus: Prefs.controlBarShow);
 
   @override
   Widget build(BuildContext context) {
@@ -88,23 +89,31 @@ class ReaderView extends StatelessWidget {
           builder: ((context, themeChangeNotifier, child) => Container(
                 color: getChosenColor(),
                 child: SlidableBar(
-                  slidableController: SlidableBarController(initialStatus: true),
+                  slidableController: _sc,
                   side: Side.bottom,
                   barContent: const ReaderToolbar(),
                   size: 100,
-                  clicker: Container(
-                    width: 42,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.5),
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
+                  clicker: InkResponse(
+                    onTap: () {
+                      Prefs.controlBarShow = !Prefs.controlBarShow;
+                      (Prefs.controlBarShow) ? _sc.show() : _sc.hide();
+                      //debugPrint("statechanged to ${Prefs.controlBarShow}");
+                    },
+                    child: Container(
+                      key: key,
+                      width: 42,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.5),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16),
+                        ),
                       ),
-                    ),
-                    child: const Icon(
-                      Icons.keyboard_arrow_up,
-                      color: Colors.white,
+                      child: const Icon(
+                        Icons.keyboard_arrow_up,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   frontColor: Colors.white,
