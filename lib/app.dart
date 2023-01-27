@@ -34,15 +34,18 @@ class App extends StatelessWidget {
   final String _zhLocale = 'zh';
   final String _viLocale = 'vi';
   final String _hiLocale = 'hi';
+  final String _ruLocale = 'ru';
 
   final StreamingSharedPreferences rxPref;
 
-  const App({required this.rxPref,Key? key}) : super(key: key);
+  const App({required this.rxPref, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => MultiProvider(
           providers: [
-            Provider.value(value: rxPref,),
+            Provider.value(
+              value: rxPref,
+            ),
             // placing at top of MaterialApp to access in differnt routes
             ChangeNotifierProvider<ThemeChangeNotifier>(
                 create: (_) => ThemeChangeNotifier()),
@@ -79,6 +82,7 @@ class App extends StatelessWidget {
                 Locale(_zhLocale, ''), // Myanmar, no country code
                 Locale(_viLocale, ''), // Myanmar, no country code
                 Locale(_hiLocale, ''), // Myanmar, no country code
+                Locale(_ruLocale, ''), // Myanmar, no country code
               ],
               home: const SplashScreen(),
             );
