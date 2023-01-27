@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -13,6 +15,16 @@ import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:dio/dio.dart';
 import 'package:tipitaka_pali/business_logic/models/page_content.dart';
+
+class DatabaseUpdate {
+  final insertLines = [];
+  final updateLines = [];
+  final deleteLines = [];
+
+  var insertCount = 0;
+  var updateCount = 0;
+  var deleteCount = 0;
+}
 
 class DownloadService {
   DownloadNotifier downloadNotifier;
@@ -66,11 +78,46 @@ class DownloadService {
       downloadNotifier.message =
           "\nNow downlading file.. ${downloadListItem.size}\nPlease Wait.";
       // now read a file
-      String sql = await getSQL();
+
+      await downloadZip();
+      final downloadedFile = await _localFile;
+
+      final dbUpdate = DatabaseUpdate();
+
+      final lineStream = downloadedFile
+          .openRead()
+          .transform(utf8.decoder)
+          .transform(const LineSplitter());
+
+      final reBookId = RegExp("'.+'");
+      final newBooks = <String>{};
+
       Database db = await dbService.database;
-      final newBooks = await doDeletes(db, sql);
-      await doInserts(db, sql);
-      await doUpdates(db, sql);
+      await for (final rawLine in lineStream) {
+        final line = rawLine.toLowerCase();
+
+        if (line.contains("insert")) {
+          dbUpdate.insertLines.add(rawLine);
+          dbUpdate.insertCount++;
+
+        } else if (line.contains("update")) {
+          dbUpdate.updateLines.add(rawLine);
+          dbUpdate.updateCount++;
+
+        } else if (line.contains("delete")) {
+          dbUpdate.deleteLines.add(rawLine);
+          dbUpdate.deleteCount++;
+
+          if (line.contains('delete from books')) {
+            final match = reBookId.firstMatch(rawLine)!;
+            newBooks.add(match[0]!);
+          }
+        }
+
+        await processEntries(dbUpdate, db, batchAmount);
+      }
+
+      await processEntries(dbUpdate, db, 1);
 
       if (downloadListItem.type.contains("index")) {
         downloadNotifier.message = 'Building fts';
@@ -79,6 +126,30 @@ class DownloadService {
       }
     }
     downloadNotifier.downloading = false;
+  }
+
+  Future processEntries(DatabaseUpdate dbUpdate, Database db, int limit) async {
+    if (dbUpdate.insertLines.length >= limit) {
+      await execSQL(db, dbUpdate.insertLines, 'insert');
+      dbUpdate.insertLines.clear();
+      notifyProcessed('Inserted', dbUpdate.insertCount);
+    }
+
+    if (dbUpdate.updateLines.length >= limit) {
+      await execSQL(db, dbUpdate.updateLines, 'update');
+      dbUpdate.updateLines.clear();
+      notifyProcessed('Updated', dbUpdate.updateCount);
+    }
+
+    if (dbUpdate.deleteLines.isNotEmpty) {
+      await execSQL(db, dbUpdate.deleteLines, 'delete');
+      dbUpdate.deleteLines.clear();
+      notifyProcessed('Deleted', dbUpdate.deleteCount);
+    }
+  }
+
+  notifyProcessed(String operation, int counter) {
+    downloadNotifier.message = "$operation $counter lines";
   }
 
   Future<Set<String>> doDeletes(Database db, String sql) async {
@@ -105,6 +176,20 @@ class DownloadService {
       await batch.commit();
     }
     return newBooks;
+  }
+
+  Future<void> execSQL(Database db, List lines, String operation) async {
+    var batch = db.batch();
+    for (final line in lines) {
+      if (operation == 'insert') {
+        batch.rawInsert(line);
+      } else if (operation == 'update') {
+        batch.rawUpdate(line);
+      } else if (operation == 'delete') {
+        batch.rawDelete(line);
+      }
+    }
+    await batch.commit(noResult: true);
   }
 
   Future<void> doInserts(Database db, String sql) async {
