@@ -62,7 +62,8 @@
   "dictionaryFontSize":    "Dictionary Font Size",
   "panelSize":             "Panel Size",
   "multiViewsMode":        "Multiple Views",
-  "numVisibleViews":       "Visible Views"
+  "numVisibleViews":       "Visible Views",
+  "extensions":             "Extensions"
 }
 
 

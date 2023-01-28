@@ -61,5 +61,6 @@
     "dictionaryFontSize":    "အဘိဓာန်စာလုံးအရွယ်အစား",
     "panelSize":             "မြင်ကွင်းအကျဉ်းအကျယ်",
     "multiViewsMode":        "ကော်လံ(အတိုင်လိုက်)မြင်ကွင်း",
-    "numVisibleViews":       "ကော်လံအရေအတွက်"
+    "numVisibleViews":       "ကော်လံအရေအတွက်",
+    "extensions":            "ဖြည့်စွက်ချက်များ"
 }

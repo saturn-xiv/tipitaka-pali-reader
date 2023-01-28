@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/data/constants.dart';
 
+import 'download_view.dart';
 import 'script_setting_view.dart';
 import 'general_settings_view.dart';
 
@@ -30,6 +31,7 @@ class SettingPage extends StatelessWidget {
               LanguageSettingView(),
               ScriptSettingView(),
               GeneralSettingsView(),
+              ExtensionsView(),
             ],
           ),
         ));
@@ -108,6 +110,31 @@ class LanguageSettingView extends StatelessWidget {
           style: Theme.of(context).textTheme.headline6,
         ),
         trailing: SelectLanguageWidget(),
+      ),
+    );
+  }
+}
+
+class ExtensionsView extends StatelessWidget {
+  const ExtensionsView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 8,
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DownloadView()),
+          );
+        },
+        leading: const Icon(Icons.extension),
+        title: Text(
+          AppLocalizations.of(context)!.extensions,
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        trailing: const Icon(Icons.navigate_next),
       ),
     );
   }
