@@ -46,6 +46,13 @@ pubspec.lock
 version
 analysis_benchmark.json
 
+# Flutter version manager
+.fvm/
+**.fvm/
+.fvm
+example/.fvm
+example/.fvm/
+
 # packages file containing multi-root paths
 .packages.generated
 
