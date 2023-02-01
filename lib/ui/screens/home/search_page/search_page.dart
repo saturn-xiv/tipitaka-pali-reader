@@ -105,7 +105,7 @@ class _SearchPageState extends State<SearchPage> {
                               vm.onWordDistanceChanged(value);
                             },
                           )
-                        : const SizedBox(height: 0),
+                        : const SizedBox.shrink(),
                   ),
                   // suggestion view
                   Expanded(
