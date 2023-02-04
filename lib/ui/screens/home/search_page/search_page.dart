@@ -54,28 +54,8 @@ class _SearchPageState extends State<SearchPage> {
                           hint: getHint(vm.queryMode),
                           controller: controller,
                           onSubmitted: (searchWord) {
-                            // checking input
-                            int wordCount = searchWord.split(' ').length;
-                            if (wordCount == 1 &&
-                                vm.queryMode == QueryMode.distance) {
-                              // showing alert dialog
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                        title: const Text('Oh No'),
-                                        content: const Text(
-                                            'Not aviable for a single word.\nPhrase Only'),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              child: const Text('OK'))
-                                        ],
-                                      ));
-                            } else {
-                              vm.onSubmmited(context, searchWord, vm.queryMode,
-                                  vm.wordDistance);
-                            }
+                            vm.onSubmmited(context, searchWord, vm.queryMode,
+                                vm.wordDistance);
                           },
                           onTextChanged: vm.onTextChanged,
                         ),
