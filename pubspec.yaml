@@ -47,10 +47,7 @@ dependencies:
   sliding_sheet:
     git:
       url: https://github.com/pndaza/sliding_sheet_bxqm.git
-  flutter_typeahead:
-    git:
-      url: https://github.com/pndaza/flutter_typeahead.git
-      ref: 1511c92
+  flutter_typeahead: ^4.3.3
   flutter_widget_from_html_core: ^0.9.0+1
   fwfh_text_style: ^2.22.8+1
   styled_text: ^7.0.0
