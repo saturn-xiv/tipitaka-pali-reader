@@ -68,6 +68,7 @@ class _DictionarySearchFieldState extends State<DictionarySearchField> {
               ),
               contentPadding: EdgeInsets.symmetric(horizontal: 4),
             ),
+            onSubmitted: context.read<DictionaryController>().onLookup,
             onChanged: (text) {
               // convert velthuis input to uni
               if (text.isNotEmpty) {
