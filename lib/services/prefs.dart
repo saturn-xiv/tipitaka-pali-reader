@@ -8,7 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 const String localeValPref = "localeVal";
 const String themeIndexPref = "themeIndex";
 const String darkThemeOnPref = "darkThemeOn";
-const String fontSizePref = "fontSize";
+const String readerFontSizePref = "fontSize";
+const String uiFontSizePref = "ui_fontSize";
 const String dictionaryFontSizePref = "dictionaryFontSize";
 const String databaseVersionPref = "databaseVersion";
 const String isDatabaseSavedPref = "isDatabaseSaved";
@@ -36,7 +37,8 @@ const int defaultLocaleVal = 0;
 const int defaultThemeIndex = 24;
 const bool defaultDarkThemeOn = false;
 //ToDo something is not right with release and font size
-const int defaultFontSize = 14;
+const int defaultReaderFontSize = 14;
+const double defaultUiFontSize = 14.0;
 const int defaultDictionaryFontSize = 14;
 const int defaultDatabaseVersion = 1;
 const bool defaultIsDatabaseSaved = false;
@@ -96,8 +98,13 @@ class Prefs {
   static set darkThemeOn(bool value) =>
       instance.setBool(darkThemeOnPref, value);
 
-  static int get fontSize => instance.getInt(fontSizePref) ?? defaultFontSize;
-  static set fontSize(int value) => instance.setInt(fontSizePref, value);
+  static int get readerFontSize =>
+      instance.getInt(readerFontSizePref) ?? defaultReaderFontSize;
+  static set readerFontSize(int value) => instance.setInt(readerFontSizePref, value);
+
+  static double get uiFontSize =>
+      instance.getDouble(uiFontSizePref) ?? defaultUiFontSize;
+  static set uiFontSize(double value) => instance.setDouble(uiFontSizePref, value);
 
   static int get dictionaryFontSize =>
       instance.getInt(dictionaryFontSizePref) ?? defaultDictionaryFontSize;

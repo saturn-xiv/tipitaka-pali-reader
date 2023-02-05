@@ -53,7 +53,8 @@ class App extends StatelessWidget {
                 create: (_) => LocaleChangeNotifier()),
             ChangeNotifierProvider<ScriptLanguageProvider>(
                 create: (_) => ScriptLanguageProvider()),
-            ChangeNotifierProvider<FontProvider>(create: (_) => FontProvider()),
+            ChangeNotifierProvider<ReaderFontProvider>(
+                create: (_) => ReaderFontProvider()),
             ChangeNotifierProvider<OpenningBooksProvider>(
                 create: (_) => OpenningBooksProvider())
           ],

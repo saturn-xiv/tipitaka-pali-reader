@@ -43,6 +43,6 @@ class BookItem implements ListItem {
                 script:
                     context.read<ScriptLanguageProvider>().currentScript,
                 romanText: book.name),
-        style: const TextStyle(fontSize: 20),
+        style: Theme.of(context).textTheme.bodyMedium,
       );
 }

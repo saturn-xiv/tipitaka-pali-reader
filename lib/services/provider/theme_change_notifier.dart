@@ -61,6 +61,11 @@ class ThemeChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void onChangeFontSize(double fontSize) {
+    Prefs.uiFontSize = fontSize;
+    notifyListeners();
+  }
+
   //returns // flexschemedata
   get darkTheme => FlexColorScheme.dark(
         // As scheme colors we use the one from our list
@@ -69,6 +74,7 @@ class ThemeChangeNotifier extends ChangeNotifier {
         // Medium strength surface branding used in this example.
         surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        textTheme: _textTheme,
       ).toTheme;
 
   ThemeData get themeData =>
@@ -80,5 +86,17 @@ class ThemeChangeNotifier extends ChangeNotifier {
         // Medium strength surface branding used in this example.
         surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        textTheme: _textTheme,
       ).toTheme;
+
+  TextTheme get _textTheme => TextTheme(
+        bodyMedium: TextStyle(
+          fontSize: Prefs.uiFontSize,
+          fontWeight: FontWeight.w700,
+        ),
+        bodySmall: TextStyle(
+          fontSize: Prefs.uiFontSize,
+          fontWeight: FontWeight.w700,
+        ),
+      );
 }

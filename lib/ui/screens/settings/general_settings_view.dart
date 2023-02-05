@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/ui/screens/settings/panel_size_setting_view.dart';
 import '../../widgets/colored_text.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,11 +23,19 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
   int _tabsVisible = Prefs.tabsVisible;
   double _currentSliderValue = 1;
   double _currentPanelFontSizeValue = 11;
+  late double _currentUiFontSizeValue;
+
   @override
   void initState() {
-    _clipboard = Prefs.saveClickToClipboard;
-
     super.initState();
+    _clipboard = Prefs.saveClickToClipboard;
+    _currentUiFontSizeValue = Prefs.uiFontSize;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _currentUiFontSizeValue = Prefs.uiFontSize;
   }
 
   @override
@@ -47,10 +57,11 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           ),
           const PanelSizeControlView(),
           const Divider(),
+          _getUiFontSizeSlider(),
+          const SizedBox(height: 10),
+          const Divider(),
           _getDictionaryFontSizeSlider(),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           const Divider(),
           _getDictionaryToClipboardSwitch(),
           const Divider(),
@@ -74,7 +85,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
               value: Prefs.animationSpeed,
               max: 800,
               divisions: 20,
-              label: _currentSliderValue.round().toString(),
+              label: _currentUiFontSizeValue.round().toString(),
               onChanged: (double value) {
                 setState(() {
                   Prefs.animationSpeed = _currentSliderValue = value;
@@ -82,6 +93,26 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
               },
             ),
             Text(AppLocalizations.of(context)!.animationSpeed),
+          ],
+        ));
+  }
+
+  Widget _getUiFontSizeSlider() {
+    return Padding(
+        padding: const EdgeInsets.only(left: 32.0),
+        child: Column(
+          children: [
+            Slider(
+              value: Prefs.uiFontSize,
+              min: 8,
+              max: 24,
+              divisions: 16,
+              label: _currentUiFontSizeValue.round().toString(),
+              onChanged: (double value) {
+                context.read<ThemeChangeNotifier>().onChangeFontSize(value);
+              },
+            ),
+            Text('UI fontSize'),
           ],
         ));
   }

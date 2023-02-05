@@ -135,11 +135,11 @@ class LowerRow extends StatelessWidget {
   }
 
   void _onIncreaseButtonClicked(BuildContext context) {
-    context.read<FontProvider>().onIncreaseFontSize();
+    context.read<ReaderFontProvider>().onIncreaseFontSize();
   }
 
   void _onDecreaseButtonClicked(BuildContext context) {
-    context.read<FontProvider>().onDecreaseFontSize();
+    context.read<ReaderFontProvider>().onDecreaseFontSize();
   }
 
   void _onMATButtomClicked(BuildContext context) async {

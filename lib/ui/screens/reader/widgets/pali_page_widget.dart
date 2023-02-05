@@ -48,7 +48,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    int fontSize = context.watch<FontProvider>().fontSize;
+    int fontSize = context.watch<ReaderFontProvider>().fontSize;
     String html = _formatContent(widget.htmlContent, widget.script);
     final fontName = FontUtils.getfontName(
         script: context.read<ScriptLanguageProvider>().currentScript);
