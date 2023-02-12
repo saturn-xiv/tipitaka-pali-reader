@@ -109,16 +109,14 @@ class _QuickJumpPageState extends State<QuickJumpPage> {
       openningBookProvider.add(book: book, currentPage: book.firstPage
           // textToHighlight: searchWord,
           );
-    }
-/*
+
+      // quick jump page and reader page are different routes in mobile
+      // so need to open reader route for moble
       if (Mobile.isPhone(context)) {
-        // Navigator.pushNamed(context, readerRoute,
-          //   arguments: {'book': bookItem.book});
         Navigator.push(context,
             MaterialPageRoute(builder: (_) => const MobileReaderContrainer()));
       }
     }
-*/
   }
 
   Book getDnBookDetails(String qj, Book book) {
