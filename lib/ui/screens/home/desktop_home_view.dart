@@ -67,49 +67,50 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
   @override
   Widget build(BuildContext context) {
     return PreferenceBuilder<double>(
-      preference: context.read<StreamingSharedPreferences>().getDouble(panelSizeKey, defaultValue: defaultPanelSize),
-      builder: (context, width) {
-
-        return Stack(
-          children: [
-            Row(
-              children: [
-                const DeskTopNavigationBar(),
-                const MyVerticalDivider(width: 2),
-                // Naviagation Pane
-                SizeTransition(
-                  sizeFactor: _tween.animate(_animation),
-                  axis: Axis.horizontal,
-                  axisAlignment: 1,
-                  child: SizedBox(
-                    width: width,
-                    child: const DetailNavigationPane(navigationCount: 6),
+        preference: context
+            .read<StreamingSharedPreferences>()
+            .getDouble(panelSizeKey, defaultValue: defaultPanelSize),
+        builder: (context, width) {
+          return Stack(
+            children: [
+              Row(
+                children: [
+                  const DeskTopNavigationBar(),
+                  const MyVerticalDivider(width: 2),
+                  // Naviagation Pane
+                  SizeTransition(
+                    sizeFactor: _tween.animate(_animation),
+                    axis: Axis.horizontal,
+                    axisAlignment: 1,
+                    child: SizedBox(
+                      width: width,
+                      child: const DetailNavigationPane(navigationCount: 7),
+                    ),
+                  ),
+                  // reader view
+                  const Expanded(child: ReaderContainer()),
+                ],
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: SizedBox(
+                  width: navigationBarWidth,
+                  height: 64,
+                  child: Center(
+                    child: IconButton(
+                        onPressed: () => context
+                            .read<NavigationProvider>()
+                            .toggleNavigationPane(),
+                        icon: AnimatedIcon(
+                          icon: AnimatedIcons.arrow_menu,
+                          // progress: _animatedIconController,
+                          progress: _animationController.view,
+                        )),
                   ),
                 ),
-                // reader view
-                const Expanded(child: ReaderContainer()),
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: SizedBox(
-                width: navigationBarWidth,
-                height: 64,
-                child: Center(
-                  child: IconButton(
-                      onPressed: () =>
-                          context.read<NavigationProvider>().toggleNavigationPane(),
-                      icon: AnimatedIcon(
-                        icon: AnimatedIcons.arrow_menu,
-                        // progress: _animatedIconController,
-                        progress: _animationController.view,
-                      )),
-                ),
-              ),
-            )
-          ],
-        );
-      }
-    );
+              )
+            ],
+          );
+        });
   }
 }

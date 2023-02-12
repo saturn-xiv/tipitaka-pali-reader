@@ -1,27 +1,46 @@
  instruction file is here.
  https://odilondamasceno.medium.com/creating-appimage-with-flutter-d19ef8b53158
 
- 
- 
- sudo snap install flutter --classic
- https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
- 
- 
- appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage
 
+sudo snap install flutter --classic
+sudo apt-get install libgtk-3-0 libblkid1 liblzma5 -y
+sudo apt install p7zip-full p7zip-rar unzip python3-pip python-pip -y
+pip install gdown
+flutter doctor
+mkdir git
+git clone https://github.com/bksubhuti/tipitaka-pali-reader.git
+cd tipitaka-pali-reader
+cd assets/database
+gdown 1VqUU-oeR2U8bBa1WQTdXhlcDM4FATIn5
+7z x tipitaka_pali.7z
+sh split.sh
+flutter build linux --desktop
 
+#copy the file directory into the appdir folder.
+mkdir TipitakaPaliReader.AppDir
+cd TipitakaPaliReader.AppDir
+unzip flutterstuff.zip
+cp -r ~/git/tipitaka-pali-reader/build/linux/x64/release/bundle/* .
+
+# go back to the project root
+ cd ..
+wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
 chmod +x appimagetool-x86_64.AppImage
+ # now ready to build
 
+ARCH=x86_64 ./appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage
 
+   
+   
+  
  flutter precache
  
 TipitakaPaliReader.AppDir
-sudo apt install p7zip-full p7zip-rar unzip
-sudo apt-get -y install python3-pip
-git clone https://github.com/bksubhuti/tipitaka-pali-reader.git
-pip install gdown
-gdown <ID>
 scp ~/Desktop/flutterstuff.zip root@64.227.144.214:/root/tipitaka-pali-reader/
+
+scp root@167.172.188.222:git/tipitaka-pali-reader/tipitaka_pali_reader.AppImage C:\Users\bksub\Downloads
+
+
 
 
 

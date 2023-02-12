@@ -7,7 +7,7 @@
   "updatingStatus":       "Please wait while updating database\nThis may take a few minutes",
   "copyingStatus":        "Please wait while copying database.\nThis may take a few minutes",
   "settings":             "Settings",
-  "dictionary":           "dictionary",
+  "dictionary":           "Dictionary",
   "theme":                "Theme",
   "darkMode":             "Page",
   "language":             "Language",
@@ -63,7 +63,8 @@
   "panelSize":             "Panel Size",
   "multiViewsMode":        "Multiple Views",
   "numVisibleViews":       "Visible Views",
-  "extensions":             "Extensions"
+  "extensions":             "Extensions",
+  "quickjump":              "Quick Jump"
 }
 
 

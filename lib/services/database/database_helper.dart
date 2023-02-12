@@ -149,8 +149,12 @@ class DatabaseHelper {
     return true;
   }
 
-  String _cleanText(String text) {
+String _cleanText(String text) {
     final regexHtmlTags = RegExp(r'<[^>]*>');
-    return text.replaceAll(regexHtmlTags, '');
+    text = text.replaceAll(regexHtmlTags, '');
+
+    text = text.replaceAll('"', '');
+    text = text.replaceAll("'", '');
+    return text;
   }
 }

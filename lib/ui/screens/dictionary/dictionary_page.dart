@@ -108,7 +108,7 @@ class _DictionaryPageState extends State<DictionaryPage>
       builder: (BuildContext context) {
         return AlertDialog(
           title: ColoredText(AppLocalizations.of(context)!.dictionaryHistory),
-          content: Container(
+          content: SizedBox(
             width: double.maxFinite,
             child: SingleChildScrollView(
               physics: const ScrollPhysics(),

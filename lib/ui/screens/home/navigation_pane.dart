@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/providers/navigation_provider.dart';
+import 'package:tipitaka_pali/ui/screens/home/quickjump.dart';
 
 import '../../../routes.dart';
 import '../../../utils/platform_info.dart';
@@ -12,7 +13,8 @@ import 'recent_page.dart';
 import 'search_page/search_page.dart';
 
 class DetailNavigationPane extends StatefulWidget {
-  const DetailNavigationPane({Key? key, required this.navigationCount}) : super(key: key);
+  const DetailNavigationPane({Key? key, required this.navigationCount})
+      : super(key: key);
   final int navigationCount;
 
   @override
@@ -62,7 +64,7 @@ class _DetailNavigationPaneState extends State<DetailNavigationPane> {
       case 2:
         return const BookmarkPage();
       case 3:
-        if (PlatformInfo.isDesktop|| Mobile.isTablet(context)) {
+        if (PlatformInfo.isDesktop || Mobile.isTablet(context)) {
           return const Navigator(
               initialRoute: '/search',
               onGenerateRoute: RouteGenerator.generateRoute);
@@ -74,6 +76,9 @@ class _DetailNavigationPaneState extends State<DetailNavigationPane> {
       // only in desktop
       case 5:
         return const SettingPage();
+      case 6:
+        return const QuickJumpPage();
+
       default:
         throw Error();
     }

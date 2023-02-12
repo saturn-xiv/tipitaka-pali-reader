@@ -328,7 +328,7 @@ class ColoredText extends StatelessWidget {
       ),
     );
     if (MediaQuery.boldTextOverride(context)) {
-      effectiveTextStyle = effectiveTextStyle!
+      effectiveTextStyle = effectiveTextStyle
           .merge(const TextStyle(fontWeight: FontWeight.bold));
     }
     final SelectionRegistrar? registrar = SelectionContainer.maybeOf(context);
@@ -341,7 +341,7 @@ class ColoredText extends StatelessWidget {
           locale, // RichText uses Localizations.localeOf to obtain a default if this is null
       softWrap: softWrap ?? defaultTextStyle.softWrap,
       overflow:
-          overflow ?? effectiveTextStyle?.overflow ?? defaultTextStyle.overflow,
+          overflow ?? effectiveTextStyle.overflow ?? defaultTextStyle.overflow,
       textScaleFactor: textScaleFactor ?? MediaQuery.textScaleFactorOf(context),
       maxLines: maxLines ?? defaultTextStyle.maxLines,
       strutStyle: strutStyle,

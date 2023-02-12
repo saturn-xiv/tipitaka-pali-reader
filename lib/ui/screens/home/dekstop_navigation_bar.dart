@@ -75,6 +75,12 @@ class DeskTopNavigationBar extends StatelessWidget {
           label: Text(AppLocalizations.of(context)!.settings),
           padding: padding,
         ),
+        NavigationRailDestination(
+          icon: const Icon(Icons.directions_run),
+          selectedIcon: const Icon(Icons.directions_run),
+          label: Text(AppLocalizations.of(context)!.goto),
+          padding: padding,
+        ),
       ],
       // labelType: NavigationRailLabelType.all,
       selectedIndex: currentNaviagtionItem,

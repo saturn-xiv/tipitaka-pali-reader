@@ -112,6 +112,11 @@ class BookListPage extends StatelessWidget {
             onTap: () => _openDictionaryPage(context),
           ),
           ListTile(
+            title: ColoredText(AppLocalizations.of(context)!.quickjump,
+                style: const TextStyle()),
+            onTap: () => _openQuickJumpPage(context),
+          ),
+          ListTile(
             title: ColoredText(AppLocalizations.of(context)!.settings,
                 style: const TextStyle()),
             onTap: () => _openSettingPage(context),
@@ -179,6 +184,10 @@ class BookListPage extends StatelessWidget {
 
   _openDictionaryPage(BuildContext context) {
     Navigator.pushNamed(context, dictionaryRoute);
+  }
+
+  _openQuickJumpPage(BuildContext context) {
+    Navigator.pushNamed(context, quickJumpRoute);
   }
 
   _showAboutDialog(BuildContext context) {
