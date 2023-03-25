@@ -68,6 +68,9 @@ class DictionaryController with ChangeNotifier {
   Future<void> _lookupDefinition() async {
     _dictionaryState = const DictionaryState.loading();
     notifyListeners();
+    if (_lookupWord == null) {
+      return;
+    }
     // loading definitions
     final definition = await loadDefinition(_lookupWord!);
     if (definition.isEmpty) {

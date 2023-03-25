@@ -81,7 +81,13 @@ class _SearchBarState extends State<SearchBar> {
                 widget.onTextChanged(text);
               },
               decoration: InputDecoration(
-                border: InputBorder.none,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(32),
+                  borderSide: const BorderSide(
+                    width: 0,
+                    style: BorderStyle.none,
+                  ),
+                ),
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 // clear button
                 suffixIcon: widget.controller.text.isEmpty
@@ -97,7 +103,6 @@ class _SearchBarState extends State<SearchBar> {
               ),
             ),
           ),
-          const SizedBox(width: 4.0)
         ],
       ),
     );

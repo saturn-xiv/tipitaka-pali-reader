@@ -71,6 +71,7 @@ dependencies:
   streaming_shared_preferences: ^2.0.0
   ms_material_color: ^1.0.0
   uuid: ^3.0.6
+  vm_service: ^11.3.0
   
 
 dev_dependencies:

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:tipitaka_pali/ui/screens/home/search_page/search_page.dart';
 
 import '../business_logic/models/search_result.dart';
@@ -13,15 +14,7 @@ class SearchService {
     final SearchSuggestionRepository repository =
         SearchSuggestionDatabaseRepository(databaseProvider);
     final suggestions = await repository.getSuggestions(filterWord);
-
-    //make the sorting based on length and alpha
-    suggestions.sort((a, b) {
-      if (a.word.length != b.word.length) {
-        return a.word.length.compareTo(b.word.length);
-      } else {
-        return a.word.compareTo(b.word);
-      }
-    });
+    // debugPrint("got suggestions $suggestions");
     return suggestions;
   }
 

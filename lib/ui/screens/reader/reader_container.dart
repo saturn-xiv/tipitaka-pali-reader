@@ -135,7 +135,7 @@ Etaṃ buddhānasāsanaṃ
     themeData.tab
       ..margin = const EdgeInsets.only(top: 2)
       ..textStyle = TextStyle(color: Theme.of(context).colorScheme.onBackground)
-      ..padding = const EdgeInsets.all(4)
+      ..padding = const EdgeInsets.fromLTRB(10, 4, 4, 4)
       ..buttonsOffset = 18
       ..decoration = BoxDecoration(
           shape: BoxShape.rectangle,
@@ -143,9 +143,14 @@ Etaṃ buddhānasāsanaṃ
           border: Border.all(color: Colors.grey),
           borderRadius: borderRadius)
       ..selectedStatus.decoration = BoxDecoration(
-          color: primaryColor.withOpacity(0.6), borderRadius: borderRadius)
+          shape: BoxShape.rectangle,
+          color: primaryColor.withOpacity(0.6),
+          border: Border.all(color: Colors.transparent),
+          borderRadius: borderRadius)
       ..highlightedStatus.decoration = BoxDecoration(
-          color: surface.withOpacity(0.5), borderRadius: borderRadius);
+          color: surface.withOpacity(0.3),
+          border: Border.all(color: Colors.transparent),
+          borderRadius: borderRadius);
 
     // cannot watch two notifiers simultaneity in a single widget
     // so warp in consumer for watching theme change
