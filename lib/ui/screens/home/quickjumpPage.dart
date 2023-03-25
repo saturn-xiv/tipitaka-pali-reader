@@ -823,7 +823,7 @@ class _QuickJumpPageState extends State<QuickJumpPage> {
 
     book.firstPage = openPage;
     book.id = getMnBookID(suttaNumber);
-    book.name = "mn";
+    book.name = book.id;
 
     return book;
   }
