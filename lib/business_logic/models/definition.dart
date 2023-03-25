@@ -23,7 +23,7 @@ String definitionToJson(List<Definition> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Definition {
-  String? word;
+  String word;
   String definition;
   String bookName;
   int userOrder;

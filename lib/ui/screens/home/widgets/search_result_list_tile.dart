@@ -6,6 +6,7 @@ import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 
 import '../../../../business_logic/models/search_result.dart';
+import '../../../../services/prefs.dart';
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
 
@@ -20,7 +21,7 @@ class SearchResultListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     // print('text: ${result.description}');
     final bool isDarkMode = context.read<ThemeChangeNotifier>().isDarkMode;
-    const style = TextStyle(fontSize: 18);
+    final style = TextStyle(fontSize: Prefs.uiFontSize);
     final styles = {
       highlightTagName: StyledTextTag(
           style: TextStyle(
@@ -41,8 +42,8 @@ class SearchResultListTile extends StatelessWidget {
     final bookNameAndPageNumber =
         '$bookName (${AppLocalizations.of(context)!.page} - $pageNumber)';
 
-    final styelForBookName =
-        TextStyle(fontSize: 14, color: Theme.of(context).primaryColor);
+    final styelForBookName = TextStyle(
+        fontSize: Prefs.uiFontSize, color: Theme.of(context).primaryColor);
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: GestureDetector(

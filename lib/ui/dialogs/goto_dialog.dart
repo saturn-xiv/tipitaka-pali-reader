@@ -9,6 +9,7 @@ class GotoDialogResult {
   final GotoType type;
   GotoDialogResult(this.number, this.type);
 }
+
 class GotoDialog extends StatefulWidget {
   final int firstPage;
   final int lastPage;
@@ -84,7 +85,7 @@ class _GotoDialogState extends State<GotoDialog> {
       padding: const EdgeInsets.all(4.0),
       child: Text(
         AppLocalizations.of(context)!.goto,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+        style: Theme.of(context).textTheme.titleLarge,
       ),
     );
   }

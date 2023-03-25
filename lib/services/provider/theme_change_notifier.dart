@@ -90,13 +90,29 @@ class ThemeChangeNotifier extends ChangeNotifier {
       ).toTheme;
 
   TextTheme get _textTheme => TextTheme(
+        bodyLarge: TextStyle(
+          fontSize: Prefs.uiFontSize + 2,
+          fontWeight: FontWeight.w400,
+        ),
         bodyMedium: TextStyle(
           fontSize: Prefs.uiFontSize,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w400,
         ),
         bodySmall: TextStyle(
+          fontSize: Prefs.uiFontSize - 3,
+          fontWeight: FontWeight.w400,
+        ),
+        titleLarge: TextStyle(
+          fontSize: Prefs.uiFontSize + 3,
+          fontWeight: FontWeight.w600,
+        ),
+        titleMedium: TextStyle(
+          fontSize: Prefs.uiFontSize + 2,
+          fontWeight: FontWeight.w600,
+        ),
+        titleSmall: TextStyle(
           fontSize: Prefs.uiFontSize,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
         ),
       );
 }

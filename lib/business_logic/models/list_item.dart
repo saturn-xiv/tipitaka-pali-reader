@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../services/prefs.dart';
 import '../../services/provider/script_language_provider.dart';
 import '../../utils/pali_script.dart';
 import 'book.dart';
@@ -21,11 +22,10 @@ class CategoryItem implements ListItem {
     return Center(
         child: Text(
             PaliScript.getScriptOf(
-                script:
-                    context.read<ScriptLanguageProvider>().currentScript,
+                script: context.read<ScriptLanguageProvider>().currentScript,
                 romanText: category.name),
             style: TextStyle(
-                fontSize: 20,
+                fontSize: Prefs.uiFontSize + 4,
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).primaryColor)));
   }
@@ -40,9 +40,7 @@ class BookItem implements ListItem {
   @override
   Widget build(BuildContext context) => Text(
         PaliScript.getScriptOf(
-                script:
-                    context.read<ScriptLanguageProvider>().currentScript,
-                romanText: book.name),
-        style: Theme.of(context).textTheme.bodyMedium,
+            script: context.read<ScriptLanguageProvider>().currentScript,
+            romanText: book.name),
       );
 }

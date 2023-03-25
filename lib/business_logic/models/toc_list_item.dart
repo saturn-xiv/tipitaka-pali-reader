@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'toc.dart';
 import '../../services/provider/script_language_provider.dart';
 import '../../utils/pali_script.dart';
@@ -28,8 +29,8 @@ class TocHeadingOne implements TocListItem {
     final tocName = PaliScript.getScriptOf(
         script: context.read<ScriptLanguageProvider>().currentScript,
         romanText: toc.name);
-    return Text(tocName,
-        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold));
+
+    return Text(tocName, style: Theme.of(context).textTheme.titleLarge);
   }
 }
 
@@ -52,8 +53,9 @@ class TocHeadingTwo implements TocListItem {
         romanText: toc.name);
     return Padding(
         padding: const EdgeInsets.only(left: 16.0),
-        child: Text(tocName,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)));
+        child: Text(
+          tocName,
+        ));
   }
 }
 
@@ -76,7 +78,9 @@ class TocHeadingThree implements TocListItem {
         romanText: toc.name);
     return Padding(
         padding: const EdgeInsets.only(left: 32.0),
-        child: Text(tocName, style: const TextStyle(fontSize: 18)));
+        child: Text(
+          tocName,
+        ));
   }
 }
 
@@ -99,7 +103,9 @@ class TocHeadingFour implements TocListItem {
         romanText: toc.name);
     return Padding(
         padding: const EdgeInsets.only(left: 48.0),
-        child: Text(tocName, style: const TextStyle(fontSize: 18)));
+        child: Text(
+          tocName,
+        ));
   }
 }
 
@@ -122,6 +128,8 @@ class TocHeadingFive implements TocListItem {
         romanText: toc.name);
     return Padding(
         padding: const EdgeInsets.only(left: 64.0),
-        child: Text(tocName, style: const TextStyle(fontSize: 18)));
+        child: Text(
+          tocName,
+        ));
   }
 }

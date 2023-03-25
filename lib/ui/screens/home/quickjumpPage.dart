@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 
 import '../../../business_logic/models/book.dart';
+import '../../../business_logic/models/quick_jump.dart';
 import '../../../services/repositories/paragraph_repo.dart';
 import '../../../utils/platform_info.dart';
 import '../../widgets/colored_text.dart';
@@ -44,44 +46,142 @@ class _QuickJumpPageState extends State<QuickJumpPage> {
           title: Text(AppLocalizations.of(context)!.quickjump),
           actions: const [],
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 150,
-                    margin: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(32.0),
-                      border: Border.all(color: Colors.grey),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 150,
+                      margin: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(32.0),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: TextField(
+                          decoration: InputDecoration(border: InputBorder.none),
+                          maxLines: 1,
+                          controller: _controller,
+                          onSubmitted: (text) {
+                            quickJump(context, text);
+                          }),
                     ),
-                    child: TextField(
-                        decoration: InputDecoration(border: InputBorder.none),
-                        maxLines: 1,
-                        controller: _controller,
-                        onSubmitted: (text) {
-                          quickJump(context, text);
-                        }),
-                  ),
-                  const SizedBox(width: 50),
-                  FloatingActionButton(
-                      onPressed: () {
-                        quickJump(context, _controller.text);
-                      },
-                      child: const Text("go")),
-                ],
-              ),
-              const ColoredText(
-                  "You may use shortcut \nnotation to jump to a sutta:\n\nExample:\n\nmn118\nMajjhima Sutta 118\n\ndn10\nDīgha sutta 10\n\nsn5.20 \nsaṃyutta 5 sutta 20\n\nan4.50 \nbook 4 and sutta 50"),
-            ],
+                    const SizedBox(width: 50),
+                    FloatingActionButton(
+                        onPressed: () {
+                          quickJump(context, _controller.text);
+                        },
+                        child: const Text("go")),
+                  ],
+                ),
+                const ColoredText(
+                    "You may use shortcut \nnotation to jump to a sutta:\n\nExample:\n\nmn118\nMajjhima Sutta 118\n\ndn10\nDīgha sutta 10\n\nsn5.20 \nsaṃyutta 5 sutta 20\n\nan4.50 \nbook 4 and sutta 50"),
+              ],
+            ),
           ),
         ));
   }
 
+  Future<void> makeSNQuickjumpTable() async {
+    List<int> numSuttas = [
+      81,
+      30,
+      25,
+      25,
+      10,
+      15,
+      22,
+      12,
+      14,
+      12,
+      25,
+      103,
+      11,
+      39,
+      20,
+      13,
+      31,
+      14,
+      21,
+      12,
+      12,
+      159,
+      46,
+      96,
+      10,
+      10,
+      10,
+      10,
+      21,
+      75,
+      112,
+      57,
+      55,
+      55,
+      248,
+      31,
+      34,
+      16,
+      2,
+      11,
+      10,
+      13,
+      44,
+      11,
+      181,
+      185,
+      104,
+      180,
+      54,
+      108,
+      86,
+      24,
+      54,
+      20,
+      74,
+      131
+    ];
+
+    List<String> suttaList = [];
+    List<QuickJump> qjList = [];
+    //int counter = 1;
+
+    Book book = Book(id: "mula_sn", name: "sn");
+    for (int i = 0; i < numSuttas.length; i++) {
+      int num = numSuttas[i];
+
+      //suttaList.add("\n");
+      for (int j = 1; j <= num; j++) {
+        String suttanum = "sn${i + 1}.$j";
+        book = await getSnBookDetails(suttanum, book);
+        int paranum = getSNParagraph("${i + 1}.$j");
+
+        QuickJump qj = QuickJump(
+            qjID: suttanum,
+            bookID: book.id,
+            pageNumber: book.firstPage,
+            paragraphNumber: paranum);
+        qjList.add(qj);
+      }
+    }
+
+    final dbHelper = DatabaseHelper();
+
+    final db = await dbHelper.database;
+
+    for (var qjItem in qjList) {
+      String sqlString = '''
+            INSERT INTO quick_jump VALUES ("${qjItem.qjID}","${qjItem.bookID}",${qjItem.pageNumber},${qjItem.paragraphNumber});''';
+      await db.rawInsert(sqlString);
+    }
+    //debugPrint(suttaList.toString());
+  }
+
   quickJump(BuildContext context, String qj) async {
+    //await makeSNQuickjumpTable();
     Book book = Book(id: "mula_di_01", name: "dn");
     _isValid = false; // let the if statements turn it true;
 
@@ -112,7 +212,9 @@ class _QuickJumpPageState extends State<QuickJumpPage> {
 
       // quick jump page and reader page are different routes in mobile
       // so need to open reader route for moble
+      // ignore: use_build_context_synchronously
       if (Mobile.isPhone(context)) {
+        // ignore: use_build_context_synchronously
         Navigator.push(context,
             MaterialPageRoute(builder: (_) => const MobileReaderContrainer()));
       }
@@ -780,10 +882,13 @@ class _QuickJumpPageState extends State<QuickJumpPage> {
     String bookID = "mula_an_0";
     var anguttaraBookSutta = notation.split('.');
     int anguttaraBook = int.parse(anguttaraBookSutta[0]);
+
+    anguttaraBook = (anguttaraBook > 11) ? 11 : anguttaraBook;
+
     if (anguttaraBook < 10) {
       bookID = bookID + anguttaraBook.toString();
     } else {
-      bookID = "mula_an_" + anguttaraBook.toString();
+      bookID = "mula_an_$anguttaraBook";
     }
     return bookID;
   }
@@ -798,7 +903,7 @@ class _QuickJumpPageState extends State<QuickJumpPage> {
   int getSNParagraph(String notation) {
     var samyuttaAndSutta = notation.split('.');
     var samyutta = int.parse(samyuttaAndSutta[0]);
-    var sutta = int.parse(samyuttaAndSutta[1]) - 1;
+    var sutta = int.parse(samyuttaAndSutta[1]);
     switch (samyutta) {
       case 1:
         return sutta;

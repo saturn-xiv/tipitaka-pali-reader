@@ -47,7 +47,6 @@ class OpenningBookListView extends StatelessWidget {
                               .read<ScriptLanguageProvider>()
                               .currentScript,
                           romanText: book.name),
-                      style: const TextStyle(fontSize: 20),
                     ),
                     trailing: Text('page - ${pageNumber?.toString()}'),
                     selected: index == selectedBookIndex,

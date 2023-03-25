@@ -92,10 +92,8 @@ class BookListPage extends StatelessWidget {
               child: Column(
                 children: [
                   ColoredText(
-                      AppLocalizations.of(context)!.tipitaka_pali_reader,
-                      style: const TextStyle(
-                        fontSize: 17,
-                      )),
+                    AppLocalizations.of(context)!.tipitaka_pali_reader,
+                  ),
                   const SizedBox(height: 25.0),
                   Image.asset(
                     "assets/icon/icon.png",

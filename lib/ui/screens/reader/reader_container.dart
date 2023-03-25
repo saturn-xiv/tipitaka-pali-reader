@@ -47,7 +47,8 @@ class _ReaderContainerState extends State<ReaderContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final multiWindowMode = Prefs.multiTabMode && !Mobile.isPhone(context);
+    final multiWindowMode = Prefs.multiTabMode &&
+        (PlatformInfo.isDesktop || Mobile.isTablet(context));
 
     // TODO: There are two states, empty state and data state
     // only rebuild when states are not equal.

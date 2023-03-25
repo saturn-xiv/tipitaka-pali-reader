@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/providers/navigation_provider.dart';
-import 'package:tipitaka_pali/ui/screens/home/quickjump.dart';
+import 'package:tipitaka_pali/ui/screens/home/quickjumpPage.dart';
 
 import '../../../routes.dart';
 import '../../../utils/platform_info.dart';
@@ -75,10 +75,9 @@ class _DetailNavigationPaneState extends State<DetailNavigationPane> {
         return const DictionaryPage();
       // only in desktop
       case 5:
-        return const SettingPage();
-      case 6:
         return const QuickJumpPage();
-
+      case 6:
+        return const SettingPage();
       default:
         throw Error();
     }

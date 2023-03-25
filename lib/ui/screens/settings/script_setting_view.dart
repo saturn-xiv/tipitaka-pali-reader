@@ -19,7 +19,7 @@ class ScriptSettingView extends StatelessWidget {
               child: ExpansionTile(
                 leading: const Icon(Icons.font_download_outlined),
                 title: Text(AppLocalizations.of(context)!.paliScript,
-                    style: Theme.of(context).textTheme.headline6),
+                    style: Theme.of(context).textTheme.titleLarge),
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 32.0),

@@ -45,7 +45,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
       child: ExpansionTile(
         leading: const Icon(Icons.settings),
         title: Text(AppLocalizations.of(context)!.generalSettings,
-            style: Theme.of(context).textTheme.headline6),
+            style: Theme.of(context).textTheme.titleLarge),
         children: [
           _getAnimationsSwitch(),
           const SizedBox(

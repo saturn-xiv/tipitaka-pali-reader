@@ -30,14 +30,14 @@ class SuggestionListTile extends StatelessWidget {
       minVerticalPadding: 0,
       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       // suggested word
-      title: Text(scriptWord, style: const TextStyle(fontSize: 20)),
+      title: Text(scriptWord, style: Theme.of(context).textTheme.bodyLarge),
       leading: const Icon(Icons.search),
       // word frequency
       trailing: Text(
           PaliScript.getScriptOf(
               script: context.read<ScriptLanguageProvider>().currentScript,
               romanText: (frequency == -1) ? " " : frequency.toString()),
-          style: const TextStyle(fontSize: 18)),
+          style: Theme.of(context).textTheme.bodyLarge),
       onTap: onTap,
     );
   }

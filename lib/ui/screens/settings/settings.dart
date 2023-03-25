@@ -49,7 +49,7 @@ class ThemeSettingView extends StatelessWidget {
           leading: const Icon(Icons.palette_outlined),
           title: Text(
             AppLocalizations.of(context)!.theme,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           trailing: const SelectThemeWidget()),
     );
@@ -89,7 +89,7 @@ class DarkModeSettingView extends StatelessWidget {
         ),
         title: Text(
           AppLocalizations.of(context)!.darkMode,
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
     );
@@ -107,7 +107,7 @@ class LanguageSettingView extends StatelessWidget {
         leading: const Icon(Icons.language_outlined),
         title: Text(
           AppLocalizations.of(context)!.language,
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         trailing: SelectLanguageWidget(),
       ),
@@ -132,7 +132,7 @@ class ExtensionsView extends StatelessWidget {
         leading: const Icon(Icons.extension),
         title: Text(
           AppLocalizations.of(context)!.extensions,
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         trailing: const Icon(Icons.navigate_next),
       ),
@@ -150,7 +150,7 @@ class DictionarySettingView extends StatelessWidget {
       child: ExpansionTile(
         leading: const Icon(Icons.sort_by_alpha_outlined),
         title: Text(AppLocalizations.of(context)!.dictionaries,
-            style: Theme.of(context).textTheme.headline6),
+            style: Theme.of(context).textTheme.titleLarge),
         children: const [SelectDictionaryWidget()],
       ),
     );
