@@ -13,18 +13,28 @@ class SearchService {
     final SearchSuggestionRepository repository =
         SearchSuggestionDatabaseRepository(databaseProvider);
     final suggestions = await repository.getSuggestions(filterWord);
+
+    //make the sorting based on length and alpha
+    suggestions.sort((a, b) {
+      if (a.word.length != b.word.length) {
+        return a.word.length.compareTo(b.word.length);
+      } else {
+        return a.word.compareTo(b.word);
+      }
+    });
     return suggestions;
   }
 
-  static Future<List<SearchResult>> getResultsByFTS(String searchWord, QueryMode queryMode, int wordDistance) async {
+  static Future<List<SearchResult>> getResultsByFTS(
+      String searchWord, QueryMode queryMode, int wordDistance) async {
     final DatabaseHelper databaseHelper = DatabaseHelper();
     final FtsRespository respository = FtsDatabaseRepository(databaseHelper);
     return await respository.getResults(searchWord, queryMode, wordDistance);
   }
 
-  /// 
   ///
-  /// 
+  ///
+  ///
 
 /*
   static Future<List<Index>> getResults(String searchWord) async {
