@@ -9,11 +9,11 @@ import 'repositories/search_suggetion_repo.dart';
 
 class SearchService {
   static Future<List<SearchSuggestion>> getSuggestions(
-      String filterWord) async {
+      String filterWord, bool isFuzzy) async {
     final databaseProvider = DatabaseHelper();
     final SearchSuggestionRepository repository =
         SearchSuggestionDatabaseRepository(databaseProvider);
-    final suggestions = await repository.getSuggestions(filterWord);
+    final suggestions = await repository.getSuggestions(filterWord, isFuzzy);
     // debugPrint("got suggestions $suggestions");
     return suggestions;
   }

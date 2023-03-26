@@ -31,6 +31,7 @@ const String selectedMainCategoryFiltersPref = "selectedMainCategoryFilters";
 const String selectedSubCategoryFiltersPref = "selectedSubCategoryFilters";
 const String tabsVisiblePref = "tabsVisible";
 const String controlBarShowPref = "controlBarShow";
+const String isFuzzyPref = "isFuzzy";
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -58,6 +59,7 @@ const bool defaultmultiTabMode = false;
 const double defaultAnimationSpeed = 400;
 const int defaultTabsVisible = 3;
 const bool defaultControlBarShow = true;
+const bool defaultIsFuzzy = false;
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -100,11 +102,13 @@ class Prefs {
 
   static int get readerFontSize =>
       instance.getInt(readerFontSizePref) ?? defaultReaderFontSize;
-  static set readerFontSize(int value) => instance.setInt(readerFontSizePref, value);
+  static set readerFontSize(int value) =>
+      instance.setInt(readerFontSizePref, value);
 
   static double get uiFontSize =>
       instance.getDouble(uiFontSizePref) ?? defaultUiFontSize;
-  static set uiFontSize(double value) => instance.setDouble(uiFontSizePref, value);
+  static set uiFontSize(double value) =>
+      instance.setDouble(uiFontSizePref, value);
 
   static int get dictionaryFontSize =>
       instance.getInt(dictionaryFontSizePref) ?? defaultDictionaryFontSize;
@@ -206,4 +210,7 @@ class Prefs {
       instance.getBool(controlBarShowPref) ?? defaultControlBarShow;
   static set controlBarShow(bool value) =>
       instance.setBool(controlBarShowPref, value);
+
+  static bool get isFuzzy => instance.getBool(isFuzzyPref) ?? defaultIsFuzzy;
+  static set isFuzzy(bool value) => instance.setBool(isFuzzyPref, value);
 }

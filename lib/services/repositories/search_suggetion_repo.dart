@@ -3,7 +3,8 @@ import 'package:tipitaka_pali/services/dao/search_suggestion_dao.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 
 abstract class SearchSuggestionRepository {
-  Future<List<SearchSuggestion>> getSuggestions(String filterWord);
+  Future<List<SearchSuggestion>> getSuggestions(
+      String filterWord, bool isFuzzy);
 }
 
 const maxResults = 100;
@@ -28,7 +29,8 @@ class SearchSuggestionDatabaseRepository implements SearchSuggestionRepository {
 
   SearchSuggestionDatabaseRepository(this.databaseProvider);
 
-  Future<List<SearchSuggestion>> _getSuggestionsFromDB(String filterWord) async {
+  Future<List<SearchSuggestion>> _getSuggestionsFromDB(
+      String filterWord) async {
     final db = await databaseProvider.database;
     List<Map<String, dynamic>> maps = await db.query(dao.tableWords,
         columns: [dao.columnWord, dao.columnFrequecny],
@@ -36,7 +38,8 @@ class SearchSuggestionDatabaseRepository implements SearchSuggestionRepository {
     return dao.fromList(maps);
   }
 
-  Future<List<SearchSuggestion>> _getSuggestionsFromMemory(String filterWord) async {
+  Future<List<SearchSuggestion>> _getSuggestionsFromMemory(
+      String filterWord) async {
     final words = await _getAllWords();
     final searchWord = filterWord.toLowerCase().trim();
     final other = _toPlain(searchWord);
@@ -68,8 +71,11 @@ class SearchSuggestionDatabaseRepository implements SearchSuggestionRepository {
   }
 
   @override
-  Future<List<SearchSuggestion>> getSuggestions(String filterWord) async {
-    return _getSuggestionsFromMemory(filterWord);
+  Future<List<SearchSuggestion>> getSuggestions(
+      String filterWord, bool isFuzzy) async {
+    return (isFuzzy)
+        ? _getSuggestionsFromMemory(filterWord)
+        : _getSuggestionsFromDB(filterWord);
   }
 
   String _toPlain(String word) {

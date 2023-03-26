@@ -23,6 +23,10 @@ class SearchPageViewModel extends ChangeNotifier {
   bool isSearching = false;
   bool _isFirstWord = true;
   bool get isFirstWord => _isFirstWord;
+  bool _isFuzzy = false;
+  set isFuzzy(bool fz) {
+    _isFuzzy = fz;
+  }
 
   void init() {
     int index = Prefs.queryModeIndex;
@@ -55,7 +59,8 @@ class SearchPageViewModel extends ChangeNotifier {
     }
     // print('is first word: $_isFirstWord');
     _suggestions.clear();
-    _suggestions.addAll(await SearchService.getSuggestions(words.last));
+    _suggestions
+        .addAll(await SearchService.getSuggestions(words.last, _isFuzzy));
     notifyListeners();
   }
 
@@ -86,6 +91,7 @@ class SearchPageViewModel extends ChangeNotifier {
     Prefs.queryModeIndex = _queryMode.index;
     notifyListeners();
   }
+
 /*
   int _getQueryModeIndex(QueryMode queryMode) {
     switch (queryMode) {

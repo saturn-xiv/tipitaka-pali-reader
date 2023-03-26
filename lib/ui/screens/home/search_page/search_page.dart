@@ -61,6 +61,18 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                       ),
                       IconButton(
+                        icon: Prefs.isFuzzy
+                            ? Icon(Icons.lens_blur)
+                            : Icon(Icons.lens_outlined),
+                        onPressed: () {
+                          setState(() {
+                            Prefs.isFuzzy = !Prefs.isFuzzy;
+                            vm.isFuzzy = Prefs.isFuzzy;
+                          });
+                        },
+                        tooltip: "Fuzzy Search",
+                      ),
+                      IconButton(
                         icon: const Icon(Icons.filter_list),
                         tooltip: AppLocalizations.of(context)!.filter,
                         onPressed: () {
