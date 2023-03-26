@@ -14,9 +14,9 @@ abstract class DictionaryRepository {
   Future<String> getDprBreakup(String word);
   Future<String> getDprStem(String word);
   Future<String> getDpdHeadwords(String word);
-  Future<int> insertOrReplace(DictionaryHistory DictionaryHistory);
+  Future<int> insertOrReplace(DictionaryHistory dictionaryHistory);
 
-  Future<int> delete(DictionaryHistory DictionaryHistory);
+  Future<int> delete(DictionaryHistory dictionaryHistory);
 
   Future<int> deleteAll();
 
@@ -254,7 +254,7 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
             var peuDefs = list.map((x) => Definition.fromJson(x)).toList();
 
             Definition def = peuDefs[0];
-            def.definition = formatePeuAlgoDef(word, def.word!, def.definition);
+            def.definition = formatePeuAlgoDef(word, def.word, def.definition);
             debugPrint(def.definition);
             defs.add(def);
             return defs;

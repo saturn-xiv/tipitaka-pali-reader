@@ -69,7 +69,7 @@ class ReaderViewController extends ChangeNotifier {
   Future<void> _loadBookInfo(String bookID) async {
     book.firstPage = await bookRepository.getFirstPage(bookID);
     book.lastPage = await bookRepository.getLastPage(bookID);
-    _currentPage = ValueNotifier(initialPage ?? book.firstPage!);
+    _currentPage = ValueNotifier(initialPage ?? book.firstPage);
   }
 
   Future<int> getFirstParagraph() async {
