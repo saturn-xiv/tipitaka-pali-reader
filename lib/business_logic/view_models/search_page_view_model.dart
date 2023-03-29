@@ -32,6 +32,7 @@ class SearchPageViewModel extends ChangeNotifier {
     int index = Prefs.queryModeIndex;
     _queryMode = QueryMode.values[index];
     _wordDistance = Prefs.wordDistance;
+    isFuzzy = Prefs.isFuzzy;
   }
 
   Future<void> onTextChanged(String filterWord) async {

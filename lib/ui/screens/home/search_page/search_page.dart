@@ -68,6 +68,7 @@ class _SearchPageState extends State<SearchPage> {
                           setState(() {
                             Prefs.isFuzzy = !Prefs.isFuzzy;
                             vm.isFuzzy = Prefs.isFuzzy;
+                            vm.onTextChanged(controller.text);
                           });
                         },
                         tooltip: "Fuzzy Search",

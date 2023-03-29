@@ -99,11 +99,9 @@ class DownloadService {
         if (line.contains("insert")) {
           dbUpdate.insertLines.add(rawLine);
           dbUpdate.insertCount++;
-
         } else if (line.contains("update")) {
           dbUpdate.updateLines.add(rawLine);
           dbUpdate.updateCount++;
-
         } else if (line.contains("delete")) {
           dbUpdate.deleteLines.add(rawLine);
           dbUpdate.deleteCount++;
@@ -315,7 +313,8 @@ class DownloadService {
         await outFile.writeAsBytes(file.content);
       }
     }
-    downloadNotifier.message = "\nDownloaded ${archive.length} files";
+    downloadNotifier.message =
+        "\nDownloaded ${archive.length} files.  \nPlease wait for further processing";
   }
 
   String _cleanText(String text) {
