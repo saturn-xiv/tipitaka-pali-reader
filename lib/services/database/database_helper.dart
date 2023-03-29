@@ -80,6 +80,50 @@ class DatabaseHelper {
     }
   }
 
+  Future<void> buildWordList() async {
+    final frequencyMap = <String, int>{};
+    final dbInstance = await database;
+    final mapsOfCount =
+        await dbInstance.rawQuery('SELECT count(*) cnt FROM pages');
+    final int count = mapsOfCount.first['cnt'] as int;
+    int start = 1;
+    int batchCount = 500;
+    while (start < count) {
+      final maps = await dbInstance.rawQuery('''
+          SELECT content FROM pages
+          WHERE id BETWEEN $start AND ${start + batchCount}
+          ''');
+
+      for (var element in maps) {
+        // before populating to fts, need to remove html tag
+        var content = element['content'] as String;
+        content = _cleanText(content);
+        content = content.toLowerCase();
+        final words = content.split(' ');
+        for (var word in words) {
+          word = _cleanWord(word);
+          if (word.isNotEmpty) {
+            if (frequencyMap.containsKey(word)) {
+              frequencyMap[word] = frequencyMap[word]! + 1;
+            } else {
+              frequencyMap[word] = 1;
+            }
+          }
+        }
+      }
+      start += batchCount;
+    }
+    Batch batch = dbInstance.batch();
+    for (var entry in frequencyMap.entries) {
+      batch.insert('words', {
+        'word': entry.key,
+        'plain': _toPlain(entry.key),
+        'frequency': entry.value
+      });
+    }
+    batch.commit();
+  }
+
   Future<bool> buildIndex() async {
     final dbInstance = await database;
     // building Index
@@ -104,7 +148,7 @@ class DatabaseHelper {
     await dbInstance
         .execute('CREATE INDEX IF NOT EXISTS toc_index ON tocs ( book_id );');
     await dbInstance.execute(
-        'CREATE UNIQUE INDEX IF NOT EXISTS word_index ON words ( word );');
+        'CREATE UNIQUE INDEX IF NOT EXISTS word_index ON words ( "word" collate nocase, "plain" collate nocase);');
 
     return true;
   }
@@ -149,12 +193,36 @@ class DatabaseHelper {
     return true;
   }
 
-String _cleanText(String text) {
+  String _cleanText(String text) {
     final regexHtmlTags = RegExp(r'<[^>]*>');
     text = text.replaceAll(regexHtmlTags, '');
 
     text = text.replaceAll('"', '');
     text = text.replaceAll("'", '');
     return text;
+  }
+
+  String _cleanWord(String word) {
+    final reToken = RegExp(r'[^a-zāīūṅñṭḍṇḷṃ]');
+    final cleanWord = word.replaceAll(reToken, '');
+    return cleanWord;
+  }
+
+  final variations = {
+    'a': RegExp(r'ā'),
+    'u': RegExp(r'ū'),
+    't': RegExp(r'ṭ'),
+    'n': RegExp(r'[ñṇṅ]'),
+    'i': RegExp(r'ī'),
+    'd': RegExp(r'ḍ'),
+    'l': RegExp(r'ḷ'),
+    'm': RegExp(r'[ṁṃ]')
+  };
+  String _toPlain(String word) {
+    var plain = word.toLowerCase().trim();
+    variations.forEach((key, value) {
+      plain = plain.replaceAll(value, key);
+    });
+    return plain;
   }
 }

@@ -124,14 +124,22 @@ class InitialSetupViewModel extends ChangeNotifier {
     final timeBeforeIndexing = DateTime.now();
 
     // creating index tables
-
+    _status = "building word list";
+    notifyListeners();
     final DatabaseHelper databaseHelper = DatabaseHelper();
 
+    await databaseHelper.buildWordList();
+    _status = "finished building word list";
+    notifyListeners();
+
+    _status = "building indexes";
+    notifyListeners();
     final indexResult = await databaseHelper.buildIndex();
     if (indexResult == false) {
       // handle error
     }
-
+    _status = "finidshed building indexes";
+    notifyListeners();
     // creating fts table
     final ftsResult = await DatabaseHelper().buildFts(updateMessageCallback);
     if (ftsResult == false) {
