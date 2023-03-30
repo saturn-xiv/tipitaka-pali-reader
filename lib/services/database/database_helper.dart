@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -115,22 +116,34 @@ class DatabaseHelper {
       updateMessageCallback(
           'Processing the word list: ${(start / count * 100).round()}%');
     }
-    Batch batch = dbInstance.batch();
-    int batchCounter = 0;
 
-    for (var entry in frequencyMap.entries) {
-      final String sql =
-          'INSERT INTO words (word, plain, frequency) VALUES (\'${entry.key}\', \'${_toPlain(entry.key)}\', ${entry.value})';
-      batch.rawInsert(sql);
-      batchCounter++;
-      if (batchCounter % batchCount == 1) {
-        await batch.commit(noResult: true);
-        batch = dbInstance.batch();
-        updateMessageCallback(
-            'Writing the word list:  ${(batchCounter / frequencyMap.entries.length * 100).round()}%');
-      }
+    // writing to db
+    final before = DateTime.now();
+    const sql = 'INSERT INTO words (word, plain, frequency) VALUES (?, ?, ?);';
+    final length = frequencyMap.length;
+    debugPrint('wordlist count: $length');
+    final wordlist = frequencyMap.entries.toList();
+    var chunks = <List<MapEntry<String, int>>>[];
+    int chunkSize = 40000;
+    for (var i = 0; i < length; i += chunkSize) {
+      chunks.add(
+          wordlist.sublist(i, i + chunkSize > length ? length : i + chunkSize));
     }
-    await batch.commit(noResult: true);
+    for (var chunk in chunks) {
+      var buffer = StringBuffer();
+      for (var entry in chunk) {
+        buffer
+            .write('(${entry.key}, ${_toPlain(entry.key)}, ${entry.value}), ');
+      }
+      int sizeInBytes = utf8.encode(buffer.toString()).length;
+      // android cursor window size is 2MB?
+      debugPrint(' size In MegaBytes: ${sizeInBytes / 1000000}');
+      dbInstance
+          .rawInsert(sql, [buffer.toString().substring(0, buffer.length - 2)]);
+    }
+
+    final after = DateTime.now();
+    debugPrint('saving wordlist time: ${after.difference(before).inSeconds}');
   }
 
   Future<bool> buildIndex() async {
