@@ -96,7 +96,6 @@ class DatabaseHelper {
           ''');
 
       for (var element in maps) {
-        // before populating to fts, need to remove html tag
         var content = element['content'] as String;
         content = _cleanText(content);
         content = content.toLowerCase();
@@ -120,7 +119,6 @@ class DatabaseHelper {
     // writing to db
     updateMessageCallback('Writing wordlist to db ...');
     final before = DateTime.now();
-    const sql = 'INSERT INTO words (word, plain, frequency) VALUES ';
     final length = frequencyMap.length;
     debugPrint('wordlist count: $length');
     final wordlist = frequencyMap.entries.toList();
@@ -130,18 +128,20 @@ class DatabaseHelper {
       chunks.add(
           wordlist.sublist(i, i + chunkSize > length ? length : i + chunkSize));
     }
+    int chunkIndex = 1;
+    final chunkCount = chunks.length;
     for (var chunk in chunks) {
       var buffer = StringBuffer();
+      buffer.write('INSERT INTO words (word, plain, frequency) VALUES ');
       for (var entry in chunk) {
         buffer.write(
             '("${entry.key}", "${_toPlain(entry.key)}", ${entry.value}), ');
       }
-      // int sizeInBytes = utf8.encode(buffer.toString()).length;
-      // android cursor window size is 1MB?
-      // debugPrint(' size In MegaBytes: ${sizeInBytes / 1000000}');
-      final results = await dbInstance
-          .rawInsert(sql + buffer.toString().substring(0, buffer.length - 2));
-      debugPrint('results: $results');
+      await dbInstance
+          .rawInsert(buffer.toString().substring(0, buffer.length - 2));
+      updateMessageCallback(
+          'Writing wordlist to db: ${((100 / chunkCount) * chunkIndex).round()}%');
+      chunkIndex++;
     }
 
     final after = DateTime.now();
