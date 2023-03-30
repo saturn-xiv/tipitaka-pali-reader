@@ -80,14 +80,14 @@ class DatabaseHelper {
     }
   }
 
-  Future<void> buildWordList() async {
+  Future<void> buildWordList(updateMessageCallback) async {
     final frequencyMap = <String, int>{};
     final dbInstance = await database;
     final mapsOfCount =
         await dbInstance.rawQuery('SELECT count(*) cnt FROM pages');
     final int count = mapsOfCount.first['cnt'] as int;
     int start = 1;
-    int batchCount = 500;
+    int batchCount = 500; // Updated batch count
     while (start < count) {
       final maps = await dbInstance.rawQuery('''
           SELECT content FROM pages
@@ -112,16 +112,25 @@ class DatabaseHelper {
         }
       }
       start += batchCount;
+      updateMessageCallback(
+          'Processing the word list: ${(start / count * 100).round()}%');
     }
     Batch batch = dbInstance.batch();
+    int batchCounter = 0;
+
     for (var entry in frequencyMap.entries) {
-      batch.insert('words', {
-        'word': entry.key,
-        'plain': _toPlain(entry.key),
-        'frequency': entry.value
-      });
+      final String sql =
+          'INSERT INTO words (word, plain, frequency) VALUES (\'${entry.key}\', \'${_toPlain(entry.key)}\', ${entry.value})';
+      batch.rawInsert(sql);
+      batchCounter++;
+      if (batchCounter % batchCount == 1) {
+        await batch.commit(noResult: true);
+        batch = dbInstance.batch();
+        updateMessageCallback(
+            'Writing the word list:  ${(batchCounter / frequencyMap.entries.length * 100).round()}%');
+      }
     }
-    batch.commit();
+    await batch.commit(noResult: true);
   }
 
   Future<bool> buildIndex() async {

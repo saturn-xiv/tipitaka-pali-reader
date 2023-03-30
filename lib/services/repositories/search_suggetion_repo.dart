@@ -33,9 +33,9 @@ class SearchSuggestionDatabaseRepository implements SearchSuggestionRepository {
   Future<List<SearchSuggestion>> _getSuggestionsFromDB(
       String filterWord, isFuzzy) async {
     final db = await databaseProvider.database;
-    String tableName = (isFuzzy) ? "plain" : "word";
+    String searchField = (isFuzzy) ? "plain" : "word";
     String sql =
-        "SELECT word, plain, frequency FROM words WHERE $tableName LIKE '$filterWord%' ORDER BY LENGTH(word), word ASC LIMIT 100;";
+        "SELECT word, plain, frequency FROM words WHERE $searchField LIKE '$filterWord%' ORDER BY LENGTH(word), word ASC LIMIT 100;";
 
     List<Map<String, dynamic>> maps = await db.rawQuery(sql);
     List<SearchSuggestion> words =

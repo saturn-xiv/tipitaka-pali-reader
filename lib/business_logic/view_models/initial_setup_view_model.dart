@@ -128,7 +128,7 @@ class InitialSetupViewModel extends ChangeNotifier {
     notifyListeners();
     final DatabaseHelper databaseHelper = DatabaseHelper();
 
-    await databaseHelper.buildWordList();
+    await databaseHelper.buildWordList(updateMessageCallback);
     _status = "finished building word list";
     notifyListeners();
 
