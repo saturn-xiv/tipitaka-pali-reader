@@ -118,13 +118,14 @@ class DatabaseHelper {
     }
 
     // writing to db
+    updateMessageCallback('Writing wordlist to db ...');
     final before = DateTime.now();
-    const sql = 'INSERT INTO words (word, plain, frequency) VALUES (?, ?, ?);';
+    const sql = 'INSERT INTO words (word, plain, frequency) VALUES ';
     final length = frequencyMap.length;
     debugPrint('wordlist count: $length');
     final wordlist = frequencyMap.entries.toList();
     var chunks = <List<MapEntry<String, int>>>[];
-    int chunkSize = 40000;
+    int chunkSize = 15000;
     for (var i = 0; i < length; i += chunkSize) {
       chunks.add(
           wordlist.sublist(i, i + chunkSize > length ? length : i + chunkSize));
@@ -132,14 +133,15 @@ class DatabaseHelper {
     for (var chunk in chunks) {
       var buffer = StringBuffer();
       for (var entry in chunk) {
-        buffer
-            .write('(${entry.key}, ${_toPlain(entry.key)}, ${entry.value}), ');
+        buffer.write(
+            '("${entry.key}", "${_toPlain(entry.key)}", ${entry.value}), ');
       }
-      int sizeInBytes = utf8.encode(buffer.toString()).length;
-      // android cursor window size is 2MB?
-      debugPrint(' size In MegaBytes: ${sizeInBytes / 1000000}');
-      dbInstance
-          .rawInsert(sql, [buffer.toString().substring(0, buffer.length - 2)]);
+      // int sizeInBytes = utf8.encode(buffer.toString()).length;
+      // android cursor window size is 1MB?
+      // debugPrint(' size In MegaBytes: ${sizeInBytes / 1000000}');
+      final results = await dbInstance
+          .rawInsert(sql + buffer.toString().substring(0, buffer.length - 2));
+      debugPrint('results: $results');
     }
 
     final after = DateTime.now();
