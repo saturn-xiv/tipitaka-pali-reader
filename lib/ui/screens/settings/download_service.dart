@@ -381,13 +381,17 @@ class DownloadService {
       }
     }
     downloadNotifier.message = "Adding English wordlist";
+    /*await db.execute(
+        'CREATE UNIQUE INDEX IF NOT EXISTS word_index ON words ( "word", "plain");');
+*/
 
     // now delete all words from the table with -1 count
     await db.rawDelete("Delete from words where frequency = -1");
     var batch = db.batch();
     int counter = 0;
     for (String s in uniqueWords) {
-      batch.rawInsert('''INSERT INTO words (word, frequency) SELECT '$s', -1  
+      batch.rawInsert(
+          '''INSERT INTO words (word, plain, frequency) SELECT '$s','$s', -1  
                           WHERE NOT EXISTS 
                           (SELECT word from words where word ='$s');''');
       counter++;
