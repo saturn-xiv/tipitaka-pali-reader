@@ -117,6 +117,9 @@ class DatabaseHelper {
     }
 
     // writing to db
+    await dbInstance.execute('DROP TABLE IF EXISTS words');
+    await dbInstance.execute(
+        'CREATE TABLE IF NOT EXISTS words (word TEXT COLLATE NOCASE, plain TEXT COLLATE NOCASE, frequency INTEGER)');
     updateMessageCallback('Writing wordlist to db ...');
     final before = DateTime.now();
     final length = frequencyMap.length;
@@ -172,7 +175,7 @@ class DatabaseHelper {
     await dbInstance
         .execute('CREATE INDEX IF NOT EXISTS toc_index ON tocs ( book_id );');
     await dbInstance.execute(
-        'CREATE UNIQUE INDEX IF NOT EXISTS word_index ON words ( "word" collate nocase, "plain" collate nocase);');
+        'CREATE UNIQUE INDEX IF NOT EXISTS word_index ON words ( "word", "plain");');
 
     return true;
   }
