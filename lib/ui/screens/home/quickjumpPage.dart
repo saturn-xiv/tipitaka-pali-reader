@@ -904,6 +904,7 @@ class _QuickJumpPageState extends State<QuickJumpPage> {
     var samyuttaAndSutta = notation.split('.');
     var samyutta = int.parse(samyuttaAndSutta[0]);
     var sutta = int.parse(samyuttaAndSutta[1]);
+    sutta--; // adjust
     switch (samyutta) {
       case 1:
         return sutta;

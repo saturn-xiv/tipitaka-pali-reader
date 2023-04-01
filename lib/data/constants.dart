@@ -2,7 +2,7 @@ const String highlightTagName = 'highlight';
 
 class DatabaseInfo {
   DatabaseInfo._();
-  static const int version = 20;
+  static const int version = 21;
   static const String fileName = 'tipitaka_pali.db';
 }
 
