@@ -378,6 +378,6 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
       SELECT word, context, date, book_id, page_number
       FROM dictionary_history ORDER BY date;
       ''');
-    return maps.map((x) => DictionaryHistory.fromJson(x)).toList();
+    return maps.map((x) => DictionaryHistory.fromMap(x)).toList();
   }
 }

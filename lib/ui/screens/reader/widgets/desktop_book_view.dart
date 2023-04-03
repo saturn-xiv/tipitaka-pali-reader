@@ -205,6 +205,7 @@ class _DesktopBookViewState extends State<DesktopBookView> {
               padding:
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
               width: sideSheetWidth,
+              height: MediaQuery.of(context).size.height -  80,
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.background,
                   borderRadius: const BorderRadius.only(

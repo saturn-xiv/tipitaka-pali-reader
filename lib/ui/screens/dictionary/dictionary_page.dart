@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/repositories/dictionary_repo.dart';
 import '../../../business_logic/models/dictionary_history.dart';
+import '../../../services/repositories/dictionary_history_repo.dart';
 import '../../widgets/colored_text.dart';
 import 'controller/dictionary_controller.dart';
 import 'widget/dict_algo_selector.dart';
@@ -19,9 +20,6 @@ class DictionaryPage extends StatefulWidget {
 
 class _DictionaryPageState extends State<DictionaryPage>
     with AutomaticKeepAliveClientMixin {
-  final List<String> _words = [];
-  String _lastWord = "";
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -47,15 +45,12 @@ class _DictionaryPageState extends State<DictionaryPage>
       body: ChangeNotifierProvider<DictionaryController>(
         create: (context) => DictionaryController(
           context: context,
+          dictionaryRepository: DictionaryDatabaseRepository(DatabaseHelper()),
+          dictionaryHistoryRepository: DictionaryHistoryDatabaseRepository(
+            dbh: DatabaseHelper(),
+          ),
         )..onLoad(),
         child: Consumer<DictionaryController>(builder: (context, dc, __) {
-          if (dc.lookupWord != null) {
-            if (dc.lookupWord != _lastWord) {
-              _words.add(dc.lookupWord!);
-              _lastWord = dc.lookupWord!;
-              // debugPrint(" added words:  ${_words.toString()}");
-            }
-          } // if not null
           return Padding(
             padding: const EdgeInsets.all(8),
             child: Column(children: [
@@ -66,23 +61,8 @@ class _DictionaryPageState extends State<DictionaryPage>
                   IconButton(
                     padding: EdgeInsets.zero,
                     icon: const Icon(Icons.arrow_back, color: Colors.black),
-                    onPressed: () {
-                      if (_words.isNotEmpty) {
-                        // i think this should be handled by the state, but I'm
-                        // sure the notifier is always the same object, so I
-                        // handle here in the ui.
-
-                        //the last -1 item is shown.. so need to go -2
-                        int index = _words.length - 2;
-                        // don't go beyond
-                        index = (index < 0) ? 0 : index;
-                        // save that word
-                        _lastWord = _words[index];
-                        _words.removeLast(); // remove from list
-                        dc.onWordClicked(_lastWord);
-                        //debugPrint("onpressed:  _words:  ${_words.toString()}");
-                      }
-                    },
+                    onPressed: () =>
+                      dc.onClickedPrevious(),
                   ),
                   const DictionaryAlgorithmModeView(),
                 ],
@@ -127,9 +107,9 @@ class _DictionaryPageState extends State<DictionaryPage>
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
                           final dictHistory = snapshot.data![index];
-                          String s = dictHistory.date;
-                          String sFormattedDate =
-                              "${s.substring(6, 8)}/${s.substring(4, 6)}/${s.substring(0, 4)}";
+                          // String s = dictHistory.date;
+                          // String sFormattedDate =
+                          //     "${s.substring(6, 8)}/${s.substring(4, 6)}/${s.substring(0, 4)}";
 
                           return Card(
                             child: ListTile(

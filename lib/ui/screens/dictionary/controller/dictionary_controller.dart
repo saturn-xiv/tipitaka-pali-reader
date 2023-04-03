@@ -1,11 +1,13 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../business_logic/models/definition.dart';
 import '../../../../business_logic/models/dictionary_history.dart';
 import '../../../../services/database/database_helper.dart';
 import '../../../../services/database/dictionary_service.dart';
+import '../../../../services/repositories/dictionary_history_repo.dart';
 import '../../../../services/repositories/dictionary_repo.dart';
 import 'dictionary_state.dart';
 import 'package:flutter/services.dart';
@@ -23,12 +25,12 @@ extension ParseToString on DictAlgorithm {
 }
 
 class DictionaryController with ChangeNotifier {
-  String? _lookupWord = '';
-  String? get lookupWord => _lookupWord;
+  final DictionaryHistoryRepository dictionaryHistoryRepository;
+  final DictionaryRepository dictionaryRepository;
+
+  String _currentlookupWord = '';
+  String get lookupWord => _currentlookupWord;
   BuildContext context;
-  List<String> words = [];
-  String lastWord = "";
-  int wordIndex = 0;
 
   DictionaryState _dictionaryState = const DictionaryState.initial();
   DictionaryState get dictionaryState => _dictionaryState;
@@ -38,14 +40,28 @@ class DictionaryController with ChangeNotifier {
 
   // TextEditingController textEditingController = TextEditingController();
 
-  DictionaryController({required this.context, String? lookupWord})
-      : _lookupWord = lookupWord;
+  final ValueNotifier<List<DictionaryHistory>> _histories =
+      ValueNotifier<List<DictionaryHistory>>([]);
+  ValueListenable<List<DictionaryHistory>> get histories => _histories;
+
+  DictionaryController({
+    required this.context,
+    required this.dictionaryHistoryRepository,
+    required this.dictionaryRepository,
+    String? lookupWord,
+  }) : _currentlookupWord = lookupWord ?? '';
 
   void onLoad() {
     debugPrint('init dictionary controller');
     globalLookupWord.addListener(_lookupWordListener);
 
-    if (_lookupWord != null) {
+    // load history
+    dictionaryHistoryRepository.getAll().then((values) {
+      values.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+      _histories.value = [...values];
+    });
+
+    if (_currentlookupWord.isNotEmpty) {
       _lookupDefinition();
     }
   }
@@ -59,8 +75,8 @@ class DictionaryController with ChangeNotifier {
 
   void _lookupWordListener() {
     if (globalLookupWord.value != null) {
-      _lookupWord = globalLookupWord.value;
-      debugPrint('lookup word: $_lookupWord');
+      _currentlookupWord = globalLookupWord.value ?? '';
+      debugPrint('lookup word: $_currentlookupWord');
       _lookupDefinition();
     }
   }
@@ -68,17 +84,23 @@ class DictionaryController with ChangeNotifier {
   Future<void> _lookupDefinition() async {
     _dictionaryState = const DictionaryState.loading();
     notifyListeners();
-    if (_lookupWord == null) {
+    if (_currentlookupWord.isEmpty) {
       return;
     }
     // loading definitions
-    final definition = await loadDefinition(_lookupWord!);
+    final definition = await loadDefinition(_currentlookupWord!);
     if (definition.isEmpty) {
       _dictionaryState = const DictionaryState.noData();
       notifyListeners();
     } else {
       _dictionaryState = DictionaryState.data(definition);
       notifyListeners();
+      // save to history
+      if (!isContainInHistories(_histories.value, _currentlookupWord)) {
+        await dictionaryHistoryRepository.insert(_currentlookupWord);
+        // refresh histories
+        _histories.value = [...await dictionaryHistoryRepository.getAll()];
+      }
     }
   }
 
@@ -112,7 +134,7 @@ class DictionaryController with ChangeNotifier {
     debugPrint('compute time: $differnt');
 
     final dp = DictionaryDatabaseRepository(DatabaseHelper());
-    final dh = DictionaryHistory(word: word);
+    // final dh = DictionaryHistory(word: word);
     //await dp.insertOrReplace(dh);
     // Todo removed for release.  fix later.
 
@@ -245,11 +267,17 @@ class DictionaryController with ChangeNotifier {
   }
 
   Future<void> onLookup(String word) async {
-    _lookupWord = word;
+    _currentlookupWord = word;
     _lookupDefinition();
   }
 
-  Future<List<String>> getSuggestions(String word) {
+  void onInputIsEmpty() {
+    _currentlookupWord = '';
+    _dictionaryState = const DictionaryState.initial();
+    notifyListeners();
+  }
+
+  Future<List<String>> getSuggestions(String word) async {
     return DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()))
         .getSuggestions(word);
   }
@@ -309,9 +337,36 @@ class DictionaryController with ChangeNotifier {
     word = _romoveNonCharacter(word);
 
     word = word.toLowerCase();
-    _lookupWord = word;
+    _currentlookupWord = word;
 
     _lookupDefinition();
+  }
+
+  void onClickedPrevious() {
+    if (_histories.value.isEmpty) {
+      return;
+    }
+    final index = _getIndex(_histories.value, _currentlookupWord);
+    print('current index: $index');
+    if (index == -1) {
+      return;
+    }
+
+    if (index + 1 < _histories.value.length) {
+      print('histories count: ${_histories.value.length}');
+      print('current word: $_currentlookupWord');
+      _currentlookupWord = _histories.value[index + 1].word;
+      print('previous word: $_currentlookupWord');
+      _lookupDefinition();
+    }
+  }
+
+  Future<void> onDelete(String word) async {
+    await dictionaryHistoryRepository.delete(word);
+    final histories = await dictionaryHistoryRepository.getAll();
+    histories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+    _histories.value = [...histories];
+    _dictionaryState = const DictionaryState.initial();
   }
 
   String _romoveNonCharacter(String word) {
@@ -328,5 +383,29 @@ class DictionaryController with ChangeNotifier {
     }
     word.trim();
     return word;
+  }
+
+  int _getIndex(List<DictionaryHistory> histories, String word) {
+    if (histories.isEmpty) return -1;
+    histories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+    for (int i = 0; i < histories.length; i++) {
+      if (histories[i].word == word) {
+        return i;
+      }
+    }
+    // not found
+    return -1;
+  }
+
+  bool isContainInHistories(List<DictionaryHistory> histories, String word) {
+    if (histories.isEmpty) return false;
+    histories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+    for (int i = 0; i < histories.length; i++) {
+      if (histories[i].word == word) {
+        return true;
+      }
+    }
+    // not found
+    return false;
   }
 }

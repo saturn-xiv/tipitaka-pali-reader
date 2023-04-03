@@ -84,6 +84,8 @@ class _DictionarySearchFieldState extends State<DictionarySearchField> {
                 textEditingController.text = uniText;
                 textEditingController.selection = TextSelection.fromPosition(
                     TextPosition(offset: pos + uniTextlen - origTextLen));
+              } else {
+                context.read<DictionaryController>().onInputIsEmpty();
               }
             }),
         suggestionsCallback: (text) async {

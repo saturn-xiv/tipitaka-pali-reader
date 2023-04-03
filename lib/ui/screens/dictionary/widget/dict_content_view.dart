@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
+import 'package:tipitaka_pali/ui/screens/dictionary/widget/dictionary_history_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../services/prefs.dart';
@@ -18,7 +19,17 @@ class DictionaryContentView extends StatelessWidget {
         (controller) => controller.dictionaryState);
 
     return state.when(
-        initial: () => Container(),
+        initial: () => ValueListenableBuilder(
+            valueListenable: context.read<DictionaryController>().histories,
+            builder: (_, histories, __) {
+              return DictionaryHistoryView(
+                histories: histories,
+                onClick: (word) =>
+                    context.read<DictionaryController>().onWordClicked(word),
+                onDelete: (word) =>
+                    context.read<DictionaryController>().onDelete(word),
+              );
+            }),
         loading: () => const SizedBox(
             height: 100, child: Center(child: CircularProgressIndicator())),
         data: (content) => SingleChildScrollView(
