@@ -24,34 +24,29 @@ class _DictionaryPageState extends State<DictionaryPage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dictionary'),
-        actions: [
-          /*
-          IconButton(
-            icon: Icon(
-              Icons.history,
-              color: Theme.of(context).appBarTheme.foregroundColor,
-            ),
-            onPressed: () async {
-              await _showDictionaryHistoryDlg(context);
-            },
-            
+    return ChangeNotifierProvider<DictionaryController>(
+      create: (context) => DictionaryController(
+        context: context,
+        dictionaryRepository: DictionaryDatabaseRepository(DatabaseHelper()),
+        dictionaryHistoryRepository: DictionaryHistoryDatabaseRepository(
+          dbh: DatabaseHelper(),
+        ),
+      )..onLoad(),
+      child: Consumer<DictionaryController>(builder: (context, dc, __) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Dictionary'),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.history,
+                  color: Theme.of(context).appBarTheme.foregroundColor,
+                ),
+                onPressed: dc.onClickedHistoryButton,
+              ),
+            ],
           ),
-        */
-        ],
-      ),
-      body: ChangeNotifierProvider<DictionaryController>(
-        create: (context) => DictionaryController(
-          context: context,
-          dictionaryRepository: DictionaryDatabaseRepository(DatabaseHelper()),
-          dictionaryHistoryRepository: DictionaryHistoryDatabaseRepository(
-            dbh: DatabaseHelper(),
-          ),
-        )..onLoad(),
-        child: Consumer<DictionaryController>(builder: (context, dc, __) {
-          return Padding(
+          body: Padding(
             padding: const EdgeInsets.all(8),
             child: Column(children: [
               Row(
@@ -61,8 +56,7 @@ class _DictionaryPageState extends State<DictionaryPage>
                   IconButton(
                     padding: EdgeInsets.zero,
                     icon: const Icon(Icons.arrow_back, color: Colors.black),
-                    onPressed: () =>
-                      dc.onClickedPrevious(),
+                    onPressed: () => dc.onClickedPrevious(),
                   ),
                   const DictionaryAlgorithmModeView(),
                 ],
@@ -70,9 +64,9 @@ class _DictionaryPageState extends State<DictionaryPage>
               const SizedBox(height: 4), // padding
               const Expanded(child: DictionaryContentView()),
             ]),
-          );
-        }),
-      ),
+          ),
+        );
+      }),
     );
   }
 

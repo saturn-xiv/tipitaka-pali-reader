@@ -408,4 +408,10 @@ class DictionaryController with ChangeNotifier {
     // not found
     return false;
   }
+
+  void onClickedHistoryButton() {
+    _currentlookupWord = '';
+    _dictionaryState = const DictionaryState.initial();
+    notifyListeners();
+  }
 }
