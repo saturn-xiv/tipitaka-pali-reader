@@ -33,7 +33,14 @@ class SearchSuggestionDatabaseRepository implements SearchSuggestionRepository {
   Future<List<SearchSuggestion>> _getSuggestionsFromDB(
       String filterWord, isFuzzy) async {
     final db = await databaseProvider.database;
-    String searchField = (isFuzzy) ? "plain" : "word";
+    String searchField = "word";
+
+    // change some params for the query based on fuzzy
+    if (isFuzzy) {
+      // convert to plain so search field matches
+      filterWord = _toPlain(filterWord);
+      searchField = "plain";
+    }
     String sql =
         "SELECT word, plain, frequency FROM words WHERE $searchField LIKE '$filterWord%' ORDER BY LENGTH(word), word ASC LIMIT 100;";
 
