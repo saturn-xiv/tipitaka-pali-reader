@@ -1,18 +1,30 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:tipitaka_pali/app.dart';
+import 'package:tipitaka_pali/business_logic/models/search_history.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:tipitaka_pali/services/repositories/search_history_repo.dart';
 import 'package:tipitaka_pali/ui/screens/home/search_page/search_page.dart';
 import 'package:tipitaka_pali/utils/pali_script.dart';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 import 'package:tipitaka_pali/utils/script_detector.dart';
 
-import '../../routes.dart';
 import '../../services/search_service.dart';
 import '../models/search_suggestion.dart';
 
 class SearchPageViewModel extends ChangeNotifier {
-  final List<SearchSuggestion> _suggestions = [];
-  List<SearchSuggestion> get suggestions => _suggestions;
+  final SearchHistoryRepository searchHistoryRepository;
+  SearchPageViewModel({
+    required this.searchHistoryRepository,
+  });
+
+  final ValueNotifier<bool> _isSearching = ValueNotifier<bool>(false);
+  ValueNotifier<bool> get isSearching => _isSearching;
+
+  final _suggestions = ValueNotifier<List<SearchSuggestion>>([]);
+  ValueListenable<List<SearchSuggestion>> get suggestions => _suggestions;
+
+  final _histories = ValueNotifier<List<SearchHistory>>([]);
+  ValueListenable<List<SearchHistory>> get histories => _histories;
 
   late QueryMode _queryMode;
   QueryMode get queryMode => _queryMode;
@@ -20,9 +32,8 @@ class SearchPageViewModel extends ChangeNotifier {
   late int _wordDistance;
   int get wordDistance => _wordDistance;
 
-  bool isSearching = false;
-  bool _isFirstWord = true;
-  bool get isFirstWord => _isFirstWord;
+  String _userInput = '';
+  bool get isFirstWord => _userInput.split(' ').length == 1;
   bool _isFuzzy = false;
   set isFuzzy(bool fz) {
     _isFuzzy = fz;
@@ -33,16 +44,23 @@ class SearchPageViewModel extends ChangeNotifier {
     _queryMode = QueryMode.values[index];
     _wordDistance = Prefs.wordDistance;
     isFuzzy = Prefs.isFuzzy;
+    // load histories
+    searchHistoryRepository.getAll().then((value) {
+      value.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+      _histories.value = [...value];
+    });
   }
 
   Future<void> onTextChanged(String filterWord) async {
     filterWord = filterWord.trim();
     if (filterWord.isEmpty) {
-      suggestions.clear();
-      notifyListeners();
+      isSearching.value = false;
+      _suggestions.value = [];
+      // notifyListeners();
       return;
     }
     // loading suggested words
+    isSearching.value = true;
     final inputScriptLanguage = ScriptDetector.getLanguage(filterWord);
     myLogger.i('input language is $inputScriptLanguage');
 
@@ -52,37 +70,23 @@ class SearchPageViewModel extends ChangeNotifier {
           script: inputScriptLanguage, text: filterWord);
     }
     myLogger.i('searchword in roman: $filterWord');
+    _userInput = filterWord; // cache the user input
     final words = filterWord.split(' ');
-    if (words.length == 1) {
-      _isFirstWord = true;
-    } else {
-      _isFirstWord = false;
-    }
-    // print('is first word: $_isFirstWord');
-    _suggestions.clear();
-    _suggestions
-        .addAll(await SearchService.getSuggestions(words.last, _isFuzzy));
-    notifyListeners();
+    _suggestions.value = [
+      ...await SearchService.getSuggestions(words.last, _isFuzzy)
+    ];
+    // notifyListeners();
   }
 
-  Future<void> clearSuggestions() async {
-    suggestions.clear();
-    notifyListeners();
-  }
-
-  void onSubmmited(BuildContext context, String searchWord, QueryMode queryMode,
-      int wordDistance) {
-    final inputScriptLanguage = ScriptDetector.getLanguage(searchWord);
-    if (inputScriptLanguage != Script.roman) {
-      searchWord = PaliScript.getRomanScriptFrom(
-          script: inputScriptLanguage, text: searchWord);
+  void onSubmmited(String searchWord) async {
+    _userInput = searchWord;
+    // save search
+    if (!isContainInHistories(_histories.value, searchWord)) {
+      await searchHistoryRepository.insert(searchWord);
+      final histories = await searchHistoryRepository.getAll();
+      histories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+      _histories.value = [...histories];
     }
-
-    Navigator.pushNamed(context, searchResultRoute, arguments: {
-      'searchWord': searchWord,
-      'queryMode': queryMode,
-      'wordDistance': wordDistance
-    });
   }
 
   void onQueryModeChanged(QueryMode queryMode) {
@@ -113,5 +117,24 @@ class SearchPageViewModel extends ChangeNotifier {
     _wordDistance = wordDistance;
     Prefs.wordDistance = wordDistance;
     notifyListeners();
+  }
+
+  void onDeleteButtonClicked(String word) async {
+    await searchHistoryRepository.delete(word);
+    final histories = _histories.value;
+    histories.removeWhere((element) => element.word == word);
+    _histories.value = [...histories];
+  }
+
+  bool isContainInHistories(List<SearchHistory> histories, String word) {
+    if (histories.isEmpty) return false;
+    histories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+    for (int i = 0; i < histories.length; i++) {
+      if (histories[i].word == word) {
+        return true;
+      }
+    }
+    // not found
+    return false;
   }
 }

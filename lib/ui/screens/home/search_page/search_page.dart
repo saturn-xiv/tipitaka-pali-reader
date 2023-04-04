@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:tipitaka_pali/services/prefs.dart';
+import '../../../../services/database/database_helper.dart';
+import '../../../../services/prefs.dart';
+import '../../../../services/repositories/search_history_repo.dart';
+import 'search_history_view.dart';
+import 'search_suggestion_view.dart';
 
 import '../../../../business_logic/view_models/search_page_view_model.dart';
+import '../../../../inner_routes.dart';
+import '../../../../utils/pali_script.dart';
+import '../../../../utils/pali_script_converter.dart';
+import '../../../../utils/script_detector.dart';
 import '../widgets/search_bar.dart';
 import 'search_mode_view.dart';
-import 'suggestion_list_tile.dart';
 
 enum QueryMode { exact, prefix, distance, anywhere }
 
@@ -37,8 +44,12 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SearchPageViewModel>(
-        create: (_) => SearchPageViewModel()..init(),
-        child: Consumer<SearchPageViewModel>(builder: (context, vm, child) {
+        create: (_) => SearchPageViewModel(
+              searchHistoryRepository:
+                  SearchHistoryDatabaseRepository(dbh: DatabaseHelper()),
+            )..init(),
+        child: Builder(builder: (context) {
+          final vm = context.read<SearchPageViewModel>();
           return Scaffold(
               appBar: AppBar(
                 automaticallyImplyLeading: false,
@@ -47,15 +58,15 @@ class _SearchPageState extends State<SearchPage> {
               ),
               body: Column(
                 children: [
+                  // search bar
                   Row(
                     children: [
                       Expanded(
                         child: SearchBar(
                           hint: getHint(vm.queryMode),
                           controller: controller,
-                          onSubmitted: (searchWord) {
-                            vm.onSubmmited(context, searchWord, vm.queryMode,
-                                vm.wordDistance);
+                          onSubmitted: (value) {
+                            _onSubmitted(value, vm);
                           },
                           onTextChanged: vm.onTextChanged,
                         ),
@@ -84,6 +95,7 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ],
                   ),
+                  // search mode chooser view
                   AnimatedSize(
                     duration:
                         Duration(milliseconds: Prefs.animationSpeed.round()),
@@ -101,30 +113,38 @@ class _SearchPageState extends State<SearchPage> {
                         : const SizedBox.shrink(),
                   ),
                   // suggestion view
-                  Expanded(
-                      child: vm.suggestions.isEmpty
-                          ? _buildEmptyView(context)
-                          : ListView.separated(
-                              itemCount: vm.suggestions.length,
-                              itemBuilder: (_, index) => SuggestionListTile(
-                                suggestedWord: vm.suggestions[index].word,
-                                frequency: vm.suggestions[index].count,
-                                isFirstWord: vm.isFirstWord,
-                                onTap: () {
-                                  //
-                                  final inputText = controller.text;
-                                  final selectedWord =
-                                      vm.suggestions[index].word;
 
-                                  final words = inputText.split(' ');
-                                  words.last = selectedWord;
-                                  vm.onSubmmited(context, words.join(' '),
-                                      vm.queryMode, vm.wordDistance);
-                                },
-                              ),
-                              separatorBuilder: (_, __) =>
-                                  const Divider(height: 1),
-                            )),
+                  Expanded(
+                    child: ValueListenableBuilder(
+                        valueListenable: vm.isSearching,
+                        builder: (context, isSearching, child) {
+                          if (isSearching) {
+                            return ValueListenableBuilder(
+                                valueListenable: vm.suggestions,
+                                builder: (_, suggestions, __) {
+                                  return SearchSuggestionView(
+                                      suggestions: suggestions,
+                                      onClicked: (suggestion) {
+                                        String inputText = controller.text;
+                                        final words = inputText.split(' ');
+                                        words.last = suggestion.word;
+                                        inputText = words.join(' ');
+                                        _onSubmitted(inputText, vm);
+                                      });
+                                });
+                          }
+                          return ValueListenableBuilder(
+                              valueListenable: vm.histories,
+                              builder: (_, histories, __) {
+                                return SearchHistoryView(
+                                    histories: histories,
+                                    onClick: (value) {
+                                      _onSubmitted(value, vm);
+                                    },
+                                    onDelete: vm.onDeleteButtonClicked);
+                              });
+                        }),
+                  ),
                 ],
               ));
         }));
@@ -151,4 +171,19 @@ class _SearchPageState extends State<SearchPage> {
   //         return SearchModeView(mode: queryMode);
   //       });
   // }
+
+  void _onSubmitted(String searchWord, SearchPageViewModel vm) {
+    final inputScriptLanguage = ScriptDetector.getLanguage(searchWord);
+    if (inputScriptLanguage != Script.roman) {
+      searchWord = PaliScript.getRomanScriptFrom(
+          script: inputScriptLanguage, text: searchWord);
+    }
+    vm.onSubmmited(searchWord);
+    // open search results
+    Navigator.pushNamed(context, searchResultRoute, arguments: {
+      'searchWord': searchWord,
+      'queryMode': vm.queryMode,
+      'wordDistance': vm.wordDistance,
+    });
+  }
 }
