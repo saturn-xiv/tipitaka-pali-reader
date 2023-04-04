@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/business_logic/models/dictionary_history.dart';
+import 'package:tipitaka_pali/utils/pali_word.dart';
 
 enum DictionaryHistoryOrder { time, alphabetically }
 
@@ -29,7 +30,7 @@ class _DictionaryHistoryViewState extends State<DictionaryHistoryView> {
     histories = widget.histories;
   }
 
-@override
+  @override
   void didUpdateWidget(covariant DictionaryHistoryView oldWidget) {
     super.didUpdateWidget(oldWidget);
     histories = widget.histories;
@@ -40,8 +41,9 @@ class _DictionaryHistoryViewState extends State<DictionaryHistoryView> {
     if (widget.histories.isEmpty) {
       return const Center(child: Text('no history'));
     }
-    if (order == DictionaryHistoryOrder.time) {
-      widget.histories.sort((a, b) => a.word.compareTo(b.word));
+    if (order == DictionaryHistoryOrder.alphabetically) {
+      widget.histories.sort(
+          (a, b) => PaliWord.compare(a.word, b.word));
     } else {
       widget.histories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
     }
