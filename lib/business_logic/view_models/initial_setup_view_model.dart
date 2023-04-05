@@ -38,6 +38,8 @@ class InitialSetupViewModel extends ChangeNotifier {
 
     final recents = <Map<String, Object?>>[];
     final bookmarks = <Map<String, Object?>>[];
+    final dictionaryHistories = <Map<String, Object?>>[];
+    final searchHistories = <Map<String, Object?>>[];
     final dictionaries = <Map<String, Object?>>[];
 
     if (isUpdateMode) {
@@ -45,6 +47,19 @@ class InitialSetupViewModel extends ChangeNotifier {
       final DatabaseHelper databaseHelper = DatabaseHelper();
       recents.addAll(await databaseHelper.backup(tableName: 'recent'));
       bookmarks.addAll(await databaseHelper.backup(tableName: 'bookmark'));
+      // backup history to memory
+      try {
+        dictionaryHistories.addAll(
+            await databaseHelper.backup(tableName: 'dictionary_history'));
+        searchHistories
+            .addAll(await databaseHelper.backup(tableName: 'search_history'));
+      } on DatabaseException catch (e) {
+        // Todo: Handle the exception
+        debugPrint('SQLite exception: $e');
+      } catch (e) {
+        debugPrint('Exception: $e');
+      }
+
       //dictionaries
       //  .addAll(await databaseHelper.backup(tableName: 'dictionary_books'));
 
@@ -78,6 +93,18 @@ class InitialSetupViewModel extends ChangeNotifier {
       await databaseHelper.restore(tableName: 'bookmark', values: bookmarks);
     }
 
+// restore history from memory
+    try {
+      await databaseHelper.restore(
+          tableName: 'dictionary_history', values: dictionaryHistories);
+      await databaseHelper.restore(
+          tableName: 'search_history', values: searchHistories);
+    } on DatabaseException catch (e) {
+      // Todo: Handle the exception
+      debugPrint('SQLite exception: $e');
+    } catch (e) {
+      debugPrint('Exception: $e');
+    }
     // dictionary_books table is semi-user data
     // need to delete before restoring
     if (dictionaries.isNotEmpty) {
