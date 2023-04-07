@@ -35,7 +35,7 @@ const String isFuzzyPref = "isFuzzy";
 
 // default pref values
 const int defaultLocaleVal = 0;
-const int defaultThemeIndex = 24;
+const int defaultThemeIndex = 12;
 const bool defaultDarkThemeOn = false;
 //ToDo something is not right with release and font size
 const int defaultReaderFontSize = 14;
