@@ -8,8 +8,9 @@ import '../../../services/dao/bookmark_dao.dart';
 import '../../../services/database/database_helper.dart';
 import '../../../services/repositories/bookmark_repo.dart';
 import '../../dialogs/confirm_dialog.dart';
-import 'widgets/bookmark_list_tile.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../../services/provider/script_language_provider.dart';
+import '../../../../utils/pali_script.dart';
 
 class BookmarkPage extends StatelessWidget {
   const BookmarkPage({Key? key}) : super(key: key);
@@ -31,19 +32,46 @@ class BookmarkPage extends StatelessWidget {
                     itemCount: bookmarks.length,
                     itemBuilder: (context, index) {
                       final bookmark = bookmarks[index];
-                      return BookmarkListTile(
-                        bookmark: bookmark,
-                        onTap: (bookmark) => vm.openBook(bookmark, context),
-                        onDelete: (bookmark) => vm.delete(bookmark),
+                      return ListTile(
+                        dense: true,
+                        title: Text(bookmark.note),
+                        subtitle: Text(localScript(context,
+                            "${bookmark.bookName}  --  ${bookmark.pageNumber.toString()}")),
+                        onTap: () => vm.openBook(bookmark, context),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              tooltip:
+                                  AppLocalizations.of(context)!.shareThisNote,
+                              onPressed: () {
+                                Share.share(bookmark.toString(),
+                                    subject: AppLocalizations.of(context)!
+                                        .shareTitle);
+                              },
+                              icon: const Icon(Icons.share),
+                            ),
+                            IconButton(
+                              onPressed: () => vm.delete(bookmark),
+                              icon: const Icon(Icons.delete),
+                            ),
+                          ],
+                        ),
                       );
                     },
-                    separatorBuilder: (_, __) {
-                      return const Divider(color: Colors.grey);
-                    });
+                    separatorBuilder: (context, index) =>
+                        const Divider(height: 1),
+                  );
           },
         ),
       ),
     );
+  }
+
+  String localScript(BuildContext context, String s) {
+    return PaliScript.getScriptOf(
+        script: context.read<ScriptLanguageProvider>().currentScript,
+        romanText: s);
   }
 }
 
@@ -56,6 +84,7 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(AppLocalizations.of(context)!.bookmark),
       actions: [
         IconButton(
+            tooltip: AppLocalizations.of(context)!.shareAllNotes,
             icon: const Icon(Icons.share),
             onPressed: () async {
               String bookMarkText = "";
@@ -64,7 +93,8 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
               for (var book in bookmarks) {
                 bookMarkText += book.toString();
               }
-              Share.share(bookMarkText, subject: 'TPR Bookmarks and Notes');
+              Share.share(bookMarkText,
+                  subject: AppLocalizations.of(context)!.shareAllNotes);
             }),
         IconButton(
             icon: const Icon(Icons.delete),

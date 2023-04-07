@@ -33,7 +33,7 @@ class BookmarkPageViewModel extends ChangeNotifier {
   }
 
   void openBook(Bookmark bookmark, BuildContext context) async {
-    final book = Book(id: bookmark.bookID, name: bookmark.bookName!);
+    final book = Book(id: bookmark.bookID, name: bookmark.bookName);
     final openningBookProvider = context.read<OpenningBooksProvider>();
     openningBookProvider.add(book: book, currentPage: bookmark.pageNumber);
 

@@ -1,9 +1,11 @@
 class Bookmark {
-  String bookID;
-  int pageNumber;
-  String note;
-  String? bookName;
-  Bookmark(this.bookID, this.pageNumber, this.note, [this.bookName]);
+  final String bookID;
+  final int pageNumber;
+  final String note;
+  final String bookName;
+
+  Bookmark(this.bookID, this.pageNumber, this.note, [String? bookName])
+      : bookName = bookName ?? 'Unknown';
 
   @override
   String toString() {
@@ -11,7 +13,6 @@ class Bookmark {
               bookName: $bookName
               pageNumber: $pageNumber
               note: $note
-
     ''';
   }
 }

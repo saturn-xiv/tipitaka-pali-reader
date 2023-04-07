@@ -7,7 +7,8 @@ import '../../../services/dao/recent_dao.dart';
 import '../../../services/database/database_helper.dart';
 import '../../../services/repositories/recent_repo.dart';
 import '../../dialogs/confirm_dialog.dart';
-import 'widgets/recent_list_tile.dart';
+import '../../../../services/provider/script_language_provider.dart';
+import '../../../../utils/pali_script.dart';
 
 class RecentPage extends StatelessWidget {
   const RecentPage({Key? key}) : super(key: key);
@@ -28,18 +29,30 @@ class RecentPage extends StatelessWidget {
                   itemCount: recents.length,
                   itemBuilder: (context, index) {
                     final recent = recents[index];
-                    return RecentListTile(
-                      recent: recent,
-                      onTap: (recent) => vm.openBook(recent, context),
-                      onDelete: (recent) => vm.delete(recent),
+                    return ListTile(
+                      dense: true,
+                      leading: Text(localScript(context, "${recent.bookName}")),
+                      title: Text(
+                          "${AppLocalizations.of(context)!.page}: ${localScript(context, recent.pageNumber.toString())}"),
+                      onTap: () => vm.openBook(recent, context),
+                      trailing: IconButton(
+                        onPressed: () => vm.delete(recent),
+                        icon: const Icon(Icons.delete),
+                      ),
                     );
                   },
-                  separatorBuilder: (_, __) {
-                    return const Divider(color: Colors.grey);
-                  });
+                  separatorBuilder: (context, index) =>
+                      const Divider(height: 1),
+                );
         }),
       ),
     );
+  }
+
+  String localScript(BuildContext context, String s) {
+    return PaliScript.getScriptOf(
+        script: context.read<ScriptLanguageProvider>().currentScript,
+        romanText: s);
   }
 }
 

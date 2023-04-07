@@ -54,7 +54,7 @@ class GotoViewModel with ChangeNotifier {
   }
 
   bool isValidPageNumber(int pageNumber) {
-    return book.firstPage <= pageNumber && pageNumber <= book.lastPage!;
+    return book.firstPage <= pageNumber && pageNumber <= book.lastPage;
   }
 
   bool isValidParagraphNumber(int paragraphNumber) {
