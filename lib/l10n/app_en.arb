@@ -64,7 +64,10 @@
   "multiViewsMode":        "Multiple Views",
   "numVisibleViews":       "Visible Views",
   "extensions":             "Extensions",
-  "quickjump":              "Quick Jump"
+  "quickjump":              "Quick Jump",
+  "shareThisNote":          "Share this note",
+  "shareAllNotes":          "Share all notes",
+  "shareTitle":             "TPR Bookmark and Note"
 }
 
 
