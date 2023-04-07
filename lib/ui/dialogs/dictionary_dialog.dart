@@ -27,33 +27,34 @@ class DictionaryDialog extends StatelessWidget {
       child: Consumer<DictionaryController>(
         builder: (context, dc, __) {
           return Material(
-            child: Stack(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 56.0),
-                  child: DictionaryContentView(),
-                ),
-                Row(
+            child: 
+                Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(Icons.close, color: Colors.black),
-                      onPressed: () => Navigator.pop(context),
+                    Row(children: [
+                      IconButton(onPressed: ()=>Navigator.pop(context),  icon: const Icon(Icons.close,)),
+                      const Spacer(  ),
+                      IconButton(onPressed: dc.onClickedHistoryButton, icon: const Icon(Icons.history,)),
+                    ],),
+                    Row(
+                      children: [
+                        const Expanded(child: DictionarySearchField()),
+                        IconButton(
+                          padding: EdgeInsets.zero,
+                          icon: const Icon(Icons.arrow_back, color: Colors.black),
+                          onPressed: () => dc.onClickedPrevious(),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: DictionaryAlgorithmModeView(),
+                        ),
+                      ],
                     ),
-                    const Expanded(child: DictionarySearchField()),
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(Icons.arrow_back, color: Colors.black),
-                      onPressed: () => dc.onClickedPrevious(),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: DictionaryAlgorithmModeView(),
-                    ),
+                   const Expanded(child:  DictionaryContentView()),
                   ],
                 ),
-              ],
-            ),
+              
+            
           );
         },
       ),
