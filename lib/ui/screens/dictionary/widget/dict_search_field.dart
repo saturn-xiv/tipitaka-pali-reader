@@ -20,6 +20,7 @@ class DictionarySearchField extends StatefulWidget {
 class _DictionarySearchFieldState extends State<DictionarySearchField> {
   late final TextEditingController textEditingController;
   late final DictionaryController dictionaryController;
+  ValueNotifier<bool> showClearButton = ValueNotifier<bool>(true);
 
   @override
   void initState() {
@@ -37,6 +38,11 @@ class _DictionarySearchFieldState extends State<DictionarySearchField> {
       textEditingController.text = '';
     }
     dictionaryController.addListener(_lookUpWordListener);
+    textEditingController.addListener(_onTextChanged);
+  }
+
+  void _onTextChanged() {
+    showClearButton.value = textEditingController.text.isNotEmpty;
   }
 
   @override
@@ -62,11 +68,27 @@ class _DictionarySearchFieldState extends State<DictionarySearchField> {
         textFieldConfiguration: TextFieldConfiguration(
             autocorrect: false,
             controller: textEditingController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(16)),
               ),
-              contentPadding: EdgeInsets.symmetric(horizontal: 4),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+              suffixIcon: ValueListenableBuilder(
+                  valueListenable: showClearButton,
+                  builder: (context, isVisible, _) {
+                    return Visibility(
+                        visible: isVisible,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: IconButton(
+                            onPressed: () {
+                              textEditingController.clear();
+                              dictionaryController.onClickedHistoryButton();
+                            },
+                            icon: const Icon(Icons.clear),
+                          ),
+                        ));
+                  }),
             ),
             onSubmitted: context.read<DictionaryController>().onLookup,
             onChanged: (text) {
