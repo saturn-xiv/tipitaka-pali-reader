@@ -17,44 +17,51 @@ class DictionaryDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<DictionaryController>(
-      create: (context) =>
-          DictionaryController(context: context,
-                    dictionaryRepository: DictionaryDatabaseRepository(DatabaseHelper()),
+      create: (context) => DictionaryController(
+          context: context,
+          dictionaryRepository: DictionaryDatabaseRepository(DatabaseHelper()),
           dictionaryHistoryRepository: DictionaryHistoryDatabaseRepository(
             dbh: DatabaseHelper(),
           ),
-           lookupWord: word)..onLoad(),
+          lookupWord: word)
+        ..onLoad(),
       child: Consumer<DictionaryController>(
         builder: (context, dc, __) {
           return Material(
-            child: 
-                Column(
-                  mainAxisSize: MainAxisSize.min,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
                   children: [
-                    Row(children: [
-                      IconButton(onPressed: ()=>Navigator.pop(context),  icon: const Icon(Icons.close,)),
-                      const Spacer(  ),
-                      IconButton(onPressed: dc.onClickedHistoryButton, icon: const Icon(Icons.history,)),
-                    ],),
-                    Row(
-                      children: [
-                        const Expanded(child: DictionarySearchField()),
-                        IconButton(
-                          padding: EdgeInsets.zero,
-                          icon: const Icon(Icons.arrow_back, color: Colors.black),
-                          onPressed: () => dc.onClickedPrevious(),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: DictionaryAlgorithmModeView(),
-                        ),
-                      ],
+                    IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close)),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios),
+                      onPressed: () => dc.onClickedPrevious(),
                     ),
-                   const Expanded(child:  DictionaryContentView()),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_forward_ios),
+                      onPressed: () => dc.onClickedPrevious(),
+                    ),
+                    IconButton(
+                        onPressed: dc.onClickedHistoryButton,
+                        icon: const Icon(Icons.history)),
                   ],
                 ),
-              
-            
+                Row(
+                  children: const [
+                    Expanded(child: DictionarySearchField()),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: DictionaryAlgorithmModeView(),
+                    ),
+                  ],
+                ),
+                const Expanded(child: DictionaryContentView()),
+              ],
+            ),
           );
         },
       ),

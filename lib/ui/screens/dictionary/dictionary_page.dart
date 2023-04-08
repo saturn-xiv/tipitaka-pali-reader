@@ -38,10 +38,15 @@ class _DictionaryPageState extends State<DictionaryPage>
             title: const Text('Dictionary'),
             actions: [
               IconButton(
-                icon: Icon(
-                  Icons.history,
-                  color: Theme.of(context).appBarTheme.foregroundColor,
-                ),
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () => dc.onClickedPrevious(),
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_forward_ios),
+                onPressed: () => dc.onClickedPrevious(),
+              ),
+              IconButton(
+                icon: const Icon(Icons.history),
                 onPressed: dc.onClickedHistoryButton,
               ),
             ],
@@ -50,15 +55,10 @@ class _DictionaryPageState extends State<DictionaryPage>
             padding: const EdgeInsets.all(8),
             child: Column(children: [
               Row(
-                children: [
-                  const Expanded(child: DictionarySearchField()),
-                  const SizedBox(width: 8), // padding
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: const Icon(Icons.arrow_back, color: Colors.black),
-                    onPressed: () => dc.onClickedPrevious(),
-                  ),
-                  const DictionaryAlgorithmModeView(),
+                children: const [
+                  Expanded(child: DictionarySearchField()),
+                  SizedBox(width: 8), // padding
+                  DictionaryAlgorithmModeView(),
                 ],
               ),
               const SizedBox(height: 4), // padding

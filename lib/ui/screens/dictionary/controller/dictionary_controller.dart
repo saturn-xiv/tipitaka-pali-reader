@@ -347,20 +347,30 @@ class DictionaryController with ChangeNotifier {
       return;
     }
     final index = _getIndex(_histories.value, _currentlookupWord);
-    print('current index: $index');
     if (index == -1) {
       return;
     }
 
     if (index + 1 < _histories.value.length) {
-      print('histories count: ${_histories.value.length}');
-      print('current word: $_currentlookupWord');
       _currentlookupWord = _histories.value[index + 1].word;
-      print('previous word: $_currentlookupWord');
       _lookupDefinition();
     }
   }
 
+void onClickedForward() {
+      if (_histories.value.isEmpty) {
+      return;
+    }
+    final index = _getIndex(_histories.value, _currentlookupWord);
+    if (index == _histories.value.length) {
+      return;
+    }
+
+    if (index - 1 <= 0) {
+      _currentlookupWord = _histories.value[index - 1].word;
+      _lookupDefinition();
+    }
+}
   Future<void> onDelete(String word) async {
     await dictionaryHistoryRepository.delete(word);
     final histories = await dictionaryHistoryRepository.getAll();
