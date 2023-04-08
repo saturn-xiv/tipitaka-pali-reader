@@ -20,7 +20,7 @@ class DictionarySearchField extends StatefulWidget {
 class _DictionarySearchFieldState extends State<DictionarySearchField> {
   late final TextEditingController textEditingController;
   late final DictionaryController dictionaryController;
-  ValueNotifier<bool> showClearButton = ValueNotifier<bool>(true);
+  ValueNotifier<bool> showClearButton = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -83,7 +83,7 @@ class _DictionarySearchFieldState extends State<DictionarySearchField> {
                           child: IconButton(
                             onPressed: () {
                               textEditingController.clear();
-                              dictionaryController.onClickedHistoryButton();
+                              // dictionaryController.onClickedHistoryButton();
                             },
                             icon: const Icon(Icons.clear),
                           ),
