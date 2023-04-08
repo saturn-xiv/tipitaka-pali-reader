@@ -43,7 +43,7 @@ class DictionaryDialog extends StatelessWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.arrow_forward_ios),
-                      onPressed: () => dc.onClickedPrevious(),
+                      onPressed: () => dc.onClickedForward(),
                     ),
                     IconButton(
                         onPressed: dc.onClickedHistoryButton,

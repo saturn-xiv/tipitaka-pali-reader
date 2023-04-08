@@ -1,12 +1,17 @@
-# this script will extract wordlist from pali canon and
-# add these wordlist to sqlite database
-# table name for wordlist : words
-# columns : word , frequency
-
-
 import os
 import sqlite3
 import re
+
+final_variations = {
+  'a': re.compile(r'ā'),
+  'u': re.compile(r'ū'),
+  't': re.compile(r'ṭ'),
+  'n': re.compile(r'[ñṇṅ]'),
+  'i': re.compile(r'ī'),
+  'd': re.compile(r'ḍ'),
+  'l': re.compile(r'ḷ'),
+  'm': re.compile(r'[ṁṃ]')
+}
 
 def cleanhtml(raw_html):
     re_html = re.compile('<[^>]*>')
@@ -18,6 +23,11 @@ def cleanWord(word):
     clean_word = re.sub(re_token, '', word)
     return clean_word
 
+def _toPlain(word):
+    plain = word.lower().strip()
+    for key, value in final_variations.items():
+        plain = value.sub(key, plain)
+    return plain
 
 words = {}
 
@@ -28,8 +38,8 @@ print('building wordlist ...\nplease wait a moment ...')
 conn = sqlite3.connect(dbfile)
 cursor = conn.cursor()
 
-cursor.execute('DROP TABLE words')
-cursor.execute('CREATE TABLE "words" ("word" TEXT, "frequency" INTEGER)')
+cursor.execute('DROP TABLE IF EXISTS words')
+cursor.execute('CREATE TABLE words (word TEXT, plain TEXT, frequency INTEGER)')
 cursor.execute('SELECT rowid, content FROM pages')
 rows = cursor.fetchall()
 
@@ -41,15 +51,17 @@ for row in rows:
 
     for idx, word in enumerate(wordlist):
         word = cleanWord(word)
-        if(len(word) > 0):
+        if len(word) > 0:
+            plain_word = _toPlain(word)
             if word in words:
-                words[word] += 1
+                words[word]['frequency'] += 1
             else:
-                words[word] = 1
+                words[word] = {'plain': plain_word, 'frequency': 1}
 
 for key, value in words.items():
-    cursor.execute(f"insert into words (word, frequency) values ('{key}','{value}')")
+    cursor.execute(f"INSERT INTO words (word, plain, frequency) VALUES ('{key}', '{value['plain']}', {value['frequency']})")
+
 conn.commit()
 conn.close()
 
-print('sucessfully create word list table')
+print('successfully created word list table')

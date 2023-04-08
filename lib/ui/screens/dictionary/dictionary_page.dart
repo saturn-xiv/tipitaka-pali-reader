@@ -43,7 +43,7 @@ class _DictionaryPageState extends State<DictionaryPage>
               ),
               IconButton(
                 icon: const Icon(Icons.arrow_forward_ios),
-                onPressed: () => dc.onClickedPrevious(),
+                onPressed: () => dc.onClickedForward(),
               ),
               IconButton(
                 icon: const Icon(Icons.history),

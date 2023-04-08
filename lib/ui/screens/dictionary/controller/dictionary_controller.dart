@@ -357,8 +357,8 @@ class DictionaryController with ChangeNotifier {
     }
   }
 
-void onClickedForward() {
-      if (_histories.value.isEmpty) {
+  void onClickedForward() {
+    if (_histories.value.isEmpty) {
       return;
     }
     final index = _getIndex(_histories.value, _currentlookupWord);
@@ -366,11 +366,12 @@ void onClickedForward() {
       return;
     }
 
-    if (index - 1 <= 0) {
+    if (index - 1 >= 0) {
       _currentlookupWord = _histories.value[index - 1].word;
       _lookupDefinition();
     }
-}
+  }
+
   Future<void> onDelete(String word) async {
     await dictionaryHistoryRepository.delete(word);
     final histories = await dictionaryHistoryRepository.getAll();
