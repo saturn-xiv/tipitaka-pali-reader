@@ -55,6 +55,24 @@ class _SearchPageState extends State<SearchPage> {
                 automaticallyImplyLeading: false,
                 title: Text(AppLocalizations.of(context)!.search),
                 centerTitle: true,
+                actions: [
+                  FilterChip(
+                      label: Text(
+                        'Fuzzy',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      selected: Prefs.isFuzzy,
+                      onSelected: (value) {
+                        setState(() {
+                          Prefs.isFuzzy = !Prefs.isFuzzy;
+                          vm.isFuzzy = Prefs.isFuzzy;
+                          vm.onTextChanged(controller.text);
+                        });
+                      }),
+                  const SizedBox(
+                    width: 8,
+                  )
+                ],
               ),
               body: Column(
                 children: [
@@ -71,20 +89,24 @@ class _SearchPageState extends State<SearchPage> {
                           onTextChanged: vm.onTextChanged,
                         ),
                       ),
+                      // IconButton(
+                      //   padding: EdgeInsets.zero,
+                      //   constraints: BoxConstraints(),
+                      //   icon: Prefs.isFuzzy
+                      //       ? Icon(Icons.lens_blur)
+                      //       : Icon(Icons.lens_outlined),
+                      //   onPressed: () {
+                      //     setState(() {
+                      //       Prefs.isFuzzy = !Prefs.isFuzzy;
+                      //       vm.isFuzzy = Prefs.isFuzzy;
+                      //       vm.onTextChanged(controller.text);
+                      //     });
+                      //   },
+                      //   tooltip: "Fuzzy Search",
+                      // ),
                       IconButton(
-                        icon: Prefs.isFuzzy
-                            ? Icon(Icons.lens_blur)
-                            : Icon(Icons.lens_outlined),
-                        onPressed: () {
-                          setState(() {
-                            Prefs.isFuzzy = !Prefs.isFuzzy;
-                            vm.isFuzzy = Prefs.isFuzzy;
-                            vm.onTextChanged(controller.text);
-                          });
-                        },
-                        tooltip: "Fuzzy Search",
-                      ),
-                      IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
                         icon: const Icon(Icons.filter_list),
                         tooltip: AppLocalizations.of(context)!.filter,
                         onPressed: () {
@@ -93,6 +115,7 @@ class _SearchPageState extends State<SearchPage> {
                           });
                         },
                       ),
+                      const SizedBox(width: 8),
                     ],
                   ),
                   // search mode chooser view
