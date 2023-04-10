@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tipitaka_pali/ui/widgets/pali_text_view.dart';
 
 import '../../../../business_logic/models/search_history.dart';
 
@@ -21,7 +22,7 @@ class SearchHistoryView extends StatelessWidget {
       itemBuilder: (context, index) {
         return ListTile(
           dense: true,
-          title: Text(histories[index].word),
+          title: PaliTextView(histories[index].word),
           onTap: () => onClick?.call(histories[index].word),
           trailing: IconButton(
             onPressed: () => onDelete?.call(histories[index].word),
