@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/business_logic/models/dictionary_history.dart';
+import 'package:tipitaka_pali/ui/widgets/pali_text_view.dart';
 import 'package:tipitaka_pali/utils/pali_word.dart';
 
 enum DictionaryHistoryOrder { time, alphabetically }
@@ -56,7 +57,7 @@ class _DictionaryHistoryViewState extends State<DictionaryHistoryView> {
             itemBuilder: (context, index) {
               return ListTile(
                 dense: true,
-                title: Text(histories[index].word),
+                title: PaliTextView(histories[index].word),
                 onTap: () => widget.onClick?.call(histories[index].word),
                 trailing: IconButton(
                   onPressed: () =>
