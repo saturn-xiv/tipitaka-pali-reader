@@ -148,18 +148,11 @@ class _SearchPageState extends State<SearchPage> {
                                   return SearchSuggestionView(
                                     suggestions: suggestions,
                                     onClickedSubmitButton: (suggestion) {
-                                      String inputText = controller.text;
-                                      final words = inputText.split(' ');
-                                      words.last = suggestion.word;
-                                      inputText = words.join(' ');
-                                      _onSubmitted(inputText, vm);
+                                      _updateInput(suggestion.word);
+                                      _onSubmitted(controller.text, vm);
                                     },
                                     onClickedSuggestion: (suggestion) {
-                                      String inputText = controller.text;
-                                      final words = inputText.split(' ');
-                                      words.last = suggestion.word;
-                                      inputText = words.join(' ');
-                                      controller.text = inputText;
+                                      _updateInput(suggestion.word);
                                     },
                                   );
                                 });
@@ -179,6 +172,21 @@ class _SearchPageState extends State<SearchPage> {
                 ],
               ));
         }));
+  }
+
+  void _updateInput(String suggestion) {
+    String inputText = controller.text;
+    final inputScript = ScriptDetector.getLanguage(inputText);
+    final words = inputText.split(' ');
+    if (inputScript == Script.roman) {
+      words.last = suggestion;
+    } else {
+      words.last =
+          PaliScript.getScriptOf(script: inputScript, romanText: suggestion);
+    }
+    inputText = words.join(' ');
+    controller.text = inputText;
+    controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
   }
 
   Widget _buildEmptyView(BuildContext context) {
