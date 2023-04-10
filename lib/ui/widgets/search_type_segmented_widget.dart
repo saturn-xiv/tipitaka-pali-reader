@@ -27,12 +27,12 @@ class SearchTypeSegmentedControl extends StatefulWidget {
 
 class _SearchTypeSegmentedControlState
     extends State<SearchTypeSegmentedControl> {
-  int _selectedIndex = 0;
+  int _selectedIndex = Prefs.queryModeIndex;
 
   final Map<int, String> _segmentValues = {
     0: 'exact',
-    1: 'distance',
-    2: 'prefix',
+    1: 'prefix',
+    2: 'distance',
     3: 'any part',
   };
 
@@ -92,10 +92,10 @@ class _SearchTypeSegmentedControlState
     QueryMode qm = QueryMode.exact;
     switch (key) {
       case 1:
-        qm = QueryMode.distance;
+        qm = QueryMode.prefix;
         break;
       case 2:
-        qm = QueryMode.prefix;
+        qm = QueryMode.distance;
         break;
       case 3:
         qm = QueryMode.anywhere;

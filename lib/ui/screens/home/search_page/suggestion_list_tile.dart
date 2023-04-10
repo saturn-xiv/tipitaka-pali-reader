@@ -34,7 +34,8 @@ class SuggestionListTile extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       // suggested word
       title: Text(scriptWord, style: Theme.of(context).textTheme.bodyLarge),
-      leading: const Icon(Icons.search),
+      leading: const Icon(Icons.library_add),
+      //subtitle: const Icon(Icons.library_add),
       // word frequency
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
