@@ -99,7 +99,9 @@ class DictionaryController with ChangeNotifier {
       if (!isContainInHistories(_histories.value, _currentlookupWord)) {
         await dictionaryHistoryRepository.insert(_currentlookupWord);
         // refresh histories
-        _histories.value = [...await dictionaryHistoryRepository.getAll()];
+        final histories = await dictionaryHistoryRepository.getAll();
+        histories.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+        _histories.value = [...histories];
       }
     }
   }
@@ -398,7 +400,7 @@ class DictionaryController with ChangeNotifier {
 
   int _getIndex(List<DictionaryHistory> histories, String word) {
     if (histories.isEmpty) return -1;
-    histories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+    // histories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
     for (int i = 0; i < histories.length; i++) {
       if (histories[i].word == word) {
         return i;
@@ -410,7 +412,7 @@ class DictionaryController with ChangeNotifier {
 
   bool isContainInHistories(List<DictionaryHistory> histories, String word) {
     if (histories.isEmpty) return false;
-    histories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+    // histories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
     for (int i = 0; i < histories.length; i++) {
       if (histories[i].word == word) {
         return true;

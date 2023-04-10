@@ -27,40 +27,40 @@ class _DictionaryHistoryViewState extends State<DictionaryHistoryView> {
   @override
   void initState() {
     super.initState();
-    histories = widget.histories;
+    // clone list
+    histories = [...widget.histories];
   }
 
   @override
   void didUpdateWidget(covariant DictionaryHistoryView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    histories = widget.histories;
+    histories = [...widget.histories];
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.histories.isEmpty) {
+    if (histories.isEmpty) {
       return const Center(child: Text('no history'));
     }
     if (order == DictionaryHistoryOrder.alphabetically) {
-      widget.histories.sort(
-          (a, b) => PaliWord.compare(a.word, b.word));
+      histories.sort((a, b) => PaliWord.compare(a.word, b.word));
     } else {
-      widget.histories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+      histories.sort((a, b) => b.dateTime.compareTo(a.dateTime));
     }
     return Column(
       children: [
         _buildOrderSelector(),
         Expanded(
           child: ListView.separated(
-            itemCount: widget.histories.length,
+            itemCount: histories.length,
             itemBuilder: (context, index) {
               return ListTile(
                 dense: true,
-                title: Text(widget.histories[index].word),
-                onTap: () => widget.onClick?.call(widget.histories[index].word),
+                title: Text(histories[index].word),
+                onTap: () => widget.onClick?.call(histories[index].word),
                 trailing: IconButton(
                   onPressed: () =>
-                      widget.onDelete?.call(widget.histories[index].word),
+                      widget.onDelete?.call(histories[index].word),
                   icon: const Icon(Icons.delete),
                 ),
               );
