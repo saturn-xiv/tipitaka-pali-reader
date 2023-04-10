@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/ui/screens/home/search_page/easy_number_input.dart';
 import '../../../../services/prefs.dart';
-import '../../../../utils/pali_script.dart';
-import '../../../../utils/pali_script_converter.dart';
-import '../../../../utils/script_detector.dart';
 import '../screens/home/search_page/search_page.dart';
 
 class SearchTypeSegmentedControl extends StatefulWidget {
@@ -45,8 +41,18 @@ class _SearchTypeSegmentedControlState
     isDistanceMoe = _selectedIndex == 2;
   }
 
+  void addLocalizedSegmentValues(BuildContext context) {
+    _segmentValues[0] = AppLocalizations.of(context)!.exact;
+    _segmentValues[1] = AppLocalizations.of(context)!.prefix;
+    _segmentValues[2] = AppLocalizations.of(context)!.distance;
+    _segmentValues[3] = AppLocalizations.of(context)!.anyPart;
+  }
+
   @override
   Widget build(BuildContext context) {
+    //set localized values for buttons
+    addLocalizedSegmentValues(context);
+
     return Column(
       children: [
         Container(
@@ -115,7 +121,7 @@ class _SearchTypeSegmentedControlState
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      Text('Distance between words'),
+                      Text(AppLocalizations.of(context)!.distanceBetweenWords),
                       const Spacer(),
                       EasyNumberInput(
                           initial: widget.wordDistance,
