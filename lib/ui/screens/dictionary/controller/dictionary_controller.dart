@@ -88,7 +88,7 @@ class DictionaryController with ChangeNotifier {
       return;
     }
     // loading definitions
-    final definition = await loadDefinition(_currentlookupWord!);
+    final definition = await loadDefinition(_currentlookupWord);
     if (definition.isEmpty) {
       _dictionaryState = const DictionaryState.noData();
       notifyListeners();

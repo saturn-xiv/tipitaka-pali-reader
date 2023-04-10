@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../../services/database/database_helper.dart';
 import '../../../../services/prefs.dart';
 import '../../../../services/repositories/search_history_repo.dart';
+import '../../../widgets/search_type_segmented_widget.dart';
 import 'search_history_view.dart';
 import 'search_suggestion_view.dart';
 
@@ -76,6 +77,16 @@ class _SearchPageState extends State<SearchPage> {
               ),
               body: Column(
                 children: [
+                  SearchTypeSegmentedControl(
+                    mode: vm.queryMode,
+                    wordDistance: vm.wordDistance,
+                    onModeChanged: (value) {
+                      vm.onQueryModeChanged(value);
+                    },
+                    onDistanceChanged: (value) {
+                      vm.onWordDistanceChanged(value);
+                    },
+                  ),
                   // search bar
                   Row(
                     children: [
@@ -104,7 +115,7 @@ class _SearchPageState extends State<SearchPage> {
                       //   },
                       //   tooltip: "Fuzzy Search",
                       // ),
-                      IconButton(
+                      /*IconButton(
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                         icon: const Icon(Icons.filter_list),
@@ -114,7 +125,7 @@ class _SearchPageState extends State<SearchPage> {
                             isShowingSearchModeView = !isShowingSearchModeView;
                           });
                         },
-                      ),
+                      ),*/
                       const SizedBox(width: 8),
                     ],
                   ),
@@ -122,7 +133,7 @@ class _SearchPageState extends State<SearchPage> {
                   AnimatedSize(
                     duration:
                         Duration(milliseconds: Prefs.animationSpeed.round()),
-                    child: isShowingSearchModeView
+                    child: /* isShowingSearchModeView
                         ? SearchModeView(
                             mode: vm.queryMode,
                             wordDistance: vm.wordDistance,
@@ -133,7 +144,8 @@ class _SearchPageState extends State<SearchPage> {
                               vm.onWordDistanceChanged(value);
                             },
                           )
-                        : const SizedBox.shrink(),
+                        : */
+                        const SizedBox.shrink(),
                   ),
                   // suggestion view
 
@@ -186,7 +198,8 @@ class _SearchPageState extends State<SearchPage> {
     }
     inputText = words.join(' ');
     controller.text = inputText;
-    controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
+    controller.selection = TextSelection.fromPosition(
+        TextPosition(offset: controller.text.length));
   }
 
   Widget _buildEmptyView(BuildContext context) {

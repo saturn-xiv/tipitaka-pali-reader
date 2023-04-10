@@ -45,8 +45,7 @@ class SuggestionListTile extends StatelessWidget {
                   romanText: (frequency == -1) ? " " : frequency.toString()),
               style: Theme.of(context).textTheme.bodyLarge),
           IconButton(
-              onPressed: onClickedSubmitButton,
-              icon: const Icon(Icons.arrow_forward)),
+              onPressed: onClickedSubmitButton, icon: const Icon(Icons.search)),
         ],
       ),
       onTap: onClickedSuggestion,
