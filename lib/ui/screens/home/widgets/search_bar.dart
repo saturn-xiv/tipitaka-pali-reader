@@ -42,68 +42,56 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32.0),
-        border: Border.all(color: Colors.grey),
-      ),
-      height: 56.0,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: TextField(
-              autocorrect: false,
-              controller: widget.controller,
-              textInputAction: TextInputAction.search,
-              onSubmitted: (text) => widget.onSubmitted(text),
-              onChanged: (text) {
-                final scriptLanguage = ScriptDetector.getLanguage(text);
-                //if (scriptLanguage == Script.roman) text = _toUni(text);
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        autocorrect: false,
+        controller: widget.controller,
+        textInputAction: TextInputAction.search,
+        maxLines: 1,
+        onSubmitted: (text) => widget.onSubmitted(text),
+        onChanged: (text) {
+          final scriptLanguage = ScriptDetector.getLanguage(text);
+          //if (scriptLanguage == Script.roman) text = _toUni(text);
 
-                if (text.isNotEmpty && scriptLanguage == Script.roman) {
-                  // text controller naturally pushes to the beginning
-                  // fixed to keep natural position
+          if (text.isNotEmpty && scriptLanguage == Script.roman) {
+            // text controller naturally pushes to the beginning
+            // fixed to keep natural position
 
-                  // before conversion get cursor position and length
-                  int origTextLen = text.length;
-                  int pos = widget.controller.selection.start;
-                  final uniText = PaliTools.velthuisToUni(velthiusInput: text);
-                  // after conversion get length and add the difference (if any)
-                  int uniTextlen = uniText.length;
-                  widget.controller.text = uniText;
-                  widget.controller.selection = TextSelection.fromPosition(
-                      TextPosition(offset: pos + uniTextlen - origTextLen));
-                  text = uniText;
-                }
+            // before conversion get cursor position and length
+            int origTextLen = text.length;
+            int pos = widget.controller.selection.start;
+            final uniText = PaliTools.velthuisToUni(velthiusInput: text);
+            // after conversion get length and add the difference (if any)
+            int uniTextlen = uniText.length;
+            widget.controller.text = uniText;
+            widget.controller.selection = TextSelection.fromPosition(
+                TextPosition(offset: pos + uniTextlen - origTextLen));
+            text = uniText;
+          }
 
-                widget.onTextChanged(text);
-              },
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(32),
-                  borderSide: const BorderSide(
-                    width: 0,
-                    style: BorderStyle.none,
-                  ),
-                ),
-                prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                // clear button
-                suffixIcon: widget.controller.text.isEmpty
-                    ? const SizedBox(width: 0, height: 0)
-                    : ClearButton(
-                        onTap: () {
-                          widget.controller.clear();
-                          widget.onTextChanged('');
-                        },
-                      ),
-                hintStyle: const TextStyle(color: Colors.grey),
-                hintText: widget.hint,
+          widget.onTextChanged(text);
+        },
+        decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(32),
+              borderSide: const BorderSide(
+                width: 1,
               ),
             ),
-          ),
-        ],
+            prefixIcon: const Icon(Icons.search, color: Colors.grey),
+            // clear button
+            suffixIcon: widget.controller.text.isEmpty
+                ? const SizedBox(width: 0, height: 0)
+                : ClearButton(
+                    onTap: () {
+                      widget.controller.clear();
+                      widget.onTextChanged('');
+                    },
+                  ),
+            hintStyle: const TextStyle(color: Colors.grey),
+            hintText: widget.hint,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8.0)),
       ),
     );
   }

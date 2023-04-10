@@ -18,6 +18,13 @@ import 'search_mode_view.dart';
 
 enum QueryMode { exact, prefix, distance, anywhere }
 
+extension ParseToString on QueryMode {
+  String toShortString() {
+    print(toString());
+    return toString().split('.').last;
+  }
+}
+
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
 
@@ -81,7 +88,9 @@ class _SearchPageState extends State<SearchPage> {
                     mode: vm.queryMode,
                     wordDistance: vm.wordDistance,
                     onModeChanged: (value) {
-                      vm.onQueryModeChanged(value);
+                      setState(() {
+                        vm.onQueryModeChanged(value);
+                      });
                     },
                     onDistanceChanged: (value) {
                       vm.onWordDistanceChanged(value);
@@ -92,7 +101,7 @@ class _SearchPageState extends State<SearchPage> {
                     children: [
                       Expanded(
                         child: SearchBar(
-                          hint: getHint(vm.queryMode),
+                          hint: _getHint(vm.queryMode),
                           controller: controller,
                           onSubmitted: (value) {
                             _onSubmitted(value, vm);
@@ -212,8 +221,16 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  String getHint(QueryMode queryMode) {
-    return queryMode.toString();
+  String _getHint(QueryMode queryMode) {
+    if (queryMode == QueryMode.exact) {
+      return AppLocalizations.of(context)!.exact;
+    } else if (queryMode == QueryMode.distance) {
+      return AppLocalizations.of(context)!.distance;
+    } else if (queryMode == QueryMode.prefix) {
+      return AppLocalizations.of(context)!.prefix;
+    } else {
+      return AppLocalizations.of(context)!.anywhere;
+    }
   }
 
   // _showSearchTypeSelectDialog(QueryMode queryMode) {
