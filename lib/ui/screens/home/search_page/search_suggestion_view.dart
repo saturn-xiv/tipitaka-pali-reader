@@ -6,13 +6,13 @@ class SearchSuggestionView extends StatelessWidget {
   const SearchSuggestionView({
     super.key,
     required this.suggestions,
-    this.onClickedSubmitButton,
+    this.onClickedAddButton,
     this.onClickedSuggestion,
     this.isFistWord = true,
   });
 
   final List<SearchSuggestion> suggestions;
-  final ValueChanged<SearchSuggestion>? onClickedSubmitButton;
+  final ValueChanged<SearchSuggestion>? onClickedAddButton;
   final ValueChanged<SearchSuggestion>? onClickedSuggestion;
   final bool isFistWord;
 
@@ -24,8 +24,7 @@ class SearchSuggestionView extends StatelessWidget {
         suggestedWord: suggestions[index].word,
         frequency: suggestions[index].count,
         isFirstWord: isFistWord,
-        onClickedSubmitButton: () =>
-            onClickedSubmitButton?.call(suggestions[index]),
+        onClickedAddButton: () => onClickedAddButton?.call(suggestions[index]),
         onClickedSuggestion: () =>
             onClickedSuggestion?.call(suggestions[index]),
       ),

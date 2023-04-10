@@ -168,12 +168,12 @@ class _SearchPageState extends State<SearchPage> {
                                 builder: (_, suggestions, __) {
                                   return SearchSuggestionView(
                                     suggestions: suggestions,
-                                    onClickedSubmitButton: (suggestion) {
+                                    onClickedAddButton: (suggestion) {
                                       _updateInput(suggestion.word);
-                                      _onSubmitted(controller.text, vm);
                                     },
                                     onClickedSuggestion: (suggestion) {
                                       _updateInput(suggestion.word);
+                                      _onSubmitted(controller.text, vm);
                                     },
                                   );
                                 });
