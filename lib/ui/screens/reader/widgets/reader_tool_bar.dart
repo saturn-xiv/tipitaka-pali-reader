@@ -268,8 +268,8 @@ class LowerRow extends StatelessWidget {
         );
       },
       pageBuilder: (context, animation, secondaryAnimation) => GotoDialog(
-        firstPage: vm.book.firstPage!,
-        lastPage: vm.book.lastPage!,
+        firstPage: vm.book.firstPage,
+        lastPage: vm.book.lastPage,
         firstParagraph: firstParagraph,
         lastParagraph: lastParagraph,
       ),

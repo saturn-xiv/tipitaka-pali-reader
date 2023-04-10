@@ -28,7 +28,7 @@ class _MobileBookViewState extends State<MobileBookView> {
         Provider.of<ReaderViewController>(context, listen: false);
     pageController = PageController(
         initialPage: readerViewController.currentPage.value -
-            readerViewController.book.firstPage!);
+            readerViewController.book.firstPage);
 
     readerViewController.currentPage.addListener(_listenPageChange);
   }
@@ -74,7 +74,7 @@ class _MobileBookViewState extends State<MobileBookView> {
         );
       },
       onPageChanged: (value) {
-        int pageNumber = value + readerViewController.book.firstPage!;
+        int pageNumber = value + readerViewController.book.firstPage;
         readerViewController.onGoto(pageNumber: pageNumber);
       },
     );
@@ -86,7 +86,7 @@ class _MobileBookViewState extends State<MobileBookView> {
 
     if (index ==
         readerViewController.initialPage! -
-            readerViewController.book.firstPage!) {
+            readerViewController.book.firstPage) {
       return readerViewController.textToHighlight;
     }
     return null;
@@ -94,7 +94,7 @@ class _MobileBookViewState extends State<MobileBookView> {
 
   void _listenPageChange() {
     int pageIndex = readerViewController.currentPage.value -
-        readerViewController.book.firstPage!;
+        readerViewController.book.firstPage;
     pageController.jumpToPage(pageIndex);
   }
 
