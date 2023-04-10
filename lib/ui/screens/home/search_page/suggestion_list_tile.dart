@@ -10,12 +10,15 @@ class SuggestionListTile extends StatelessWidget {
     required this.suggestedWord,
     required this.frequency,
     this.isFirstWord = true,
-    this.onTap,
+    this.onClickedSubmitButton,
+    this.onClickedSuggestion,
   }) : super(key: key);
+
   final String suggestedWord;
   final int frequency;
   final bool isFirstWord;
-  final GestureTapCallback? onTap;
+  final VoidCallback? onClickedSubmitButton;
+  final VoidCallback? onClickedSuggestion;
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +36,20 @@ class SuggestionListTile extends StatelessWidget {
       title: Text(scriptWord, style: Theme.of(context).textTheme.bodyLarge),
       leading: const Icon(Icons.search),
       // word frequency
-      trailing: Text(
-          PaliScript.getScriptOf(
-              script: context.read<ScriptLanguageProvider>().currentScript,
-              romanText: (frequency == -1) ? " " : frequency.toString()),
-          style: Theme.of(context).textTheme.bodyLarge),
-      onTap: onTap,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+              PaliScript.getScriptOf(
+                  script: context.read<ScriptLanguageProvider>().currentScript,
+                  romanText: (frequency == -1) ? " " : frequency.toString()),
+              style: Theme.of(context).textTheme.bodyLarge),
+          IconButton(
+              onPressed: onClickedSubmitButton,
+              icon: const Icon(Icons.arrow_forward)),
+        ],
+      ),
+      onTap: onClickedSuggestion,
     );
   }
 }

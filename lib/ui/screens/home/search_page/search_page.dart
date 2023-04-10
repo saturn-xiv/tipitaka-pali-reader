@@ -146,14 +146,22 @@ class _SearchPageState extends State<SearchPage> {
                                 valueListenable: vm.suggestions,
                                 builder: (_, suggestions, __) {
                                   return SearchSuggestionView(
-                                      suggestions: suggestions,
-                                      onClicked: (suggestion) {
-                                        String inputText = controller.text;
-                                        final words = inputText.split(' ');
-                                        words.last = suggestion.word;
-                                        inputText = words.join(' ');
-                                        _onSubmitted(inputText, vm);
-                                      });
+                                    suggestions: suggestions,
+                                    onClickedSubmitButton: (suggestion) {
+                                      String inputText = controller.text;
+                                      final words = inputText.split(' ');
+                                      words.last = suggestion.word;
+                                      inputText = words.join(' ');
+                                      _onSubmitted(inputText, vm);
+                                    },
+                                    onClickedSuggestion: (suggestion) {
+                                      String inputText = controller.text;
+                                      final words = inputText.split(' ');
+                                      words.last = suggestion.word;
+                                      inputText = words.join(' ');
+                                      controller.text = inputText;
+                                    },
+                                  );
                                 });
                           }
                           return ValueListenableBuilder(
