@@ -50,4 +50,18 @@ class SearchFilterController extends ChangeNotifier {
     Prefs.selectedSubCategoryFilters = list;
     notifyListeners();
   }
+
+  void onSelectAll() {
+    Prefs.selectedMainCategoryFilters = List.from(_mainCategoryFilters.keys);
+    Prefs.selectedSubCategoryFilters = List.from(_subCategoryFilters.keys);
+    notifyListeners();
+  }
+
+  void onSelectNone() {
+    // In mula, we want to search most of the time,
+    Prefs.selectedMainCategoryFilters = ['mula'];
+    // Prefs.selectedMainCategoryFilters.add('mula');
+    Prefs.selectedSubCategoryFilters = [];
+    notifyListeners();
+  }
 }

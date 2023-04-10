@@ -14,7 +14,7 @@ class SearchFilterView extends StatelessWidget {
     final closeButton = Positioned(
         top: -18,
         child: GestureDetector(
-          onTap: ()=> Navigator.pop(context),
+          onTap: () => Navigator.pop(context),
           child: ClipOval(
             child: Container(
               width: 56,
@@ -38,6 +38,19 @@ class SearchFilterView extends StatelessWidget {
               Container(height: 22),
               _buildMainCategoryFilter(notifier),
               _buildSubCategoryFilters(notifier),
+              ButtonBar(
+                alignment: MainAxisAlignment.center,
+                children: [
+                  FilledButton(
+                    onPressed: notifier.onSelectAll,
+                    child: Text('Select All'),
+                  ),
+                  FilledButton(
+                    onPressed: notifier.onSelectNone,
+                    child: Text('Select None'),
+                  ),
+                ],
+              ),
             ],
           ),
           closeButton,
@@ -53,13 +66,17 @@ class SearchFilterView extends StatelessWidget {
       child: Card(
         child: Wrap(
             children: _mainCategoryFilters.entries
-                .map((e) => FilterChip(
-                    label: Text(e.value),
-                    selectedColor: Colors.lightBlueAccent,
-                    selected: _selectedMainCategoryFilters.contains(e.key),
-                    onSelected: (isSelected) {
-                      notifier.onMainFilterChange(e.key, isSelected);
-                    }))
+                .map((e) => Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: FilterChip(
+                          label: Text(e.value),
+                          selectedColor: Colors.lightBlueAccent,
+                          selected:
+                              _selectedMainCategoryFilters.contains(e.key),
+                          onSelected: (isSelected) {
+                            notifier.onMainFilterChange(e.key, isSelected);
+                          }),
+                    ))
                 .toList()),
       ),
     );
@@ -73,13 +90,16 @@ class SearchFilterView extends StatelessWidget {
       child: Card(
         child: Wrap(
             children: _subCategoryFilters.entries
-                .map((e) => FilterChip(
-                    label: Text(e.value),
-                    selectedColor: Colors.lightBlueAccent,
-                    selected: _selectedSubCategoryFilters.contains(e.key),
-                    onSelected: (isSelected) {
-                      notifier.onSubFilterChange(e.key, isSelected);
-                    }))
+                .map((e) => Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: FilterChip(
+                          label: Text(e.value),
+                          selectedColor: Colors.lightBlueAccent,
+                          selected: _selectedSubCategoryFilters.contains(e.key),
+                          onSelected: (isSelected) {
+                            notifier.onSubFilterChange(e.key, isSelected);
+                          }),
+                    ))
                 .toList()),
       ),
     );
