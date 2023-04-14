@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/dictionary_page.dart';
 import 'package:tipitaka_pali/ui/screens/home/home_container.dart';
-import 'package:tipitaka_pali/ui/screens/home/quickjumpPage.dart';
+import 'package:tipitaka_pali/ui/screens/home/quick_jump_page.dart';
 import 'package:tipitaka_pali/ui/screens/home/search_page/search_page.dart';
 import 'package:tipitaka_pali/ui/screens/reader/reader.dart';
 import 'package:tipitaka_pali/ui/screens/search_result/search_result_page.dart';

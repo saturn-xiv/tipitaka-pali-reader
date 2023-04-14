@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 /// This package allows you to create custom text selection controls and use them in the SelectableText widget or in the TextForm or TextFormField widgets.
@@ -263,7 +262,8 @@ class __SelectionToolBarState extends State<_SelectionToolBar> {
         },
         children: widget.toolBarItems.map((item) {
           if (item.itemControl != null) {
-            if (item.itemControl == ToolBarItemControl.copy && !widget.canCopy) {
+            if (item.itemControl == ToolBarItemControl.copy &&
+                !widget.canCopy) {
               return const SizedBox();
             }
             if (item.itemControl == ToolBarItemControl.cut && !widget.canCut) {

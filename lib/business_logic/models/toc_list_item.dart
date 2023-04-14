@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tipitaka_pali/services/prefs.dart';
 import 'toc.dart';
 import '../../services/provider/script_language_provider.dart';
 import '../../utils/pali_script.dart';

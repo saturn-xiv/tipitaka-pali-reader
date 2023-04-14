@@ -181,7 +181,7 @@ class DictionaryController with ChangeNotifier {
           if (dpdword.length > 4) {
             if (dpdword.substring(dpdword.length - 4, dpdword.length) ==
                 "vant") {
-              dpdword = dpdword.substring(0, dpdword.length - 4) + "vantu";
+              dpdword = "${dpdword.substring(0, dpdword.length - 4)}vantu";
             }
           }
 

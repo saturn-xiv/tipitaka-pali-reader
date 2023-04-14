@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/business_logic/models/dictionary_history.dart';
 import 'package:tipitaka_pali/ui/widgets/pali_text_view.dart';
 import 'package:tipitaka_pali/utils/pali_word.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum DictionaryHistoryOrder { time, alphabetically }
 
@@ -41,7 +42,7 @@ class _DictionaryHistoryViewState extends State<DictionaryHistoryView> {
   @override
   Widget build(BuildContext context) {
     if (histories.isEmpty) {
-      return const Center(child: Text('no history'));
+      return Center(child: Text(AppLocalizations.of(context)!.noHistory));
     }
     if (order == DictionaryHistoryOrder.alphabetically) {
       histories.sort((a, b) => PaliWord.compare(a.word, b.word));
@@ -60,8 +61,7 @@ class _DictionaryHistoryViewState extends State<DictionaryHistoryView> {
                 title: PaliTextView(histories[index].word),
                 onTap: () => widget.onClick?.call(histories[index].word),
                 trailing: IconButton(
-                  onPressed: () =>
-                      widget.onDelete?.call(histories[index].word),
+                  onPressed: () => widget.onDelete?.call(histories[index].word),
                   icon: const Icon(Icons.delete),
                 ),
               );
@@ -78,19 +78,19 @@ class _DictionaryHistoryViewState extends State<DictionaryHistoryView> {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          const Text('sort by: '),
+          Text(AppLocalizations.of(context)!.sortBy),
           const Spacer(),
           SegmentedButton<DictionaryHistoryOrder>(
-            segments: const [
+            segments: [
               ButtonSegment<DictionaryHistoryOrder>(
                   value: DictionaryHistoryOrder.time,
                   label: Text(
-                    'Time',
+                    AppLocalizations.of(context)!.time,
                   )),
               ButtonSegment<DictionaryHistoryOrder>(
                   value: DictionaryHistoryOrder.alphabetically,
                   label: Text(
-                    'Alphabetically',
+                    AppLocalizations.of(context)!.alphabetically,
                   )),
             ],
             showSelectedIcon: false,

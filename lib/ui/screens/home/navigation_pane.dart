@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/providers/navigation_provider.dart';
-import 'package:tipitaka_pali/ui/screens/home/quickjumpPage.dart';
+import 'package:tipitaka_pali/ui/screens/home/quick_jump_page.dart';
 
 import '../../../routes.dart';
 import '../../../utils/platform_info.dart';
