@@ -112,7 +112,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
                 context.read<ThemeChangeNotifier>().onChangeFontSize(value);
               },
             ),
-            Text('UI fontSize'),
+            Text(AppLocalizations.of(context)!.uiFontSize),
           ],
         ));
   }

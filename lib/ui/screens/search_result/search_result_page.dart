@@ -26,14 +26,14 @@ class SearchResultPage extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider<SearchFilterController>(
-              create: (_) => SearchFilterController()),
+              create: (context) => SearchFilterController(context: context)),
           ChangeNotifierProxyProvider<SearchFilterController,
                   SearchResultController>(
               create: (_) => SearchResultController(
                   searchWord: searchWord,
                   queryMode: queryMode,
                   wordDistance: wordDistance,
-                  filterController: SearchFilterController())
+                  filterController: SearchFilterController(context: context))
                 ..init(),
               update: (_, filterController, resultConroller) {
                 resultConroller!.onChangeFilter(filterController);

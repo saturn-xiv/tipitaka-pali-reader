@@ -63,5 +63,19 @@
   "panelSize":             "控制面板大小",
   "multiViewsMode":         "多视图",
   "numVisibleViews":        "可见视图",
-  "extensions":             "扩展"
+  "extensions":             "扩展",
+  "extensions":             "Extensions",
+  "quickjump":              "Quick Jump",
+  "shareThisNote":          "Share this note",
+  "shareAllNotes":          "Share all notes",
+  "shareTitle":             "TPR Bookmark and Note",
+  "distanceBetweenWords":   "Distance between words",
+  "exact":                  "exact",
+  "prefix":                 "prefix",  
+  "distance":               "distance",
+  "anyPart":                "any part",
+  "uiFontSize":             "UI fontSize",
+  "sortBy":                 "Sort by: ",
+  "time":                   "Time",
+  "alphabetically":         "Alphabetically"
 }

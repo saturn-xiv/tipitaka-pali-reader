@@ -1,5 +1,5 @@
-import 'package:tipitaka_pali/business_logic/models/search_suggestion.dart';
-import 'package:tipitaka_pali/services/dao/dao.dart';
+//import 'package:tipitaka_pali/business_logic/models/search_suggestion.dart';
+//import 'package:tipitaka_pali/services/dao/dao.dart';
 /*
 class SearchSuggestionDao implements Dao<SearchSuggestion> {
   final String tableWords = 'words';

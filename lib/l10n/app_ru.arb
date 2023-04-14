@@ -62,5 +62,19 @@
   "dictionaryFontSize":    "Размер шрифта словаря",
   "panelSize":             "Размер панели",
   "multiViewsMode":        "Multiple Views",
-  "numVisibleViews":       "Visible Views"
+  "numVisibleViews":       "Visible Views",
+  "extensions":             "Extensions",
+  "quickjump":              "Quick Jump",
+  "shareThisNote":          "Share this note",
+  "shareAllNotes":          "Share all notes",
+  "shareTitle":             "TPR Bookmark and Note",
+  "distanceBetweenWords":   "Distance between words",
+  "exact":                  "exact",
+  "prefix":                 "prefix",  
+  "distance":               "distance",
+  "anyPart":                "any part",
+  "uiFontSize":             "UI fontSize",
+  "sortBy":                 "Sort by: ",
+  "time":                   "Time",
+  "alphabetically":         "Alphabetically"
 }

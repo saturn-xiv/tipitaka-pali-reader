@@ -1,24 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../services/prefs.dart';
+import '../../../../services/provider/script_language_provider.dart';
+import '../../../../utils/pali_script.dart';
 
 class SearchFilterController extends ChangeNotifier {
-  final Map<String, String> _mainCategoryFilters = const {
-    'mula': 'Mūla',
-    'attha': 'Aṭṭhakathā',
-    'tika': 'Ṭīka',
-    'annya': 'Annya'
-  };
-  final Map<String, String> _subCategoryFilters = const {
-    '_vi': 'Vinaya',
-    '_di': 'Dīgha',
-    '_ma': 'Majjhima',
-    '_sa': 'Saṃyutta',
-    '_an': 'Aṅguttara',
-    '_ku': 'Khuddaka',
-    '_bi': 'Abhidhamma',
-    '_pe': 'English'
-  };
+  final BuildContext context;
+  final Map<String, String> _mainCategoryFilters = {};
+  final Map<String, String> _subCategoryFilters = {};
+
+  SearchFilterController({required this.context}) {
+    _subCategoryFilters['_vi'] = localScript(context, 'Vinaya');
+    _subCategoryFilters['_di'] = localScript(context, 'Dīgha');
+    _subCategoryFilters['_ma'] = localScript(context, 'Majjhima');
+    _subCategoryFilters['_sa'] = localScript(context, 'Saṃyutta');
+    _subCategoryFilters['_an'] = localScript(context, 'Aṅguttara');
+    _subCategoryFilters['_ku'] = localScript(context, 'Khuddaka');
+    _subCategoryFilters['_bi'] = localScript(context, 'Abhidhamma');
+    _subCategoryFilters['_pe'] = localScript(context, 'English');
+
+    _mainCategoryFilters['mula'] = localScript(context, 'Mūla');
+    _mainCategoryFilters['attha'] = localScript(context, 'Aṭṭhakathā');
+    _mainCategoryFilters['tika'] = localScript(context, 'Ṭīka');
+    _mainCategoryFilters['annya'] = localScript(context, 'Annya');
+  }
+
+  String localScript(BuildContext context, String s) {
+    return PaliScript.getScriptOf(
+        script: context.read<ScriptLanguageProvider>().currentScript,
+        romanText: s);
+  }
+
   Map<String, String> get mainCategoryFilters => _mainCategoryFilters;
 
   Map<String, String> get subCategoryFilters => _subCategoryFilters;

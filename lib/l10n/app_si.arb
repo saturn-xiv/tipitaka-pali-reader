@@ -62,7 +62,23 @@
   "dictionaryFontSize":    "ශබ්දකෝෂ අකුරු විශාලත්වය",
   "panelSize":             "ලබා දෙන ඉඩ ප්‍රමාණය",
   "multiViewsMode":        "බහු පෙන්වීම්",
-  "numVisibleViews":       "පෙන්වීම් ගණන"
+  "numVisibleViews":       "පෙන්වීම් ගණන",
+  "extensions":             "වැඩි කිරීම",
+  "quickjump":              "ඉක්මන් පැනීම",
+  "shareThisNote":          "මෙම සටහන බෙදා ගන්න",
+  "shareAllNotes":          "සියලු සටහන් බෙදා ගන්න",
+  "shareTitle":             "පිටු සලකුණ සහ සටහන",
+  "distanceBetweenWords":   "වචන අතර දුර",
+  "exact":                  "සම්පූර්ණ",
+  "prefix":                 "prefix",  
+  "distance":               "distance",
+  "anyPart":                "any part",
+  "uiFontSize":             "UI fontSize",
+  "sortBy":                 "Sort by: ",
+  "time":                   "Time",
+  "alphabetically":         "Alphabetically"
+
+
 
 
 

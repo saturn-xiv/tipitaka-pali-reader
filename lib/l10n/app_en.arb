@@ -72,11 +72,14 @@
   "exact":                  "exact",
   "prefix":                 "prefix",  
   "distance":               "distance",
-  "anyPart":               "any part"
-
-
-
-
+  "anyPart":                "any part",
+  "uiFontSize":             "UI fontSize",
+  "sortBy":                 "Sort by: ",
+  "time":                   "Time",
+  "alphabetically":         "Alphabetically",
+  "noHistory":              "no History",
+  "selectAll":              "Select All",
+  "selectNone":             "Select None"
 }
 
 
