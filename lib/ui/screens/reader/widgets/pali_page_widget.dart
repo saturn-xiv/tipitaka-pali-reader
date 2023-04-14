@@ -146,10 +146,19 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     if (highlightedWord != null) {
       content = _addHighlight(content, highlightedWord!);
     }
+    if (!Prefs.isShowAlternatePali) {
+      content = _removeAlternatePali(content);
+    }
     content = _makeClickable(content, script);
     content = _changeToInlineStyle(content);
     content = _formatWithUserSetting(content);
     return content;
+  }
+
+  String _removeAlternatePali(String content) {
+    // format of alternate pali
+    // <span class="note">[bhagavāti (syā.), dī. ni. 1.157, abbhuggatākārena pana sameti]</span>
+    return content.replaceAll(RegExp(r'<span class="note">\[.+\]</span>'), '');
   }
 
   String _makeClickable(String content, Script script) {
