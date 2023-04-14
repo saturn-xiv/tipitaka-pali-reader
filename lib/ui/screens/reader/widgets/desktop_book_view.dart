@@ -49,7 +49,7 @@ class _DesktopBookViewState extends State<DesktopBookView> {
   @override
   Widget build(BuildContext context) {
     int pageIndex = readerViewController.currentPage.value -
-        readerViewController.book.firstPage!;
+        readerViewController.book.firstPage;
 
     debugPrint('page index: $pageIndex');
 
@@ -103,7 +103,7 @@ class _DesktopBookViewState extends State<DesktopBookView> {
 
     if (index ==
         readerViewController.initialPage! -
-            readerViewController.book.firstPage!) {
+            readerViewController.book.firstPage) {
       return readerViewController.textToHighlight;
     }
     return null;
@@ -116,7 +116,7 @@ class _DesktopBookViewState extends State<DesktopBookView> {
     // Normally, maximum pages will not exceed two because of page height
     // Three pages is rare case.
 
-    final firstPageOfBook = readerViewController.book.firstPage!;
+    final firstPageOfBook = readerViewController.book.firstPage;
     final currentPage = readerViewController.currentPage.value;
     final upperPageInView = itemPositionsListener.itemPositions.value.first;
     final pageNumberOfUpperPage = upperPageInView.index + firstPageOfBook;
@@ -147,7 +147,7 @@ class _DesktopBookViewState extends State<DesktopBookView> {
 
   void _listenPageChange() {
     // page change are comming from others ( goto, tocs and slider )
-    final firstPage = readerViewController.book.firstPage!;
+    final firstPage = readerViewController.book.firstPage;
     final currenPage = readerViewController.currentPage.value;
     final pageIndex = currenPage - firstPage;
 
@@ -180,8 +180,11 @@ class _DesktopBookViewState extends State<DesktopBookView> {
     }
 
     // displaying dictionary in dialog
-    final sideSheetWidth = context.read<StreamingSharedPreferences>().getDouble(panelSizeKey, defaultValue: defaultPanelSize).getValue();
-    
+    final sideSheetWidth = context
+        .read<StreamingSharedPreferences>()
+        .getDouble(panelSizeKey, defaultValue: defaultPanelSize)
+        .getValue();
+
     showGeneralDialog(
       context: context,
       barrierLabel: 'TOC',
@@ -205,7 +208,7 @@ class _DesktopBookViewState extends State<DesktopBookView> {
               padding:
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
               width: sideSheetWidth,
-              height: MediaQuery.of(context).size.height -  80,
+              height: MediaQuery.of(context).size.height - 80,
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.background,
                   borderRadius: const BorderRadius.only(

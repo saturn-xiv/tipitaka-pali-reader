@@ -22,10 +22,10 @@ class _BookSliderState extends State<VerticalBookSlider> {
     readerViewController =
         Provider.of<ReaderViewController>(context, listen: false);
 
-    min = readerViewController.book.firstPage!.toDouble();
-    max = readerViewController.book.lastPage!.toDouble();
-    divisions = (readerViewController.book.lastPage! -
-            readerViewController.book.firstPage!) +
+    min = readerViewController.book.firstPage.toDouble();
+    max = readerViewController.book.lastPage.toDouble();
+    divisions = (readerViewController.book.lastPage -
+            readerViewController.book.firstPage) +
         1;
     currentPage = readerViewController.currentPage.value;
     readerViewController.currentPage.addListener(_listenPageChange);

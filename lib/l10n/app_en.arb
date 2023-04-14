@@ -67,7 +67,16 @@
   "quickjump":              "Quick Jump",
   "shareThisNote":          "Share this note",
   "shareAllNotes":          "Share all notes",
-  "shareTitle":             "TPR Bookmark and Note"
+  "shareTitle":             "TPR Bookmark and Note",
+  "distanceBetweenWords":   "Distance between words",
+  "exact":                  "exact",
+  "prefix":                 "prefix",  
+  "distance":               "distance",
+  "anyPart":               "any part"
+
+
+
+
 }
 
 
