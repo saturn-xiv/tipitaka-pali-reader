@@ -384,7 +384,7 @@
 					"$(PROJECT_DIR)/Flutter",
 				);
 				MARKETING_VERSION = 2.3.1;
-				PRODUCT_BUNDLE_IDENTIFIER = org.americanmonk.tpp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.paauk.tipitakapalireader;
 				PRODUCT_NAME = "Tipitaka Pali";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -527,7 +527,7 @@
 					"$(PROJECT_DIR)/Flutter",
 				);
 				MARKETING_VERSION = 2.3.1;
-				PRODUCT_BUNDLE_IDENTIFIER = org.americanmonk.tpp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.paauk.tipitakapalireader;
 				PRODUCT_NAME = "Tipitaka Pali";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -564,7 +564,7 @@
 					"$(PROJECT_DIR)/Flutter",
 				);
 				MARKETING_VERSION = 2.3.1;
-				PRODUCT_BUNDLE_IDENTIFIER = org.americanmonk.tpp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.paauk.tipitakapalireader;
 				PRODUCT_NAME = "Tipitaka Pali";
 				PROVISIONING_PROFILE_SPECIFIER = "TPR AppStore Profile";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
