@@ -76,5 +76,8 @@
   "uiFontSize":             "UI fontSize",
   "sortBy":                 "Sort by: ",
   "time":                   "Time",
-  "alphabetically":         "Alphabetically"
+  "alphabetically":         "Alphabetically",
+  "noHistory":              "no History",
+  "selectAll":              "Select All",
+  "selectNone":             "Select None"
 }

@@ -34,10 +34,6 @@
   "toc":                  "Mục Lục",
   "mat":                  "MAT",
   "font":                 "Font",
-  "exact":                "Tìm chính xác",
-  "prefix":               "Tìm tiền tố",
-  "distance":             "Tìm cách khoảng",
-    "anywhere":           "Bất cứ đâu",
   "openingBook":          "Mở sách",
   "animationSpeed":       "Tốc độ hoạt ảnh  ms",
   "generalSettings":      "Tổng Quát",
@@ -86,5 +82,12 @@
   "exact":                  "chính xác",
   "prefix":                 "tiếp đầu ngữ",  
   "distance":               "Khoảng cách",
-  "anyPart":                "bất kỳ"
-}
+  "anyPart":                "bất kỳ",
+  "uiFontSize":             "UI Cỡ Chữ",
+  "sortBy":                 "xếp theo: ",
+  "time":                   "Thời Gian",
+  "alphabetically":         "Thứ Tự chữ Cái",
+  "noHistory":              "no History",
+  "selectAll":              "Chọn Tất cả",
+  "selectNone":             "không Chọn"
+  }

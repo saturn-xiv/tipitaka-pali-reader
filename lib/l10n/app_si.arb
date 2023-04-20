@@ -70,20 +70,16 @@
   "shareTitle":             "පිටු සලකුණ සහ සටහන",
   "distanceBetweenWords":   "වචන අතර දුර",
   "exact":                  "සම්පූර්ණ",
-  "prefix":                 "prefix",  
-  "distance":               "distance",
-  "anyPart":                "any part",
-  "uiFontSize":             "UI fontSize",
-  "sortBy":                 "Sort by: ",
-  "time":                   "Time",
-  "alphabetically":         "Alphabetically"
-
-
-
-
-
-
-
+  "prefix":                 "මුල් අකුරු වලින්",  
+  "distance":               "දුර",
+  "anyPart":                "ඕනෑම කොටසක්",
+  "uiFontSize":             "UI අකුරු විශාලත්වය",
+  "sortBy":                 "පිළිවෙල තෝරන්න: ",
+  "Time":                   "වේලාව අනුව",
+  "Alphabetically":         "අකුරු පිළිවෙළ අනුව",
+  "noHistory":              "ඉතිහාසයක් නැත",
+  "selectAll":              "සියල්ල තෝරන්න",
+  "selectNone":             "කිසිවක් තෝරන්න එපා"
 }
 
 
