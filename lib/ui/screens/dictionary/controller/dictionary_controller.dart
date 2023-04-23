@@ -344,7 +344,7 @@ class DictionaryController with ChangeNotifier {
     _lookupDefinition();
   }
 
-  void onClickedPrevious() {
+  void onClickedNext() {
     if (_histories.value.isEmpty) {
       return;
     }
@@ -359,7 +359,7 @@ class DictionaryController with ChangeNotifier {
     }
   }
 
-  void onClickedForward() {
+  void onClickedPrevious() {
     if (_histories.value.isEmpty) {
       return;
     }

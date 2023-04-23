@@ -39,11 +39,13 @@ class _DictionaryPageState extends State<DictionaryPage>
             actions: [
               IconButton(
                 icon: const Icon(Icons.arrow_back_ios),
+                tooltip: 'Previous',
                 onPressed: () => dc.onClickedPrevious(),
               ),
               IconButton(
                 icon: const Icon(Icons.arrow_forward_ios),
-                onPressed: () => dc.onClickedForward(),
+                tooltip: 'Next',
+                onPressed: () => dc.onClickedNext(),
               ),
               IconButton(
                 icon: const Icon(Icons.history),
