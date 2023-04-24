@@ -39,6 +39,7 @@ class ResultListView extends StatelessWidget {
                     result: results[index],
                     onTap: () => notifier.openBook(results[index], context),
                   ),
+                  cacheExtent: 8000,
                 ),
           Positioned(
               bottom: 16,
