@@ -4,6 +4,7 @@ import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/providers/navigation_provider.dart';
 import 'package:tipitaka_pali/services/rx_prefs.dart';
 
+import '../../../data/flex_theme_data.dart';
 import '../../widgets/my_vertical_divider.dart';
 import '../reader/reader_container.dart';
 import 'dekstop_navigation_bar.dart';
@@ -66,6 +67,7 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
 
   @override
   Widget build(BuildContext context) {
+    final isOrange2 = Prefs.themeName == MyThemes.orange2Name;
     return PreferenceBuilder<double>(
         preference: context
             .read<StreamingSharedPreferences>()
@@ -75,8 +77,20 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
             children: [
               Row(
                 children: [
-                  const DeskTopNavigationBar(),
-                  const MyVerticalDivider(width: 2),
+                  if (isOrange2)
+                    Container(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          right: BorderSide(color: Colors.grey)
+                        )
+                      ),
+                      child: const DeskTopNavigationBar(),
+                    ),
+                  if (!isOrange2)
+                    ...[
+                      const DeskTopNavigationBar(),
+                      const MyVerticalDivider(width: 2),
+                    ],
                   // Naviagation Pane
                   SizeTransition(
                     sizeFactor: _tween.animate(_animation),
@@ -84,7 +98,10 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
                     axisAlignment: 1,
                     child: SizedBox(
                       width: width,
-                      child: const DetailNavigationPane(navigationCount: 7),
+                      child:
+                      const DetailNavigationPane(navigationCount: 7),
+
+
                     ),
                   ),
                   // reader view

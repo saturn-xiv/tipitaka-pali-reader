@@ -67,6 +67,8 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           const Divider(),
           _getMultiTabsModeSwitch(),
           const Divider(),
+          _getNewTabAtEndSwitch(),
+          const Divider(),
           _getHelpTile(context),
           _getAboutTile(context),
           //QuotesOrRestore(),
@@ -152,6 +154,23 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
             });
           },
           value: _clipboard,
+        ),
+      ),
+    );
+  }
+
+  Widget _getNewTabAtEndSwitch() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: ListTile(
+        title: Text(AppLocalizations.of(context)!.newTabAtEnd),
+        trailing: Switch(
+          onChanged: (value) {
+            setState(() {
+              Prefs.isNewTabAtEnd = value;
+            });
+          },
+          value: Prefs.isNewTabAtEnd,
         ),
       ),
     );

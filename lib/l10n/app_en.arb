@@ -34,9 +34,6 @@
   "toc":                  "TOC",
   "mat":                  "MAT",
   "font":                 "Font",
-  "exact":                "Exact",
-  "prefix":               "Prefix",
-  "distance":             "Distance",
   "anywhere":             "Any Part",
   "openingBook":          "Openning Books",
   "animationSpeed":       "Animation Speed in ms",
@@ -79,7 +76,8 @@
   "alphabetically":         "Alphabetically",
   "noHistory":              "no History",
   "selectAll":              "Select All",
-  "selectNone":             "Select None"
+  "selectNone":             "Select None",
+  "newTabAtEnd":            "New tab at end"
 }
 
 

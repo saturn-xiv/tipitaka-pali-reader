@@ -125,7 +125,7 @@ class DatabaseHelper {
     debugPrint('wordlist count: $length');
     final wordlist = frequencyMap.entries.toList();
     var chunks = <List<MapEntry<String, int>>>[];
-    int chunkSize = 15000;
+    int chunkSize = 10000;
     for (var i = 0; i < length; i += chunkSize) {
       chunks.add(
           wordlist.sublist(i, i + chunkSize > length ? length : i + chunkSize));

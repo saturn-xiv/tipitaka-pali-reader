@@ -13,7 +13,6 @@ class SearchService {
     final SearchSuggestionRepository repository =
         SearchSuggestionDatabaseRepository(databaseProvider);
     final suggestions = await repository.getSuggestions(filterWord, isFuzzy);
-    // debugPrint("got suggestions $suggestions");
     return suggestions;
   }
 

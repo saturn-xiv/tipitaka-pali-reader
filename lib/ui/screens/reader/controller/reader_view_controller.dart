@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,16 @@ import '../../../../services/repositories/recent_repo.dart';
 import '../../home/openning_books_provider.dart';
 
 class ReaderViewController extends ChangeNotifier {
+
+  bool _mounted = true;
+  bool get mounted => _mounted;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _mounted = false;
+  }
+
   final BuildContext context;
   final PageContentRepository pageContentRepository;
   final BookRepository bookRepository;
@@ -27,13 +38,33 @@ class ReaderViewController extends ChangeNotifier {
   int? initialPage;
   String? textToHighlight;
 
+  final ValueNotifier<String> _searchText = ValueNotifier('');
+  ValueListenable<String> get searchText => _searchText;
+
+  final ValueNotifier<int> _searchResultCount = ValueNotifier(0);
+  ValueListenable<int> get searchResultCount => _searchResultCount;
+
+  final ValueNotifier<int> _currentSearchResult = ValueNotifier(1);
+  ValueListenable<int> get currentSearchResult => _currentSearchResult;
+
+  final ValueNotifier<bool> _highlightEveryMatch = ValueNotifier(true);
+  ValueListenable<bool> get highlightEveryMatch => _highlightEveryMatch;
+
   bool isloadingFinished = false;
+
   late ValueNotifier<int> _currentPage;
   ValueListenable<int> get currentPage => _currentPage;
+
   // will be use this for scroll to this
   String? tocHeader;
   late List<PageContent> pages;
   late int numberOfPage;
+
+  bool _showSearch = false;
+
+  bool get showSearch => _showSearch;
+
+  final List<SearchIndex> searchIndexes = [];
 
   // // script features
   // late final bool _isShowAlternatePali;
@@ -47,13 +78,86 @@ class ReaderViewController extends ChangeNotifier {
     this.textToHighlight,
   });
 
+  void search(String text) {
+    _searchText.value = text;
+    searchIndexes.clear();
+
+    if (text.isEmpty) {
+      _searchResultCount.value = 0;
+      _currentSearchResult.value = 0;
+      return;
+    }
+
+    var totalResults = 0;
+    _currentSearchResult.value = -1;
+    pages.forEachIndexed((index, page) {
+      final pageMatches = text.allMatches(page.content).length;
+      if (index + 1 == _currentPage.value && _currentSearchResult.value == -1) {
+        _currentSearchResult.value = searchIndexes.length;
+      }
+      for (int i = 0; i < pageMatches; i++) {
+        searchIndexes.add(SearchIndex(index + 1, i));
+      }
+      totalResults += pageMatches;
+    });
+    _searchResultCount.value = totalResults;
+    _currentSearchResult.value = 1;
+  }
+
+  void showSearchWidget(bool show) {
+    _showSearch = show;
+    _searchText.value = '';
+    notifyListeners();
+  }
+
+  void setHighlightEveryMatch(bool highlight) {
+    _highlightEveryMatch.value = highlight;
+  }
+
+  void searchDownward() {
+    var next = _currentSearchResult.value += 1;
+    if (next > _searchResultCount.value) {
+      next = 1;
+    }
+
+    final nextIndex = next - 1;
+    final nextPage = searchIndexes[nextIndex].page;
+
+    if (_currentPage.value != nextPage) {
+      _currentPage.value = nextPage;
+    }
+
+    _currentSearchResult.value = next;
+  }
+
+  void searchUpward() {
+    var next = _currentSearchResult.value -= 1;
+    if (next == 0) {
+      next = _searchResultCount.value;
+    }
+
+    final nextIndex = next - 1;
+    final nextPage = searchIndexes[nextIndex].page;
+    if (_currentPage.value != nextPage) {
+      _currentPage.value = nextPage;
+    }
+
+    _currentSearchResult.value = next;
+  }
+
   Future<void> loadDocument() async {
     pages = List.unmodifiable(await _loadPages(book.id));
     numberOfPage = pages.length;
     await _loadBookInfo(book.id);
     isloadingFinished = true;
     myLogger.i('loading finished for: ${book.name}');
+
+    if (!_mounted) {
+      return;
+    }
+
     notifyListeners();
+
     // update opened book list
     final openedBookController = context.read<OpenningBooksProvider>();
     openedBookController.update(newPageNumber: _currentPage.value);
@@ -153,4 +257,10 @@ class ReaderViewController extends ChangeNotifier {
         RecentDatabaseRepository(DatabaseHelper(), RecentDao());
     recentRepository.insertOrReplace(Recent(book.id, _currentPage.value));
   }
+}
+
+class SearchIndex {
+  int page;
+  int index;
+  SearchIndex(this.page, this.index);
 }

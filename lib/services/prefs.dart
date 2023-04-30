@@ -2,11 +2,17 @@
 //import 'package:tipitaka_pali/services/prefs.dart';
 
 // Shared prefs package import
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../data/constants.dart';
 
 // preference names
 const String localeValPref = "localeVal";
 const String themeIndexPref = "themeIndex";
+const String themeNamePref = "themeNamePref";
 const String darkThemeOnPref = "darkThemeOn";
 const String readerFontSizePref = "fontSize";
 const String uiFontSizePref = "ui_fontSize";
@@ -32,10 +38,13 @@ const String selectedSubCategoryFiltersPref = "selectedSubCategoryFilters";
 const String tabsVisiblePref = "tabsVisible";
 const String controlBarShowPref = "controlBarShow";
 const String isFuzzyPref = "isFuzzy";
+const String newTabAtEnd = 'newTabAtEnd';
 
 // default pref values
 const int defaultLocaleVal = 0;
 const int defaultThemeIndex = 12;
+const String defaultThemeName = '';
+
 const bool defaultDarkThemeOn = false;
 //ToDo something is not right with release and font size
 const int defaultReaderFontSize = 14;
@@ -60,6 +69,7 @@ const double defaultAnimationSpeed = 400;
 const int defaultTabsVisible = 3;
 const bool defaultControlBarShow = true;
 const bool defaultIsFuzzy = false;
+const bool defaultNewTabAtEnd = false;
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -94,6 +104,11 @@ class Prefs {
   static int get themeIndex =>
       instance.getInt(themeIndexPref) ?? defaultThemeIndex;
   static set themeIndex(int value) => instance.setInt(themeIndexPref, value);
+
+  static String get themeName =>
+      instance.getString(themeNamePref) ?? defaultThemeName;
+  static set themeName(String value) => instance.setString(themeNamePref, value);
+
 
   static bool get darkThemeOn =>
       instance.getBool(darkThemeOnPref) ?? defaultDarkThemeOn;
@@ -213,4 +228,24 @@ class Prefs {
 
   static bool get isFuzzy => instance.getBool(isFuzzyPref) ?? defaultIsFuzzy;
   static set isFuzzy(bool value) => instance.setBool(isFuzzyPref, value);
+
+  static bool get isNewTabAtEnd => instance.getBool(newTabAtEnd) ?? defaultNewTabAtEnd;
+  static set isNewTabAtEnd(bool value) => instance.setBool(newTabAtEnd, value);
+
+  // ===========================================================================
+  // Helpers
+
+  static Color getChosenColor() {
+    switch (Prefs.selectedPageColor) {
+      case 0:
+        return Color(Colors.white.value);
+      case 1:
+        return const Color(seypia);
+      case 2:
+        return Color(Colors.black.value);
+      default:
+        return Color(Colors.white.value);
+    }
+  }
+
 }

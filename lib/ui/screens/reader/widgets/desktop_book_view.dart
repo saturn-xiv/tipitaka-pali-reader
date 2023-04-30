@@ -28,6 +28,8 @@ class _DesktopBookViewState extends State<DesktopBookView> {
   late final ItemPositionsListener itemPositionsListener;
   late final ItemScrollController itemScrollController;
 
+  String searchText = '';
+
   @override
   void initState() {
     super.initState();
@@ -37,14 +39,26 @@ class _DesktopBookViewState extends State<DesktopBookView> {
     itemScrollController = ItemScrollController();
     itemPositionsListener.itemPositions.addListener(_listenItemPosition);
     readerViewController.currentPage.addListener(_listenPageChange);
+    readerViewController.searchText.addListener(_onSearchTextChanged);
+    readerViewController.currentSearchResult.addListener(() {
+      setState(() {});
+    });
+    readerViewController.highlightEveryMatch.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
     itemPositionsListener.itemPositions.removeListener(_listenItemPosition);
     readerViewController.currentPage.removeListener(_listenPageChange);
+    readerViewController.searchText.removeListener(_onSearchTextChanged);
+    readerViewController.currentSearchResult.removeListener(_onSearchTextChanged);
+    readerViewController.highlightEveryMatch.removeListener(_onSearchTextChanged);
     super.dispose();
   }
+
+  static final Map<String, Widget> cachedPages = {};
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +66,7 @@ class _DesktopBookViewState extends State<DesktopBookView> {
         readerViewController.book.firstPage;
 
     debugPrint('page index: $pageIndex');
+    debugPrint('searchText-searchText: $searchText');
 
     return LayoutBuilder(builder: (context, constraints) {
       return Row(
@@ -71,18 +86,24 @@ class _DesktopBookViewState extends State<DesktopBookView> {
                     final script =
                         context.read<ScriptLanguageProvider>().currentScript;
                     // transciption
-                    String htmlContent = PaliScript.getScriptOf(
+
+                    final id = '${readerViewController.book.name}-${readerViewController.book.id}-$index';
+
+                    final stopwatch = Stopwatch()..start();
+                    String htmlContent = PaliScript.getCachedScriptOf(
                       script: script,
                       romanText: pageContent.content,
+                      cacheId: id,
                       isHtmlText: true,
                     );
+                    print('doSomething() executed in ${stopwatch.elapsedMilliseconds} ms');
 
-                    // return Text(content);
                     return PaliPageWidget(
                       pageNumber: pageContent.pageNumber!,
                       htmlContent: htmlContent,
                       script: script,
                       highlightedWord: _needToHighlight(index),
+                      searchText: searchText,
                       onClick: onClickedWord,
                     );
                   },
@@ -143,6 +164,12 @@ class _DesktopBookViewState extends State<DesktopBookView> {
       readerViewController.onGoto(pageNumber: pageNumberOfUpperPage);
       return;
     }
+  }
+
+  void _onSearchTextChanged() {
+    setState(() {
+      searchText = readerViewController.searchText.value;
+    });
   }
 
   void _listenPageChange() {

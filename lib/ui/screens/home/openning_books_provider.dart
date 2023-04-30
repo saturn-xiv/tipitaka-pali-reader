@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../business_logic/models/book.dart';
+import '../../../services/prefs.dart';
 
 class OpenningBooksProvider extends ChangeNotifier {
   final List<Map<String, dynamic>> _books = [];
@@ -12,7 +15,9 @@ class OpenningBooksProvider extends ChangeNotifier {
 
   void add({required Book book, int? currentPage, String? textToHighlight}) {
     var uuid = const Uuid().v4();
-    _books.insert(0, {
+    _selectedBookIndex = Prefs.isNewTabAtEnd ? _books.length : 0;
+    debugPrint('Adding $_selectedBookIndex');
+    _books.insert(_selectedBookIndex, {
       'book': book,
       'uuid': uuid,
       'current_page': currentPage,
@@ -22,9 +27,18 @@ class OpenningBooksProvider extends ChangeNotifier {
   }
 
   void remove({int? index}) {
-    index ??= selectedBookIndex;
-    books.removeAt(index);
+    final indexToRemove = index ??= _selectedBookIndex;
+    _books.removeAt(indexToRemove);
+    if (Prefs.isNewTabAtEnd) {
+      // only need to select another tab if the current one is the one removed
+      // in that case we select the tab to the right of the removed one (as does
+      // the chrome browser)
+      if (indexToRemove <= _selectedBookIndex) {
+        _selectedBookIndex = min(_books.length - 1, _selectedBookIndex);
+      }
+    } else {
       _selectedBookIndex = 0;
+    }
     notifyListeners();
   }
 
@@ -40,11 +54,10 @@ class OpenningBooksProvider extends ChangeNotifier {
     books[_selectedBookIndex] = current;
   }
 
-  void updateSelectedBookIndex(int index,{bool forceNotify =false}) {
+  void updateSelectedBookIndex(int index, {bool forceNotify = false}) {
     _selectedBookIndex = index;
-    if(forceNotify){
-
-    notifyListeners();
+    if (forceNotify) {
+      notifyListeners();
     }
   }
 

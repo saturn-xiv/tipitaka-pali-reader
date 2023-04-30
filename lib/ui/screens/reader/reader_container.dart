@@ -1,9 +1,14 @@
+import 'dart:math';
+
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ms_material_color/ms_material_color.dart';
 import 'package:provider/provider.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 
 import '../../../business_logic/models/book.dart';
+import '../../../data/flex_theme_data.dart';
 import '../../../services/provider/script_language_provider.dart';
 import '../../../services/provider/theme_change_notifier.dart';
 import '../../../utils/pali_script.dart';
@@ -37,6 +42,8 @@ class _ReaderContainerState extends State<ReaderContainer> {
     final book = current['book'] as Book;
     final currentPage = current['current_page'] as int?;
     final textToHighlight = current['text_to_highlight'] as String?;
+    debugPrint('Reader at...');
+
     var reader = Reader(
       book: book,
       initialPage: currentPage,
@@ -120,6 +127,8 @@ Etaṃ buddhānasāsanaṃ
       );
     }
 
+    final isOrange2 = Prefs.themeName == MyThemes.orange2Name;
+
     final primaryColor = Theme.of(context).colorScheme.primary;
     final surface = Theme.of(context).colorScheme.surfaceTint;
     final materialColor = MsMaterialColor(primaryColor.value);
@@ -130,7 +139,7 @@ Etaṃ buddhānasāsanaṃ
         BorderRadius.only(topLeft: radius, topRight: radius);
     themeData.tabsArea
       ..border = const Border(bottom: BorderSide(color: Colors.grey))
-      ..middleGap = .0;
+      ..initialGap = 0;
 
     themeData.tab
       ..margin = const EdgeInsets.only(top: 2)
@@ -152,6 +161,61 @@ Etaṃ buddhānasāsanaṃ
           border: Border.all(color: Colors.transparent),
           borderRadius: borderRadius);
 
+
+
+    if (isOrange2) {
+      themeData.tabsArea
+        ..border = null
+        ..color = const Color(0xFFf4f4f4)
+        ..middleGap = isOrange2 ? 3 : 0
+        ..initialGap = isOrange2 ? 5 : 0
+        ..gapBottomBorder = const BorderSide(color: Colors.grey);
+
+      themeData.tab
+        ..margin = EdgeInsets.zero
+        ..padding = const EdgeInsets.fromLTRB(8, 4, 8, 4)
+        ..buttonsOffset = 4
+        ..disabledButtonColor = Colors.grey
+        ..decoration = const BoxDecoration(
+            shape: BoxShape.rectangle,
+            border: Border(
+              left: BorderSide(color: Colors.transparent),
+              right: BorderSide(color: Colors.transparent),
+              top: BorderSide(color: Colors.transparent),
+              bottom: BorderSide(color: Colors.grey),
+            )
+        )
+        ..selectedStatus.normalButtonColor = primaryColor
+        ..selectedStatus.decoration = BoxDecoration(
+            shape: BoxShape.rectangle,
+            color: Prefs.getChosenColor(),
+            border: const Border(
+              left: BorderSide(color: Colors.grey),
+              right: BorderSide(color: Colors.grey),
+              top: BorderSide(color: Colors.grey),
+              bottom: BorderSide(color: Colors.transparent),
+            ),
+        )
+        ..selectedStatus.fontColor = primaryColor
+        ..highlightedStatus.decoration = const BoxDecoration(
+            color: Color(0xFFdadada),
+            border: Border(
+              left: BorderSide(color: Colors.transparent),
+              right: BorderSide(color: Colors.transparent),
+              top: BorderSide(color: Colors.transparent),
+              bottom: BorderSide(color: Colors.grey),
+            ),);
+
+      themeData.contentArea
+        .decoration = const BoxDecoration(
+            shape: BoxShape.rectangle,
+            border: Border(
+                left: BorderSide(color: Colors.grey),
+                bottom: BorderSide(color: Colors.transparent),
+                right: BorderSide(color: Colors.transparent),
+                top: BorderSide(color: Colors.transparent)));
+    }
+
     // cannot watch two notifiers simultaneity in a single widget
     // so warp in consumer for watching theme change
     final tabsArea = getTabArea(themeData, multiWindowMode, tabs, books);
@@ -164,7 +228,32 @@ Etaṃ buddhānasāsanaṃ
     }
   }
 
+  closeTab(int tabIndex, TabbedViewController controller) {
+    int toSelect = 0;
+    int selected = controller.selectedIndex ?? 0;
+
+    if (tabIndex <= selected) {
+      toSelect = min(controller.tabs.length - 2, (controller.selectedIndex ?? 1));
+    } else {
+      toSelect = selected;
+    }
+
+    if (!Prefs.isNewTabAtEnd) {
+      toSelect = 0;
+    }
+
+    controller.removeTab(tabIndex, selectedIndex: toSelect);
+
+    final openedBookProvider = context.read<OpenningBooksProvider>();
+    final books = openedBookProvider.books;
+    tabsVisibility.remove(books[tabIndex]['book'].id);
+
+    openedBookProvider.remove(index: tabIndex);
+  }
+
   Widget getTabArea(themeData, multiWindowMode, tabs, books) {
+    final controller = TabbedViewController(tabs);
+    controller.selectedIndex = context.read<OpenningBooksProvider>().selectedBookIndex;
     return Consumer<ThemeChangeNotifier>(
       builder: ((context, themeChangeNotifier, child) {
         // tabbed view uses custom theme and provide TabbedViewTheme.
@@ -173,7 +262,7 @@ Etaṃ buddhānasāsanaṃ
         return TabbedViewTheme(
           data: themeData,
           child: TabbedView(
-              controller: TabbedViewController(tabs),
+              controller: controller,
               contentBuilder: (_, index) {
                 if (multiWindowMode) {
                   return Container();
@@ -181,16 +270,16 @@ Etaṃ buddhānasāsanaṃ
                   return readerAt(index, books);
                 }
               },
-              onTabClose: (index, tabData) {
-                tabsVisibility.remove(books[index]['book'].id);
-                context.read<OpenningBooksProvider>().remove(index: index);
-              },
               onTabSelection: (selectedIndex) {
                 if (selectedIndex != null) {
                   context
                       .read<OpenningBooksProvider>()
                       .updateSelectedBookIndex(selectedIndex);
                 }
+              },
+              tabCloseInterceptor: (int tabIndex) {
+                closeTab(tabIndex, controller);
+                return false;
               },
               draggableTabBuilder:
                   (int tabIndex, TabData tab, Widget tabWidget) {
@@ -203,6 +292,9 @@ Etaṃ buddhānasāsanaṃ
                 final gd = mr.child as GestureDetector;
 
                 GestureDetector gestureDetector = GestureDetector(
+                    onTertiaryTapUp: (details) {
+                      closeTab(tabIndex, controller);
+                    },
                     onTapDown: (_) {
                       gd.onTap?.call();
                     },
@@ -227,10 +319,10 @@ Etaṃ buddhānasāsanaṃ
                     },
                     child: DragTarget(
                       builder: (
-                        BuildContext context,
-                        List<dynamic> accepted,
-                        List<dynamic> rejected,
-                      ) {
+                          BuildContext context,
+                          List<dynamic> accepted,
+                          List<dynamic> rejected,
+                          ) {
                         return mouseRegion;
                       },
                       onAccept: (int index) {
@@ -240,7 +332,8 @@ Etaṃ buddhānasāsanaṃ
                             .swap(tabIndex, index);
                       },
                     ));
-              }),
+              }
+              ),
         );
       }),
     );

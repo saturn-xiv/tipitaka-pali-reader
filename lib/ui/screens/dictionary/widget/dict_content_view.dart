@@ -34,7 +34,7 @@ class DictionaryContentView extends StatelessWidget {
             height: 100, child: Center(child: CircularProgressIndicator())),
         data: (content) => SingleChildScrollView(
             child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.only(top: 8.0),
                 child: SelectionArea(
                   child: HtmlWidget(
                     content,

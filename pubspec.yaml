@@ -55,7 +55,10 @@ dependencies:
   scrollable_positioned_list: ^0.3.2
   word_selectable_text: ^0.2.0
   multi_split_view: ^2.1.0
-  tabbed_view: ^1.13.0+1
+  tabbed_view:
+    git:
+      url: https://github.com/dhammacakka/tabbed_view.git
+      ref: main # branch name
   slidable_bar:
     path: packages/slidable_bar
   huge_listview: ^2.0.2

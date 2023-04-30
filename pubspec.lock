@@ -371,12 +371,11 @@ packages:
   flutter_typeahead:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "1511c92"
-      resolved-ref: "1511c926c6a7e92277ea3334eb0dd7e743713ccc"
-      url: "https://github.com/pndaza/flutter_typeahead.git"
-    source: git
-    version: "3.3.0"
+      name: flutter_typeahead
+      sha256: edfc51579ca3756adaa32b6849cf44af03276b93e8a8a68d8247ee243598f1b2
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.3.7"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -983,10 +982,10 @@ packages:
     dependency: "direct main"
     description:
       name: styled_text
-      sha256: "0f3e126b9cd7fc0f3ba2b4beaa65f3015f72bfae8478bed6ba229eb9b40da18e"
+      sha256: f72928d1ebe8cb149e3b34a689cb1ddca696b808187cf40ac3a0bd183dff379c
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "7.0.0"
   substring_highlight:
     dependency: "direct main"
     description:
@@ -1006,11 +1005,12 @@ packages:
   tabbed_view:
     dependency: "direct main"
     description:
-      name: tabbed_view
-      sha256: "6b6c3b9993647bad89f0b8628f446f8297ef9f9fc80463306210e79dd646d6ae"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.16.0"
+      path: "."
+      ref: main
+      resolved-ref: c2d70388e784ded5da6af5ab240a5bedca1797a8
+      url: "https://github.com/dhammacakka/tabbed_view.git"
+    source: git
+    version: "1.17.0"
   term_glyph:
     dependency: transitive
     description:
@@ -1131,6 +1131,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  vm_service:
+    dependency: "direct main"
+    description:
+      name: vm_service
+      sha256: "518254c0d3ee20667a1feef39eefe037df87439851e4b3cb277e5b3f37afa2f0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.4.0"
   watcher:
     dependency: transitive
     description:
@@ -1196,5 +1204,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.18.0 <4.0.0"
+  dart: ">=2.19.0 <=3.7.0"
   flutter: ">=3.7.0"

@@ -25,6 +25,7 @@ class SelectThemeWidget extends StatelessWidget {
       padding: EdgeInsets.zero,
       onSelected: (val) {
         Prefs.themeIndex = val;
+        Prefs.themeName = myFlexSchemes[val].name;
         final localeProvider =
             Provider.of<ThemeChangeNotifier>(context, listen: false);
         localeProvider.themeIndex = val;

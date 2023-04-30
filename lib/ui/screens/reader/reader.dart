@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:slidable_bar/slidable_bar.dart';
 import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
+import 'package:tipitaka_pali/ui/screens/reader/widgets/search_widget.dart';
 
 import '../../../app.dart';
 import '../../../business_logic/models/book.dart';
@@ -62,14 +64,37 @@ class Reader extends StatelessWidget {
   }
 }
 
-class ReaderView extends StatelessWidget {
+class ReaderView extends StatelessWidget implements Searchable {
   ReaderView({Key? key}) : super(key: key);
   final _sc = SlidableBarController(initialStatus: Prefs.controlBarShow);
 
   @override
+  void onSearchRequested(BuildContext context) {
+    debugPrint('on search requested');
+    Provider.of<ReaderViewController>(context, listen: false).showSearchWidget(true);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    return Shortcuts(
+        shortcuts: <LogicalKeySet, Intent>{
+          LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyF):
+          const SearchIntent(),
+        },
+        child: Actions(
+            actions: <Type, Action<Intent>>{
+              SearchIntent: SearchAction(this, context),
+            },
+            child: _getReader(context)));
+  }
+
+  Widget _getReader(BuildContext context) {
+
+    final showSearch = context.select<ReaderViewController, bool>(
+            (controller) => controller.showSearch);
+
     final isLoaded = context.select<ReaderViewController, bool>(
-        (controller) => controller.isloadingFinished);
+            (controller) => controller.isloadingFinished);
 
     if (!isLoaded) {
       // display fade loading
@@ -87,47 +112,52 @@ class ReaderView extends StatelessWidget {
       //     : const ReaderAppBar(),
       body: Consumer<ThemeChangeNotifier>(
           builder: ((context, themeChangeNotifier, child) => Container(
-                color: getChosenColor(),
-                child: SlidableBar(
-                  slidableController: _sc,
-                  side: Side.bottom,
-                  barContent: const ReaderToolbar(),
-                  size: 100,
-                  clicker: InkResponse(
-                    onTap: () {
-                      Prefs.controlBarShow = !Prefs.controlBarShow;
-                      (Prefs.controlBarShow) ? _sc.show() : _sc.hide();
-                      //debugPrint("statechanged to ${Prefs.controlBarShow}");
-                    },
-                    child: Container(
-                      key: key,
-                      width: 42,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.5),
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16),
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.keyboard_arrow_up,
-                        color: Colors.white,
-                      ),
+            color: getChosenColor(),
+            child: SlidableBar(
+              slidableController: _sc,
+              side: Side.bottom,
+              barContent: const ReaderToolbar(),
+              size: 100,
+              clicker: InkResponse(
+                onTap: () {
+                  Prefs.controlBarShow = !Prefs.controlBarShow;
+                  (Prefs.controlBarShow) ? _sc.show() : _sc.hide();
+                  //debugPrint("statechanged to ${Prefs.controlBarShow}");
+                },
+                child: Container(
+                  key: key,
+                  width: 42,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.5),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
                     ),
                   ),
-                  frontColor: Colors.white,
-                  backgroundColor: Colors.blue.withOpacity(0.3),
-                  clickerSize: 32,
-                  clickerPosition: 0.98,
-                  child: PlatformInfo.isDesktop || Mobile.isTablet(context)
-                      // don't const these two guys, otherwise theme changes
-                      // won't be reflected, alternatively: get notified about
-                      // changes in the views themselves
-                      ? const DesktopBookView()
-                      : const MobileBookView(),
+                  child: const Icon(
+                    Icons.keyboard_arrow_up,
+                    color: Colors.white,
+                  ),
                 ),
-              ))),
+              ),
+              frontColor: Colors.white,
+              backgroundColor: Colors.blue.withOpacity(0.3),
+              clickerSize: 32,
+              clickerPosition: 0.98,
+              child: Stack(children: [
+                if (showSearch)
+                  const SearchWidget(),
+                Padding(padding: EdgeInsets.only(top: showSearch ? 42 : 0), child: PlatformInfo.isDesktop || Mobile.isTablet(context)
+                // don't const these two guys, otherwise theme changes
+                // won't be reflected, alternatively: get notified about
+                // changes in the views themselves
+                    ? DesktopBookView()
+                    : MobileBookView()),
+
+              ])
+            ),
+          ))),
       // bottomNavigationBar: SafeArea(child: ControlBar()),
     );
   }
@@ -144,4 +174,22 @@ class ReaderView extends StatelessWidget {
         return Color(Colors.white.value);
     }
   }
+}
+
+abstract class Searchable {
+  void onSearchRequested(BuildContext context);
+}
+
+class SearchIntent extends Intent {
+  const SearchIntent();
+}
+
+class SearchAction extends Action<SearchIntent> {
+  SearchAction(this.searchable, this.context);
+
+  final Searchable searchable;
+  final BuildContext context;
+
+  @override
+  void invoke(covariant SearchIntent intent) => searchable.onSearchRequested(context);
 }

@@ -36,4 +36,8 @@ p.bkname {
 .gathalast {  margin-bottom: 1.3em; margin-left: 5em;}
 .pageheader {font-size: 0.9em; color: deeppink;}
 .highlighted {background: rgb(255, 114, 20); color: white;}
+.highlightedSearch {
+    background-color: #FFE959;
+    color: #000;
+}
 .sample {background: white; color: black; text-align:center;}

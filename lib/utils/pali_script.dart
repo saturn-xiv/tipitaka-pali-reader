@@ -8,6 +8,24 @@ class PaliScript {
   static final _regexPaliWord =
       RegExp(r'[0-9a-zA-ZāīūṅñṭḍṇḷṃĀĪŪṄÑṬḌHṆḶṂ\.]+(?![^<>]*>)');
   PaliScript._();
+
+  static Map<String, String> cache = {};
+
+  static String getCachedScriptOf({
+    required Script script,
+    required String romanText,
+    required String cacheId,
+    bool isHtmlText = false,
+
+  }) {
+    if (cache[cacheId] == null || cache[cacheId]?.isEmpty == true) {
+      cache[cacheId] = getScriptOf(script: script, romanText: romanText, isHtmlText: isHtmlText);
+    }
+
+    return cache[cacheId] ?? '';
+  }
+
+
   static String getScriptOf({
     required Script script,
     required String romanText,

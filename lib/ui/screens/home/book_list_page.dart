@@ -143,8 +143,10 @@ class BookListPage extends StatelessWidget {
                       onTap: () => _openBook(context, listItems[index]),
                     ),
                 separatorBuilder: (context, index) {
-                  return const Divider(
-                    color: Colors.grey,
+                  return Divider(
+                    color: Colors.grey.shade400,
+                    height: 1,
+                    thickness: 0,
                   );
                 });
           }

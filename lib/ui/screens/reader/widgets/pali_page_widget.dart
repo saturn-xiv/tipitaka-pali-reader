@@ -1,3 +1,7 @@
+import 'package:collection/collection.dart';
+import 'package:html/dom.dart' as dom;
+
+import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
@@ -12,12 +16,14 @@ import '../../../../services/provider/theme_change_notifier.dart';
 import '../../../../utils/pali_script.dart';
 import '../../../../utils/pali_script_converter.dart';
 import '../../../widgets/custom_text_selection_control.dart';
+import '../controller/reader_view_controller.dart';
 
 class PaliPageWidget extends StatefulWidget {
   final int pageNumber;
   final String htmlContent;
   final Script script;
   final String? highlightedWord;
+  final String? searchText;
   final Function(String clickedWord)? onClick;
   const PaliPageWidget({
     Key? key,
@@ -26,14 +32,19 @@ class PaliPageWidget extends StatefulWidget {
     required this.script,
     this.highlightedWord,
     this.onClick,
+    this.searchText,
   }) : super(key: key);
 
   @override
   State<PaliPageWidget> createState() => _PaliPageWidgetState();
 }
 
+class PaliWidgetFactory extends WidgetFactory {
+
+}
+
 class _PaliPageWidgetState extends State<PaliPageWidget> {
-  final _myFactory = WidgetFactory();
+  final _myFactory = PaliWidgetFactory();
   String? highlightedWord;
 
   @override
@@ -48,8 +59,9 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+
     int fontSize = context.watch<ReaderFontProvider>().fontSize;
-    String html = _formatContent(widget.htmlContent, widget.script);
+    String html = _formatContent(widget.htmlContent, widget.script, context);
     final fontName = FontUtils.getfontName(
         script: context.read<ScriptLanguageProvider>().currentScript);
 
@@ -101,6 +113,11 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
               // }
               if (element.localName == 'a') {
                 // print('found a tag: ${element.outerHtml}');
+                final isHighlight = element.parent!.className.contains('search-highlight') == true;
+                if (isHighlight) {
+                  return { 'color': '#000', 'text-decoration': 'none' };
+                }
+
                 if (context.read<ThemeChangeNotifier>().isDarkMode) {
                   return {
                     'color': 'white',
@@ -113,6 +130,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
                   };
                 }
               }
+
               if (element.className == 'highlighted') {
                 String styleColor = (Prefs.darkThemeOn) ? "white" : "black";
                 Color c = Theme.of(context).primaryColorLight;
@@ -142,12 +160,21 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     );
   }
 
-  String _formatContent(String content, Script script) {
+  String _formatContent(String content, Script script, BuildContext context) {
     if (highlightedWord != null) {
       content = _addHighlight(content, highlightedWord!);
     }
+
     if (!Prefs.isShowAlternatePali) {
       content = _removeAlternatePali(content);
+    }
+
+    if (widget.searchText?.isNotEmpty == true) {
+      content = _addHighlight2(
+        content,
+        '${widget.searchText}',
+        context
+      );
     }
     content = _makeClickable(content, script);
     content = _changeToInlineStyle(content);
@@ -155,10 +182,68 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     return content;
   }
 
+
   String _removeAlternatePali(String content) {
     // format of alternate pali
     // <span class="note">[bhagavāti (syā.), dī. ni. 1.157, abbhuggatākārena pana sameti]</span>
     return content.replaceAll(RegExp(r'<span class="note">\[.+\]</span>'), '');
+  }
+
+  String _addHighlight2(String content, String textToHighlight, BuildContext context) {
+    final rvc = Provider.of<ReaderViewController>(context, listen: false);
+    final soup = BeautifulSoup(content);
+    final isDark = context.read<ThemeChangeNotifier>().isDarkMode;
+    final textColor = isDark ? '#000' : '#000';
+    final borderColor = isDark ? '#6bb8ff' : '#000';
+    final bgColor = isDark ? '#2994ff' : '#a6d2ff';
+
+    List<ReplaceResult> toReplace = [];
+    for (final node in (soup.body?.nodes ?? [])) {
+      _highlightNode(node, textToHighlight, toReplace, textColor);
+    }
+
+    final highlightAll = rvc.highlightEveryMatch.value;
+    var highlightIndex = 0;
+    toReplace.forEachIndexed((index, result) {
+      for (final newNode in result.newNodes) {
+        if (widget.pageNumber == rvc.currentPage.value && newNode.data.contains('data-is-highlighted')) {
+          final si = rvc.searchIndexes[rvc.currentSearchResult.value - 1];
+          if (highlightIndex == si.index) {
+            newNode.attributes['style'] = 'background: $bgColor; color: $textColor; border: 1px solid $borderColor;';
+          } else if (!highlightAll) {
+            newNode.attributes['style'] = 'border: 1px solid transparent;';
+          }
+          highlightIndex++;
+        }
+
+        result.node.parent?.insertBefore(newNode, result.node);
+      }
+
+      result.node.remove();
+    });
+
+
+    return soup.toString();
+  }
+
+  _highlightNode(dom.Node node, String textToHighlight, List<ReplaceResult> toReplace, String textColor) {
+    if (node.nodeType == dom.Node.TEXT_NODE) {
+      if (node.text == null || node.text?.isEmpty == true || node.text?.contains(textToHighlight) == false) {
+        return;
+      }
+
+      final replace = '<span style="background-color: #FFE959 !important; color: $textColor; border: 1px solid #FFE959;" class="search-highlight" data-is-highlighted="true">$textToHighlight</span>';
+      final replaced = (node.text ?? '').replaceAll(textToHighlight, replace);
+      final highlighted = BeautifulSoup(replaced);
+
+      List<dom.Node> newNodes = (highlighted.body?.nodes ?? []).toList(growable: false).cast();
+      toReplace.add(ReplaceResult(node, newNodes));
+
+    } else {
+      for (final nodeChild in node.nodes) {
+        _highlightNode(nodeChild, textToHighlight, toReplace, textColor);
+      }
+    }
   }
 
   String _makeClickable(String content, Script script) {
@@ -233,6 +318,8 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       r'class="gathalast"': r'style="margin-bottom: 1.3em; margin-left: 5em;"',
       r'class="pageheader"': r'style="font-size: 0.9em; color: deeppink;"',
       r'class="note"': r'style="font-size: 0.8em; color: gray;"',
+       r'class = "highlightedSearch"':
+        r'style="background: #FFE959; color: #000;"',
       // r'class="highlighted"':
       //     r'style="background: rgb(255, 114, 20); color: white;"',
     };
@@ -333,7 +420,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     );
   }
 
-  String _addHighlight(String content, String textToHighlight) {
+  String _addHighlight(String content, String textToHighlight, {highlightClass = "highlighted", addId = true}) {
     // TODO - optimize highlight for some query text
 
     textToHighlight = PaliScript.getScriptOf(
@@ -343,7 +430,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     if (!textToHighlight.contains(' ')) {
       final pattern = RegExp('(?<=[\\s", ])$textToHighlight(?=[\\s", ])');
       if (content.contains(pattern)) {
-        final replace = '<span class = "highlighted">$textToHighlight</span>';
+        final replace = '<span class = "$highlightClass">$textToHighlight</span>';
         content = content.replaceAll(pattern, replace);
 
         // adding id to scroll
@@ -356,7 +443,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     final words = textToHighlight.trim().split(' ');
     for (final word in words) {
       if (content.contains(word)) {
-        final String replace = '<span class = "highlighted">$word</span>';
+        final String replace = '<span class = "$highlightClass">$word</span>';
         content = content.replaceAll(word, replace);
       } else {
         // bolded word case
@@ -364,15 +451,18 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
         // removing ti (တိ) at end
         String trimmedWord = word.replaceAll(RegExp(r'(nti|ti)$'), '');
         // print('trimmedWord: $trimmedWord');
-        final replace = '<span class = "highlighted">$trimmedWord</span>';
+        final replace = '<span class = "$highlightClass">$trimmedWord</span>';
 
         content = content.replaceAll(trimmedWord, replace);
       }
       //
     }
-    // adding id to scroll
-    content = content.replaceFirst('<span class = "highlighted">',
-        '<span id="$kGotoID" class="highlighted">');
+
+    if (addId) {
+      // adding id to scroll
+      content = content.replaceFirst('<span class = "$highlightClass">',
+          '<span id="$kGotoID" class="$highlightClass">');
+    }
 
     return content;
   }
@@ -409,4 +499,10 @@ class _MyFactory extends WidgetFactory {
     }
     return super.buildText(meta, tsh, text);
   }
+}
+
+class ReplaceResult {
+  dom.Node node;
+  List<dom.Node> newNodes;
+  ReplaceResult(this.node, this.newNodes);
 }

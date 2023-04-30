@@ -88,7 +88,8 @@ class DictionaryController with ChangeNotifier {
       return;
     }
     // loading definitions
-    final definition = await loadDefinition(_currentlookupWord);
+    final definition = await loadDefinition(_currentlookupWord!);
+    debugPrint('==================> $_currentlookupWord, is empty: ${definition.isEmpty}');
     if (definition.isEmpty) {
       _dictionaryState = const DictionaryState.noData();
       notifyListeners();
@@ -109,8 +110,10 @@ class DictionaryController with ChangeNotifier {
   Future<String> loadDefinition(String word) async {
     // use only if setting is good in prefs
     if (Prefs.saveClickToClipboard == true) {
-      await Clipboard.setData(ClipboardData(text: word));
+      // await Clipboard.setData(ClipboardData(text: word));
     }
+    debugPrint('_currentAlgorithmMode: ${_currentAlgorithmMode}');
+
     switch (_currentAlgorithmMode) {
       case DictAlgorithm.Auto:
         return await searchAuto(word);
@@ -130,7 +133,9 @@ class DictionaryController with ChangeNotifier {
     final before = DateTime.now();
 
     String definition = await searchWithTPR(word);
+    debugPrint('TPR definition "$definition", definition.isEmpty: ${definition.isEmpty}');
     if (definition.isEmpty) definition = await searchWithDPR(word);
+    debugPrint('DPR def: $definition');
     final after = DateTime.now();
     final differnt = after.difference(before);
     debugPrint('compute time: $differnt');
@@ -221,8 +226,13 @@ class DictionaryController with ChangeNotifier {
           await dictionaryProvider.getDefinition(dprStem, isAlreadyStem: true);
     }
 
+    debugPrint('dprStem: $dprStem');
+    debugPrint('Prefs.isDpdOn: ${Prefs.isDpdOn}');
+    debugPrint('definitions: $definitions');
+
     if (Prefs.isDpdOn) {
       final String dpdHeadWord = await dictionaryProvider.getDpdHeadwords(word);
+      debugPrint('dpdHeadWord: $dpdHeadWord for "$word"');
       if (dpdHeadWord.isNotEmpty) {
         Definition dpdDefinition =
             await dictionaryProvider.getDpdDefinition(dpdHeadWord);
@@ -239,7 +249,10 @@ class DictionaryController with ChangeNotifier {
     // will be lookup in dpr_breakup
     // breakup is multi-words
     final String breakupText = await dictionaryProvider.getDprBreakup(word);
+
     if (breakupText.isEmpty) return '';
+
+
 
     final List<String> words = getWordsFrom(breakup: breakupText);
     // formating header

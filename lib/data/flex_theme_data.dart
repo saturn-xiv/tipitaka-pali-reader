@@ -29,6 +29,7 @@ const FlexSchemeColor myScheme1Dark = FlexSchemeColor(
 */
 
 class MyThemes {
+  static const orange2Name = 'Orange 2';
   static const FlexSchemeColor myScheme1Dark = FlexSchemeColor(
     primary: Color(0xFF9E7389),
     primaryContainer: Color(0xFF775C69),
@@ -131,6 +132,32 @@ final List<FlexSchemeData> myFlexSchemes = <FlexSchemeData>[
     light: myScheme3Light,
     // We create the dark desaturated colors from the light scheme.
     dark: myScheme3Light.toDark(),
+  ),
+  const FlexSchemeData(
+    name: MyThemes.orange2Name,
+    description: FlexColor.mangoDescription,
+    light: FlexSchemeColor(
+      primary: FlexColor.mangoLightPrimary,
+      primaryContainer: FlexColor.mangoLightPrimaryContainer,
+      secondary: FlexColor.mangoLightSecondary,
+      secondaryContainer: FlexColor.mangoLightSecondaryContainer,
+      tertiary: FlexColor.mangoLightTertiary,
+      tertiaryContainer: FlexColor.mangoLightTertiaryContainer,
+      appBarColor: FlexColor.mangoLightTertiary,
+      error: FlexColor.materialLightError,
+      swapOnMaterial3: true,
+    ),
+    dark: FlexSchemeColor(
+      primary: FlexColor.mangoDarkPrimary,
+      primaryContainer: FlexColor.mangoDarkPrimaryContainer,
+      secondary: FlexColor.mangoDarkSecondary,
+      secondaryContainer: FlexColor.mangoDarkSecondaryContainer,
+      tertiary: FlexColor.mangoDarkTertiary,
+      tertiaryContainer: FlexColor.mangoDarkTertiaryContainer,
+      appBarColor: FlexColor.mangoDarkTertiary,
+      error: FlexColor.materialDarkError,
+      swapOnMaterial3: true,
+    ),
   ),
 ];
 

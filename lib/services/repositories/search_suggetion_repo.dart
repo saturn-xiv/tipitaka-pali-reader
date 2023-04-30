@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:tipitaka_pali/business_logic/models/search_suggestion.dart';
 //import 'package:tipitaka_pali/services/dao/search_suggestion_dao.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
@@ -43,7 +44,7 @@ class SearchSuggestionDatabaseRepository implements SearchSuggestionRepository {
     }
     String sql =
         "SELECT word, plain, frequency FROM words WHERE $searchField LIKE '$filterWord%' ORDER BY LENGTH(word), word ASC LIMIT 100;";
-
+    debugPrint("SQL: $sql");
     List<Map<String, dynamic>> maps = await db.rawQuery(sql);
     List<SearchSuggestion> words =
         maps.map((x) => SearchSuggestion.fromJson(x)).toList();
