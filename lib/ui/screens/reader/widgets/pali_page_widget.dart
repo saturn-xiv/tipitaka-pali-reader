@@ -39,9 +39,7 @@ class PaliPageWidget extends StatefulWidget {
   State<PaliPageWidget> createState() => _PaliPageWidgetState();
 }
 
-class PaliWidgetFactory extends WidgetFactory {
-
-}
+class PaliWidgetFactory extends WidgetFactory {}
 
 class _PaliPageWidgetState extends State<PaliPageWidget> {
   final _myFactory = PaliWidgetFactory();
@@ -59,7 +57,6 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     int fontSize = context.watch<ReaderFontProvider>().fontSize;
     String html = _formatContent(widget.htmlContent, widget.script, context);
     final fontName = FontUtils.getfontName(
@@ -113,9 +110,11 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
               // }
               if (element.localName == 'a') {
                 // print('found a tag: ${element.outerHtml}');
-                final isHighlight = element.parent!.className.contains('search-highlight') == true;
+                final isHighlight =
+                    element.parent!.className.contains('search-highlight') ==
+                        true;
                 if (isHighlight) {
-                  return { 'color': '#000', 'text-decoration': 'none' };
+                  return {'color': '#000', 'text-decoration': 'none'};
                 }
 
                 if (context.read<ThemeChangeNotifier>().isDarkMode) {
@@ -161,6 +160,8 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
   }
 
   String _formatContent(String content, Script script, BuildContext context) {
+    content = _removeHiddenTags(content);
+
     if (highlightedWord != null) {
       content = _addHighlight(content, highlightedWord!);
     }
@@ -170,11 +171,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     }
 
     if (widget.searchText?.isNotEmpty == true) {
-      content = _addHighlight2(
-        content,
-        '${widget.searchText}',
-        context
-      );
+      content = _addHighlight2(content, '${widget.searchText}', context);
     }
     content = _makeClickable(content, script);
     content = _changeToInlineStyle(content);
@@ -182,6 +179,9 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     return content;
   }
 
+  String _removeHiddenTags(String content) {
+    return content.replaceAll(RegExp(r'<a name="para[^"]*">'), '');
+  }
 
   String _removeAlternatePali(String content) {
     // format of alternate pali
@@ -189,7 +189,8 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     return content.replaceAll(RegExp(r'<span class="note">\[.+\]</span>'), '');
   }
 
-  String _addHighlight2(String content, String textToHighlight, BuildContext context) {
+  String _addHighlight2(
+      String content, String textToHighlight, BuildContext context) {
     final rvc = Provider.of<ReaderViewController>(context, listen: false);
     final soup = BeautifulSoup(content);
     final isDark = context.read<ThemeChangeNotifier>().isDarkMode;
@@ -206,10 +207,12 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     var highlightIndex = 0;
     toReplace.forEachIndexed((index, result) {
       for (final newNode in result.newNodes) {
-        if (widget.pageNumber == rvc.currentPage.value && newNode.data.contains('data-is-highlighted')) {
+        if (widget.pageNumber == rvc.currentPage.value &&
+            newNode.data.contains('data-is-highlighted')) {
           final si = rvc.searchIndexes[rvc.currentSearchResult.value - 1];
           if (highlightIndex == si.index) {
-            newNode.attributes['style'] = 'background: $bgColor; color: $textColor; border: 1px solid $borderColor;';
+            newNode.attributes['style'] =
+                'background: $bgColor; color: $textColor; border: 1px solid $borderColor;';
           } else if (!highlightAll) {
             newNode.attributes['style'] = 'border: 1px solid transparent;';
           }
@@ -222,23 +225,26 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       result.node.remove();
     });
 
-
     return soup.toString();
   }
 
-  _highlightNode(dom.Node node, String textToHighlight, List<ReplaceResult> toReplace, String textColor) {
+  _highlightNode(dom.Node node, String textToHighlight,
+      List<ReplaceResult> toReplace, String textColor) {
     if (node.nodeType == dom.Node.TEXT_NODE) {
-      if (node.text == null || node.text?.isEmpty == true || node.text?.contains(textToHighlight) == false) {
+      if (node.text == null ||
+          node.text?.isEmpty == true ||
+          node.text?.contains(textToHighlight) == false) {
         return;
       }
 
-      final replace = '<span style="background-color: #FFE959 !important; color: $textColor; border: 1px solid #FFE959;" class="search-highlight" data-is-highlighted="true">$textToHighlight</span>';
+      final replace =
+          '<span style="background-color: #FFE959 !important; color: $textColor; border: 1px solid #FFE959;" class="search-highlight" data-is-highlighted="true">$textToHighlight</span>';
       final replaced = (node.text ?? '').replaceAll(textToHighlight, replace);
       final highlighted = BeautifulSoup(replaced);
 
-      List<dom.Node> newNodes = (highlighted.body?.nodes ?? []).toList(growable: false).cast();
+      List<dom.Node> newNodes =
+          (highlighted.body?.nodes ?? []).toList(growable: false).cast();
       toReplace.add(ReplaceResult(node, newNodes));
-
     } else {
       for (final nodeChild in node.nodes) {
         _highlightNode(nodeChild, textToHighlight, toReplace, textColor);
@@ -318,8 +324,8 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       r'class="gathalast"': r'style="margin-bottom: 1.3em; margin-left: 5em;"',
       r'class="pageheader"': r'style="font-size: 0.9em; color: deeppink;"',
       r'class="note"': r'style="font-size: 0.8em; color: gray;"',
-       r'class = "highlightedSearch"':
-        r'style="background: #FFE959; color: #000;"',
+      r'class = "highlightedSearch"':
+          r'style="background: #FFE959; color: #000;"',
       // r'class="highlighted"':
       //     r'style="background: rgb(255, 114, 20); color: white;"',
     };
@@ -420,7 +426,8 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     );
   }
 
-  String _addHighlight(String content, String textToHighlight, {highlightClass = "highlighted", addId = true}) {
+  String _addHighlight(String content, String textToHighlight,
+      {highlightClass = "highlighted", addId = true}) {
     // TODO - optimize highlight for some query text
 
     textToHighlight = PaliScript.getScriptOf(
@@ -430,7 +437,8 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     if (!textToHighlight.contains(' ')) {
       final pattern = RegExp('(?<=[\\s", ])$textToHighlight(?=[\\s", ])');
       if (content.contains(pattern)) {
-        final replace = '<span class = "$highlightClass">$textToHighlight</span>';
+        final replace =
+            '<span class = "$highlightClass">$textToHighlight</span>';
         content = content.replaceAll(pattern, replace);
 
         // adding id to scroll
