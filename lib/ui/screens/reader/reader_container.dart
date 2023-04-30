@@ -161,9 +161,7 @@ Etaṃ buddhānasāsanaṃ
           border: Border.all(color: Colors.transparent),
           borderRadius: borderRadius);
 
-
-
-    if (isOrange2) {
+    if (!Prefs.darkThemeOn) {
       themeData.tabsArea
         ..border = null
         ..color = const Color(0xFFf4f4f4)
@@ -183,37 +181,36 @@ Etaṃ buddhānasāsanaṃ
               right: BorderSide(color: Colors.transparent),
               top: BorderSide(color: Colors.transparent),
               bottom: BorderSide(color: Colors.grey),
-            )
-        )
+            ))
         ..selectedStatus.normalButtonColor = primaryColor
         ..selectedStatus.decoration = BoxDecoration(
-            shape: BoxShape.rectangle,
-            color: Prefs.getChosenColor(),
-            border: const Border(
-              left: BorderSide(color: Colors.grey),
-              right: BorderSide(color: Colors.grey),
-              top: BorderSide(color: Colors.grey),
-              bottom: BorderSide(color: Colors.transparent),
-            ),
+          shape: BoxShape.rectangle,
+          color: Prefs.getChosenColor(),
+          border: const Border(
+            left: BorderSide(color: Colors.grey),
+            right: BorderSide(color: Colors.grey),
+            top: BorderSide(color: Colors.grey),
+            bottom: BorderSide(color: Colors.transparent),
+          ),
         )
         ..selectedStatus.fontColor = primaryColor
         ..highlightedStatus.decoration = const BoxDecoration(
-            color: Color(0xFFdadada),
-            border: Border(
-              left: BorderSide(color: Colors.transparent),
-              right: BorderSide(color: Colors.transparent),
-              top: BorderSide(color: Colors.transparent),
-              bottom: BorderSide(color: Colors.grey),
-            ),);
+          color: Color(0xFFdadada),
+          border: Border(
+            left: BorderSide(color: Colors.transparent),
+            right: BorderSide(color: Colors.transparent),
+            top: BorderSide(color: Colors.transparent),
+            bottom: BorderSide(color: Colors.grey),
+          ),
+        );
 
-      themeData.contentArea
-        .decoration = const BoxDecoration(
-            shape: BoxShape.rectangle,
-            border: Border(
-                left: BorderSide(color: Colors.grey),
-                bottom: BorderSide(color: Colors.transparent),
-                right: BorderSide(color: Colors.transparent),
-                top: BorderSide(color: Colors.transparent)));
+      themeData.contentArea.decoration = const BoxDecoration(
+          shape: BoxShape.rectangle,
+          border: Border(
+              left: BorderSide(color: Colors.grey),
+              bottom: BorderSide(color: Colors.transparent),
+              right: BorderSide(color: Colors.transparent),
+              top: BorderSide(color: Colors.transparent)));
     }
 
     // cannot watch two notifiers simultaneity in a single widget
@@ -233,7 +230,8 @@ Etaṃ buddhānasāsanaṃ
     int selected = controller.selectedIndex ?? 0;
 
     if (tabIndex <= selected) {
-      toSelect = min(controller.tabs.length - 2, (controller.selectedIndex ?? 1));
+      toSelect =
+          min(controller.tabs.length - 2, (controller.selectedIndex ?? 1));
     } else {
       toSelect = selected;
     }
@@ -253,7 +251,8 @@ Etaṃ buddhānasāsanaṃ
 
   Widget getTabArea(themeData, multiWindowMode, tabs, books) {
     final controller = TabbedViewController(tabs);
-    controller.selectedIndex = context.read<OpenningBooksProvider>().selectedBookIndex;
+    controller.selectedIndex =
+        context.read<OpenningBooksProvider>().selectedBookIndex;
     return Consumer<ThemeChangeNotifier>(
       builder: ((context, themeChangeNotifier, child) {
         // tabbed view uses custom theme and provide TabbedViewTheme.
@@ -319,10 +318,10 @@ Etaṃ buddhānasāsanaṃ
                     },
                     child: DragTarget(
                       builder: (
-                          BuildContext context,
-                          List<dynamic> accepted,
-                          List<dynamic> rejected,
-                          ) {
+                        BuildContext context,
+                        List<dynamic> accepted,
+                        List<dynamic> rejected,
+                      ) {
                         return mouseRegion;
                       },
                       onAccept: (int index) {
@@ -332,8 +331,7 @@ Etaṃ buddhānasāsanaṃ
                             .swap(tabIndex, index);
                       },
                     ));
-              }
-              ),
+              }),
         );
       }),
     );
