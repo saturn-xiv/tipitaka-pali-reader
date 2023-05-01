@@ -58,7 +58,7 @@ dependencies:
   tabbed_view:
     git:
       url: https://github.com/dhammacakka/tabbed_view.git
-      ref: main # branch name
+      ref: main
   slidable_bar:
     path: packages/slidable_bar
   huge_listview: ^2.0.2

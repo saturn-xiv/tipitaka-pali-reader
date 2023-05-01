@@ -261,6 +261,7 @@ Etaṃ buddhānasāsanaṃ
         return TabbedViewTheme(
           data: themeData,
           child: TabbedView(
+              selectToEnableButtons: false,
               controller: controller,
               contentBuilder: (_, index) {
                 if (multiWindowMode) {
@@ -294,9 +295,7 @@ Etaṃ buddhānasāsanaṃ
                     onTertiaryTapUp: (details) {
                       closeTab(tabIndex, controller);
                     },
-                    onTapDown: (_) {
-                      gd.onTap?.call();
-                    },
+                    onTap: () => gd.onTap?.call(),
                     child: gd.child);
 
                 MouseRegion mouseRegion = MouseRegion(
@@ -328,7 +327,7 @@ Etaṃ buddhānasāsanaṃ
                         debugPrint('Will move $tabIndex to $index');
                         context
                             .read<OpenningBooksProvider>()
-                            .swap(tabIndex, index);
+                            .swap(tabIndex, index, selected: tabIndex);
                       },
                     ));
               }),

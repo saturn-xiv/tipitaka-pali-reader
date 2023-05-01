@@ -61,10 +61,15 @@ class OpenningBooksProvider extends ChangeNotifier {
     }
   }
 
-  void swap(int source, int target) {
+  void swap(int source, int target, {int? selected}) {
     var tmp = books[source];
     books[source] = books[target];
     books[target] = tmp;
+
+    if (selected != null) {
+      _selectedBookIndex = selected;
+    }
+
     notifyListeners();
   }
 }
