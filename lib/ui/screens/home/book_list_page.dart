@@ -31,45 +31,65 @@ class BookListPage extends StatelessWidget {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-          appBar: Mobile.isPhone(context)
-              ? AppBar(
-                  title:
-                      Text(AppLocalizations.of(context)!.tipitaka_pali_reader),
-                  // centerTitle: true,
-                )
-              : null,
-          drawer: Mobile.isPhone(context) ? _buildDrawer(context) : null,
-          body: Column(
-            children: [
-              Container(
-                height: 56,
-                color: Theme.of(context).appBarTheme.backgroundColor,
-                child: TabBar(
-                  tabs: _mainCategories.entries
-                      .map((category) => Tab(
-                          text: PaliScript.getScriptOf(
-                              script: context
-                                  .watch<ScriptLanguageProvider>()
-                                  .currentScript,
-                              romanText: category.value)))
-                      .toList(),
-                  indicator: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15),
+        appBar: Mobile.isPhone(context)
+            ? AppBar(
+                title: Row(
+                  children: [
+                    Text(AppLocalizations.of(context)!.tipitaka_pali_reader),
+                    const Spacer(),
+                    IconButton(
+                      padding: const EdgeInsets.all(4.0),
+                      constraints: const BoxConstraints(),
+                      icon: const Icon(Icons.directions_run),
+                      onPressed: () async {
+                        await Navigator.pushNamed(context, quickJumpRoute);
+                      },
                     ),
+                    IconButton(
+                      padding: const EdgeInsets.all(4.0),
+                      constraints: const BoxConstraints(),
+                      icon: const Icon(Icons.settings),
+                      onPressed: () async {
+                        await Navigator.pushNamed(context, settingRoute);
+                      },
+                    ),
+                  ],
+                ),
+              )
+            : null,
+        drawer: Mobile.isPhone(context) ? _buildDrawer(context) : null,
+        body: Column(
+          children: [
+            Container(
+              height: 56,
+              color: Theme.of(context).appBarTheme.backgroundColor,
+              child: TabBar(
+                tabs: _mainCategories.entries
+                    .map((category) => Tab(
+                        text: PaliScript.getScriptOf(
+                            script: context
+                                .watch<ScriptLanguageProvider>()
+                                .currentScript,
+                            romanText: category.value)))
+                    .toList(),
+                indicator: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15),
                   ),
                 ),
               ),
-              Expanded(
-                child: TabBarView(
-                    children: _mainCategories.entries
-                        .map((category) => _buildBookList(category.key))
-                        .toList()),
-              ),
-            ],
-          )),
+            ),
+            Expanded(
+              child: TabBarView(
+                  children: _mainCategories.entries
+                      .map((category) => _buildBookList(category.key))
+                      .toList()),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
