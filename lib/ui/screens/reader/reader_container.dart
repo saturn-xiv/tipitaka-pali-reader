@@ -64,17 +64,18 @@ class _ReaderContainerState extends State<ReaderContainer> {
     final openedBookProvider = context.watch<OpenningBooksProvider>();
     final books = openedBookProvider.books;
 
-    final tabs = books.asMap().entries.map((entry) {
-      final book = entry.value['book'] as Book;
-      final index = entry.key;
-      final uuid = entry.value['uuid'];
+    books.asMap().forEach((index, entry) {
+      final uuid = entry['uuid'];
       // Newly opened tab always becomes visible and hides the last visible book
-      if (index == 0 && !tabsVisibility.containsKey(uuid)) {
+      final isActiveTab = Prefs.isNewTabAtEnd ? index == books.length - 1 : index == 0;
+
+      if (isActiveTab && !tabsVisibility.containsKey(uuid)) {
         tabsVisibility[uuid] = true;
 
         if (books.length > Prefs.tabsVisible) {
+          final booksArr = Prefs.isNewTabAtEnd ? books.reversed.toList() : books;
           for (var i = books.length - 1; i > 1; i--) {
-            final revUuid = books[i]['uuid'];
+            final revUuid = booksArr[i]['uuid'];
             if (tabsVisibility.containsKey(revUuid) &&
                 tabsVisibility[revUuid] == true) {
               tabsVisibility[revUuid] = false;
@@ -83,6 +84,12 @@ class _ReaderContainerState extends State<ReaderContainer> {
           }
         }
       }
+    });
+
+    final tabs = books.asMap().entries.map((entry) {
+      final book = entry.value['book'] as Book;
+      final uuid = entry.value['uuid'];
+
       final isVisible = (tabsVisibility[uuid] ?? false) == true;
       return TabData(
           text: PaliScript.getScriptOf(
@@ -338,7 +345,7 @@ Etaṃ buddhānasāsanaṃ
 
   Widget getColumns(List<Map<String, dynamic>> books) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(1, 30, 1, 1),
+      padding: const EdgeInsets.fromLTRB(1, 31, 1, 1),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: Iterable.generate(books.length)
