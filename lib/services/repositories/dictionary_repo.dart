@@ -113,12 +113,13 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
     // if dpd is selected
     sql = '''
   SELECT dpd.word as word , length(word) as si from dictionary_books, dpd
-      WHERE dpd.word LIKE '$word%' AND dictionary_books.id = 11
+      WHERE dpd.word LIKE ? AND dictionary_books.id = 11
       AND dictionary_books.user_choice = 1
       ORDER by si
 	    LIMIT 80
     ''';
-    List<Map<String, dynamic>> maps = await db.rawQuery(sql);
+
+    List<Map<String, dynamic>> maps = await db.rawQuery(sql, ['$word%']);
     List<String> list = maps.map((e) => e['word'] as String).toList();
 
     // because sqlflite does not support regex, we need to fix this
@@ -149,11 +150,11 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
     // now need to get from the original dictionary table and merge
     sql = '''
       SELECT word from dictionary, dictionary_books 
-      WHERE word LIKE '$word%' AND dictionary.book_id = dictionary_books.id
+      WHERE word LIKE ? AND dictionary.book_id = dictionary_books.id
       AND dictionary_books.user_choice = 1
       ORDER BY dictionary_books.user_order LIMIT 200
     ''';
-    List<Map<String, dynamic>> maps2 = await db.rawQuery(sql);
+    List<Map<String, dynamic>> maps2 = await db.rawQuery(sql, ['$word%']);
     List<String> list2 = maps2.map((e) => e['word'] as String).toList();
 
     for (String x in list2) {
