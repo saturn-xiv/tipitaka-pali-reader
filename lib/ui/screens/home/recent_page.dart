@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../business_logic/view_models/recent_page_view_model.dart';
 import '../../../services/dao/recent_dao.dart';
 import '../../../services/database/database_helper.dart';
+import '../../../services/prefs.dart';
 import '../../../services/repositories/recent_repo.dart';
 import '../../dialogs/confirm_dialog.dart';
 import '../../../../services/provider/script_language_provider.dart';
@@ -31,9 +32,23 @@ class RecentPage extends StatelessWidget {
                     final recent = recents[index];
                     return ListTile(
                       dense: true,
-                      leading: Text(localScript(context, "${recent.bookName}")),
-                      title: Text(
-                          "${AppLocalizations.of(context)!.page}: ${localScript(context, recent.pageNumber.toString())}"),
+                      contentPadding: const EdgeInsets.all(0),
+                        visualDensity:
+                          const VisualDensity(horizontal: 0, vertical: -4),
+                      title: Padding(
+                          padding: const EdgeInsets.only(left: 5),
+                          child:
+                              Text(localScript(context, "${recent.bookName}"),
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: Prefs.uiFontSize - 1,
+                                  ))),
+                      subtitle: Padding(
+                          padding: const EdgeInsets.only(left: 5),
+                          child: Text(
+                              "${AppLocalizations.of(context)!.page}: ${localScript(context, recent.pageNumber.toString())}",
+                              style:
+                                  TextStyle(fontSize: Prefs.uiFontSize - 3))),
                       onTap: () => vm.openBook(recent, context),
                       trailing: IconButton(
                         onPressed: () => vm.delete(recent),
