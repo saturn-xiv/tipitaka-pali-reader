@@ -35,6 +35,7 @@ class ResultListView extends StatelessWidget {
                 )
               : ListView.builder(
                   itemCount: results.length,
+                  padding: const EdgeInsets.only(bottom: 70),
                   itemBuilder: (context, index) => SearchResultListTile(
                     result: results[index],
                     onTap: () => notifier.openBook(results[index], context),
