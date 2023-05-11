@@ -118,29 +118,7 @@ class ReaderView extends StatelessWidget implements Searchable {
               side: Side.bottom,
               barContent: const ReaderToolbar(),
               size: 100,
-              clicker: InkResponse(
-                onTap: () {
-                  Prefs.controlBarShow = !Prefs.controlBarShow;
-                  (Prefs.controlBarShow) ? _sc.show() : _sc.hide();
-                  //debugPrint("statechanged to ${Prefs.controlBarShow}");
-                },
-                child: Container(
-                  key: key,
-                  width: 42,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.5),
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16),
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.keyboard_arrow_up,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+              clicker: SlidableClicker(controller: _sc),
               frontColor: Colors.white,
               backgroundColor: Colors.blue.withOpacity(0.3),
               clickerSize: 32,
@@ -192,4 +170,55 @@ class SearchAction extends Action<SearchIntent> {
 
   @override
   void invoke(covariant SearchIntent intent) => searchable.onSearchRequested(context);
+}
+
+class SlidableClicker extends StatefulWidget {
+  const SlidableClicker({ super.key, required this.controller });
+
+  final SlidableBarController controller;
+
+
+  @override
+  State<SlidableClicker> createState() => _SlidableClickerState();
+}
+
+class _SlidableClickerState extends State<SlidableClicker> {
+  toggle() {
+    setState(() {
+      Prefs.controlBarShow = !Prefs.controlBarShow;
+      (Prefs.controlBarShow)
+          ? widget.controller.show()
+          : widget.controller.hide();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+        child: Material(
+            child: InkWell(
+          onTap: toggle,
+          child: Ink(
+            width: 42,
+            height: 30,
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.5),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
+            child: Icon(
+              Prefs.controlBarShow
+                  ? Icons.keyboard_arrow_down
+                  : Icons.keyboard_arrow_up,
+              color: Colors.white,
+            ),
+          ),
+        )));
+  }
 }
