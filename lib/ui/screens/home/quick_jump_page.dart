@@ -206,9 +206,11 @@ class _QuickJumpPageState extends State<QuickJumpPage> {
 
     if (_isValid) {
       final openningBookProvider = context.read<OpenningBooksProvider>();
-      openningBookProvider.add(book: book, currentPage: book.firstPage
-          // textToHighlight: searchWord,
-          );
+      openningBookProvider.add(
+        book: book,
+        currentPage: book.firstPage,
+        textToHighlight: book.paraNum.toString(),
+      );
 
       // quick jump page and reader page are different routes in mobile
       // so need to open reader route for moble
@@ -848,6 +850,7 @@ class _QuickJumpPageState extends State<QuickJumpPage> {
     book.firstPage = await paraRepo.getPageNumber(bookID, paranum);
     book.id = bookID;
     book.name = bookID;
+    book.paraNum = paranum;
     return book;
   } // get the number
 
@@ -904,124 +907,125 @@ class _QuickJumpPageState extends State<QuickJumpPage> {
     var samyuttaAndSutta = notation.split('.');
     var samyutta = int.parse(samyuttaAndSutta[0]);
     var sutta = int.parse(samyuttaAndSutta[1]);
-    sutta--; // adjust
+    sutta--;
+    // adjust
     switch (samyutta) {
       case 1:
-        return sutta;
+        return 1 + sutta;
       case 2:
-        return 81 + sutta;
+        return 82 + sutta;
       case 3:
-        return 111 + sutta;
+        return 112 + sutta;
       case 4:
-        return 136 + sutta;
+        return 137 + sutta;
       case 5:
-        return 161 + sutta;
+        return 162 + sutta;
       case 6:
-        return 171 + sutta;
+        return 172 + sutta;
       case 7:
-        return 186 + sutta;
+        return 187 + sutta;
       case 8:
-        return 208 + sutta;
+        return 209 + sutta;
       case 9:
-        return 220 + sutta;
+        return 221 + sutta;
       case 10:
-        return 234 + sutta;
+        return 235 + sutta;
       case 11:
-        return 246 + sutta;
+        return 247 + sutta;
       // book 2 below
       case 12:
-        return sutta;
+        return 1 + sutta;
       case 13:
-        return 73 + sutta;
+        return 74 + sutta;
       case 14:
-        return 84 + sutta;
+        return 85 + sutta;
       case 15:
-        return 123 + sutta;
+        return 124 + sutta;
       case 16:
-        return 143 + sutta;
+        return 144 + sutta;
       case 17:
-        return 156 + sutta;
+        return 157 + sutta;
       case 18:
-        return 187 + sutta;
+        return 188 + sutta;
       case 19:
-        return 201 + sutta;
+        return 202 + sutta;
       case 20:
-        return 222 + sutta;
+        return 223 + sutta;
       case 21:
-        return 234 + sutta;
+        return 235 + sutta;
 // book 3 below
       case 22:
-        return sutta;
+        return 1 + sutta;
       case 23:
-        return 159 + sutta;
+        return 160 + sutta;
       case 24:
-        return 205 + sutta;
+        return 206 + sutta;
       case 25:
-        return 301 + sutta;
+        return 302 + sutta;
       case 26:
-        return 311 + sutta;
+        return 312 + sutta;
       case 27:
-        return 321 + sutta;
+        return 322 + sutta;
       case 28:
-        return 331 + sutta;
+        return 332 + sutta;
       case 29:
-        return 341 + sutta;
+        return 342 + sutta;
       case 30:
-        return 391 + sutta;
+        return 392 + sutta;
       case 31:
-        return 437 + sutta;
+        return 438 + sutta;
       case 32:
-        return 549 + sutta;
+        return 550 + sutta;
       case 33:
-        return 606 + sutta;
+        return 607 + sutta;
       case 34:
-        return 661 + sutta;
+        return 662 + sutta;
 //book 4 below
       case 35:
-        return sutta;
+        return 1 + sutta;
       case 36:
-        return 248 + sutta;
+        return 249 + sutta;
       case 37:
-        return 279 + sutta;
+        return 280 + sutta;
       case 38:
-        return 313 + sutta;
+        return 314 + sutta;
       case 39:
-        return 329 + sutta;
+        return 330 + sutta;
       case 40:
-        return 331 + sutta;
+        return 332 + sutta;
       case 41:
-        return 342 + sutta;
+        return 343 + sutta;
       case 42:
-        return 352 + sutta;
+        return 353 + sutta;
       case 43:
-        return 365 + sutta;
+        return 366 + sutta;
       case 44:
-        return 409 + sutta;
+        return 410 + sutta;
 // book 5 below
       case 45:
-        return sutta;
+        return 1 + sutta;
       case 46:
-        return 181 + sutta;
+        return 182 + sutta;
       case 47:
-        return 366 + sutta;
+        return 367 + sutta;
       case 48:
-        return 470 + sutta;
+        return 471 + sutta;
       case 49:
-        return 650 + sutta;
+        return 651 + sutta;
       case 50:
-        return 704 + sutta;
+        return 705 + sutta;
       case 51:
-        return 812 + sutta;
+        return 813 + sutta;
       case 52:
-        return 898 + sutta;
+        return 899 + sutta;
       case 53:
-        return 922 + sutta;
+        return 923 + sutta;
       case 54:
-        return 976 + sutta;
+        return 977 + sutta;
       case 55:
-        return 996 + sutta;
+        return 997 + sutta;
       case 56:
-        return 1070 + sutta;
+        return 1071 + sutta;
       default:
         return 0;
     }
