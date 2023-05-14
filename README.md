@@ -15,15 +15,15 @@ Function Requirements Document (FRC)
 The Tipitaka Pali Projector will be overhauled and rewritten with the tpp used as a functional requirement model and partial design.  Many things will be redesigned from the base upwards.  The new TPP will be referred to as TPP2 and perhaps renamed to TUPR
 
 # New Road Map
-* 1.)  Dictionary History and management items
-* 2.)  Search History and management of items
+* 1.)  ~~Dictionary History and management items~~
+* 2.)  ~~Search History and management of items~~
 * 3.)  Change management of recent and notes to be multiselect and more standard
 * 4.)  FIrebase for personal settings (recent, dictionary, search, and notes history
-* 5.)  Fuzzy search (need to improve search like TPP)  switch to ignore and find all combinations of diacritical marks.  samanera will find the right word (sāmaṇera)
+* 5.)  ~~Fuzzy search (need to improve search like TPP)  switch to ignore and find all combinations of diacritical marks.  samanera will find the right word (sāmaṇera)~~
 * 6.)  Fuzzy Dictionary lookup  samanera will find (sāmaṇera)
-* 7.)  Quick jump
+* 7.)  ~~Quick jump~~
 * 8.)  Right click word "To search"
-* 9.)  Include 2 or 3 dpd features
+* 9.)  Include 2 or 3 dpd features (Grammar DPD is comming as well as word family and compounds)
 * 10.) use expanded widgets with html for dictionary instead of raw html
 * 11.)  Import the MAT tables and have true MAT path by MM Paranum
 * 12.) Put extra books as a basket.. use db instead of hardcode
@@ -38,7 +38,7 @@ The Tipitaka Pali Projector will be overhauled and rewritten with the tpp used a
 * 21.) Include search button on dictionary.
 * 22.) Keyboard shortcuts
 * 23.) sticky highlights as bookmarks.. like kindle
-* 24.) search in page
+* 24.) ~~search in page~~
 
 Old Road Map below:
 
