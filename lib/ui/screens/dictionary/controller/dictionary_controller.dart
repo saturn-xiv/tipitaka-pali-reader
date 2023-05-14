@@ -89,7 +89,8 @@ class DictionaryController with ChangeNotifier {
     }
     // loading definitions
     final definition = await loadDefinition(_currentlookupWord!);
-    debugPrint('==================> $_currentlookupWord, is empty: ${definition.isEmpty}');
+    debugPrint(
+        '==================> $_currentlookupWord, is empty: ${definition.isEmpty}');
     if (definition.isEmpty) {
       _dictionaryState = const DictionaryState.noData();
       notifyListeners();
@@ -133,7 +134,8 @@ class DictionaryController with ChangeNotifier {
     final before = DateTime.now();
 
     String definition = await searchWithTPR(word);
-    debugPrint('TPR definition "$definition", definition.isEmpty: ${definition.isEmpty}');
+    debugPrint(
+        'TPR definition "$definition", definition.isEmpty: ${definition.isEmpty}');
     if (definition.isEmpty) definition = await searchWithDPR(word);
     debugPrint('DPR def: $definition');
     final after = DateTime.now();
@@ -149,6 +151,7 @@ class DictionaryController with ChangeNotifier {
   }
 
   Future<String> searchWithTPR(String word) async {
+    final originalWord = word;
     // looking up using estimated stem word
     final dictionaryProvider =
         DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
@@ -204,9 +207,23 @@ class DictionaryController with ChangeNotifier {
       if (dpdHeadWords.isNotEmpty) {
         Definition dpdDefinition =
             await dictionaryProvider.getDpdDefinition(dpdHeadWords);
+        if (Prefs.isDpdGrammarOn) {
+          Definition grammarDef =
+              await dictionaryProvider.getDpdGrammarDefinition(originalWord);
+          if (grammarDef.word.isNotEmpty) {
+            dpdDefinition.definition += grammarDef.definition;
+          }
+        }
         definitions.insert(0, dpdDefinition);
         definitions.sort((a, b) => a.userOrder.compareTo(b.userOrder));
       }
+      // alternative way.
+/*      Definition grammarDef =
+          await dictionaryProvider.getDpdGrammarDefinition(word);
+      if (!grammarDef.word.isEmpty) {
+        definitions.add(grammarDef);
+      }
+      */
     }
     if (definitions.isEmpty) return '';
 
@@ -251,8 +268,6 @@ class DictionaryController with ChangeNotifier {
     final String breakupText = await dictionaryProvider.getDprBreakup(word);
 
     if (breakupText.isEmpty) return '';
-
-
 
     final List<String> words = getWordsFrom(breakup: breakupText);
     // formating header

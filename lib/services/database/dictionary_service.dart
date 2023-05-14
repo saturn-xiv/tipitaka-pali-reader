@@ -14,6 +14,11 @@ class DictionarySerice {
     return definitions;
   }
 
+  Future<Definition> getDpdGrammarDefinition(String word) async {
+    final definition = await dictionaryRepository.getDpdGrammarDefinition(word);
+    return definition;
+  }
+
   Future<List<Definition>> getDefinition(String word,
       {bool isAlreadyStem = false}) async {
     if (!isAlreadyStem) {

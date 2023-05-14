@@ -10,6 +10,7 @@ import '../../business_logic/models/dictionary_history.dart';
 abstract class DictionaryRepository {
   Future<List<Definition>> getDefinition(String id);
   Future<Definition> getDpdDefinition(String headwords);
+  Future<Definition> getDpdGrammarDefinition(String word);
   Future<List<String>> getSuggestions(String word);
   Future<String> getDprBreakup(String word);
   Future<String> getDprStem(String word);
@@ -102,6 +103,24 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
         userOrder: order);
 
     return def;
+  }
+
+  @override
+  Future<Definition> getDpdGrammarDefinition(String word) async {
+    Definition def = Definition();
+    final db = await databaseHelper.database;
+    final sql = '''
+      SELECT word, definition from dpd_grammar 
+      WHERE word = '$word';
+    ''';
+    List<Map<String, dynamic>> maps = await db.rawQuery(sql);
+    List<Definition> defs = maps.map((x) => Definition.fromJson(x)).toList();
+    if (defs.isNotEmpty) {
+      defs[0].bookName = "DPD Grammar";
+      return defs[0];
+    } else {
+      return def;
+    }
   }
 
   @override

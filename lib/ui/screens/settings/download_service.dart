@@ -96,6 +96,13 @@ class DownloadService {
       await for (final rawLine in lineStream) {
         final line = rawLine.toLowerCase();
 
+        // do these first
+        if (line.contains("drop")) {
+          await db.database.execute(line);
+        } else if (line.contains("create")) {
+          await db.database.execute(line);
+        }
+
         if (line.contains("insert")) {
           dbUpdate.insertLines.add(rawLine);
           dbUpdate.insertCount++;
@@ -121,6 +128,11 @@ class DownloadService {
         downloadNotifier.message = 'Building fts';
         await doFts(db, newBooks);
         await makeEnglishWordList();
+      }
+
+      if (downloadListItem.type.contains("dpd_grammar")) {
+        downloadNotifier.message = 'adding dpd grammar flag';
+        Prefs.isDpdGrammarOn = true;
       }
     }
     downloadNotifier.downloading = false;

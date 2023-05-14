@@ -39,6 +39,7 @@ const String tabsVisiblePref = "tabsVisible";
 const String controlBarShowPref = "controlBarShow";
 const String isFuzzyPref = "isFuzzy";
 const String newTabAtEnd = 'newTabAtEnd';
+const String isDpdGrammarOnPref = "isDpdGrammarOn";
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -70,6 +71,7 @@ const int defaultTabsVisible = 3;
 const bool defaultControlBarShow = true;
 const bool defaultIsFuzzy = false;
 const bool defaultNewTabAtEnd = false;
+const bool defaultIsDpdGrammarOn = false;
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -107,8 +109,8 @@ class Prefs {
 
   static String get themeName =>
       instance.getString(themeNamePref) ?? defaultThemeName;
-  static set themeName(String value) => instance.setString(themeNamePref, value);
-
+  static set themeName(String value) =>
+      instance.setString(themeNamePref, value);
 
   static bool get darkThemeOn =>
       instance.getBool(darkThemeOnPref) ?? defaultDarkThemeOn;
@@ -229,8 +231,14 @@ class Prefs {
   static bool get isFuzzy => instance.getBool(isFuzzyPref) ?? defaultIsFuzzy;
   static set isFuzzy(bool value) => instance.setBool(isFuzzyPref, value);
 
-  static bool get isNewTabAtEnd => instance.getBool(newTabAtEnd) ?? defaultNewTabAtEnd;
+  static bool get isNewTabAtEnd =>
+      instance.getBool(newTabAtEnd) ?? defaultNewTabAtEnd;
   static set isNewTabAtEnd(bool value) => instance.setBool(newTabAtEnd, value);
+
+  static bool get isDpdGrammarOn =>
+      instance.getBool(isDpdGrammarOnPref) ?? defaultIsDpdGrammarOn;
+  static set isDpdGrammarOn(bool value) =>
+      instance.setBool(isDpdGrammarOnPref, value);
 
   // ===========================================================================
   // Helpers
@@ -247,5 +255,4 @@ class Prefs {
         return Color(Colors.white.value);
     }
   }
-
 }
