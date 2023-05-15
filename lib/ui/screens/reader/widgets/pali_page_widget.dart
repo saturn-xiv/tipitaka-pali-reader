@@ -25,6 +25,7 @@ class PaliPageWidget extends StatefulWidget {
   final String? highlightedWord;
   final String? searchText;
   final Function(String clickedWord)? onClick;
+  final Function(String clickedWord)? onSearch;
   const PaliPageWidget({
     Key? key,
     required this.pageNumber,
@@ -32,6 +33,7 @@ class PaliPageWidget extends StatefulWidget {
     required this.script,
     this.highlightedWord,
     this.onClick,
+    this.onSearch,
     this.searchText,
   }) : super(key: key);
 
@@ -68,23 +70,31 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
         focusNode: FocusNode(
           canRequestFocus: true,
         ),
-        selectionControls: FlutterSelectionControls(toolBarItems: [
-          ToolBarItem(
-            item: const Text('Copy'),
-            itemControl: ToolBarItemControl.copy,
-          ),
-          ToolBarItem(
-            item: const Text('Select All'),
-            itemControl: ToolBarItemControl.selectAll,
-          ),
-          ToolBarItem(
-            item: const Text('Share'),
-            onItemPressed: (selectedText) {
-              // do sharing
-              Share.share(selectedText, subject: 'Pāḷi text from TPR');
-            },
-          ),
-        ]),
+        selectionControls: FlutterSelectionControls(
+          toolBarItems: [
+            ToolBarItem(
+              item: const Text('Copy'),
+              itemControl: ToolBarItemControl.copy,
+            ),
+            ToolBarItem(
+              item: const Text('Select All'),
+              itemControl: ToolBarItemControl.selectAll,
+            ),
+            ToolBarItem(
+              item: const Text('Search'),
+              onItemPressed: (selectedText) {
+                widget.onSearch?.call(selectedText);
+              },
+            ),
+            ToolBarItem(
+              item: const Text('Share'),
+              onItemPressed: (selectedText) {
+                // do sharing
+                Share.share(selectedText, subject: 'Pāḷi text from TPR');
+              },
+            ),
+          ],
+        ),
         // clicking on blank area in html widget lose focus, and it is normal.
         // Container Widget with color can be used to acquire foucs
         // The color value is required for this container in order to acquire focus.

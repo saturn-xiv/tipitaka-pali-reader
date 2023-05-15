@@ -11,6 +11,9 @@ import 'package:tipitaka_pali/utils/script_detector.dart';
 import '../../services/search_service.dart';
 import '../models/search_suggestion.dart';
 
+// global variable
+final ValueNotifier<String?> globalSearchWord = ValueNotifier<String?>(null);
+
 class SearchPageViewModel extends ChangeNotifier {
   final SearchHistoryRepository searchHistoryRepository;
   SearchPageViewModel({
@@ -49,6 +52,14 @@ class SearchPageViewModel extends ChangeNotifier {
       value.sort((a, b) => b.dateTime.compareTo(a.dateTime));
       _histories.value = [...value];
     });
+
+    // search
+    if (globalSearchWord.value != null) {
+      Future.delayed(Duration(milliseconds: 50), () {
+        print('search word: ${globalSearchWord.value}');
+        onSubmmited(globalSearchWord.value!);
+      });
+    }
   }
 
   Future<void> onTextChanged(String filterWord) async {

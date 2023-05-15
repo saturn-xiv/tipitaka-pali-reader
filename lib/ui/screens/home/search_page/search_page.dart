@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/ui/widgets/value_listenser.dart';
 import '../../../../services/database/database_helper.dart';
 import '../../../../services/prefs.dart';
 import '../../../../services/repositories/search_history_repo.dart';
@@ -41,6 +42,9 @@ class _SearchPageState extends State<SearchPage> {
     controller = TextEditingController();
     isShowingSearchModeView = false;
     super.initState();
+    globalSearchWord.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -82,115 +86,123 @@ class _SearchPageState extends State<SearchPage> {
                   )
                 ],
               ),
-              body: Column(
-                children: [
-                  SearchTypeSegmentedControl(
-                    mode: vm.queryMode,
-                    wordDistance: vm.wordDistance,
-                    onModeChanged: (value) {
-                      setState(() {
-                        vm.onQueryModeChanged(value);
-                      });
-                    },
-                    onDistanceChanged: (value) {
-                      vm.onWordDistanceChanged(value);
-                    },
-                  ),
-                  // search bar
-                  Row(
-                    children: [
-                      Expanded(
-                        child: SearchBar(
-                          hint: _getHint(vm.queryMode),
-                          controller: controller,
-                          onSubmitted: (value) {
-                            _onSubmitted(value, vm);
-                          },
-                          onTextChanged: vm.onTextChanged,
+              body: ValueListener(
+                onChanged: (searchWord) {
+                  if (searchWord != null) {
+                    _onSubmitted(searchWord, vm);
+                  }
+                },
+                notifier: globalSearchWord,
+                child: Column(
+                  children: [
+                    SearchTypeSegmentedControl(
+                      mode: vm.queryMode,
+                      wordDistance: vm.wordDistance,
+                      onModeChanged: (value) {
+                        setState(() {
+                          vm.onQueryModeChanged(value);
+                        });
+                      },
+                      onDistanceChanged: (value) {
+                        vm.onWordDistanceChanged(value);
+                      },
+                    ),
+                    // search bar
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SearchBar(
+                            hint: _getHint(vm.queryMode),
+                            controller: controller,
+                            onSubmitted: (value) {
+                              _onSubmitted(value, vm);
+                            },
+                            onTextChanged: vm.onTextChanged,
+                          ),
                         ),
-                      ),
-                      // IconButton(
-                      //   padding: EdgeInsets.zero,
-                      //   constraints: BoxConstraints(),
-                      //   icon: Prefs.isFuzzy
-                      //       ? Icon(Icons.lens_blur)
-                      //       : Icon(Icons.lens_outlined),
-                      //   onPressed: () {
-                      //     setState(() {
-                      //       Prefs.isFuzzy = !Prefs.isFuzzy;
-                      //       vm.isFuzzy = Prefs.isFuzzy;
-                      //       vm.onTextChanged(controller.text);
-                      //     });
-                      //   },
-                      //   tooltip: "Fuzzy Search",
-                      // ),
-                      /*IconButton(
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        icon: const Icon(Icons.filter_list),
-                        tooltip: AppLocalizations.of(context)!.filter,
-                        onPressed: () {
-                          setState(() {
-                            isShowingSearchModeView = !isShowingSearchModeView;
-                          });
-                        },
-                      ),*/
-                      const SizedBox(width: 8),
-                    ],
-                  ),
-                  // search mode chooser view
-                  AnimatedSize(
-                    duration:
-                        Duration(milliseconds: Prefs.animationSpeed.round()),
-                    child: /* isShowingSearchModeView
-                        ? SearchModeView(
-                            mode: vm.queryMode,
-                            wordDistance: vm.wordDistance,
-                            onModeChanged: (value) {
-                              vm.onQueryModeChanged(value);
-                            },
-                            onDistanceChanged: (value) {
-                              vm.onWordDistanceChanged(value);
-                            },
-                          )
-                        : */
-                        const SizedBox.shrink(),
-                  ),
-                  // suggestion view
+                        // IconButton(
+                        //   padding: EdgeInsets.zero,
+                        //   constraints: BoxConstraints(),
+                        //   icon: Prefs.isFuzzy
+                        //       ? Icon(Icons.lens_blur)
+                        //       : Icon(Icons.lens_outlined),
+                        //   onPressed: () {
+                        //     setState(() {
+                        //       Prefs.isFuzzy = !Prefs.isFuzzy;
+                        //       vm.isFuzzy = Prefs.isFuzzy;
+                        //       vm.onTextChanged(controller.text);
+                        //     });
+                        //   },
+                        //   tooltip: "Fuzzy Search",
+                        // ),
+                        /*IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          icon: const Icon(Icons.filter_list),
+                          tooltip: AppLocalizations.of(context)!.filter,
+                          onPressed: () {
+                            setState(() {
+                              isShowingSearchModeView = !isShowingSearchModeView;
+                            });
+                          },
+                        ),*/
+                        const SizedBox(width: 8),
+                      ],
+                    ),
+                    // search mode chooser view
+                    AnimatedSize(
+                      duration:
+                          Duration(milliseconds: Prefs.animationSpeed.round()),
+                      child: /* isShowingSearchModeView
+                          ? SearchModeView(
+                              mode: vm.queryMode,
+                              wordDistance: vm.wordDistance,
+                              onModeChanged: (value) {
+                                vm.onQueryModeChanged(value);
+                              },
+                              onDistanceChanged: (value) {
+                                vm.onWordDistanceChanged(value);
+                              },
+                            )
+                          : */
+                          const SizedBox.shrink(),
+                    ),
+                    // suggestion view
 
-                  Expanded(
-                    child: ValueListenableBuilder(
-                        valueListenable: vm.isSearching,
-                        builder: (context, isSearching, child) {
-                          if (isSearching) {
+                    Expanded(
+                      child: ValueListenableBuilder(
+                          valueListenable: vm.isSearching,
+                          builder: (context, isSearching, child) {
+                            if (isSearching) {
+                              return ValueListenableBuilder(
+                                  valueListenable: vm.suggestions,
+                                  builder: (_, suggestions, __) {
+                                    return SearchSuggestionView(
+                                      suggestions: suggestions,
+                                      onClickedAddButton: (suggestion) {
+                                        _updateInput(suggestion.word);
+                                      },
+                                      onClickedSuggestion: (suggestion) {
+                                        _updateInput(suggestion.word);
+                                        _onSubmitted(controller.text, vm);
+                                      },
+                                    );
+                                  });
+                            }
                             return ValueListenableBuilder(
-                                valueListenable: vm.suggestions,
-                                builder: (_, suggestions, __) {
-                                  return SearchSuggestionView(
-                                    suggestions: suggestions,
-                                    onClickedAddButton: (suggestion) {
-                                      _updateInput(suggestion.word);
-                                    },
-                                    onClickedSuggestion: (suggestion) {
-                                      _updateInput(suggestion.word);
-                                      _onSubmitted(controller.text, vm);
-                                    },
-                                  );
+                                valueListenable: vm.histories,
+                                builder: (_, histories, __) {
+                                  return SearchHistoryView(
+                                      histories: histories,
+                                      onClick: (value) {
+                                        _onSubmitted(value, vm);
+                                      },
+                                      onDelete: vm.onDeleteButtonClicked);
                                 });
-                          }
-                          return ValueListenableBuilder(
-                              valueListenable: vm.histories,
-                              builder: (_, histories, __) {
-                                return SearchHistoryView(
-                                    histories: histories,
-                                    onClick: (value) {
-                                      _onSubmitted(value, vm);
-                                    },
-                                    onDelete: vm.onDeleteButtonClicked);
-                              });
-                        }),
-                  ),
-                ],
+                          }),
+                    ),
+                  ],
+                ),
               ));
         }));
   }

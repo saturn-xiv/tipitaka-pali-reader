@@ -7,6 +7,7 @@ class NavigationProvider extends ChangeNotifier {
   int currentNavigation = 0;
   bool isNavigationPaneOpened = true;
 
+  final int _indexOfSearchNavigation = 3;
   final int _indexOfDictionaryNavigation = 4;
 
   void onClickedNavigationItem(int index) {
@@ -28,6 +29,11 @@ class NavigationProvider extends ChangeNotifier {
 
   void moveToDictionaryPage() {
     currentNavigation = _indexOfDictionaryNavigation;
+    notifyListeners();
+  }
+
+  void moveToSearchPage() {
+    currentNavigation = _indexOfSearchNavigation;
     notifyListeners();
   }
 }

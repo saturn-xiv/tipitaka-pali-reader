@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/app.dart';
+import 'package:tipitaka_pali/business_logic/view_models/search_page_view_model.dart';
 import 'package:tipitaka_pali/services/rx_prefs.dart';
 import 'package:tipitaka_pali/ui/screens/reader/widgets/vertical_book_slider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
@@ -53,8 +54,10 @@ class _DesktopBookViewState extends State<DesktopBookView> {
     itemPositionsListener.itemPositions.removeListener(_listenItemPosition);
     readerViewController.currentPage.removeListener(_listenPageChange);
     readerViewController.searchText.removeListener(_onSearchTextChanged);
-    readerViewController.currentSearchResult.removeListener(_onSearchTextChanged);
-    readerViewController.highlightEveryMatch.removeListener(_onSearchTextChanged);
+    readerViewController.currentSearchResult
+        .removeListener(_onSearchTextChanged);
+    readerViewController.highlightEveryMatch
+        .removeListener(_onSearchTextChanged);
     super.dispose();
   }
 
@@ -87,7 +90,8 @@ class _DesktopBookViewState extends State<DesktopBookView> {
                         context.read<ScriptLanguageProvider>().currentScript;
                     // transciption
 
-                    final id = '${readerViewController.book.name}-${readerViewController.book.id}-$index';
+                    final id =
+                        '${readerViewController.book.name}-${readerViewController.book.id}-$index';
 
                     final stopwatch = Stopwatch()..start();
                     String htmlContent = PaliScript.getCachedScriptOf(
@@ -96,7 +100,8 @@ class _DesktopBookViewState extends State<DesktopBookView> {
                       cacheId: id,
                       isHtmlText: true,
                     );
-                    print('doSomething() executed in ${stopwatch.elapsedMilliseconds} ms');
+                    print(
+                        'doSomething() executed in ${stopwatch.elapsedMilliseconds} ms');
 
                     return PaliPageWidget(
                       pageNumber: pageContent.pageNumber!,
@@ -105,6 +110,7 @@ class _DesktopBookViewState extends State<DesktopBookView> {
                       highlightedWord: _needToHighlight(index),
                       searchText: searchText,
                       onClick: onClickedWord,
+                      onSearch: onSearch,
                     );
                   },
                 )),
@@ -248,5 +254,27 @@ class _DesktopBookViewState extends State<DesktopBookView> {
         );
       },
     );
+  }
+
+  Future<void> onSearch(String word) async {
+    // removing puntuations etc.
+    // convert to roman if display script is not roman
+    word = PaliScript.getRomanScriptFrom(
+        script: context.read<ScriptLanguageProvider>().currentScript,
+        text: word);
+    word = word.replaceAll(RegExp(r'[^a-zA-ZāīūṅñṭḍṇḷṃĀĪŪṄÑṬḌHṆḶṂ ]'), '');
+    // convert ot lower case
+    word = word.toLowerCase();
+
+    // displaying dictionary in the side navigation view
+    if (!context.read<NavigationProvider>().isNavigationPaneOpened) {
+      context.read<NavigationProvider>().toggleNavigationPane();
+    }
+    context.read<NavigationProvider>().moveToSearchPage();
+    // delay a little miliseconds to wait for SearchPage Initialization
+
+    Future.delayed(const Duration(milliseconds: 50), () {
+      globalSearchWord.value = word;
+    });
   }
 }
