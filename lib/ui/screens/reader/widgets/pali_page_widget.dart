@@ -11,6 +11,7 @@ import 'package:tipitaka_pali/providers/font_provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/script_language_provider.dart';
 import 'package:tipitaka_pali/utils/font_utils.dart';
+import 'package:tipitaka_pali/utils/platform_info.dart';
 
 import '../../../../data/constants.dart';
 import '../../../../services/provider/theme_change_notifier.dart';
@@ -66,6 +67,113 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     final fontName = FontUtils.getfontName(
         script: context.read<ScriptLanguageProvider>().currentScript);
 
+    final child = Container(
+      color: Colors.transparent,
+      child: GestureDetector(
+        onTapUp: (details) {
+          final box = _textKey.currentContext?.findRenderObject()! as RenderBox;
+          final result = BoxHitTestResult();
+          final offset = box.globalToLocal(details.globalPosition);
+          if (!box.hitTest(result, position: offset)) {
+            return;
+          }
+
+          for (final entry in result.path) {
+            final target = entry.target;
+            if (entry is! BoxHitTestEntry || target is! RenderParagraph) {
+              continue;
+            }
+
+            final p = target.getPositionForOffset(entry.localPosition);
+            final text = target.text.toPlainText();
+            if (text.isNotEmpty && p.offset < text.length) {
+              final int offset = p.offset;
+              // print('pargraph: $text');
+              final charUnderTap = text[offset];
+              final leftChars = getLeftCharacters(text, offset);
+              final rightChars = getRightCharacters(text, offset);
+              final word = leftChars + charUnderTap + rightChars;
+              setState(() {
+                widget.onClick?.call(word);
+                highlightedWord = word;
+              });
+            }
+          }
+        },
+        child: HtmlWidget(
+          key: _textKey,
+          html,
+          factoryBuilder: () => _myFactory,
+          textStyle: TextStyle(
+              fontSize: fontSize.toDouble(),
+              inherit: true,
+              fontFamily: fontName),
+          customStylesBuilder: (element) {
+            // if (element.className == 'title' ||
+            //     element.className == 'book' ||
+            //     element.className == 'chapter' ||
+            //     element.className == 'subhead' ||
+            //     element.className == 'nikaya') {
+            //   return {
+            //     'text-align': 'center',
+            //     // 'text-decoration': 'none',
+            //   };
+            // }
+            if (element.localName == 'a') {
+              // print('found a tag: ${element.outerHtml}');
+              final isHighlight =
+                  element.parent!.className.contains('search-highlight') ==
+                      true;
+              if (isHighlight) {
+                return {'color': '#000', 'text-decoration': 'none'};
+              }
+
+              if (context.read<ThemeChangeNotifier>().isDarkMode) {
+                return {
+                  'color': 'white',
+                  'text-decoration': 'none',
+                };
+              } else {
+                return {
+                  'color': 'black',
+                  'text-decoration': 'none',
+                };
+              }
+            }
+
+            if (element.className == 'highlighted') {
+              String styleColor = (Prefs.darkThemeOn) ? "white" : "black";
+              Color c = Theme.of(context).primaryColorLight;
+              return {
+                'background': 'rgb(${c.red},${c.green},${c.blue})',
+                'color': styleColor,
+              };
+            }
+            // no style
+            return {'text-decoration': 'none'};
+          },
+          onTapUrl: (word) {
+            if (widget.onClick != null) {
+              // #goto is used for scrolling to selected text
+              if (word != '#goto') {
+                setState(() {
+                  highlightedWord = word;
+                  widget.onClick!(word);
+                });
+              }
+            }
+            return false;
+          },
+        ),
+      ),
+    );
+
+    if (!Mobile.isPhone(context)) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: child,
+      );
+    }
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SelectionArea(
@@ -100,107 +208,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
         // clicking on blank area in html widget lose focus, and it is normal.
         // Container Widget with color can be used to acquire foucs
         // The color value is required for this container in order to acquire focus.
-        child: Container(
-          color: Colors.transparent,
-          child: GestureDetector(
-            onTapUp: (details) {
-              final box =
-                  _textKey.currentContext?.findRenderObject()! as RenderBox;
-              final result = BoxHitTestResult();
-              final offset = box.globalToLocal(details.globalPosition);
-              if (!box.hitTest(result, position: offset)) {
-                return;
-              }
-
-              for (final entry in result.path) {
-                final target = entry.target;
-                if (entry is! BoxHitTestEntry || target is! RenderParagraph) {
-                  continue;
-                }
-
-                final p = target.getPositionForOffset(entry.localPosition);
-                final text = target.text.toPlainText();
-                if (text.isNotEmpty && p.offset < text.length) {
-                  final int offset = p.offset;
-                  // print('pargraph: $text');
-                  final charUnderTap = text[offset];
-                  final leftChars = getLeftCharacters(text, offset);
-                  final rightChars = getRightCharacters(text, offset);
-                  final word = leftChars + charUnderTap + rightChars;
-                  setState(() {
-                    widget.onClick?.call(word);
-                    highlightedWord = word;
-                  });
-                }
-              }
-            },
-            child: HtmlWidget(
-              key: _textKey,
-              html,
-              factoryBuilder: () => _myFactory,
-              textStyle: TextStyle(
-                  fontSize: fontSize.toDouble(),
-                  inherit: true,
-                  fontFamily: fontName),
-              customStylesBuilder: (element) {
-                // if (element.className == 'title' ||
-                //     element.className == 'book' ||
-                //     element.className == 'chapter' ||
-                //     element.className == 'subhead' ||
-                //     element.className == 'nikaya') {
-                //   return {
-                //     'text-align': 'center',
-                //     // 'text-decoration': 'none',
-                //   };
-                // }
-                if (element.localName == 'a') {
-                  // print('found a tag: ${element.outerHtml}');
-                  final isHighlight =
-                      element.parent!.className.contains('search-highlight') ==
-                          true;
-                  if (isHighlight) {
-                    return {'color': '#000', 'text-decoration': 'none'};
-                  }
-
-                  if (context.read<ThemeChangeNotifier>().isDarkMode) {
-                    return {
-                      'color': 'white',
-                      'text-decoration': 'none',
-                    };
-                  } else {
-                    return {
-                      'color': 'black',
-                      'text-decoration': 'none',
-                    };
-                  }
-                }
-
-                if (element.className == 'highlighted') {
-                  String styleColor = (Prefs.darkThemeOn) ? "white" : "black";
-                  Color c = Theme.of(context).primaryColorLight;
-                  return {
-                    'background': 'rgb(${c.red},${c.green},${c.blue})',
-                    'color': styleColor,
-                  };
-                }
-                // no style
-                return {'text-decoration': 'none'};
-              },
-              onTapUrl: (word) {
-                if (widget.onClick != null) {
-                  // #goto is used for scrolling to selected text
-                  if (word != '#goto') {
-                    setState(() {
-                      highlightedWord = word;
-                      widget.onClick!(word);
-                    });
-                  }
-                }
-                return false;
-              },
-            ),
-          ),
-        ),
+        child: child,
       ),
     );
   }

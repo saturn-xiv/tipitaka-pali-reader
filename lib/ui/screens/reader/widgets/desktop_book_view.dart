@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/app.dart';
 import 'package:tipitaka_pali/business_logic/view_models/search_page_view_model.dart';
@@ -13,6 +14,7 @@ import '../../../../providers/navigation_provider.dart';
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
 import '../../../dialogs/dictionary_dialog.dart';
+import '../../../widgets/custom_text_selection_control.dart';
 import '../../dictionary/controller/dictionary_controller.dart';
 import '../controller/reader_view_controller.dart';
 import 'pali_page_widget.dart';
@@ -75,45 +77,75 @@ class _DesktopBookViewState extends State<DesktopBookView> {
       return Row(
         children: [
           Expanded(
-            child: ScrollConfiguration(
-                behavior:
-                    ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                child: ScrollablePositionedList.builder(
-                  initialScrollIndex: pageIndex,
-                  itemScrollController: itemScrollController,
-                  itemPositionsListener: itemPositionsListener,
-                  itemCount: readerViewController.pages.length,
-                  itemBuilder: (_, index) {
-                    final PageContent pageContent =
-                        readerViewController.pages[index];
-                    final script =
-                        context.read<ScriptLanguageProvider>().currentScript;
-                    // transciption
+            child: SelectionArea(
+              focusNode: FocusNode(
+                canRequestFocus: true,
+              ),
+              selectionControls: FlutterSelectionControls(
+                toolBarItems: [
+                  ToolBarItem(
+                    item: const Text('Copy'),
+                    itemControl: ToolBarItemControl.copy,
+                  ),
+                  ToolBarItem(
+                    item: const Text('Select All'),
+                    itemControl: ToolBarItemControl.selectAll,
+                  ),
+                  ToolBarItem(
+                    item: const Text('Search'),
+                    onItemPressed: (selectedText) {
+                      onSearch(selectedText);
+                    },
+                  ),
+                  ToolBarItem(
+                    item: const Text('Share'),
+                    onItemPressed: (selectedText) {
+                      // do sharing
+                      Share.share(selectedText, subject: 'Pāḷi text from TPR');
+                    },
+                  ),
+                ],
+              ),
+              child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context)
+                      .copyWith(scrollbars: false),
+                  child: ScrollablePositionedList.builder(
+                    initialScrollIndex: pageIndex,
+                    itemScrollController: itemScrollController,
+                    itemPositionsListener: itemPositionsListener,
+                    itemCount: readerViewController.pages.length,
+                    itemBuilder: (_, index) {
+                      final PageContent pageContent =
+                          readerViewController.pages[index];
+                      final script =
+                          context.read<ScriptLanguageProvider>().currentScript;
+                      // transciption
 
-                    final id =
-                        '${readerViewController.book.name}-${readerViewController.book.id}-$index';
+                      final id =
+                          '${readerViewController.book.name}-${readerViewController.book.id}-$index';
 
-                    final stopwatch = Stopwatch()..start();
-                    String htmlContent = PaliScript.getCachedScriptOf(
-                      script: script,
-                      romanText: pageContent.content,
-                      cacheId: id,
-                      isHtmlText: true,
-                    );
-                    print(
-                        'doSomething() executed in ${stopwatch.elapsedMilliseconds} ms');
+                      final stopwatch = Stopwatch()..start();
+                      String htmlContent = PaliScript.getCachedScriptOf(
+                        script: script,
+                        romanText: pageContent.content,
+                        cacheId: id,
+                        isHtmlText: true,
+                      );
+                      print(
+                          'doSomething() executed in ${stopwatch.elapsedMilliseconds} ms');
 
-                    return PaliPageWidget(
-                      pageNumber: pageContent.pageNumber!,
-                      htmlContent: htmlContent,
-                      script: script,
-                      highlightedWord: _needToHighlight(index),
-                      searchText: searchText,
-                      onClick: onClickedWord,
-                      onSearch: onSearch,
-                    );
-                  },
-                )),
+                      return PaliPageWidget(
+                        pageNumber: pageContent.pageNumber!,
+                        htmlContent: htmlContent,
+                        script: script,
+                        highlightedWord: _needToHighlight(index),
+                        searchText: searchText,
+                        onClick: onClickedWord,
+                        onSearch: onSearch,
+                      );
+                    },
+                  )),
+            ),
           ),
           SizedBox(
               width: 32,

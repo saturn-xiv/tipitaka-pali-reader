@@ -52,7 +52,7 @@ dependencies:
   fwfh_text_style: ^2.22.8+1
   styled_text: ^7.0.0
   from_css_color: ^2.0.0
-  scrollable_positioned_list: ^0.3.2
+  scrollable_positioned_list: ^0.3.8
   word_selectable_text: ^0.2.0
   multi_split_view: ^2.1.0
   tabbed_view:
