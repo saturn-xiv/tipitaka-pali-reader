@@ -7,6 +7,7 @@ import '../database/database_helper.dart';
 
 abstract class SuttaRepository {
   Future<List<Sutta>> getAll();
+  Future<List<Sutta>> getSuttas(String filterWord);
 }
 
 class SuttaRepositoryDatabase implements SuttaRepository {
@@ -27,6 +28,17 @@ class SuttaRepositoryDatabase implements SuttaRepository {
     var results = await db.rawQuery('''
 SELECT suttas.name, book_id, books.name as book_name, page_number from suttas
 INNER JOIN books on books.id = suttas.book_id
+''');
+    return results.map((e) => Sutta.fromMap(e)).toList();
+  }
+
+  @override
+  Future<List<Sutta>> getSuttas(String filterdWord) async {
+    final db = await databaseProvider.database;
+    var results = await db.rawQuery('''
+SELECT suttas.name, book_id, books.name as book_name, page_number from suttas
+INNER JOIN books on books.id = suttas.book_id 
+WHERE suttas.name LIKE '%$filterdWord%'
 ''');
     return results.map((e) => Sutta.fromMap(e)).toList();
   }
