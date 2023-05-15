@@ -10,7 +10,7 @@ class SuttaListDialogViewController {
   SuttaListDialogViewController(this.suttaRepository);
   final SuttaRepository suttaRepository;
 
-  late final Iterable<Sutta> _allSutta;
+  late Iterable<Sutta> _allSutta;
   late final ValueNotifier<Iterable<Sutta>?> _suttas = ValueNotifier(null);
   ValueListenable<Iterable<Sutta>?> get suttas => _suttas;
 
@@ -22,7 +22,9 @@ class SuttaListDialogViewController {
     _suttas.value = _allSutta;
   }
 
-  void onFilterChanged(String filter) {
+  void onFilterChanged(String filter) async {
+    _allSutta = await suttaRepository.getSuttas(filter);
+
     final Script inputScript = ScriptDetector.getLanguage(filter);
     if (inputScript != Script.roman) {
       filter = PaliScript.getRomanScriptFrom(script: inputScript, text: filter);

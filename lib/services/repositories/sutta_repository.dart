@@ -35,12 +35,43 @@ INNER JOIN books on books.id = suttas.book_id
   @override
   Future<List<Sutta>> getSuttas(String filterdWord) async {
     final db = await databaseProvider.database;
-    var results = await db.rawQuery('''
+
+    Book book = Book(id: "", name: "");
+
+    if (filterdWord.contains(RegExp(r'[0-9]'))) {
+      //check now to see if it is a quickjump
+      if (filterdWord.toLowerCase().contains("dn")) {
+        book = getDnBookDetails(filterdWord, book); // get the number
+      }
+      if (filterdWord.toLowerCase().contains("mn")) {
+        book = getMnBookDetails(filterdWord, book); // get the number
+      }
+      if (filterdWord.toLowerCase().contains("sn")) {
+        final snFormat = RegExp(r'^sn\d+\.\d+$');
+        if (snFormat.hasMatch(filterdWord)) {
+          book = await getSnBookDetails(filterdWord, book);
+        } // get the number
+      }
+      if (filterdWord.toLowerCase().contains("an")) {
+        final anFormat = RegExp(r'^an\d+\.\d+$');
+        if (anFormat.hasMatch(filterdWord)) {
+          book = await getAnBookDetails(filterdWord, book); // get the number
+        }
+      }
+      var results = await db.rawQuery('''
+SELECT suttas.name, book_id, books.name as book_name, page_number from suttas
+INNER JOIN books on books.id = suttas.book_id 
+WHERE suttas.page_number = '${book.firstPage}' AND suttas.book_id = '${book.id}'
+''');
+      return results.map((e) => Sutta.fromMap(e)).toList();
+    } else {
+      var results = await db.rawQuery('''
 SELECT suttas.name, book_id, books.name as book_name, page_number from suttas
 INNER JOIN books on books.id = suttas.book_id 
 WHERE suttas.name LIKE '%$filterdWord%'
 ''');
-    return results.map((e) => Sutta.fromMap(e)).toList();
+      return results.map((e) => Sutta.fromMap(e)).toList();
+    }
   }
 
   Future<void> makeSNQuickjumpTable() async {
