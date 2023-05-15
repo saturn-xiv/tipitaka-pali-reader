@@ -4,12 +4,12 @@ import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 import '../../../../utils/pali_tools.dart';
 import '../../../../utils/script_detector.dart';
 
-class SearchBar extends StatefulWidget {
+class TprSearchBar extends StatefulWidget {
   final TextEditingController controller;
   final void Function(String) onSubmitted;
   final void Function(String) onTextChanged;
   final String hint;
-  const SearchBar({
+  const TprSearchBar({
     Key? key,
     required this.controller,
     required this.onSubmitted,
@@ -18,11 +18,11 @@ class SearchBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SearchBar> createState() => _SearchBarState();
+  State<TprSearchBar> createState() => _TprSearchBarState();
 }
 
-class _SearchBarState extends State<SearchBar> {
-  _SearchBarState();
+class _TprSearchBarState extends State<TprSearchBar> {
+  _TprSearchBarState();
 
   Color borderColor = Colors.grey;
   Color textColor = Colors.grey[350] as Color;

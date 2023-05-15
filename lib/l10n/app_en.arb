@@ -77,7 +77,12 @@
   "noHistory":              "no History",
   "selectAll":              "Select All",
   "selectNone":             "Select None",
-  "newTabAtEnd":            "New tab at end"
+  "newTabAtEnd":            "New tab at end",
+  "searchSuttaName":        "Search Sutta Name",
+  "nameOrShorthand":        "name or shorthand",
+  "fuzzy":                  "Fuzzy",
+  "notFound":               "Not found",
+  "qjHelpMessage":          "You may search by sutta name or by shorthand sutta notation\n\nExamples:\ndn30 = Dīgha Nikāya 30th sutta\nnm118 = Majjhima Nikāya 118th sutta\nsn5.1 = 5th Saṃyutta first sutta\nan8.64 = book of 8's 64th sutta"
 }
 
 

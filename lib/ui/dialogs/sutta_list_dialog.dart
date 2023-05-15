@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
+import 'package:tipitaka_pali/ui/dialogs/confirm_dialog.dart';
 import '../../business_logic/models/sutta.dart';
 import '../../services/provider/script_language_provider.dart';
 import '../../services/repositories/sutta_repository.dart';
@@ -9,6 +10,8 @@ import '../../utils/pali_script_converter.dart';
 import 'sutta_list_dialog_view_controller.dart';
 import '../screens/home/widgets/search_bar.dart';
 import '../../utils/mm_number.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+//import 'package:flutter/src/material/search_anchor.dart';
 
 class SuttaListDialog extends StatefulWidget {
   const SuttaListDialog({
@@ -50,30 +53,42 @@ class _SuttaListDialogState extends State<SuttaListDialog> {
       children: [
         SizedBox(
           height: 50,
-          child: Stack(alignment: Alignment.center, children: const [
+          child: Stack(alignment: Alignment.center, children: [
             Text(
-              'suttas',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              AppLocalizations.of(context)!.searchSuttaName,
+              style:
+                  const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                  onPressed: () async {
+                    _showQjHelpDialog(context);
+                  },
+                  icon: Icon(Icons.question_mark)),
+            ),
+            const Align(
               alignment: Alignment.centerRight,
               child: CloseButton(),
             )
           ]),
         ),
         const Divider(color: Colors.grey),
+        TprSearchBar(
+          hint: AppLocalizations.of(context)!.nameOrShorthand,
+          controller: textEditingController,
+          onTextChanged: viewController.onFilterChanged,
+          onSubmitted: (value) {
+            // not use
+          },
+        ),
         Expanded(
           child: ValueListenableBuilder<Iterable<Sutta>?>(
               valueListenable: viewController.suttas,
               builder: (_, suttas, __) {
-                if (suttas == null) {
-                  return const Center(
-                      child: CircularProgressIndicator.adaptive());
-                }
-
-                if (suttas.isEmpty) {
-                  return const Center(
-                    child: Text('not found'),
+                if (suttas == null || suttas.isEmpty) {
+                  return Center(
+                    child: Text(AppLocalizations.of(context)!.notFound),
                   );
                 }
 
@@ -122,14 +137,6 @@ class _SuttaListDialogState extends State<SuttaListDialog> {
                 );
               }),
         ),
-        SearchBar(
-          hint: 'search by sutta',
-          controller: textEditingController,
-          onTextChanged: viewController.onFilterChanged,
-          onSubmitted: (value) {
-            // not use
-          },
-        ),
       ],
     );
   }
@@ -142,6 +149,24 @@ class _SuttaListDialogState extends State<SuttaListDialog> {
       romanText: text,
       script: script,
     );
+  }
+
+  _showQjHelpDialog(context) async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            //title: Text(AppLocalizations.of(context)!.help),
+            content: Text(AppLocalizations.of(context)!.qjHelpMessage),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(false), //<-- SEE HERE
+                child: Text(AppLocalizations.of(context)!.close),
+              ),
+            ],
+          ),
+        )) ??
+        false;
   }
 }
 

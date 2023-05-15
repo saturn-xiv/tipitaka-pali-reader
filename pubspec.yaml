@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.3.2+30
+version: 2.3.2+33
 
 environment:
   sdk: ">=2.18.0 <=3.7.0"
@@ -26,29 +26,27 @@ dependencies:
   flutter_localizations: # Add this line
     sdk: flutter # Add this line
   # #enddocregion FlutterLocalizations
-  intl: ^0.17.0 # Add this line
+  intl: ^0.18.0 # Add this line
   # #enddocregion Intl
 
   sqflite: ^2.0.0+3
   path: ^1.8.2
   path_provider: ^2.0.12
   shared_preferences: ^2.0.17
-  flutter_slidable: ^2.0.0
+  flutter_slidable: ^3.0.0
   provider: ^6.0.0
   substring_highlight: ^1.0.33
   toggle_switch: ^2.0.1
   collection: ^1.15.0
   logger: ^1.0.0
   cupertino_icons: ^1.0.3
-  flex_color_scheme: ^6.0.0
+  flex_color_scheme: ^7.1.0
   sqflite_common: ^2.0.1+1
   freezed_annotation: ^2.1.0
   sqflite_common_ffi: ^2.0.0+3
-  sliding_sheet:
-    git:
-      url: https://github.com/pndaza/sliding_sheet_bxqm.git
+  wtf_sliding_sheet: ^1.0.0
   flutter_typeahead: ^4.3.3
-  flutter_widget_from_html_core: ^0.9.0+1
+  flutter_widget_from_html_core: ^0.10.0
   fwfh_text_style: ^2.22.8+1
   styled_text: ^7.0.0
   from_css_color: ^2.0.0
@@ -68,9 +66,9 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   archive: ^3.3.1
   url_launcher: ^6.1.5
-  devicelocale: ^0.5.5
-  dio: ^4.0.6
-  share_plus: ^6.3.0
+  devicelocale: ^0.6.0
+  dio: ^5.1.2
+  share_plus: ^7.0.0
   streaming_shared_preferences: ^2.0.0
   ms_material_color: ^1.0.0
   uuid: ^3.0.6
@@ -91,7 +89,7 @@ msix_config:
   publisher: CN=76DA55C6-0663-4AE1-AE5E-609E9823DC18
   store: true
   logo_path: C:\git\tipitaka-pali-reader\assets\icon\icon.png
-  msix_version: 1.1.19.0
+  msix_version: 1.1.22.0
 #######  for testing locally  ################
   #publisher:  CN=76DA55C6-0663-4AE1-AE5E-609E9823DC18, O=Msix Testing... # required
   #sign_msix: false

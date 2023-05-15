@@ -111,7 +111,7 @@ class _SearchPageState extends State<SearchPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: SearchBar(
+                          child: TprSearchBar(
                             hint: _getHint(vm.queryMode),
                             controller: controller,
                             onSubmitted: (value) {
