@@ -79,7 +79,11 @@ class _SuttaListDialogState extends State<SuttaListDialog> {
           controller: textEditingController,
           onTextChanged: viewController.onFilterChanged,
           onSubmitted: (value) {
-            // not use
+            if (viewController.suttas.value != null) {
+              if (viewController.suttas.value!.isNotEmpty) {
+                Navigator.pop(context, viewController.suttas.value!.first);
+              }
+            }
           },
         ),
         Expanded(
