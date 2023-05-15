@@ -12,8 +12,8 @@ class PlatformInfo {
 // 8 inch ipad mini have 744 logical pixels of width.
 class Mobile {
   static bool isTablet(BuildContext context) =>
-      false; //!PlatformInfo.isDesktop && MediaQuery.of(context).size.width >= 700;
+      !PlatformInfo.isDesktop && MediaQuery.of(context).size.width >= 700;
 
-  static bool isPhone(BuildContext context) => !PlatformInfo
-      .isDesktop; //!PlatformInfo.isDesktop && MediaQuery.of(context).size.width < 700;
+  static bool isPhone(BuildContext context) =>
+      !PlatformInfo.isDesktop && MediaQuery.of(context).size.width < 700;
 }
