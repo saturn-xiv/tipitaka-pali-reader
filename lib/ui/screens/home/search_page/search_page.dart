@@ -15,7 +15,6 @@ import '../../../../utils/pali_script.dart';
 import '../../../../utils/pali_script_converter.dart';
 import '../../../../utils/script_detector.dart';
 import '../widgets/search_bar.dart';
-import 'search_mode_view.dart';
 
 enum QueryMode { exact, prefix, distance, anywhere }
 
@@ -70,7 +69,7 @@ class _SearchPageState extends State<SearchPage> {
                 actions: [
                   FilterChip(
                       label: Text(
-                        'Fuzzy',
+                        AppLocalizations.of(context)!.fuzzy,
                         style: TextStyle(fontSize: 12),
                       ),
                       selected: Prefs.isFuzzy,

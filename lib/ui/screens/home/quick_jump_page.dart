@@ -5,8 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 
 import '../../../business_logic/models/book.dart';
-import '../../../business_logic/models/quick_jump.dart';
-import '../../../services/repositories/paragraph_repo.dart';
 import '../../../services/repositories/sutta_repository.dart';
 import '../../../utils/platform_info.dart';
 import '../../widgets/colored_text.dart';

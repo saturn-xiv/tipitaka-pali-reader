@@ -75,8 +75,6 @@ class _DetailNavigationPaneState extends State<DetailNavigationPane> {
         return const DictionaryPage();
       // only in desktop
       case 5:
-        return const QuickJumpPage();
-      case 6:
         return const SettingPage();
       default:
         throw Error();

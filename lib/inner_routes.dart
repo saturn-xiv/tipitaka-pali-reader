@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/dictionary_page.dart';
 import 'package:tipitaka_pali/ui/screens/home/home_container.dart';
-import 'package:tipitaka_pali/ui/screens/home/quick_jump_page.dart';
 import 'package:tipitaka_pali/ui/screens/home/search_page/search_page.dart';
 import 'package:tipitaka_pali/ui/screens/reader/reader.dart';
 import 'package:tipitaka_pali/ui/screens/search_result/search_result_page.dart';
@@ -15,7 +14,6 @@ const searchRoute = '/search';
 const searchResultRoute = '/search_result_view';
 const settingRoute = '/setting';
 const dictionaryRoute = '/dictionary';
-const quickJumpRoute = '/quick_jump';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -54,9 +52,6 @@ class RouteGenerator {
         break;
       case settingRoute:
         screen = const SettingPage();
-        break;
-      case quickJumpRoute:
-        screen = const QuickJumpPage();
         break;
     }
     return MaterialPageRoute(builder: (BuildContext context) => screen);

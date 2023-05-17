@@ -45,14 +45,6 @@ class BookListPage extends StatelessWidget {
                     IconButton(
                       padding: const EdgeInsets.all(4.0),
                       constraints: const BoxConstraints(),
-                      icon: const Icon(Icons.directions_run),
-                      onPressed: () async {
-                        await Navigator.pushNamed(context, quickJumpRoute);
-                      },
-                    ),
-                    IconButton(
-                      padding: const EdgeInsets.all(4.0),
-                      constraints: const BoxConstraints(),
                       icon: const Icon(Icons.settings),
                       onPressed: () async {
                         await Navigator.pushNamed(context, settingRoute);
@@ -160,11 +152,6 @@ class BookListPage extends StatelessWidget {
             onTap: () => _openDictionaryPage(context),
           ),
           ListTile(
-            title: ColoredText(AppLocalizations.of(context)!.quickjump,
-                style: const TextStyle()),
-            onTap: () => _openQuickJumpPage(context),
-          ),
-          ListTile(
             title: ColoredText(AppLocalizations.of(context)!.settings,
                 style: const TextStyle()),
             onTap: () => _openSettingPage(context),
@@ -234,10 +221,6 @@ class BookListPage extends StatelessWidget {
 
   _openDictionaryPage(BuildContext context) {
     Navigator.pushNamed(context, dictionaryRoute);
-  }
-
-  _openQuickJumpPage(BuildContext context) {
-    Navigator.pushNamed(context, quickJumpRoute);
   }
 
   _showAboutDialog(BuildContext context) {

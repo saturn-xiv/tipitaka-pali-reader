@@ -4,6 +4,7 @@ import 'package:tipitaka_pali/services/repositories/paragraph_repo.dart';
 import '../../business_logic/models/book.dart';
 import '../../business_logic/models/quick_jump.dart';
 import '../database/database_helper.dart';
+import '../prefs.dart';
 
 abstract class SuttaRepository {
   Future<List<Sutta>> getAll();
@@ -65,12 +66,35 @@ WHERE suttas.page_number = '${book.firstPage}' AND suttas.book_id = '${book.id}'
 ''');
       return results.map((e) => Sutta.fromMap(e)).toList();
     } else {
-      var results = await db.rawQuery('''
+      if (Prefs.isFuzzy) {
+        String simpleFilteredWord = filterdWord.replaceAllMapped(
+          RegExp('[ṭḍṃāūīḷñṅ]'),
+          (match) => {
+            'ṭ': 't',
+            'ḍ': 'd',
+            'ṃ': 'm',
+            'ā': 'a',
+            'ū': 'u',
+            'ī': 'i',
+            'ḷ': 'l',
+            'ñ': 'n',
+            'ṅ': 'n'
+          }[match.group(0)]!,
+        );
+        var fuzzyResults = await db.rawQuery('''
+SELECT suttas.name, book_id, books.name as book_name, page_number from suttas
+INNER JOIN books on books.id = suttas.book_id 
+WHERE suttas.simple LIKE '%$simpleFilteredWord%'
+''');
+        return fuzzyResults.map((e) => Sutta.fromMap(e)).toList();
+      } else {
+        var results = await db.rawQuery('''
 SELECT suttas.name, book_id, books.name as book_name, page_number from suttas
 INNER JOIN books on books.id = suttas.book_id 
 WHERE suttas.name LIKE '%$filterdWord%'
 ''');
-      return results.map((e) => Sutta.fromMap(e)).toList();
+        return results.map((e) => Sutta.fromMap(e)).toList();
+      }
     }
   }
 

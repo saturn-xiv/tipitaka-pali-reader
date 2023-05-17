@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
-import 'package:tipitaka_pali/ui/dialogs/confirm_dialog.dart';
+import 'package:tipitaka_pali/utils/platform_info.dart';
 import '../../business_logic/models/sutta.dart';
+import '../../services/prefs.dart';
 import '../../services/provider/script_language_provider.dart';
 import '../../services/repositories/sutta_repository.dart';
 import '../../utils/pali_script.dart';
 import '../../utils/pali_script_converter.dart';
 import 'sutta_list_dialog_view_controller.dart';
 import '../screens/home/widgets/search_bar.dart';
-import '../../utils/mm_number.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 //import 'package:flutter/src/material/search_anchor.dart';
 
@@ -74,18 +74,7 @@ class _SuttaListDialogState extends State<SuttaListDialog> {
           ]),
         ),
         const Divider(color: Colors.grey),
-        TprSearchBar(
-          hint: AppLocalizations.of(context)!.nameOrShorthand,
-          controller: textEditingController,
-          onTextChanged: viewController.onFilterChanged,
-          onSubmitted: (value) {
-            if (viewController.suttas.value != null) {
-              if (viewController.suttas.value!.isNotEmpty) {
-                Navigator.pop(context, viewController.suttas.value!.first);
-              }
-            }
-          },
-        ),
+        PlatformInfo.isDesktop ? _getTprSearchBar() : const SizedBox.shrink(),
         Expanded(
           child: ValueListenableBuilder<Iterable<Sutta>?>(
               valueListenable: viewController.suttas,
@@ -141,6 +130,7 @@ class _SuttaListDialogState extends State<SuttaListDialog> {
                 );
               }),
         ),
+        !PlatformInfo.isDesktop ? _getTprSearchBar() : const SizedBox.shrink(),
       ],
     );
   }
@@ -152,6 +142,38 @@ class _SuttaListDialogState extends State<SuttaListDialog> {
     return PaliScript.getScriptOf(
       romanText: text,
       script: script,
+    );
+  }
+
+  Widget _getTprSearchBar() {
+    return Row(
+      children: [
+        Expanded(
+          child: TprSearchBar(
+            hint: AppLocalizations.of(context)!.nameOrShorthand,
+            controller: textEditingController,
+            onTextChanged: viewController.onFilterChanged,
+            onSubmitted: (value) {
+              if (viewController.suttas.value != null) {
+                if (viewController.suttas.value!.isNotEmpty) {
+                  Navigator.pop(context, viewController.suttas.value!.first);
+                }
+              }
+            },
+          ),
+        ),
+        FilterChip(
+            label: Text(
+              AppLocalizations.of(context)!.fuzzy,
+              style: TextStyle(fontSize: 12),
+            ),
+            selected: Prefs.isFuzzy,
+            onSelected: (value) {
+              setState(() {
+                Prefs.isFuzzy = !Prefs.isFuzzy;
+              });
+            }),
+      ],
     );
   }
 
