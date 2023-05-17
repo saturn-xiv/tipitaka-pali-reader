@@ -240,7 +240,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
   String _removeAlternatePali(String content) {
     // format of alternate pali
     // <span class="note">[bhagavāti (syā.), dī. ni. 1.157, abbhuggatākārena pana sameti]</span>
-    return content.replaceAll(RegExp(r'<span class="note">\[.+\]</span>'), '');
+    return content.replaceAll(RegExp(r'<span class="note">\[.+?\]</span>'), '');
   }
 
   String _addHighlight2(
