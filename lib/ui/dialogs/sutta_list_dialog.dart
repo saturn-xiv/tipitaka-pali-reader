@@ -1,3 +1,4 @@
+import 'package:el_tooltip/el_tooltip.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
@@ -61,11 +62,10 @@ class _SuttaListDialogState extends State<SuttaListDialog> {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: IconButton(
-                  onPressed: () async {
-                    _showQjHelpDialog(context);
-                  },
-                  icon: Icon(Icons.question_mark)),
+              child: ElTooltip(
+                content: Text(AppLocalizations.of(context)!.qjHelpMessage),
+                child: const Icon(Icons.question_mark),
+              ),
             ),
             const Align(
               alignment: Alignment.centerRight,
