@@ -1,6 +1,6 @@
 # Tipitaka Pali Reader
 
-To get this working, you need to **download the database** from https://drive.google.com/file/d/1tFXQpzX4N6D4x-NaJsNadN37HjJJdb4a/view?usp=share_link
+To get this working, you need to **download the database** from [https://drive.google.com/file/d/1tFXQpzX4N6D4x-NaJsNadN37HjJJdb4a/view?usp=share_link](https://drive.google.com/file/d/1TDqHM5H_u0mD6x_EJAbnmdKSR9H3IJmU/view?usp=share_link)
 
 **Extract into the assets database folder, and then run the script to break it up.  The database will be deleted.  Make sure the zip file or complete unzipped db are not in the assets folder when making for release.. (it is big).**
 
