@@ -248,8 +248,13 @@ class DictionaryController with ChangeNotifier {
     debugPrint('definitions: $definitions');
 
     if (Prefs.isDpdOn) {
-      final String dpdHeadWord = await dictionaryProvider.getDpdHeadwords(word);
+      String dpdHeadWord = await dictionaryProvider.getDpdHeadwords(word);
       debugPrint('dpdHeadWord: $dpdHeadWord for "$word"');
+
+      if (dpdHeadWord.isEmpty) {
+        dpdHeadWord = "['$word']";
+      }
+      
       if (dpdHeadWord.isNotEmpty) {
         Definition dpdDefinition =
             await dictionaryProvider.getDpdDefinition(dpdHeadWord);
