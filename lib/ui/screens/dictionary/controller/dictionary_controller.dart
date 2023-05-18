@@ -204,6 +204,10 @@ class DictionaryController with ChangeNotifier {
     // check to see if dpd is used.
     // separate table and process for dpd
     if (Prefs.isDpdOn) {
+      if (dpdHeadWords.isEmpty) {
+        dpdHeadWords = "['$word']";
+      }
+
       if (dpdHeadWords.isNotEmpty) {
         Definition dpdDefinition =
             await dictionaryProvider.getDpdDefinition(dpdHeadWords);
