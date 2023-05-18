@@ -156,7 +156,7 @@ class DictionaryController with ChangeNotifier {
     final dictionaryProvider =
         DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
     // now get the headword all times.
-    final String dpdHeadWords = await dictionaryProvider.getDpdHeadwords(word);
+    String dpdHeadWords = await dictionaryProvider.getDpdHeadwords(word);
     // if we find the word.. then we isAlreadyStem = true;
     // make the lookup word that new dpdHeadWord.
 
@@ -258,7 +258,7 @@ class DictionaryController with ChangeNotifier {
       if (dpdHeadWord.isEmpty) {
         dpdHeadWord = "['$word']";
       }
-      
+
       if (dpdHeadWord.isNotEmpty) {
         Definition dpdDefinition =
             await dictionaryProvider.getDpdDefinition(dpdHeadWord);

@@ -254,22 +254,25 @@ class BookListPage extends StatelessWidget {
             alignment: PlatformInfo.isDesktop
                 ? Alignment.bottomLeft
                 : Alignment.bottomCenter,
-            child: Dialog(
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(16.0))),
-              child: Material(
-                type: MaterialType.transparency,
-                child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  width: PlatformInfo.isDesktop ? sideSheetWidth : 500,
-                  // decoration: BoxDecoration(
-                  //     color: Theme.of(context).colorScheme.background,
-                  //     borderRadius: const BorderRadius.only(
-                  //       topLeft: Radius.circular(16),
-                  //       topRight: Radius.circular(16),
-                  //     )),
-                  child: SuttaListDialog(
-                    suttaRepository: SuttaRepositoryDatabase(DatabaseHelper()),
+            child: SafeArea(
+              child: Dialog.fullscreen(
+                //shape: const RoundedRectangleBorder(
+                //  borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    width: PlatformInfo.isDesktop ? sideSheetWidth : 500,
+                    // decoration: BoxDecoration(
+                    //     color: Theme.of(context).colorScheme.background,
+                    //     borderRadius: const BorderRadius.only(
+                    //       topLeft: Radius.circular(16),
+                    //       topRight: Radius.circular(16),
+                    //     )),
+                    child: SuttaListDialog(
+                      suttaRepository:
+                          SuttaRepositoryDatabase(DatabaseHelper()),
+                    ),
                   ),
                 ),
               ),
