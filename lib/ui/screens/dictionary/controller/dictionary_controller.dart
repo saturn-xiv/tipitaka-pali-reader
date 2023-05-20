@@ -221,13 +221,6 @@ class DictionaryController with ChangeNotifier {
         definitions.insert(0, dpdDefinition);
         definitions.sort((a, b) => a.userOrder.compareTo(b.userOrder));
       }
-      // alternative way.
-/*      Definition grammarDef =
-          await dictionaryProvider.getDpdGrammarDefinition(word);
-      if (!grammarDef.word.isEmpty) {
-        definitions.add(grammarDef);
-      }
-      */
     }
     if (definitions.isEmpty) return '';
 

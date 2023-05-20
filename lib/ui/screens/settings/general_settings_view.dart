@@ -5,8 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/ui/screens/settings/panel_size_setting_view.dart';
+import '../../../utils/platform_info.dart';
 import '../../widgets/colored_text.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 enum Startup { quoteOfDay, restoreLastRead }
 
@@ -266,12 +268,18 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
     );
   }
 
-  _showAboutDialog(BuildContext context) {
+  _showAboutDialog(BuildContext context) async {
+    final info = await PackageInfo.fromPlatform();
     showAboutDialog(
-        context: context,
-        applicationName: AppLocalizations.of(context)!.tipitaka_pali_reader,
-        applicationVersion: 'Version 1.8',
-        children: [ColoredText(AppLocalizations.of(context)!.about_info)]);
+      context: context,
+      applicationName: AppLocalizations.of(context)!.tipitaka_pali_reader,
+      applicationVersion: 'Version - ${info.version}+${info.buildNumber}',
+
+//      applicationVersion: (PlatformInfo.isDesktop)
+      //        ? 'Version 1.9'
+      //      : 'Version ${info.version}+${info.buildNumber}',
+      children: [ColoredText(AppLocalizations.of(context)!.about_info)],
+    );
   }
 
   Widget _getHelpTile(BuildContext context) {

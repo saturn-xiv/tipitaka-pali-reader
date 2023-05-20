@@ -19,6 +19,11 @@ class DictionarySerice {
     return definition;
   }
 
+  Future<bool> isDpdGrammarExist() async {
+    final isExist = await dictionaryRepository.isDpdGrammarExist();
+    return isExist;
+  }
+
   Future<List<Definition>> getDefinition(String word,
       {bool isAlreadyStem = false}) async {
     if (!isAlreadyStem) {

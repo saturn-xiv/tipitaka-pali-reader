@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.3.2+33
+version: 2.3.2+36
 
 environment:
   sdk: ">=2.18.0 <=3.7.0"
@@ -61,19 +61,21 @@ dependencies:
     path: packages/slidable_bar
   huge_listview: ^2.0.2
   beautiful_soup_dart: ^0.3.0
-  msix: ^3.6.6
+  msix: ^3.12.2
   http: ^0.13.5
   internet_connection_checker: ^1.0.0+1
   archive: ^3.3.1
   url_launcher: ^6.1.5
   devicelocale: ^0.6.0
   dio: ^5.1.2
-  share_plus: ^6.3.0
+  share_plus: ^7.0.1
   streaming_shared_preferences: ^2.0.0
   ms_material_color: ^1.0.0
   uuid: ^3.0.6
   vm_service: ^11.3.0
   el_tooltip: ^1.0.8
+  in_app_review: ^2.0.6
+  package_info_plus: ^4.0.1
   
 
 dev_dependencies:
@@ -90,7 +92,7 @@ msix_config:
   publisher: CN=76DA55C6-0663-4AE1-AE5E-609E9823DC18
   store: true
   logo_path: C:\git\tipitaka-pali-reader\assets\icon\icon.png
-  msix_version: 1.1.22.0
+  msix_version: 1.1.24.0
 #######  for testing locally  ################
   #publisher:  CN=76DA55C6-0663-4AE1-AE5E-609E9823DC18, O=Msix Testing... # required
   #sign_msix: false

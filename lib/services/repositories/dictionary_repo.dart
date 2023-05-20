@@ -11,6 +11,7 @@ abstract class DictionaryRepository {
   Future<List<Definition>> getDefinition(String id);
   Future<Definition> getDpdDefinition(String headwords);
   Future<Definition> getDpdGrammarDefinition(String word);
+  Future<bool> isDpdGrammarExist();
   Future<List<String>> getSuggestions(String word);
   Future<String> getDprBreakup(String word);
   Future<String> getDprStem(String word);
@@ -103,6 +104,16 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
         userOrder: order);
 
     return def;
+  }
+
+  @override
+  Future<bool> isDpdGrammarExist() async {
+    final db = await databaseHelper.database;
+
+    var result = await db.query('sqlite_master',
+        where: 'type = ? AND name = ?', whereArgs: ['table', 'dpd_grammar']);
+
+    return result.isNotEmpty;
   }
 
   @override

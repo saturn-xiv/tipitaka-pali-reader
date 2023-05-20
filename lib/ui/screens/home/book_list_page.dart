@@ -17,6 +17,7 @@ import '../../dialogs/sutta_list_dialog.dart';
 import '../../widgets/colored_text.dart';
 import 'openning_books_provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class BookListPage extends StatelessWidget {
   BookListPage({Key? key}) : super(key: key);
@@ -223,12 +224,14 @@ class BookListPage extends StatelessWidget {
     Navigator.pushNamed(context, dictionaryRoute);
   }
 
-  _showAboutDialog(BuildContext context) {
+  _showAboutDialog(BuildContext context) async {
+    final info = await PackageInfo.fromPlatform();
     showAboutDialog(
-        context: context,
-        applicationName: AppLocalizations.of(context)!.tipitaka_pali_reader,
-        applicationVersion: 'Version 1.8',
-        children: [ColoredText(AppLocalizations.of(context)!.about_info)]);
+      context: context,
+      applicationName: AppLocalizations.of(context)!.tipitaka_pali_reader,
+      applicationVersion: 'Version - ${info.version}+${info.buildNumber}',
+      children: [ColoredText(AppLocalizations.of(context)!.about_info)],
+    );
   }
 
   Future<Sutta?> _openSuttaDialog(BuildContext context) async {
