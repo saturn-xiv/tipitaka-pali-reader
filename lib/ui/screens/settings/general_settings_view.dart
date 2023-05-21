@@ -271,13 +271,11 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
   _showAboutDialog(BuildContext context) async {
     final info = await PackageInfo.fromPlatform();
     showAboutDialog(
+      applicationIcon:
+          Image.asset('assets/icon/icon.png', width: 50, height: 50),
       context: context,
       applicationName: AppLocalizations.of(context)!.tipitaka_pali_reader,
       applicationVersion: 'Version - ${info.version}+${info.buildNumber}',
-
-//      applicationVersion: (PlatformInfo.isDesktop)
-      //        ? 'Version 1.9'
-      //      : 'Version ${info.version}+${info.buildNumber}',
       children: [ColoredText(AppLocalizations.of(context)!.about_info)],
     );
   }
