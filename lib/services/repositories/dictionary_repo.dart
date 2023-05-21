@@ -138,7 +138,6 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
   Future<List<String>> getSuggestions(String word) async {
     final db = await databaseHelper.database;
     String sql = '';
-    bool dpd = true;
 
     // if dpd is selected
     sql = '''

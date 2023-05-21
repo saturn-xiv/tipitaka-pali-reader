@@ -158,7 +158,6 @@ WHERE suttas.name LIKE '%$filterdWord%'
       131
     ];
 
-    List<String> suttaList = [];
     List<QuickJump> qjList = [];
     //int counter = 1;
 

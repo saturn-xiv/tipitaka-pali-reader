@@ -30,7 +30,7 @@ class _DictionarySearchFieldState extends State<DictionarySearchField> {
     textEditingController = TextEditingController();
 
     final lookupWord = dictionaryController.lookupWord;
-    if (lookupWord != null) {
+    if (lookupWord.isNotEmpty) {
       textEditingController.text = PaliScript.getScriptOf(
           script: context.read<ScriptLanguageProvider>().currentScript,
           romanText: lookupWord);
@@ -53,7 +53,7 @@ class _DictionarySearchFieldState extends State<DictionarySearchField> {
 
   void _lookUpWordListener() {
     final lookupWord = dictionaryController.lookupWord;
-    if (lookupWord != null) {
+    if (lookupWord.isNotEmpty) {
       textEditingController.text = PaliScript.getScriptOf(
           script: context.read<ScriptLanguageProvider>().currentScript,
           romanText: lookupWord);

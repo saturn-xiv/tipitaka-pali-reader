@@ -23,9 +23,6 @@ final variations = {
 };
 
 class SearchSuggestionDatabaseRepository implements SearchSuggestionRepository {
-  static List<String> _words = [];
-  static Future<void>? _wordsFuture;
-
   //final dao = SearchSuggestionDao();
   final DatabaseHelper databaseProvider;
 

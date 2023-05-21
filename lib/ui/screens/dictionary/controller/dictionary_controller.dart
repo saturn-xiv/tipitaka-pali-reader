@@ -10,7 +10,6 @@ import '../../../../services/database/dictionary_service.dart';
 import '../../../../services/repositories/dictionary_history_repo.dart';
 import '../../../../services/repositories/dictionary_repo.dart';
 import 'dictionary_state.dart';
-import 'package:flutter/services.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
 // global variable
@@ -77,7 +76,9 @@ class DictionaryController with ChangeNotifier {
     if (globalLookupWord.value != null) {
       _currentlookupWord = globalLookupWord.value ?? '';
       debugPrint('lookup word: $_currentlookupWord');
-      _lookupDefinition();
+      if (_currentlookupWord.isNotEmpty) {
+        _lookupDefinition();
+      }
     }
   }
 
@@ -113,7 +114,7 @@ class DictionaryController with ChangeNotifier {
     if (Prefs.saveClickToClipboard == true) {
       // await Clipboard.setData(ClipboardData(text: word));
     }
-    debugPrint('_currentAlgorithmMode: ${_currentAlgorithmMode}');
+    debugPrint('_currentAlgorithmMode: $_currentAlgorithmMode');
 
     switch (_currentAlgorithmMode) {
       case DictAlgorithm.Auto:
@@ -142,7 +143,6 @@ class DictionaryController with ChangeNotifier {
     final differnt = after.difference(before);
     debugPrint('compute time: $differnt');
 
-    final dp = DictionaryDatabaseRepository(DatabaseHelper());
     // final dh = DictionaryHistory(word: word);
     //await dp.insertOrReplace(dh);
     // Todo removed for release.  fix later.
