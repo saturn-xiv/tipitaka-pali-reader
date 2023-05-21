@@ -1,24 +1,30 @@
  instruction file is here.
+ To log in ssh  ssh root@159.223.20.206 (or ip)
  https://odilondamasceno.medium.com/creating-appimage-with-flutter-d19ef8b53158
-
-
+sudo apt update
+sudo apt upgrade -y
 sudo snap install flutter --classic
 sudo apt-get install libgtk-3-0 libblkid1 liblzma5 -y
+#sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
+flutter doctor
+
 sudo apt install p7zip-full p7zip-rar unzip python3-pip python-pip -y
 pip install gdown
-flutter doctor
+
 mkdir git
 git clone https://github.com/bksubhuti/tipitaka-pali-reader.git
-cd tipitaka-pali-reader
-cd assets/database
-gdown 1VqUU-oeR2U8bBa1WQTdXhlcDM4FATIn5
+cd tipitaka-pali-reader/assets/database 
+gdown 1REoQYE-TpJPXC6DFYKroCy6XwmJbAvcm
 7z x tipitaka_pali.7z
 sh split.sh
-flutter build linux --desktop
+rm *.7z
+flutter build linux --release
 
 #copy the file directory into the appdir folder.
 mkdir TipitakaPaliReader.AppDir
 cd TipitakaPaliReader.AppDir
+#get the zip file flutterstuff.zip need to add to repo instead of temp
+wget https://tmpfiles.org/dl/1381490/flutterstuff.zip
 unzip flutterstuff.zip
 cp -r ~/git/tipitaka-pali-reader/build/linux/x64/release/bundle/* .
 
