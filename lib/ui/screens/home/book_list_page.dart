@@ -13,6 +13,7 @@ import '../../../services/provider/script_language_provider.dart';
 import '../../../services/repositories/sutta_repository.dart';
 import '../../../utils/pali_script.dart';
 import '../../../utils/platform_info.dart';
+import '../../dialogs/about_tpr_dialog.dart';
 import '../../dialogs/sutta_list_dialog.dart';
 import '../../widgets/colored_text.dart';
 import 'openning_books_provider.dart';
@@ -160,7 +161,7 @@ class BookListPage extends StatelessWidget {
           ListTile(
             title: ColoredText(AppLocalizations.of(context)!.about,
                 style: const TextStyle()),
-            onTap: () => _showAboutDialog(context),
+            onTap: () => showAboutTprDialog(context),
           ),
         ],
       ),
@@ -222,16 +223,6 @@ class BookListPage extends StatelessWidget {
 
   _openDictionaryPage(BuildContext context) {
     Navigator.pushNamed(context, dictionaryRoute);
-  }
-
-  _showAboutDialog(BuildContext context) async {
-    final info = await PackageInfo.fromPlatform();
-    showAboutDialog(
-      context: context,
-      applicationName: AppLocalizations.of(context)!.tipitaka_pali_reader,
-      applicationVersion: 'Version - ${info.version}+${info.buildNumber}',
-      children: [ColoredText(AppLocalizations.of(context)!.about_info)],
-    );
   }
 
   Future<Sutta?> _openSuttaDialog(BuildContext context) async {

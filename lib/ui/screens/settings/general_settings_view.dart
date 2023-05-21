@@ -5,10 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/ui/screens/settings/panel_size_setting_view.dart';
-import '../../../utils/platform_info.dart';
+import '../../dialogs/about_tpr_dialog.dart';
 import '../../widgets/colored_text.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 enum Startup { quoteOfDay, restoreLastRead }
 
@@ -70,11 +69,6 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           _getMultiTabsModeSwitch(),
           const Divider(),
           _getNewTabAtEndSwitch(),
-          const Divider(),
-          _getHelpTile(context),
-          _getAboutTile(context),
-          //QuotesOrRestore(),
-          _getReportIssueTile(context),
         ],
       ),
     );
@@ -252,59 +246,6 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           },
           value: true,
         ),
-      ),
-    );
-  }
-
-  Widget _getAboutTile(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 32.0),
-      child: ListTile(
-        title: ColoredText(AppLocalizations.of(context)!.about),
-        focusColor: Theme.of(context).focusColor,
-        hoverColor: Theme.of(context).hoverColor,
-        onTap: () => _showAboutDialog(context),
-      ),
-    );
-  }
-
-  _showAboutDialog(BuildContext context) async {
-    final info = await PackageInfo.fromPlatform();
-    showAboutDialog(
-      applicationIcon:
-          Image.asset('assets/icon/icon.png', width: 50, height: 50),
-      context: context,
-      applicationName: AppLocalizations.of(context)!.tipitaka_pali_reader,
-      applicationVersion: 'Version - ${info.version}+${info.buildNumber}',
-      children: [ColoredText(AppLocalizations.of(context)!.about_info)],
-    );
-  }
-
-  Widget _getHelpTile(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 32.0),
-      child: ListTile(
-        title: ColoredText(AppLocalizations.of(context)!.help),
-        focusColor: Theme.of(context).focusColor,
-        hoverColor: Theme.of(context).hoverColor,
-        onTap: () => launchUrl(
-            Uri.parse("https://americanmonk.org/tipitaka-pali-reader/"),
-            mode: LaunchMode.externalApplication),
-      ),
-    );
-  }
-
-  Widget _getReportIssueTile(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 32.0),
-      child: ListTile(
-        title: ColoredText(AppLocalizations.of(context)!.reportIssue),
-        focusColor: Theme.of(context).focusColor,
-        hoverColor: Theme.of(context).hoverColor,
-        onTap: () => launchUrl(
-            Uri.parse(
-                "https://github.com/bksubhuti/tipitaka-pali-reader/issues"),
-            mode: LaunchMode.externalApplication),
       ),
     );
   }

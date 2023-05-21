@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/data/constants.dart';
 
 import 'download_view.dart';
+import 'help_about.dart';
 import 'script_setting_view.dart';
 import 'general_settings_view.dart';
 
@@ -31,6 +32,7 @@ class SettingPage extends StatelessWidget {
               LanguageSettingView(),
               ScriptSettingView(),
               GeneralSettingsView(),
+              HelpAboutView(),
               ExtensionsView(),
             ],
           ),
