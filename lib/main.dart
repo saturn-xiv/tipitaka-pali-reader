@@ -6,7 +6,6 @@ import 'package:tipitaka_pali/services/repositories/dictionary_repo.dart';
 import 'app.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:devicelocale/devicelocale.dart';
 
 import 'dart:io' show Platform;
@@ -56,7 +55,6 @@ setScriptAndLanguageByLocal() async {
         //local first two letter.
         String shortLocale = locale.substring(0, 2);
         switch (shortLocale) {
-          // TODO: need to add enum for the localeVal
           case "en":
             Prefs.localeVal = 0;
             Prefs.currentScriptLanguage = "ro";
@@ -80,6 +78,18 @@ setScriptAndLanguageByLocal() async {
           case "hi":
             Prefs.localeVal = 5;
             Prefs.currentScriptLanguage = shortLocale;
+            break;
+          case "ru":
+            Prefs.localeVal = 6;
+            Prefs.currentScriptLanguage = "ro";
+            break;
+          case "bn":
+            Prefs.localeVal = 7;
+            Prefs.currentScriptLanguage = shortLocale;
+            break;
+          case "ccp":
+            Prefs.localeVal = 8;
+            Prefs.currentScriptLanguage = "ro";
             break;
         } // switch current local
       } // not null

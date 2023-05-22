@@ -28,6 +28,12 @@ class LocaleChangeNotifier extends ChangeNotifier {
       case 6:
         localeString = "ru";
         break;
+      case 7:
+        localeString = "bn";
+        break;
+      case 8:
+        localeString = "ccp";
+        break;
     }
 
     return localeString;

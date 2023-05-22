@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/ui/screens/home/openning_books_provider.dart';
+import 'package:tipitaka_pali/unsupported_language_classes/ccp_intl.dart';
 
 import 'providers/font_provider.dart';
 import 'routes.dart';
@@ -35,6 +36,8 @@ class App extends StatelessWidget {
   final String _viLocale = 'vi';
   final String _hiLocale = 'hi';
   final String _ruLocale = 'ru';
+  final String _bnLocale = 'bn';
+  final String _chakmaLocale = 'ccp';
 
   final StreamingSharedPreferences rxPref;
 
@@ -75,15 +78,19 @@ class App extends StatelessWidget {
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
+                CcpMaterialLocalizations.delegate,
               ],
               supportedLocales: [
                 Locale(_enLocale, ''), // English, no country code
                 Locale(_myLocale, ''), // Myanmar, no country code
-                Locale(_siLocale, ''), // Myanmar, no country code
-                Locale(_zhLocale, ''), // Myanmar, no country code
-                Locale(_viLocale, ''), // Myanmar, no country code
-                Locale(_hiLocale, ''), // Myanmar, no country code
-                Locale(_ruLocale, ''), // Myanmar, no country code
+                Locale(_siLocale, ''), // Sinahala, no country code
+                Locale(_zhLocale, ''), // Chinese, no country code
+                Locale(_viLocale, ''), // Vietnamese, no country code
+                Locale(_hiLocale, ''), // Hindi, no country code
+                Locale(_ruLocale, ''), // Russian, no country code
+                Locale(_bnLocale, ''), // Bengali, no country code
+                Locale(
+                    _chakmaLocale), // Chakma, no country code  //implemented as custom unsupported lang
               ],
               home: const SplashScreen(),
             );
