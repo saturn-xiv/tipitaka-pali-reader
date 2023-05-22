@@ -74,11 +74,11 @@ class App extends StatelessWidget {
               locale: Locale(localChangeNotifier.localeString, ''),
               onGenerateRoute: RouteGenerator.generateRoute,
               localizationsDelegates: const [
+                CcpMaterialLocalizations.delegate,
                 AppLocalizations.delegate,
                 ...GlobalMaterialLocalizations.delegates,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
-                CcpMaterialLocalizations.delegate,
               ],
               supportedLocales: [
                 Locale(_enLocale, ''), // English, no country code
