@@ -74,8 +74,8 @@ class App extends StatelessWidget {
               locale: Locale(localChangeNotifier.localeString, ''),
               onGenerateRoute: RouteGenerator.generateRoute,
               localizationsDelegates: const [
-                AppLocalizations.delegate, // Add this line
-                GlobalMaterialLocalizations.delegate,
+                AppLocalizations.delegate,
+                ...GlobalMaterialLocalizations.delegates,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
                 CcpMaterialLocalizations.delegate,
