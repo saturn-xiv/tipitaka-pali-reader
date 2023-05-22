@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
@@ -17,6 +18,7 @@ class DictionaryContentView extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.select<DictionaryController, DictionaryState>(
         (controller) => controller.dictionaryState);
+    GlobalKey textKey = GlobalKey();
 
     return state.when(
         initial: () => ValueListenableBuilder(
@@ -36,62 +38,90 @@ class DictionaryContentView extends StatelessWidget {
             child: Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: SelectionArea(
-                  child: HtmlWidget(
-                    content,
-                    customStylesBuilder: (element) {
-                      if (element.classes.contains('dpdheader')) {
-                        return {'font-weight:': 'bold'};
+                  child: GestureDetector(
+                    onTapUp: (details) {
+                      final box = textKey.currentContext?.findRenderObject()!
+                          as RenderBox;
+                      final result = BoxHitTestResult();
+                      final offset = box.globalToLocal(details.globalPosition);
+                      if (!box.hitTest(result, position: offset)) {
+                        return;
                       }
-                      return null;
-                    },
-                    customWidgetBuilder: (element) {
-                      /*             if (element.localName == "button") {
-                        final value = element.attributes['value'];
-                        if (value != null) {
-                          debugPrint("found button: $value");
-                          return TextButton(
-                              onPressed: showDeclension(context),
-                              child: const Text("Declension"));
+
+                      for (final entry in result.path) {
+                        final target = entry.target;
+                        if (entry is! BoxHitTestEntry ||
+                            target is! RenderParagraph) {
+                          continue;
+                        }
+
+                        final p =
+                            target.getPositionForOffset(entry.localPosition);
+                        final text = target.text.toPlainText();
+                        if (text.isNotEmpty && p.offset < text.length) {
+                          final int offset = p.offset;
+                          // print('pargraph: $text');
+                          final charUnderTap = text[offset];
+                          final leftChars = getLeftCharacters(text, offset);
+                          final rightChars = getRightCharacters(text, offset);
+                          final word = leftChars + charUnderTap + rightChars;
+                          debugPrint(word);
+                          context
+                              .read<DictionaryController>()
+                              .onWordClicked(word);
                         }
                       }
-                      */
-                      final href = element.attributes['href'];
-                      if (href != null) {
-                        String linkText = href.contains("wikipedia")
-                            ? "Wikipedia"
-                            : "Submit a correction";
-
-                        return InkWell(
-                          onTap: () {
-                            launchUrl(Uri.parse(href),
-                                mode: LaunchMode.externalApplication);
-
-                            debugPrint('will launch $href.');
-                          },
-                          child: Text(
-                            linkText,
-                            style: const TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: Colors.blue,
-                                fontSize: 10),
-                          ),
-                        );
-                      }
-                      return null;
                     },
-                    textStyle: TextStyle(
-                        fontSize: Prefs.dictionaryFontSize.toDouble(),
-                        color: context.watch<ThemeChangeNotifier>().isDarkMode
-                            ? Colors.white
-                            : Colors.black,
-                        inherit: false),
-                    factoryBuilder: () => ClickableFactory(
-                      onClicked: (word) {
-                        debugPrint(word);
-                        context
-                            .read<DictionaryController>()
-                            .onWordClicked(word);
+                    child: HtmlWidget(
+                      key: textKey,
+                      content,
+                      customStylesBuilder: (element) {
+                        if (element.classes.contains('dpdheader')) {
+                          return {'font-weight:': 'bold'};
+                        }
+                        return null;
                       },
+                      customWidgetBuilder: (element) {
+                        /*             if (element.localName == "button") {
+                          final value = element.attributes['value'];
+                          if (value != null) {
+                            debugPrint("found button: $value");
+                            return TextButton(
+                                onPressed: showDeclension(context),
+                                child: const Text("Declension"));
+                          }
+                        }
+                        */
+                        final href = element.attributes['href'];
+                        if (href != null) {
+                          String linkText = href.contains("wikipedia")
+                              ? "Wikipedia"
+                              : "Submit a correction";
+
+                          return InkWell(
+                            onTap: () {
+                              launchUrl(Uri.parse(href),
+                                  mode: LaunchMode.externalApplication);
+
+                              debugPrint('will launch $href.');
+                            },
+                            child: Text(
+                              linkText,
+                              style: const TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Colors.blue,
+                                  fontSize: 10),
+                            ),
+                          );
+                        }
+                        return null;
+                      },
+                      textStyle: TextStyle(
+                          fontSize: Prefs.dictionaryFontSize.toDouble(),
+                          color: context.watch<ThemeChangeNotifier>().isDarkMode
+                              ? Colors.white
+                              : Colors.black,
+                          inherit: false),
                     ),
                   ),
                 ))),
@@ -117,10 +147,31 @@ class DictionaryContentView extends StatelessWidget {
               ],
             ));
   }
+
+  String getLeftCharacters(String text, int offset) {
+    RegExp wordBoundary = RegExp(r'[\s\.\-",\+]');
+    StringBuffer chars = StringBuffer();
+    for (int i = offset - 1; i >= 0; i--) {
+      if (wordBoundary.hasMatch(text[i])) break;
+      chars.write(text[i]);
+    }
+    return chars.toString().split('').reversed.join();
+  }
+
+  String getRightCharacters(String text, int offset) {
+    RegExp wordBoundary = RegExp(r'[\s\.\-",\+]');
+    StringBuffer chars = StringBuffer();
+    for (int i = offset + 1; i < text.length; i++) {
+      if (wordBoundary.hasMatch(text[i])) break;
+      chars.write(text[i]);
+    }
+    return chars.toString();
+  }
 }
 
 typedef WordChanged = void Function(String word);
 
+/*
 class ClickableFactory extends WidgetFactory {
   final WordChanged? onClicked;
   ClickableFactory({this.onClicked});
@@ -250,3 +301,4 @@ class _CliakableWordTextViewState extends State<CliakableWordTextView> {
     );
   }
 }
+*/

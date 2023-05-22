@@ -2,6 +2,9 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:tipitaka_pali/utils/pali_script.dart';
+import 'package:tipitaka_pali/utils/pali_script_converter.dart';
+import 'package:tipitaka_pali/utils/script_detector.dart';
 
 import '../../../../business_logic/models/definition.dart';
 import '../../../../business_logic/models/dictionary_history.dart';
@@ -89,9 +92,15 @@ class DictionaryController with ChangeNotifier {
       return;
     }
     // loading definitions
-    final definition = await loadDefinition(_currentlookupWord);
+    String romanWord = _currentlookupWord;
+    Script inputScript = ScriptDetector.getLanguage(romanWord);
+    if (inputScript != Script.roman) {
+      romanWord = PaliScript.getRomanScriptFrom(script: inputScript, text: romanWord);
+    }
+
+    final definition = await loadDefinition(romanWord);
     debugPrint(
-        '==================> $_currentlookupWord, is empty: ${definition.isEmpty}');
+        '==================> $romanWord, is empty: ${definition.isEmpty}');
     if (definition.isEmpty) {
       _dictionaryState = const DictionaryState.noData();
       notifyListeners();
@@ -99,8 +108,8 @@ class DictionaryController with ChangeNotifier {
       _dictionaryState = DictionaryState.data(definition);
       notifyListeners();
       // save to history
-      if (!isContainInHistories(_histories.value, _currentlookupWord)) {
-        await dictionaryHistoryRepository.insert(_currentlookupWord);
+      if (!isContainInHistories(_histories.value, romanWord)) {
+        await dictionaryHistoryRepository.insert(romanWord);
         // refresh histories
         final histories = await dictionaryHistoryRepository.getAll();
         histories.sort((a, b) => a.dateTime.compareTo(b.dateTime));
@@ -135,10 +144,10 @@ class DictionaryController with ChangeNotifier {
     final before = DateTime.now();
 
     String definition = await searchWithTPR(word);
-    debugPrint(
-        'TPR definition "$definition", definition.isEmpty: ${definition.isEmpty}');
+    // debugPrint(
+    //     'TPR definition "$definition", definition.isEmpty: ${definition.isEmpty}');
     if (definition.isEmpty) definition = await searchWithDPR(word);
-    debugPrint('DPR def: $definition');
+    // debugPrint('DPR def: $definition');
     final after = DateTime.now();
     final differnt = after.difference(before);
     debugPrint('compute time: $differnt');
@@ -294,7 +303,7 @@ class DictionaryController with ChangeNotifier {
         formatedDefintion += _formatDefinitions(definitions);
       }
     }
-    debugPrint(formatedDefintion);
+    // debugPrint(formatedDefintion);
     return formatedDefintion;
   }
 
