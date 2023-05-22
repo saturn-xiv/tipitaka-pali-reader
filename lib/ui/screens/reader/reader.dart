@@ -130,8 +130,8 @@ class ReaderView extends StatelessWidget implements Searchable {
                 // don't const these two guys, otherwise theme changes
                 // won't be reflected, alternatively: get notified about
                 // changes in the views themselves
-                    ? DesktopBookView()
-                    : MobileBookView()),
+                    ? const DesktopBookView()
+                    : const MobileBookView()),
 
               ])
             ),

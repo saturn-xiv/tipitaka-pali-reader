@@ -2,7 +2,6 @@
 //import 'package:tipitaka_pali/services/prefs.dart';
 
 // Shared prefs package import
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

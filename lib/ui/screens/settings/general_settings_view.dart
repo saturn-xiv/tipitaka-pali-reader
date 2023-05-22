@@ -5,9 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/ui/screens/settings/panel_size_setting_view.dart';
-import '../../dialogs/about_tpr_dialog.dart';
-import '../../widgets/colored_text.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 enum Startup { quoteOfDay, restoreLastRead }
 

@@ -55,7 +55,7 @@ class SearchPageViewModel extends ChangeNotifier {
 
     // search
     if (globalSearchWord.value != null) {
-      Future.delayed(Duration(milliseconds: 50), () {
+      Future.delayed(const Duration(milliseconds: 50), () {
         print('search word: ${globalSearchWord.value}');
         onSubmmited(globalSearchWord.value!);
       });

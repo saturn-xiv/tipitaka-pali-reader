@@ -1793,7 +1793,7 @@ class TextProcessor {
   // from other scripts (mixed) to Sinhala
   static convertFromMixed(String mixedText) {
     // zwj messes with computing runs + hack to process last char
-    mixedText = cleanupZWJ(mixedText) + ' ';
+    mixedText = '${cleanupZWJ(mixedText)} ';
     Script? curScript;
     String run = '', output = '';
     for (int i = 0, length = mixedText.length; i < length; i++) {

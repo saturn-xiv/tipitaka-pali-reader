@@ -327,7 +327,7 @@ class ColoredText extends StatelessWidget {
             ((!Prefs.darkThemeOn) ? Theme.of(context).primaryColor : null),
       ),
     );
-    if (MediaQuery.boldTextOverride(context)) {
+    if (MediaQuery.boldTextOf(context)) {
       effectiveTextStyle = effectiveTextStyle
           .merge(const TextStyle(fontWeight: FontWeight.bold));
     }

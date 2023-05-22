@@ -386,7 +386,7 @@ class DownloadService {
 
       for (var word in words) {
         String w = word.trim().toLowerCase().toString();
-        w = w.replaceAll(RegExp('[^A-Za-zāīūṃṅñṭṭḍṇḷ\-]'), '');
+        w = w.replaceAll(RegExp('[^A-Za-zāīūṃṅñṭṭḍṇḷ-]'), '');
         if (!uniqueWords.contains(w)) {
           uniqueWords.add(w);
         }

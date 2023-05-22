@@ -50,8 +50,8 @@ class DictionaryDialog extends StatelessWidget {
                         icon: const Icon(Icons.history)),
                   ],
                 ),
-                Row(
-                  children: const [
+                const Row(
+                  children: [
                     Expanded(child: DictionarySearchField()),
                     Padding(
                       padding: EdgeInsets.all(8.0),

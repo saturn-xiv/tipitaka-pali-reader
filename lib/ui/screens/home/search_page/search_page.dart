@@ -70,7 +70,7 @@ class _SearchPageState extends State<SearchPage> {
                   FilterChip(
                       label: Text(
                         AppLocalizations.of(context)!.fuzzy,
-                        style: TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 12),
                       ),
                       selected: Prefs.isFuzzy,
                       onSelected: (value) {

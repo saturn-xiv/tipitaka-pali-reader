@@ -53,18 +53,18 @@ class _DictionaryPageState extends State<DictionaryPage>
               ),
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(8),
+          body: const Padding(
+            padding: EdgeInsets.all(8),
             child: Column(children: [
               Row(
-                children: const [
+                children: [
                   Expanded(child: DictionarySearchField()),
                   SizedBox(width: 8), // padding
                   DictionaryAlgorithmModeView(),
                 ],
               ),
-              const SizedBox(height: 4), // padding
-              const Expanded(child: DictionaryContentView()),
+              SizedBox(height: 4), // padding
+              Expanded(child: DictionaryContentView()),
             ]),
           ),
         );

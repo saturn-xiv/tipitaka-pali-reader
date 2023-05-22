@@ -25,11 +25,11 @@ class ReaderToolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     myLogger.i('building control bar');
-    return Material(
+    return const Material(
       child: SizedBox(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             UpperRow(),
             // SizedBox(height: 8),
             LowerRow(),
@@ -45,8 +45,8 @@ class UpperRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: const [
+    return const Row(
+      children: [
         SizedBox(
           width: 45,
         ),
