@@ -1,8 +1,6 @@
 import 'dart:math';
 
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:ms_material_color/ms_material_color.dart';
 import 'package:provider/provider.dart';
 import 'package:tabbed_view/tabbed_view.dart';
@@ -67,13 +65,15 @@ class _ReaderContainerState extends State<ReaderContainer> {
     books.asMap().forEach((index, entry) {
       final uuid = entry['uuid'];
       // Newly opened tab always becomes visible and hides the last visible book
-      final isActiveTab = Prefs.isNewTabAtEnd ? index == books.length - 1 : index == 0;
+      final isActiveTab =
+          Prefs.isNewTabAtEnd ? index == books.length - 1 : index == 0;
 
       if (isActiveTab && !tabsVisibility.containsKey(uuid)) {
         tabsVisibility[uuid] = true;
 
         if (books.length > Prefs.tabsVisible) {
-          final booksArr = Prefs.isNewTabAtEnd ? books.reversed.toList() : books;
+          final booksArr =
+              Prefs.isNewTabAtEnd ? books.reversed.toList() : books;
           for (var i = books.length - 1; i > 1; i--) {
             final revUuid = booksArr[i]['uuid'];
             if (tabsVisibility.containsKey(revUuid) &&

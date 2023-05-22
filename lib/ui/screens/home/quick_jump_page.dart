@@ -65,7 +65,8 @@ class _QuickJumpPageState extends State<QuickJumpPage> {
                         border: Border.all(color: Colors.grey),
                       ),
                       child: TextField(
-                          decoration: InputDecoration(border: InputBorder.none),
+                          decoration:
+                              const InputDecoration(border: InputBorder.none),
                           maxLines: 1,
                           controller: _controller,
                           onSubmitted: (text) {

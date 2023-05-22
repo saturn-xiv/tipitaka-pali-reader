@@ -18,7 +18,6 @@ import '../../dialogs/sutta_list_dialog.dart';
 import '../../widgets/colored_text.dart';
 import 'openning_books_provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class BookListPage extends StatelessWidget {
   BookListPage({Key? key}) : super(key: key);
