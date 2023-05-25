@@ -42,6 +42,9 @@ class InitialSetupViewModel extends ChangeNotifier {
     final searchHistories = <Map<String, Object?>>[];
     final dictionaries = <Map<String, Object?>>[];
 
+    // because a new db is copied.. the extension dpdgrammar is lost
+    setDpdGrammarFlag(false);
+
     if (isUpdateMode) {
       // backuping user data to memory
       final DatabaseHelper databaseHelper = DatabaseHelper();
@@ -183,5 +186,17 @@ class InitialSetupViewModel extends ChangeNotifier {
 
   void _openHomePage() {
     Navigator.of(_context).popAndPushNamed('/home');
+  }
+
+  setDpdGrammarFlag(bool isOn) async {
+    // if this function is called in setup.. that means the db does not have the
+    // table.  It is unsure if this type of (commented out) query is supported in linux sqlflite
+    // however, it is sure to not be included on this setup routine and it is sure to be turned
+    // on during the install of extension.
+    Prefs.isDpdGrammarOn = isOn;
+/*  final dictionaryProvider =
+      DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
+  Prefs.isDpdGrammarOn = await dictionaryProvider.isDpdGrammarExist();
+  */
   }
 }

@@ -79,7 +79,19 @@
   "Alphabetically":         "අකුරු පිළිවෙළ අනුව",
   "noHistory":              "ඉතිහාසයක් නැත",
   "selectAll":              "සියල්ල තෝරන්න",
-  "selectNone":             "කිසිවක් තෝරන්න එපා"
+  "selectNone":             "කිසිවක් තෝරන්න එපා",
+  "time":                   "වේලාව",
+  "alphabetically":         "අකුරු පිළිවෙළ අනුව",
+  "noHistory":              "ඉතිහාසයක් නැත",
+  "selectAll":              "සියල්ල තෝරන්න",
+  "selectNone":             "කිසිවක් තෝරන්න එපා",
+  "newTabAtEnd":            "අලුත් ටැබයක් අවසානයේ",
+  "searchSuttaName":        "සූත්‍ර නම සොයන්න",
+  "nameOrShorthand":        "නම හෝ කෙටියෙන්",
+  "fuzzy":                  "Fuzzy",
+  "notFound":               "සොයාගැනීමට නොහැකි වුනා",
+  "qjHelpMessage":          "You may search by sutta name or by shorthand sutta notation\n\nExamples:\ndn30 = Dīgha Nikāya 30th sutta\nnm118 = Majjhima Nikāya 118th sutta\nsn5.1 = 5th Saṃyutta first sutta\nan8.64 = book of 8's 64th sutta",
+  "helpAboutEtc":           "උදව්, අපගැන, ආදී."
 }
 
 

@@ -89,5 +89,12 @@
   "alphabetically":         "Thứ Tự chữ Cái",
   "noHistory":              "no History",
   "selectAll":              "Chọn Tất cả",
-  "selectNone":             "không Chọn"
-  }
+  "SelectNone":             "không Chọn",
+  "newTabAtEnd":            "tab mới ở cuối",
+  "searchSuttaName":        "Tìm tên Kinh",
+  "nameOrShorthand":        "Tên hay Viết tắt",
+  "fuzzy":                  "Mờ mịt",
+  "notFound":               "Không tìm thấy",
+  "qjHelpMessage":          "Tìm bằng tên hay viết tắt tên Kinh\nThí dụ:\ndn30 = Dīgha Nikāya 30th sutta\nm118 = Majjhima Nikāya 118th sutta\nsn5.1 = 5th Saṃyutta first sutta\nan8.64 = book of 8's 64th sutta",
+  "helpAboutEtc":           "Trợ giúp, Giới thiệu v.v."
+    }

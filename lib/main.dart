@@ -31,15 +31,7 @@ void main() async {
 
   final rxPref = await StreamingSharedPreferences.instance;
 
-  setDpdGrammarFlag();
-
   runApp(App(rxPref: rxPref));
-}
-
-setDpdGrammarFlag() async {
-  final dictionaryProvider =
-      DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
-  Prefs.isDpdGrammarOn = await dictionaryProvider.isDpdGrammarExist();
 }
 
 setScriptAndLanguageByLocal() async {
