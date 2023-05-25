@@ -1,0 +1,1 @@
+ARCH=x86_64 ~/Downloads/appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage
