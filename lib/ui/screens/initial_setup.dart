@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
 import 'package:tipitaka_pali/ui/widgets/select_language_widget.dart';
 import 'package:tipitaka_pali/ui/screens/settings/select_script_language.dart';
+import '../dialogs/reset_dialog.dart';
 
 class InitialSetup extends StatelessWidget {
   final bool isUpdateMode;
@@ -56,7 +57,17 @@ class InitialSetup extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        ColoredText(vm.status)
+        ColoredText(vm.status),
+        const SizedBox(
+          height: 20,
+        ),
+        // give a reset button here
+        ElevatedButton(
+          child: Text(AppLocalizations.of(context)!.resetData),
+          onPressed: () {
+            doResetDialog(context);
+          },
+        ),
       ],
     );
   }

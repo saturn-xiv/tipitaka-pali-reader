@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tipitaka_pali/ui/dialogs/reset_dialog.dart';
 import '../../dialogs/about_tpr_dialog.dart';
 import '../../widgets/colored_text.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -37,6 +38,7 @@ class _HelpAboutViewState extends State<HelpAboutView> {
           _getHelpTile(context),
           _getAboutTile(context),
           _getReportIssueTile(context),
+          _getResetDataTile(context),
         ],
       ),
     );
@@ -97,6 +99,19 @@ class _HelpAboutViewState extends State<HelpAboutView> {
                 "https://github.com/bksubhuti/tipitaka-pali-reader/issues"),
             mode: LaunchMode.externalApplication),
       ),
+    );
+  }
+
+  Widget _getResetDataTile(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: ListTile(
+          title: ColoredText(AppLocalizations.of(context)!.resetData),
+          focusColor: Theme.of(context).focusColor,
+          hoverColor: Theme.of(context).hoverColor,
+          onTap: () {
+            doResetDialog(context);
+          }),
     );
   }
 }

@@ -95,7 +95,8 @@ class DictionaryController with ChangeNotifier {
     String romanWord = _currentlookupWord;
     Script inputScript = ScriptDetector.getLanguage(romanWord);
     if (inputScript != Script.roman) {
-      romanWord = PaliScript.getRomanScriptFrom(script: inputScript, text: romanWord);
+      romanWord =
+          PaliScript.getRomanScriptFrom(script: inputScript, text: romanWord);
     }
 
     final definition = await loadDefinition(romanWord);
@@ -173,7 +174,9 @@ class DictionaryController with ChangeNotifier {
     if (dpdHeadWords.isNotEmpty) {
       // TODO get list from ven Bodhirasa for exceptions Bhagavaa and bhikkhave etc.
 
-      List<String> dpdList = dpdHeadWords.split(RegExp(r"[, ]"));
+      //List<String> dpdList = dpdHeadWords.split(RegExp(r"[, ]"));
+      List<String> dpdList = dpdHeadWords.split(",");
+
       // remove the left bracket and single quotes
       String dpdword = dpdList[0].replaceAll(RegExp(r"[\'\[\]]"), "");
 
@@ -232,7 +235,7 @@ class DictionaryController with ChangeNotifier {
       }
     }
     if (definitions.isEmpty) return '';
-
+    if (definitions[0].definition.isEmpty) return '';
     return _formatDefinitions(definitions);
   }
 
@@ -256,10 +259,10 @@ class DictionaryController with ChangeNotifier {
     if (Prefs.isDpdOn) {
       String dpdHeadWord = await dictionaryProvider.getDpdHeadwords(word);
       debugPrint('dpdHeadWord: $dpdHeadWord for "$word"');
-
-      if (dpdHeadWord.isEmpty) {
-        dpdHeadWord = "['$word']";
-      }
+//TODO ask vasil about this
+//      if (dpdHeadWord.isEmpty) {
+//        dpdHeadWord = "['$word']";
+//      }
 
       if (dpdHeadWord.isNotEmpty) {
         Definition dpdDefinition =
@@ -282,29 +285,17 @@ class DictionaryController with ChangeNotifier {
 
     final List<String> words = getWordsFrom(breakup: breakupText);
     // formating header
-    String formatedDefintion = '<b>$word</b> - ';
-    String firstPartOfBreakupText =
-        breakupText.substring(0, breakupText.indexOf(' '));
-    firstPartOfBreakupText = firstPartOfBreakupText.replaceAll("-", " · ");
-    // final cssColor = Theme.of(context).primaryColor.toCssString();
-    String cssColor =
-        "#${Theme.of(context).primaryColor.value.toRadixString(16).substring(2)}";
-    String csspreFormat =
-        '<p style="color:$cssColor; font-size:90%; font-weight=bold">';
-    String lastPartOfBreakupText = words.map((word) => word).join(' + ');
-    formatedDefintion +=
-        '$csspreFormat $firstPartOfBreakupText [ $lastPartOfBreakupText ] </p>';
-    // getting definition per word
-    for (var word in words) {
-      final definitions =
-          await dictionaryProvider.getDefinition(word, isAlreadyStem: true);
-      // print(definitions);
-      if (definitions.isNotEmpty) {
-        formatedDefintion += _formatDefinitions(definitions);
-      }
+
+    //TODO make defnition heading called Splitter Like if
+    // it were a dictionary header
+    String formattedDefinition = _addStyleToBook("DPD Splitter");
+
+    formattedDefinition += '<p class="definition"> <b>$word</b> <br> ';
+    for (String breakup in words) {
+      formattedDefinition += "<br>" + breakup + '<br>';
     }
-    // debugPrint(formatedDefintion);
-    return formatedDefintion;
+    formattedDefinition += '</p>';
+    return formattedDefinition;
   }
 
   Future<void> onLookup(String word) async {
@@ -356,6 +347,7 @@ class DictionaryController with ChangeNotifier {
     // - The format of the break up is as follows:
     //   - the original word broken up with dashes (-) and the components of the breakup as dictionary entries in ()
     //
+    /*
     final indexOfLeftBracket = breakup.indexOf(' (');
     final indexOfRightBracket = breakup.indexOf(')');
     var breakupWords = breakup
@@ -364,7 +356,9 @@ class DictionaryController with ChangeNotifier {
     // cleans up DPR-specific stuff
     breakupWords =
         breakupWords.map((word) => word.replaceAll('`', '')).toList();
-    return breakupWords;
+        */
+
+    return breakup.split(",");
   }
 
   void onModeChanged(DictAlgorithm? value) {
@@ -465,5 +459,20 @@ class DictionaryController with ChangeNotifier {
     _currentlookupWord = '';
     _dictionaryState = const DictionaryState.initial();
     notifyListeners();
+  }
+
+  String replaceQuotesWithRegex(String input) {
+    // Check if the input is not null or empty
+    if (input.isNotEmpty) {
+      // Define a regex pattern that matches the first and last quotes in the input
+      RegExp pattern = RegExp(r'^"|"$');
+      // Replace all matches of the pattern with empty strings
+      String output = input.replaceAll(pattern, '');
+      // Return the output
+      return output;
+    } else {
+      // Return an empty string if the input is null or empty
+      return '';
+    }
   }
 }

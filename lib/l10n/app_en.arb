@@ -83,7 +83,13 @@
   "fuzzy":                  "Fuzzy",
   "notFound":               "Not found",
   "qjHelpMessage":          "You may search by sutta name or by shorthand sutta notation\n\nExamples:\ndn30 = Dīgha Nikāya 30th sutta\nnm118 = Majjhima Nikāya 118th sutta\nsn5.1 = 5th Saṃyutta first sutta\nan8.64 = book of 8's 64th sutta",
-  "helpAboutEtc":           "Help, About, Etc."
+  "helpAboutEtc":           "Help, About, Etc.",
+  "ok":                     "OK",
+  "alert":                  "Alert",
+  "pleaseCloseRestart":     "Please close TPR and launch the app again.",
+  "resetData":              "Reset Data",
+  "areYouSureReset":        "Are you sure you want to reset all settings and histories?"
+
 }
 
 

@@ -43,7 +43,7 @@ class InitialSetupViewModel extends ChangeNotifier {
     final dictionaries = <Map<String, Object?>>[];
 
     // because a new db is copied.. the extension dpdgrammar is lost
-    setDpdGrammarFlag(false);
+    setDpdGrammarFlag(true);
 
     if (isUpdateMode) {
       // backuping user data to memory
