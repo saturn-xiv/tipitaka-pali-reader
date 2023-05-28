@@ -264,7 +264,7 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
       // the PEU does not have a definition
       // We now need to adjust this.
       // see if we can get a hit.
-      if (!hasPeu && word.length >= 14) {
+      if (!hasPeu && word.length >= 9) {
         // reduce one by one up to 4 times to see if the word exists
         // add those words to the list.
         for (int reduce = 1; reduce < 5; reduce++) {
