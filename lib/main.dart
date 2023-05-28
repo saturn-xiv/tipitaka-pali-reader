@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
-import 'package:tipitaka_pali/services/database/database_helper.dart';
-import 'package:tipitaka_pali/services/database/dictionary_service.dart';
-import 'package:tipitaka_pali/services/repositories/dictionary_repo.dart';
 import 'app.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
