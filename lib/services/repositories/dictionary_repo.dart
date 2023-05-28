@@ -13,7 +13,7 @@ abstract class DictionaryRepository {
   Future<Definition> getDpdGrammarDefinition(String word);
   Future<bool> isDpdGrammarExist();
   Future<List<String>> getSuggestions(String word);
-  Future<String> getDprBreakup(String word);
+  Future<String> getDpdWordSplit(String word);
   Future<String> getDprStem(String word);
   Future<String> getDpdHeadwords(String word);
   Future<int> insertOrReplace(DictionaryHistory dictionaryHistory);
@@ -202,9 +202,9 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
   }
 
   @override
-  Future<String> getDprBreakup(String word) async {
+  Future<String> getDpdWordSplit(String word) async {
     final db = await databaseHelper.database;
-    final List<Map<String, dynamic>> maps = await db.query('dpr_breakup',
+    final List<Map<String, dynamic>> maps = await db.query('dpd_word_split',
         columns: ['breakup'], where: 'word = ?', whereArgs: [word]);
     // word column is unqiue
     // so list always one entry

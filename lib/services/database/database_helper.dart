@@ -164,7 +164,7 @@ class DatabaseHelper {
     await dbInstance.execute(
         'CREATE INDEX IF NOT EXISTS "dpr_stem_index" ON "dpr_stem" ("word"	ASC);');
     await dbInstance.execute(
-        'CREATE INDEX IF NOT EXISTS "dpr_breakup_index" ON "dpr_breakup" ("word");');
+        'CREATE INDEX IF NOT EXISTS "dpd_word_split_index" ON "dpd_word_split" ("word");');
     await dbInstance
         .execute('CREATE INDEX IF NOT EXISTS page_index ON pages ( bookid );');
     await dbInstance.execute(

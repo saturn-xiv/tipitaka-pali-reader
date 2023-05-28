@@ -14,11 +14,12 @@ import '../../../../services/repositories/dictionary_history_repo.dart';
 import '../../../../services/repositories/dictionary_repo.dart';
 import 'dictionary_state.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // global variable
 final ValueNotifier<String?> globalLookupWord = ValueNotifier<String?>(null);
 
-enum DictAlgorithm { Auto, TPR, DPR }
+enum DictAlgorithm { Auto, TPR, DPD }
 
 extension ParseToString on DictAlgorithm {
   String toStr() {
@@ -133,8 +134,8 @@ class DictionaryController with ChangeNotifier {
         return await searchAuto(word);
       case DictAlgorithm.TPR:
         return searchWithTPR(word);
-      case DictAlgorithm.DPR:
-        return searchWithDPR(word);
+      case DictAlgorithm.DPD:
+        return searchWithDpdSplit(word);
     }
   }
 
@@ -142,14 +143,14 @@ class DictionaryController with ChangeNotifier {
     //
     // Audo mode will use TPR algorithm first
     // if defintion was found, will be display this definition
-    // Otherwise will be display result of DPR a
+    // Otherwise will be display result of Dpd splitter a
 
     final before = DateTime.now();
 
     String definition = await searchWithTPR(word);
     // debugPrint(
     //     'TPR definition "$definition", definition.isEmpty: ${definition.isEmpty}');
-    if (definition.isEmpty) definition = await searchWithDPR(word);
+    if (definition.isEmpty) definition = await searchWithDpdSplit(word);
     // debugPrint('DPR def: $definition');
     final after = DateTime.now();
     final differnt = after.difference(before);
@@ -241,8 +242,8 @@ class DictionaryController with ChangeNotifier {
     return _formatDefinitions(definitions);
   }
 
-  Future<String> searchWithDPR(String word) async {
-    // looking up using dpr breakup words
+  Future<String> searchWithDpdSplit(String word) async {
+    // looking up using dpd word split
     List<Definition> definitions = [];
     final dictionaryProvider =
         DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
@@ -279,9 +280,9 @@ class DictionaryController with ChangeNotifier {
     }
 
     // not found in dpr_stem
-    // will be lookup in dpr_breakup
+    // will be lookup in dpd_word_split
     // breakup is multi-words
-    final String breakupText = await dictionaryProvider.getDprBreakup(word);
+    final String breakupText = await dictionaryProvider.getDpdWordSplit(word);
 
     if (breakupText.isEmpty) return '';
 
@@ -290,7 +291,9 @@ class DictionaryController with ChangeNotifier {
 
     //TODO make defnition heading called Splitter Like if
     // it were a dictionary header
-    String formattedDefinition = _addStyleToBook("DPD Splitter");
+    String formattedDefinition = _addStyleToBook(
+      AppLocalizations.of(context)!.wordSplit,
+    );
 
     formattedDefinition += '<p class="definition"> <b>$word</b> <br> ';
     for (String breakup in words) {
