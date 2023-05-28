@@ -220,9 +220,16 @@ class DictionaryController with ChangeNotifier {
     // separate table and process for dpd
     if (Prefs.isDpdOn) {
       if (dpdHeadWords.isEmpty) {
-        dpdHeadWords = "['$word']";
+        // see if we can find it in the pure dpd table
+        Definition pureDpdDef =
+            await dictionaryProvider.getDpdDefinition(originalWord);
+        if (pureDpdDef.definition.isNotEmpty) {
+          dpdHeadWords = originalWord;
+          // little bit of a hack to get the original word because the headword
+          // does not contain the natural word
+          //TODO speak to ven bodhirasa about this.
+        }
       }
-
       if (dpdHeadWords.isNotEmpty) {
         Definition dpdDefinition =
             await dictionaryProvider.getDpdDefinition(dpdHeadWords);
@@ -262,10 +269,6 @@ class DictionaryController with ChangeNotifier {
     if (Prefs.isDpdOn) {
       String dpdHeadWord = await dictionaryProvider.getDpdHeadwords(word);
       debugPrint('dpdHeadWord: $dpdHeadWord for "$word"');
-//TODO ask vasil about this
-//      if (dpdHeadWord.isEmpty) {
-//        dpdHeadWord = "['$word']";
-//      }
 
       if (dpdHeadWord.isNotEmpty) {
         Definition dpdDefinition =
