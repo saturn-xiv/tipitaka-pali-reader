@@ -57,4 +57,8 @@ class DictionarySerice {
   Future<String> getDpdHeadwords(String word) async {
     return dictionaryRepository.getDpdHeadwords(word);
   }
+
+  Future<String> getDpdLikeHeadwords(String word) async {
+    return dictionaryRepository.getDpdLikeHeadwords(word);
+  }
 }

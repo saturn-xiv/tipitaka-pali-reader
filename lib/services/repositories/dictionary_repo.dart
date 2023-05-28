@@ -16,6 +16,7 @@ abstract class DictionaryRepository {
   Future<String> getDpdWordSplit(String word);
   Future<String> getDprStem(String word);
   Future<String> getDpdHeadwords(String word);
+  Future<String> getDpdLikeHeadwords(String word);
   Future<int> insertOrReplace(DictionaryHistory dictionaryHistory);
 
   Future<int> delete(DictionaryHistory dictionaryHistory);
@@ -235,6 +236,22 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
         SELECT headwords 
         FROM dpd_inflections_to_headwords
         WHERE inflection = "$word";
+''';
+    final List<Map<String, dynamic>> maps = await db.rawQuery(sql);
+    // word column is unqiue
+    // so list always one entry
+    if (maps.isEmpty) return '';
+    return maps.first['headwords'] as String;
+  }
+
+  @override
+  Future<String> getDpdLikeHeadwords(String word) async {
+    final db = await databaseHelper.database;
+
+    String sql = '''
+        SELECT headwords 
+        FROM dpd_inflections_to_headwords
+        WHERE headwords Like "$word%";
 ''';
     final List<Map<String, dynamic>> maps = await db.rawQuery(sql);
     // word column is unqiue

@@ -229,6 +229,10 @@ class DictionaryController with ChangeNotifier {
           // does not contain the natural word
           //TODO speak to ven bodhirasa about this.
         }
+        if (dpdHeadWords.isEmpty) {
+          dpdHeadWords =
+              await dictionaryProvider.getDpdLikeHeadwords(originalWord + " 1");
+        }
       }
       if (dpdHeadWords.isNotEmpty) {
         Definition dpdDefinition =
@@ -377,7 +381,7 @@ class DictionaryController with ChangeNotifier {
   }
 
   void onWordClicked(String word) async {
-    word = _romoveNonCharacter(word);
+    word = _removeNonCharacter(word);
 
     word = word.toLowerCase();
     _currentlookupWord = word;
@@ -423,20 +427,10 @@ class DictionaryController with ChangeNotifier {
     _dictionaryState = const DictionaryState.initial();
   }
 
-  String _romoveNonCharacter(String word) {
-    word = word.replaceAllMapped(
-        RegExp(r'[\[\]\+/\.\)\(\-,:;")\\]'), (match) => ' ');
-    List<String> ls = word.split(' ');
-    // fix for first character being a non-word-char in above list
-    // if so, first split will be empty.
-    // if length is >1
-    if (ls.length > 1 && ls[0].isEmpty) {
-      word = ls[1];
-    } else {
-      word = ls[0];
-    }
-    word.trim();
-    return word;
+  String _removeNonCharacter(String input) {
+    final re = RegExp(r'[^a-zāīūṅñṭḍṇḷṃ ]+', caseSensitive: false);
+    final clean = input.replaceAll(re, '');
+    return clean;
   }
 
   int _getIndex(List<DictionaryHistory> histories, String word) {
