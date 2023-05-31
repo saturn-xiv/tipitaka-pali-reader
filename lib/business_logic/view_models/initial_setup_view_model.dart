@@ -9,6 +9,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InitialSetupViewModel extends ChangeNotifier {
   final BuildContext _context;
@@ -130,7 +131,7 @@ class InitialSetupViewModel extends ChangeNotifier {
     final int count = AssetsFile.partsOfDatabase.length;
     int partNo = 0;
     _status =
-        "About to copy database to your \nlocal Application folder\n Approximate Size: ${count * 50} MB";
+        AppLocalizations.of(_context)!.aboutToCopy + (count * 50).toString();
     notifyListeners();
     await Future.delayed(const Duration(milliseconds: 3000));
     for (String part in AssetsFile.partsOfDatabase) {
@@ -143,7 +144,8 @@ class InitialSetupViewModel extends ChangeNotifier {
           bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
           mode: FileMode.append);
       int percent = ((++partNo / count) * 100).round();
-      _status = "Finished copying $percent% of ~${count * 50} MB.";
+      _status =
+          "${AppLocalizations.of(_context)!.finishedCopying} $percent% \\ ~${count * 50} MB";
       notifyListeners();
       await Future.delayed(const Duration(milliseconds: 300));
     }
@@ -158,12 +160,12 @@ class InitialSetupViewModel extends ChangeNotifier {
     final timeBeforeIndexing = DateTime.now();
 
     // creating index tables
-    _status = "building word list";
+    _status = AppLocalizations.of(_context)!.buildingWordList;
     notifyListeners();
     final DatabaseHelper databaseHelper = DatabaseHelper();
 
     await databaseHelper.buildWordList(updateMessageCallback);
-    _status = "finished building word list";
+    _status = AppLocalizations.of(_context)!.finishedBuildingWordList;
     notifyListeners();
 
     _status = "building indexes";
@@ -172,7 +174,7 @@ class InitialSetupViewModel extends ChangeNotifier {
     if (indexResult == false) {
       // handle error
     }
-    _status = "finidshed building indexes";
+    _status = AppLocalizations.of(_context)!.finishedBuildingIndexes;
     notifyListeners();
     // creating fts table
     final ftsResult = await DatabaseHelper().buildFts(updateMessageCallback);
