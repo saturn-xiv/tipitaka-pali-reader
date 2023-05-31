@@ -5,7 +5,7 @@
   "recent":               "Recent",
   "search":               "Search",
   "updatingStatus":       "Please wait while updating database\nThis may take a few minutes",
-  "copyingStatus":        "Please wait while copying database.\nThis may take a few minutes",
+  "copyingStatus":        "Please for initial setup to complete.\nThis may take a few minutes\nIf the status does not change for 60 seconds,\n please hit the reset button and restart.",
   "settings":             "Settings",
   "dictionary":           "Dictionary",
   "theme":                "Theme",

@@ -29,6 +29,16 @@ class InitialSetup extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        // give a reset button here
+        ElevatedButton(
+          child: Text(AppLocalizations.of(context)!.resetData),
+          onPressed: () {
+            doResetDialog(context);
+          },
+        ),
+        const SizedBox(
+          height: 20,
+        ),
         // first load, select language "hard-coded in all supported languages"
         const Text(
             "Set Language \nသင်၏ဘာသာစကားကိုရွေးပါ\nඔබේ භාෂාව තෝරන්න\n选择你的语言\nChọn ngôn ngữ\nभाषा चयन करें\n"),
@@ -60,13 +70,6 @@ class InitialSetup extends StatelessWidget {
         ColoredText(vm.status),
         const SizedBox(
           height: 20,
-        ),
-        // give a reset button here
-        ElevatedButton(
-          child: Text(AppLocalizations.of(context)!.resetData),
-          onPressed: () {
-            doResetDialog(context);
-          },
         ),
       ],
     );

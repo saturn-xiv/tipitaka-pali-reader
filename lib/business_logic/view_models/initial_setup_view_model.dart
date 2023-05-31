@@ -129,6 +129,10 @@ class InitialSetupViewModel extends ChangeNotifier {
     final timeBeforeCopy = DateTime.now();
     final int count = AssetsFile.partsOfDatabase.length;
     int partNo = 0;
+    _status =
+        "About to copy database to your \nlocal Application folder\n Approximate Size: ${count * 50} MB";
+    notifyListeners();
+    await Future.delayed(const Duration(milliseconds: 3000));
     for (String part in AssetsFile.partsOfDatabase) {
       // reading from assets
       // using join method on assets path does not work for windows
@@ -139,9 +143,9 @@ class InitialSetupViewModel extends ChangeNotifier {
           bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
           mode: FileMode.append);
       int percent = ((++partNo / count) * 100).round();
-      _status = "Finished copying $percent% of database.";
-
+      _status = "Finished copying $percent% of ~${count * 50} MB.";
       notifyListeners();
+      await Future.delayed(const Duration(milliseconds: 300));
     }
 
     final timeAfterCopied = DateTime.now();
