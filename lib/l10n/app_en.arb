@@ -4,7 +4,6 @@
   "bookmark":             "Bookmark",
   "recent":               "Recent",
   "search":               "Search",
-  "updatingStatus":       "Please wait while updating database\nThis may take a few minutes",
   "settings":             "Settings",
   "dictionary":           "Dictionary",
   "theme":                "Theme",
@@ -94,7 +93,8 @@
   "finishedCopying":        "Finished copying",
   "buildingWordList":         "Building word list",
   "finishedBuildingWordList": "Finished building word list",
-  "finishedBuildingIndexes":  "Finished building indexes"
+  "finishedBuildingIndexes":  "Finished building indexes",
+  "updatingStatus":           "Please wait while updating to complete.\nThis may take a few minutes\nIf the status does not change for 60 seconds,\n please hit the reset button and restart."
 }
 
 
