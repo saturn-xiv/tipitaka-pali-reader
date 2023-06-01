@@ -26,6 +26,7 @@ class PaliPageWidget extends StatefulWidget {
   final Script script;
   final String? highlightedWord;
   final String? searchText;
+  final int? pageToHighlight;
   final Function(String clickedWord)? onClick;
   final Function(String clickedWord)? onSearch;
   const PaliPageWidget({
@@ -37,6 +38,7 @@ class PaliPageWidget extends StatefulWidget {
     this.onClick,
     this.onSearch,
     this.searchText,
+    this.pageToHighlight,
   }) : super(key: key);
 
   @override
@@ -49,11 +51,13 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
   final _myFactory = PaliWidgetFactory();
   String? highlightedWord;
   final GlobalKey _textKey = GlobalKey();
+  int? _pageToHighlight;
 
   @override
   void initState() {
     super.initState();
     highlightedWord = widget.highlightedWord;
+    _pageToHighlight = widget.pageToHighlight;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _myFactory.onTapUrl('#goto');
@@ -96,6 +100,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
               setState(() {
                 widget.onClick?.call(word);
                 highlightedWord = word;
+                _pageToHighlight = widget.pageNumber;
               });
             }
           }
@@ -216,7 +221,9 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
   String _formatContent(String content, Script script, BuildContext context) {
     content = _removeHiddenTags(content);
 
-    if (highlightedWord != null) {
+    if (highlightedWord != null &&
+        _pageToHighlight != null &&
+        _pageToHighlight == widget.pageNumber) {
       content = _addHighlight(content, highlightedWord!);
     }
 

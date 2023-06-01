@@ -21,7 +21,6 @@ import '../../../../services/repositories/recent_repo.dart';
 import '../../home/openning_books_provider.dart';
 
 class ReaderViewController extends ChangeNotifier {
-
   bool _mounted = true;
   bool get mounted => _mounted;
 
@@ -54,6 +53,9 @@ class ReaderViewController extends ChangeNotifier {
 
   late ValueNotifier<int> _currentPage;
   ValueListenable<int> get currentPage => _currentPage;
+
+  late int? _pageToHighlight;
+  int? get pageToHighlight => _pageToHighlight;
 
   // will be use this for scroll to this
   String? tocHeader;
@@ -150,6 +152,7 @@ class ReaderViewController extends ChangeNotifier {
     numberOfPage = pages.length;
     await _loadBookInfo(book.id);
     isloadingFinished = true;
+    _pageToHighlight = initialPage;
     myLogger.i('loading finished for: ${book.name}');
 
     if (!_mounted) {
@@ -174,6 +177,7 @@ class ReaderViewController extends ChangeNotifier {
     book.firstPage = await bookRepository.getFirstPage(bookID);
     book.lastPage = await bookRepository.getLastPage(bookID);
     _currentPage = ValueNotifier(initialPage ?? book.firstPage);
+    _pageToHighlight = initialPage;
   }
 
   Future<int> getFirstParagraph() async {

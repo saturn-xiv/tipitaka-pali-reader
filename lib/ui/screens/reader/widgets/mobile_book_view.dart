@@ -68,6 +68,7 @@ class _MobileBookViewState extends State<MobileBookView> {
               htmlContent: htmlContent,
               script: script,
               highlightedWord: _needToHighlight(index),
+              pageToHighlight: readerViewController.pageToHighlight,
               onClick: onClickedWord,
             ),
           ),

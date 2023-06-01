@@ -140,6 +140,7 @@ class _DesktopBookViewState extends State<DesktopBookView> {
                         script: script,
                         highlightedWord: _needToHighlight(index),
                         searchText: searchText,
+                        pageToHighlight: readerViewController.pageToHighlight,
                         onClick: onClickedWord,
                         onSearch: onSearch,
                       );
