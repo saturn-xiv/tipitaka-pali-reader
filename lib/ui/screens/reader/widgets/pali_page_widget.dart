@@ -97,11 +97,18 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
               final leftChars = getLeftCharacters(text, offset);
               final rightChars = getRightCharacters(text, offset);
               final word = leftChars + charUnderTap + rightChars;
-              setState(() {
-                widget.onClick?.call(word);
-                highlightedWord = word;
-                _pageToHighlight = widget.pageNumber;
-              });
+              if (word == highlightedWord) {
+                setState(() {
+                  highlightedWord = null;
+                  _pageToHighlight = null;
+                });
+              } else {
+                setState(() {
+                  widget.onClick?.call(word);
+                  highlightedWord = word;
+                  _pageToHighlight = widget.pageNumber;
+                });
+              }
             }
           }
         },
