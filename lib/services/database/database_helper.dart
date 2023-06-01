@@ -152,6 +152,21 @@ class DatabaseHelper {
 
   Future<bool> buildIndex() async {
     final dbInstance = await database;
+
+    // Drop indexes if they exist
+    await dbInstance.execute('DROP INDEX IF EXISTS "dictionary_index";');
+    await dbInstance
+        .execute('DROP INDEX IF EXISTS "dictionary_book_id_index";');
+    await dbInstance.execute('DROP INDEX IF EXISTS "dpd_headwords_index";');
+    await dbInstance.execute('DROP INDEX IF EXISTS "dpd_index";');
+    await dbInstance.execute('DROP INDEX IF EXISTS "dpd_grammar_index";');
+    await dbInstance.execute('DROP INDEX IF EXISTS "dpr_stem_index";');
+    await dbInstance.execute('DROP INDEX IF EXISTS "dpd_word_split_index";');
+    await dbInstance.execute('DROP INDEX IF EXISTS "page_index";');
+    await dbInstance.execute('DROP INDEX IF EXISTS "paragraph_index";');
+    await dbInstance.execute('DROP INDEX IF EXISTS "paragraph_mapping_index";');
+    await dbInstance.execute('DROP INDEX IF EXISTS "toc_index";');
+    await dbInstance.execute('DROP INDEX IF EXISTS "word_index";');
     // building Index
     await dbInstance.execute(
         'CREATE INDEX IF NOT EXISTS "dictionary_index" ON "dictionary" ("word");');
@@ -161,6 +176,8 @@ class DatabaseHelper {
         'CREATE INDEX IF NOT EXISTS "dpd_headwords_index" ON "dpd_inflections_to_headwords" ("inflection"	ASC);');
     await dbInstance.execute(
         'CREATE INDEX IF NOT EXISTS "dpd_index" ON "dpd" ("word","book_id");');
+    await dbInstance.execute(
+        'CREATE INDEX IF NOT EXISTS "dpd_grammar_index" ON "dpd_grammar" ("word");');
     await dbInstance.execute(
         'CREATE INDEX IF NOT EXISTS "dpr_stem_index" ON "dpr_stem" ("word"	ASC);');
     await dbInstance.execute(
