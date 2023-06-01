@@ -11,7 +11,6 @@ abstract class DictionaryRepository {
   Future<List<Definition>> getDefinition(String id);
   Future<Definition> getDpdDefinition(String headwords);
   Future<Definition> getDpdGrammarDefinition(String word);
-  Future<bool> isDpdGrammarExist();
   Future<List<String>> getSuggestions(String word);
   Future<String> getDpdWordSplit(String word);
   Future<String> getDprStem(String word);
@@ -70,24 +69,7 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
       if (defs.isNotEmpty) {
         htmlDefs = defs[0].definition;
 
-        if (htmlDefs.isNotEmpty) {
-          /*
-          BeautifulSoup bs = BeautifulSoup(htmlDefs);
-          // need to remove summary contents with bs
-          // extract div classs dpd should be good.
-          Bs4Element? bs4 = bs.find("div", class_: 'dpd');
-          if (bs4 != null) {
-            stripDefs += '<p>'; // style="font-weight: normal;"> [ $word ] : ';
-            stripDefs += bs4.toString(); //bs.text;
-          } else {
-            stripDefs += '<p>'; // style="font-weight: normal;"> [ $word ] : ';
-            stripDefs += htmlDefs; //bs.text;
-          }
-        }
-        stripDefs += '</p>';
-        stripDefs = stripDefs.replaceAll("✎", "");
-        */
-        } // added this extra
+        if (htmlDefs.isNotEmpty) {} // added this extra
         stripDefs += htmlDefs;
         order = maps.first['user_order'];
         bookName = maps.first['name'];
@@ -105,16 +87,6 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
         userOrder: order);
 
     return def;
-  }
-
-  @override
-  Future<bool> isDpdGrammarExist() async {
-    final db = await databaseHelper.database;
-
-    var result = await db.query('sqlite_master',
-        where: 'type = ? AND name = ?', whereArgs: ['table', 'dpd_grammar']);
-
-    return result.isNotEmpty;
   }
 
   @override
@@ -193,6 +165,22 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
       list.add(x);
     }
 
+    // Lasty one more item.. Often they will paste a word that is found only in the inflections to headwords table
+    // so we need to add that one too.  So often it is empty even though we should find the word.
+
+    if (list.isEmpty) {
+      sql = '''
+      SELECT inflection  from dpd_inflections_to_headwords 
+      WHERE inflection = ?
+    ''';
+
+      List<Map<String, dynamic>> maps3 = await db.rawQuery(sql, [word]);
+      List<String> list3 = maps3.map((e) => e["inflection"] as String).toList();
+
+      for (String x in list3) {
+        list.add(x);
+      }
+    }
     // remove duplicates (code from SO)  easiest way..
     // and sort'em
     List<String> distinctIds = list.toSet().toList();

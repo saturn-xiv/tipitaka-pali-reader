@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tipitaka_pali/utils/pali_script.dart';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 import 'package:tipitaka_pali/utils/script_detector.dart';
@@ -125,7 +126,7 @@ class DictionaryController with ChangeNotifier {
   Future<String> loadDefinition(String word) async {
     // use only if setting is good in prefs
     if (Prefs.saveClickToClipboard == true) {
-      // await Clipboard.setData(ClipboardData(text: word));
+      await Clipboard.setData(ClipboardData(text: word));
     }
     debugPrint('_currentAlgorithmMode: $_currentAlgorithmMode');
 
@@ -219,21 +220,6 @@ class DictionaryController with ChangeNotifier {
     // check to see if dpd is used.
     // separate table and process for dpd
     if (Prefs.isDpdOn) {
-      if (dpdHeadWords.isEmpty) {
-        // see if we can find it in the pure dpd table
-        Definition pureDpdDef =
-            await dictionaryProvider.getDpdDefinition(originalWord);
-        if (pureDpdDef.definition.isNotEmpty) {
-          dpdHeadWords = originalWord;
-          // little bit of a hack to get the original word because the headword
-          // does not contain the natural word
-          //TODO speak to ven bodhirasa about this.
-        }
-        if (dpdHeadWords.isEmpty) {
-          dpdHeadWords =
-              await dictionaryProvider.getDpdLikeHeadwords(originalWord + " 1");
-        }
-      }
       if (dpdHeadWords.isNotEmpty) {
         Definition dpdDefinition =
             await dictionaryProvider.getDpdDefinition(dpdHeadWords);
