@@ -213,6 +213,8 @@ class ReaderViewController extends ChangeNotifier {
     myLogger.i('current page number: $pageNumber');
     // update current page
     _currentPage.value = pageNumber;
+    _pageToHighlight = pageNumber;
+    textToHighlight = word;
     // update opened book list
     final openedBookController = context.read<OpenningBooksProvider>();
     openedBookController.update(newPageNumber: _currentPage.value);

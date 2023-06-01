@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/providers/font_provider.dart';
 import 'package:tipitaka_pali/ui/screens/home/openning_books_provider.dart';
+import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 import 'package:tipitaka_pali/utils/platform_info.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
@@ -275,10 +276,28 @@ class LowerRow extends StatelessWidget {
       ),
     );
     if (gotoResult != null) {
-      final int pageNumber = gotoResult.type == GotoType.page
-          ? gotoResult.number
-          : await vm.getPageNumber(gotoResult.number);
-      vm.onGoto(pageNumber: pageNumber);
+      late final pageNumber;
+      int? paragraphNumber;
+      String? wordToHighlight;
+      if (gotoResult.type == GotoType.page) {
+        pageNumber = gotoResult.number;
+      } else {
+        pageNumber = await vm.getPageNumber(gotoResult.number);
+        paragraphNumber = gotoResult.number;
+      }
+      if (paragraphNumber != null) {
+        final currentScript =
+            context.read<ScriptLanguageProvider>().currentScript;
+        if (currentScript == Script.roman) {
+          wordToHighlight = '$paragraphNumber';
+        } else {
+          wordToHighlight = PaliScript.getScriptOf(
+            script: currentScript,
+            romanText: '$paragraphNumber',
+          );
+        }
+      }
+      vm.onGoto(pageNumber: pageNumber, word: wordToHighlight);
       // vm.gotoPage(pageNumber.toDouble());
     }
   }
