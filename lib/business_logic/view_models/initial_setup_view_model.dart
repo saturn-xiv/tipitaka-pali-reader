@@ -200,9 +200,5 @@ class InitialSetupViewModel extends ChangeNotifier {
     // however, it is sure to not be included on this setup routine and it is sure to be turned
     // on during the install of extension.
     Prefs.isDpdGrammarOn = isOn;
-/*  final dictionaryProvider =
-      DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
-  Prefs.isDpdGrammarOn = await dictionaryProvider.isDpdGrammarExist();
-  */
   }
 }
