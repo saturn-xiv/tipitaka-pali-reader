@@ -138,7 +138,7 @@ class _DesktopBookViewState extends State<DesktopBookView> {
                         pageNumber: pageContent.pageNumber!,
                         htmlContent: htmlContent,
                         script: script,
-                        highlightedWord: _needToHighlight(index),
+                        highlightedWord: readerViewController.textToHighlight,
                         searchText: searchText,
                         pageToHighlight: readerViewController.pageToHighlight,
                         onClick: onClickedWord,
@@ -157,17 +157,17 @@ class _DesktopBookViewState extends State<DesktopBookView> {
     });
   }
 
-  String? _needToHighlight(int index) {
-    if (readerViewController.textToHighlight == null) return null;
-    if (readerViewController.initialPage == null) return null;
+  // String? _needToHighlight(int index) {
+  //   if (readerViewController.textToHighlight == null) return null;
+  //   if (readerViewController.initialPage == null) return null;
 
-    if (index ==
-        readerViewController.initialPage! -
-            readerViewController.book.firstPage) {
-      return readerViewController.textToHighlight;
-    }
-    return null;
-  }
+  //   if (index ==
+  //       readerViewController.initialPage! -
+  //           readerViewController.book.firstPage) {
+  //     return readerViewController.textToHighlight;
+  //   }
+  //   return null;
+  // }
 
   void _listenItemPosition() {
     // if only one page exist in view, there in no need to update current page

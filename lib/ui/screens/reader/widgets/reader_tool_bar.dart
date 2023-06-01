@@ -347,7 +347,19 @@ class LowerRow extends StatelessWidget {
     if (toc != null) {
       // not only goto page
       // but also to highlight toc and scroll to it
-      vm.onGoto(pageNumber: toc.pageNumber);
+      late String textToHighlight;
+      final currentScript =
+          context.read<ScriptLanguageProvider>().currentScript;
+      if (currentScript == Script.roman) {
+        textToHighlight = toc.name.trim();
+      } else {
+        textToHighlight = PaliScript.getScriptOf(
+          script: currentScript,
+          romanText: toc.name.trim(),
+        );
+      }
+      print('wordToHighlight: $textToHighlight');
+      vm.onGoto(pageNumber: toc.pageNumber, word: textToHighlight);
       // vm.gotoPageAndScroll(toc.pageNumber.toDouble(), toc.name);
     }
   }
