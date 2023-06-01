@@ -134,6 +134,10 @@ class DownloadService {
         downloadNotifier.message = 'adding dpd grammar flag';
         Prefs.isDpdGrammarOn = true;
       }
+
+      // It costs 10 seconds to regen the indexes.. I'd like to do that.
+      downloadNotifier.message = 'rebuilding index';
+      await dbService.buildIndex();
     }
     downloadNotifier.downloading = false;
   }
