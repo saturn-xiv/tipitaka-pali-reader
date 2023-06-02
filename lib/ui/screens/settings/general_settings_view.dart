@@ -66,6 +66,8 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           _getMultiTabsModeSwitch(),
           const Divider(),
           _getNewTabAtEndSwitch(),
+          const Divider(),
+          _getAlwaysShowSplitterSwitch(),
         ],
       ),
     );
@@ -242,6 +244,23 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
             //prefs
           },
           value: true,
+        ),
+      ),
+    );
+  }
+
+  Widget _getAlwaysShowSplitterSwitch() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: ListTile(
+        title: Text("Alays Show Splitter"),
+        trailing: Switch(
+          onChanged: (value) {
+            setState(() {
+              Prefs.alwaysShowDpdSplitter = value;
+            });
+          },
+          value: Prefs.alwaysShowDpdSplitter,
         ),
       ),
     );

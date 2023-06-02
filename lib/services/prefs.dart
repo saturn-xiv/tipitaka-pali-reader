@@ -39,6 +39,7 @@ const String controlBarShowPref = "controlBarShow";
 const String isFuzzyPref = "isFuzzy";
 const String newTabAtEnd = 'newTabAtEnd';
 const String isDpdGrammarOnPref = "isDpdGrammarOn";
+const String alwaysShowDpdSplitterPref = "alwasyShowDpdSplitter";
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -71,6 +72,7 @@ const bool defaultControlBarShow = true;
 const bool defaultIsFuzzy = false;
 const bool defaultNewTabAtEnd = false;
 const bool defaultIsDpdGrammarOn = false;
+const bool defaultAlwaysShowDpdSplitter = false;
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -238,6 +240,12 @@ class Prefs {
       instance.getBool(isDpdGrammarOnPref) ?? defaultIsDpdGrammarOn;
   static set isDpdGrammarOn(bool value) =>
       instance.setBool(isDpdGrammarOnPref, value);
+
+  static bool get alwaysShowDpdSplitter =>
+      instance.getBool(alwaysShowDpdSplitterPref) ??
+      defaultAlwaysShowDpdSplitter;
+  static set alwaysShowDpdSplitter(bool value) =>
+      instance.setBool(alwaysShowDpdSplitterPref, value);
 
   // ===========================================================================
   // Helpers

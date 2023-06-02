@@ -234,9 +234,13 @@ class DictionaryController with ChangeNotifier {
         definitions.sort((a, b) => a.userOrder.compareTo(b.userOrder));
       }
     }
-    if (definitions.isEmpty) return '';
-    if (definitions[0].definition.isEmpty) return '';
-    return _formatDefinitions(definitions);
+    //if (definitions.isEmpty) return '';
+    //if (definitions[0].definition.isEmpty) return '';
+    String finalDef = _formatDefinitions(definitions);
+    if (Prefs.alwaysShowDpdSplitter) {
+      finalDef += await getWordSplitAsDefString(originalWord);
+    }
+    return finalDef;
   }
 
   Future<String> searchWithDpdSplit(String word) async {
@@ -275,25 +279,7 @@ class DictionaryController with ChangeNotifier {
     // not found in dpr_stem
     // will be lookup in dpd_word_split
     // breakup is multi-words
-    final String breakupText = await dictionaryProvider.getDpdWordSplit(word);
-
-    if (breakupText.isEmpty) return '';
-
-    final List<String> words = getWordsFrom(breakup: breakupText);
-    // formating header
-
-    //TODO make defnition heading called Splitter Like if
-    // it were a dictionary header
-    String formattedDefinition = _addStyleToBook(
-      AppLocalizations.of(context)!.wordSplit,
-    );
-
-    formattedDefinition += '<p class="definition"> <b>$word</b> <br> ';
-    for (String breakup in words) {
-      formattedDefinition += "<br>" + breakup + '<br>';
-    }
-    formattedDefinition += '</p>';
-    return formattedDefinition;
+    return await getWordSplitAsDefString(word);
   }
 
   Future<void> onLookup(String word) async {
@@ -462,5 +448,30 @@ class DictionaryController with ChangeNotifier {
       // Return an empty string if the input is null or empty
       return '';
     }
+  }
+
+  Future<String> getWordSplitAsDefString(word) async {
+    final dictionaryProvider =
+        DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
+
+    final String breakupText = await dictionaryProvider.getDpdWordSplit(word);
+
+    if (breakupText.isEmpty) return '';
+
+    final List<String> words = getWordsFrom(breakup: breakupText);
+    // formating header
+
+    //TODO make defnition heading called Splitter Like if
+    // it were a dictionary header
+    String formattedDefinition = _addStyleToBook(
+      AppLocalizations.of(context)!.wordSplit,
+    );
+
+    formattedDefinition += '<p class="definition"> <b>$word</b> <br> ';
+    for (String breakup in words) {
+      formattedDefinition += "<br>" + breakup + '<br>';
+    }
+    formattedDefinition += '</p>';
+    return formattedDefinition;
   }
 }
