@@ -10,7 +10,7 @@ sudo snap install flutter --classic
 # Install required dependencies
 sudo apt-get install libgtk-3-0 libblkid1 liblzma5 -y
 # Uncomment the following line if needed:
-sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev -y
+# sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev -y
 
 # Check Flutter installation
 flutter doctor
@@ -26,7 +26,7 @@ git clone https://github.com/bksubhuti/tipitaka-pali-reader.git
 cd tipitaka-pali-reader/assets/database
 
 # Download and extract the necessary files
-gdown 1TDqHM5H_u0mD6x_EJAbnmdKSR9H3IJmU
+gdown 1II8XYSQw0JzZxJk2J4QT9XyN2SnqT9qm
 unzip tipitaka_pali.zip
 sh split.sh
 rm *.zip
@@ -53,4 +53,4 @@ ARCH=x86_64 ./appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_p
 # scp ~/Desktop/flutterstuff.zip root@SERVER_IP:/root/tipitaka-pali-reader/
 
 # Uncomment the following line if you want to copy the AppImage to a specific directory on your local machine
-# scp root@SERVER_IP:git/tipitaka-pali-reader/tipitaka_pali_reader.AppImage /path/to/local/directory
+# scp root@SERVER_IP:git/tipitaka-pali-reader/tipitaka_pali_reader.AppImage C:\Users\bksub\Downloads
