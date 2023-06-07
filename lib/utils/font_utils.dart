@@ -11,6 +11,8 @@ class FontUtils {
         return 'NotoSansSinhala';
       case Script.devanagari:
         return 'NotoSansDevanagari';
+      case Script.laos:
+        return 'NotoSansLao';
       default:
         return null;
     }
