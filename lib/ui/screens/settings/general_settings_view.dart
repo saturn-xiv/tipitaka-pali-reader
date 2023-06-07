@@ -253,7 +253,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
     return Padding(
       padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
-        title: Text("Alays Show Splitter"),
+        title: Text(AppLocalizations.of(context)!.alwaysShowSplitter),
         trailing: Switch(
           onChanged: (value) {
             setState(() {

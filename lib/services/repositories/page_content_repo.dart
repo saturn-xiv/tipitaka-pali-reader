@@ -21,7 +21,9 @@ class PageContentDatabaseRepository implements PageContentRepository {
           dao.columnContent,
         ],
         where: '${dao.columnBookID} = ?',
-        whereArgs: [bookID]);
+        whereArgs: [bookID],
+        orderBy: dao.columnPage);
+
     return dao.fromList(maps);
   }
 

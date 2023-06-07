@@ -97,19 +97,19 @@ class DownloadService {
         final line = rawLine.toLowerCase();
 
         // do these first
-        if (line.contains("drop")) {
+        if (line.startsWith("drop")) {
           await db.database.execute(line);
-        } else if (line.contains("create")) {
+        } else if (line.startsWith("create")) {
           await db.database.execute(line);
         }
 
-        if (line.contains("insert")) {
+        if (line.startsWith("insert")) {
           dbUpdate.insertLines.add(rawLine);
           dbUpdate.insertCount++;
-        } else if (line.contains("update")) {
+        } else if (line.startsWith("update")) {
           dbUpdate.updateLines.add(rawLine);
           dbUpdate.updateCount++;
-        } else if (line.contains("delete")) {
+        } else if (line.startsWith("delete")) {
           dbUpdate.deleteLines.add(rawLine);
           dbUpdate.deleteCount++;
 
@@ -118,7 +118,6 @@ class DownloadService {
             newBooks.add(match[0]!);
           }
         }
-
         await processEntries(dbUpdate, db, batchAmount);
       }
 

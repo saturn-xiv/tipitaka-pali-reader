@@ -92,6 +92,7 @@ class DatabaseHelper {
       final maps = await dbInstance.rawQuery('''
           SELECT content FROM pages
           WHERE id BETWEEN $start AND ${start + batchCount}
+          ORDER by page
           ''');
 
       for (var element in maps) {
@@ -211,6 +212,7 @@ class DatabaseHelper {
       final maps = await dbInstance.rawQuery('''
           SELECT id, bookid, page, content, paranum FROM pages
           WHERE id BETWEEN $start AND ${start + batchCount}
+          ORDER BY page
           ''');
 
       Batch batch = dbInstance.batch();
