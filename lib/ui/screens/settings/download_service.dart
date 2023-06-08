@@ -355,7 +355,8 @@ class DownloadService {
       "annya_pe_dn",
       "annya_pe_mn",
       "annya_pe_sn",
-      "annya_pe_an"
+      "annya_pe_an",
+      "annya_pe_kn"
     ];
 
     for (String x in categories) {
