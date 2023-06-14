@@ -66,6 +66,8 @@ class App extends StatelessWidget {
                 Provider.of<ThemeChangeNotifier>(context);
             final localChangeNotifier =
                 Provider.of<LocaleChangeNotifier>(context);
+            final scriptChangeNotifier =
+                Provider.of<ScriptLanguageProvider>(context);
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               themeMode: themeChangeNotifier.themeMode,

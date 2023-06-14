@@ -12,7 +12,7 @@ class FontUtils {
       case Script.devanagari:
         return 'NotoSansDevanagari';
       case Script.laos:
-        return 'NotoSansLao';
+        return 'Lao Pali Regular';
       default:
         return null;
     }
