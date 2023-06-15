@@ -76,8 +76,12 @@ setScriptAndLanguageByLocal() async {
             Prefs.localeVal = 7;
             Prefs.currentScriptLanguage = shortLocale;
             break;
-          case "ccp":
+          case "km":
             Prefs.localeVal = 8;
+            Prefs.currentScriptLanguage = shortLocale;
+            break;
+          case "ccp":
+            Prefs.localeVal = 9;
             Prefs.currentScriptLanguage = "ro";
             break;
         } // switch current local

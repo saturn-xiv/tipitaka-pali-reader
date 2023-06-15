@@ -37,6 +37,7 @@ class App extends StatelessWidget {
   final String _hiLocale = 'hi';
   final String _ruLocale = 'ru';
   final String _bnLocale = 'bn';
+  final String _kmLocale = 'km';
   final String _chakmaLocale = 'ccp';
 
   final StreamingSharedPreferences rxPref;
@@ -91,6 +92,7 @@ class App extends StatelessWidget {
                 Locale(_hiLocale, ''), // Hindi, no country code
                 Locale(_ruLocale, ''), // Russian, no country code
                 Locale(_bnLocale, ''), // Bengali, no country code
+                Locale(_kmLocale, ''), // khmer, no country code
                 Locale(
                     _chakmaLocale), // Chakma, no country code  //implemented as custom unsupported lang
               ],

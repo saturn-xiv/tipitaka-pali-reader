@@ -124,6 +124,7 @@ class DictionaryController with ChangeNotifier {
   }
 
   Future<String> loadDefinition(String word) async {
+    Prefs.numberWordsLookedUp++;
     // use only if setting is good in prefs
     if (Prefs.saveClickToClipboard == true) {
       await Clipboard.setData(ClipboardData(text: word));

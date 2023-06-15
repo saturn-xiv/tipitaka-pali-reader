@@ -14,6 +14,7 @@ class OpenningBooksProvider extends ChangeNotifier {
   int get selectedBookIndex => _selectedBookIndex;
 
   void add({required Book book, int? currentPage, String? textToHighlight}) {
+    Prefs.numberBooksOpened++;
     var uuid = const Uuid().v4();
     _selectedBookIndex = Prefs.isNewTabAtEnd ? _books.length : 0;
     debugPrint('Adding $_selectedBookIndex');

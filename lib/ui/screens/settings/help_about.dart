@@ -4,6 +4,7 @@ import 'package:tipitaka_pali/ui/dialogs/reset_dialog.dart';
 import '../../dialogs/about_tpr_dialog.dart';
 import '../../widgets/colored_text.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:in_app_review/in_app_review.dart';
 
 class HelpAboutView extends StatefulWidget {
   const HelpAboutView({Key? key}) : super(key: key);
@@ -37,6 +38,7 @@ class _HelpAboutViewState extends State<HelpAboutView> {
           ),
           _getHelpTile(context),
           _getAboutTile(context),
+          _getReviewAppTile(context),
           _getReportIssueTile(context),
           _getResetDataTile(context),
         ],
@@ -98,6 +100,22 @@ class _HelpAboutViewState extends State<HelpAboutView> {
             Uri.parse(
                 "https://github.com/bksubhuti/tipitaka-pali-reader/issues"),
             mode: LaunchMode.externalApplication),
+      ),
+    );
+  }
+
+  Widget _getReviewAppTile(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: ListTile(
+        title: ColoredText(AppLocalizations.of(context)!.rateThisApp),
+        focusColor: Theme.of(context).focusColor,
+        hoverColor: Theme.of(context).hoverColor,
+        onTap: () {
+          final InAppReview inAppReview = InAppReview.instance;
+          inAppReview.openStoreListing(
+              appStoreId: '1541426949', microsoftStoreId: '9MTH9TD82TGR');
+        },
       ),
     );
   }

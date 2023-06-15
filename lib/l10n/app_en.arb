@@ -95,7 +95,14 @@
   "finishedBuildingWordList": "Finished building word list",
   "finishedBuildingIndexes":  "Finished building indexes",
   "updatingStatus":           "Please wait while updating to complete.\nThis may take a few minutes\nIf the status does not change for 60 seconds,\n please hit the reset button and restart.",
-  "alwaysShowSplitter":       "Always Show Splitter"
+  "alwaysShowSplitter":       "Always Show Splitter",
+  "rateThisApp":              "Rate This App",
+  "wouldLikeToRate":          "Would you like to rate this app?",
+  "booksOpened":              "Books Opened",
+  "wordsLookedUp":            "Words Looked Up",
+  "never":                    "Never Show",
+  "later":                    "Later",
+  "rateAppNow":               "Rate App Now"
 }
 
 

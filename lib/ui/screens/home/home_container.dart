@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,12 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/navigation_provider.dart';
+import '../../../services/prefs.dart';
 import '../../../utils/platform_info.dart';
 import 'desktop_home_view.dart';
 import 'mobile_navigation_bar.dart';
 import 'navigation_pane.dart';
 import 'openning_books_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tipitaka_pali/ui/dialogs/rate_app_dialog.dart';
 
 // enum Screen { Home, Bookmark, Recent, Search }
 
@@ -18,6 +21,12 @@ class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    Timer(Duration(seconds: 3), () async {
+      if (Prefs.isUsageAttained()) {
+        await RateAppDialog.showUsageRateMeDialog(context);
+      }
+    });
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => NavigationProvider()),

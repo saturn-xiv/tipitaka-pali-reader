@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 
 import '../prefs.dart';
 import '../../utils/pali_script_converter.dart';

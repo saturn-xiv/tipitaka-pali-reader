@@ -32,3 +32,5 @@ const String kdartTheme = 'default_dark_theme';
 const String kblackTheme = 'black';
 const String kGotoID = 'goto';
 const int seypia = 0xfffbf0da;
+const int maxBooksOpened = 30;
+const int maxWordsLookedUp = 50;

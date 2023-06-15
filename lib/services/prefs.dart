@@ -40,6 +40,9 @@ const String isFuzzyPref = "isFuzzy";
 const String newTabAtEnd = 'newTabAtEnd';
 const String isDpdGrammarOnPref = "isDpdGrammarOn";
 const String alwaysShowDpdSplitterPref = "alwasyShowDpdSplitter";
+const String numberBooksOpenedPref = "numberBooksOpened";
+const String numberWordsLookedUpPref = "numberWordsLookedUp";
+const String okToRatePref = "okToRate";
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -73,6 +76,9 @@ const bool defaultIsFuzzy = false;
 const bool defaultNewTabAtEnd = false;
 const bool defaultIsDpdGrammarOn = false;
 const bool defaultAlwaysShowDpdSplitter = false;
+const int defaultNumberBooksOpened = 0;
+const int defaultNumberWordsLookedUp = 0;
+const bool defaultOkToRate = true;
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -247,6 +253,23 @@ class Prefs {
   static set alwaysShowDpdSplitter(bool value) =>
       instance.setBool(alwaysShowDpdSplitterPref, value);
 
+  // Get and set the default member values if null
+  static int get numberBooksOpened =>
+      instance.getInt(numberBooksOpenedPref) ?? defaultNumberBooksOpened;
+
+  static set numberBooksOpened(int value) =>
+      instance.setInt(numberBooksOpenedPref, value);
+
+  static int get numberWordsLookedUp =>
+      instance.getInt(numberWordsLookedUpPref) ?? defaultNumberWordsLookedUp;
+
+  static set numberWordsLookedUp(int value) =>
+      instance.setInt(numberWordsLookedUpPref, value);
+
+  static bool get okToRate => instance.getBool(okToRatePref) ?? defaultOkToRate;
+
+  static set okToRate(bool value) => instance.setBool(okToRatePref, value);
+
   // ===========================================================================
   // Helpers
 
@@ -261,5 +284,11 @@ class Prefs {
       default:
         return Color(Colors.white.value);
     }
+  }
+
+  static bool isUsageAttained() {
+    return (numberBooksOpened > maxBooksOpened &&
+            numberWordsLookedUp > maxWordsLookedUp) &&
+        okToRate;
   }
 }
