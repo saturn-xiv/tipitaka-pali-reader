@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
+import 'package:tipitaka_pali/providers/initial_setup_notifier.dart';
 import 'package:tipitaka_pali/ui/screens/home/openning_books_provider.dart';
 import 'package:tipitaka_pali/unsupported_language_classes/ccp_intl.dart';
 
@@ -51,6 +52,8 @@ class App extends StatelessWidget {
               value: rxPref,
             ),
             // placing at top of MaterialApp to access in differnt routes
+            ChangeNotifierProvider<InitialSetupNotifier>(
+                create: (_) => InitialSetupNotifier()),
             ChangeNotifierProvider<ThemeChangeNotifier>(
                 create: (_) => ThemeChangeNotifier()),
             ChangeNotifierProvider<LocaleChangeNotifier>(
@@ -67,6 +70,7 @@ class App extends StatelessWidget {
                 Provider.of<ThemeChangeNotifier>(context);
             final localChangeNotifier =
                 Provider.of<LocaleChangeNotifier>(context);
+            // ignore: unused_local_variable
             final scriptChangeNotifier =
                 Provider.of<ScriptLanguageProvider>(context);
             return MaterialApp(

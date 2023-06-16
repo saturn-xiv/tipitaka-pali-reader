@@ -7,20 +7,25 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tipitaka_pali/data/constants.dart';
+import 'package:tipitaka_pali/providers/initial_setup_notifier.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class InitialSetupViewModel extends ChangeNotifier {
+//singleton model so setup will only get called one time in constructor
+class InitialSetupService {
+  InitialSetupService(
+    this._context,
+    this._intialSetupNotifier,
+    bool isUpdateMode,
+  );
   final BuildContext _context;
-  String _status = '';
-  void updateMessageCallback(String msg) {
-    _status = msg;
-    notifyListeners();
-  }
+  final InitialSetupNotifier _intialSetupNotifier;
+  InitialSetupNotifier get initialSetupNotifier => _intialSetupNotifier;
 
-  InitialSetupViewModel(this._context);
-  String get status => _status;
+  void updateMessageCallback(String msg) {
+    _intialSetupNotifier.status = msg;
+  }
 
   Future<void> setUp(bool isUpdateMode) async {
     debugPrint('isUpdateMode : $isUpdateMode');
@@ -130,9 +135,8 @@ class InitialSetupViewModel extends ChangeNotifier {
     final timeBeforeCopy = DateTime.now();
     final int count = AssetsFile.partsOfDatabase.length;
     int partNo = 0;
-    _status =
+    _intialSetupNotifier.status =
         AppLocalizations.of(_context)!.aboutToCopy + (count * 50).toString();
-    notifyListeners();
     await Future.delayed(const Duration(milliseconds: 3000));
     for (String part in AssetsFile.partsOfDatabase) {
       // reading from assets
@@ -144,9 +148,8 @@ class InitialSetupViewModel extends ChangeNotifier {
           bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
           mode: FileMode.append);
       int percent = ((++partNo / count) * 100).round();
-      _status =
+      _intialSetupNotifier.status =
           "${AppLocalizations.of(_context)!.finishedCopying} $percent% \\ ~${count * 50} MB";
-      notifyListeners();
       await Future.delayed(const Duration(milliseconds: 300));
     }
 
@@ -160,22 +163,21 @@ class InitialSetupViewModel extends ChangeNotifier {
     final timeBeforeIndexing = DateTime.now();
 
     // creating index tables
-    _status = AppLocalizations.of(_context)!.buildingWordList;
-    notifyListeners();
+    _intialSetupNotifier.status =
+        AppLocalizations.of(_context)!.buildingWordList;
     final DatabaseHelper databaseHelper = DatabaseHelper();
 
     await databaseHelper.buildWordList(updateMessageCallback);
-    _status = AppLocalizations.of(_context)!.finishedBuildingWordList;
-    notifyListeners();
+    _intialSetupNotifier.status =
+        AppLocalizations.of(_context)!.finishedBuildingWordList;
 
-    _status = "building indexes";
-    notifyListeners();
+    _intialSetupNotifier.status = "building indexes";
     final indexResult = await databaseHelper.buildIndex();
     if (indexResult == false) {
       // handle error
     }
-    _status = AppLocalizations.of(_context)!.finishedBuildingIndexes;
-    notifyListeners();
+    _intialSetupNotifier.status =
+        AppLocalizations.of(_context)!.finishedBuildingIndexes;
     // creating fts table
     final ftsResult = await DatabaseHelper().buildFts(updateMessageCallback);
     if (ftsResult == false) {
@@ -184,7 +186,6 @@ class InitialSetupViewModel extends ChangeNotifier {
 
     final timeAfterIndexing = DateTime.now();
     //_indexStatus =help
-    notifyListeners();
 
     debugPrint(
         'indexing time: ${timeAfterIndexing.difference(timeBeforeIndexing)}');
