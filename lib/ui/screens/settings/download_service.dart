@@ -81,64 +81,67 @@ class DownloadService {
 
       await downloadZip();
       final downloadedFile = await _localFile;
-
-      final dbUpdate = DatabaseUpdate();
-
-      final lineStream = downloadedFile
-          .openRead()
-          .transform(utf8.decoder)
-          .transform(const LineSplitter());
-
-      final reBookId = RegExp("'.+'");
-      final newBooks = <String>{};
-
-      Database db = await dbService.database;
-      await for (final rawLine in lineStream) {
-        final line = rawLine.toLowerCase();
-
-        // do these first
-        if (line.startsWith("drop")) {
-          await db.database.execute(line);
-        } else if (line.startsWith("create")) {
-          await db.database.execute(line);
-        }
-
-        if (line.startsWith("insert")) {
-          dbUpdate.insertLines.add(rawLine);
-          dbUpdate.insertCount++;
-        } else if (line.startsWith("update")) {
-          dbUpdate.updateLines.add(rawLine);
-          dbUpdate.updateCount++;
-        } else if (line.startsWith("delete")) {
-          dbUpdate.deleteLines.add(rawLine);
-          dbUpdate.deleteCount++;
-
-          if (line.contains('delete from books')) {
-            final match = reBookId.firstMatch(rawLine)!;
-            newBooks.add(match[0]!);
-          }
-        }
-        await processEntries(dbUpdate, db, batchAmount);
-      }
-
-      await processEntries(dbUpdate, db, 1);
-
-      if (downloadListItem.type.contains("index")) {
-        downloadNotifier.message = 'Building fts';
-        await doFts(db, newBooks);
-        await makeEnglishWordList();
-      }
-
-      if (downloadListItem.type.contains("dpd_grammar")) {
-        downloadNotifier.message = 'adding dpd grammar flag';
-        Prefs.isDpdGrammarOn = true;
-      }
-
-      // It costs 10 seconds to regen the indexes.. I'd like to do that.
-      downloadNotifier.message = 'rebuilding index';
-      await dbService.buildIndex();
+      await processLocalFile(downloadedFile);
     }
     downloadNotifier.downloading = false;
+  }
+
+  Future<void> processLocalFile(File downloadedFile) async {
+    final dbUpdate = DatabaseUpdate();
+
+    final lineStream = downloadedFile
+        .openRead()
+        .transform(utf8.decoder)
+        .transform(const LineSplitter());
+
+    final reBookId = RegExp("'.+'");
+    final newBooks = <String>{};
+
+    Database db = await dbService.database;
+    await for (final rawLine in lineStream) {
+      final line = rawLine.toLowerCase();
+
+      // do these first
+      if (line.startsWith("drop")) {
+        await db.database.execute(line);
+      } else if (line.startsWith("create")) {
+        await db.database.execute(line);
+      }
+
+      if (line.startsWith("insert")) {
+        dbUpdate.insertLines.add(rawLine);
+        dbUpdate.insertCount++;
+      } else if (line.startsWith("update")) {
+        dbUpdate.updateLines.add(rawLine);
+        dbUpdate.updateCount++;
+      } else if (line.startsWith("delete")) {
+        dbUpdate.deleteLines.add(rawLine);
+        dbUpdate.deleteCount++;
+
+        if (line.contains('delete from books')) {
+          final match = reBookId.firstMatch(rawLine)!;
+          newBooks.add(match[0]!);
+        }
+      }
+      await processEntries(dbUpdate, db, batchAmount);
+    }
+
+    await processEntries(dbUpdate, db, 1);
+
+    if (downloadListItem.type.contains("index")) {
+      downloadNotifier.message = 'Building fts';
+      await doFts(db, newBooks);
+      await makeEnglishWordList();
+    }
+
+    if (downloadListItem.type.contains("dpd_grammar")) {
+      downloadNotifier.message = 'adding dpd grammar flag';
+      Prefs.isDpdGrammarOn = true;
+    }
+
+    // It costs 10 seconds to regen the indexes.. I'd like to do that.
+    downloadNotifier.message = 'rebuilding index';
+    await dbService.buildIndex();
   }
 
   Future processEntries(DatabaseUpdate dbUpdate, Database db, int limit) async {
