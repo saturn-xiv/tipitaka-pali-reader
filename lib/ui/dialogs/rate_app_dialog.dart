@@ -47,8 +47,9 @@ class RateAppDialog {
                   const SizedBox(width: 8),
                   TextButton(
                     onPressed: () async {
-                      Navigator.pop(context);
                       await rateApp();
+                      _setNeverRate();
+                      Navigator.pop(context);
                     },
                     child: Text(AppLocalizations.of(context)!.rateAppNow),
                   ),
