@@ -176,7 +176,7 @@ class _SuttaListDialogState extends State<SuttaListDialog> {
       ],
     );
   }
-
+/*
   _showQjHelpDialog(context) async {
     return (await showDialog(
           context: context,
@@ -193,7 +193,7 @@ class _SuttaListDialogState extends State<SuttaListDialog> {
           ),
         )) ??
         false;
-  }
+  }*/
 }
 
 class CloseButton extends StatelessWidget {

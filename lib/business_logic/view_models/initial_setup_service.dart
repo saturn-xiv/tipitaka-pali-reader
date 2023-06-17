@@ -23,11 +23,15 @@ class InitialSetupService {
   final InitialSetupNotifier _intialSetupNotifier;
   InitialSetupNotifier get initialSetupNotifier => _intialSetupNotifier;
 
+  List<File> extensions = [];
+  String exList = "";
+
   void updateMessageCallback(String msg) {
     _intialSetupNotifier.status = msg;
   }
 
   Future<void> setUp(bool isUpdateMode) async {
+    initialSetupNotifier.setupIsFinished = false;
     debugPrint('isUpdateMode : $isUpdateMode');
 
     late String databasesDirPath;
@@ -127,7 +131,7 @@ class InitialSetupService {
     Prefs.isDatabaseSaved = true;
     Prefs.databaseVersion = DatabaseInfo.version;
 
-    _openHomePage();
+    initialSetupNotifier.setupIsFinished = true;
   }
 
   Future<void> _copyFromAssets(String dbFilePath) async {
@@ -189,10 +193,6 @@ class InitialSetupService {
 
     debugPrint(
         'indexing time: ${timeAfterIndexing.difference(timeBeforeIndexing)}');
-  }
-
-  void _openHomePage() {
-    Navigator.of(_context).popAndPushNamed('/home');
   }
 
   setDpdGrammarFlag(bool isOn) async {

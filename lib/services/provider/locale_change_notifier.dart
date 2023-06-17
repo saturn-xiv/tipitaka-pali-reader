@@ -35,6 +35,9 @@ class LocaleChangeNotifier extends ChangeNotifier {
         localeString = "km";
         break;
       case 9:
+        localeString = "lo";
+        break;
+      case 10:
         localeString = "ccp";
         break;
     }

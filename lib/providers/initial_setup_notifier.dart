@@ -5,6 +5,16 @@ class InitialSetupNotifier extends ChangeNotifier {
   String _status = '';
 
   String get status => _status;
+  bool _setupIsFinished = false;
+
+  set setupIsFinished(isFinished) {
+    _setupIsFinished = isFinished;
+    if (_setupIsFinished) {
+      notifyListeners();
+    }
+  }
+
+  bool get setupIsFinished => _setupIsFinished;
 
   set status(String message) {
     _status = message;

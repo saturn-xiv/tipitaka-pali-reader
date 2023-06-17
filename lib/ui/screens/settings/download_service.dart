@@ -421,4 +421,29 @@ class DownloadService {
     await batch.commit();
     downloadNotifier.message = "English wordlist is complete";
   }
+
+  Future<List<File>> getExtensionFiles() async {
+    final directory = Directory(Prefs.databaseDirPath);
+    final files = directory.listSync().whereType<File>().toList();
+    List<File> extensions = [];
+
+    for (final file in files) {
+      if (file.path.endsWith('.sql')) {
+        //await processLocalFile(file);
+        extensions.add(file);
+      }
+    }
+    return extensions;
+  }
+
+  Future<void> MaterialType(File file) async {
+    // Add your logic here to process the file
+    // For example, you can read the contents of the file or perform any required operations
+    // You can access the file path using `file.path`
+
+    // Example: Reading the file contents
+    final contents = await file.readAsString();
+    print('File: ${file.path}');
+    print('Contents: $contents');
+  }
 }

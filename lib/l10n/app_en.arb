@@ -102,7 +102,9 @@
   "wordsLookedUp":            "Words Looked Up",
   "never":                    "Never Show",
   "later":                    "Later",
-  "rateAppNow":               "Rate App Now"
+  "rateAppNow":               "Rate App Now",
+  "folloingExtensions":       "The following extensions were previously installed:",
+  "wouldYouLikeToInstall":    "Would you like to install them?"
 }
 
 
