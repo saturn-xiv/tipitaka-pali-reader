@@ -77,6 +77,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       }
       element.visitChildren(pickRichTexts);
     }
+
     _textKey.currentContext?.visitChildElements((element) {
       pickRichTexts(element);
     });
@@ -130,10 +131,13 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
               final word = leftChars + charUnderTap + rightChars;
 
               final textBefore = text.substring(0, p.offset - leftChars.length);
-              final occurrencesInTextBefore = word.allMatches(textBefore).length;
-              final wordIndex = findOccurrencesBefore(word, target) + occurrencesInTextBefore;
+              final occurrencesInTextBefore =
+                  word.allMatches(textBefore).length;
+              final wordIndex =
+                  findOccurrencesBefore(word, target) + occurrencesInTextBefore;
 
-              if (word == highlightedWord && highlightedWordIndex == wordIndex) {
+              if (word == highlightedWord &&
+                  highlightedWordIndex == wordIndex) {
                 setState(() {
                   highlightedWord = null;
                   highlightedWordIndex = null;
@@ -535,12 +539,14 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
   String _addHighlight(String content, String textToHighlight,
       {highlightClass = "highlighted", addId = true}) {
+    //final singleHighlight = true;
 
-    final singleHighlight = true;
-
-    if (singleHighlight) {
-      final highlighted = '<span class = "$highlightClass">$textToHighlight</span>';
-      Match match = textToHighlight.allMatches(content).elementAt(highlightedWordIndex ?? 0);
+    if (!Prefs.multiHighlight) {
+      final highlighted =
+          '<span class = "$highlightClass">$textToHighlight</span>';
+      Match match = textToHighlight
+          .allMatches(content)
+          .elementAt(highlightedWordIndex ?? 0);
       return content.replaceRange(match.start, match.end, highlighted);
     }
 

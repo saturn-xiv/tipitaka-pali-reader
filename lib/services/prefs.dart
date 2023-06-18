@@ -43,6 +43,7 @@ const String alwaysShowDpdSplitterPref = "alwasyShowDpdSplitter";
 const String numberBooksOpenedPref = "numberBooksOpened";
 const String numberWordsLookedUpPref = "numberWordsLookedUp";
 const String okToRatePref = "okToRate";
+const String multiHighlightPref = "singleHighlight";
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -79,6 +80,7 @@ const bool defaultAlwaysShowDpdSplitter = false;
 const int defaultNumberBooksOpened = 0;
 const int defaultNumberWordsLookedUp = 0;
 const bool defaultOkToRate = true;
+const bool defaultMultiHighlight = false;
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -269,6 +271,12 @@ class Prefs {
   static bool get okToRate => instance.getBool(okToRatePref) ?? defaultOkToRate;
 
   static set okToRate(bool value) => instance.setBool(okToRatePref, value);
+
+  // Add getter and setter for singleHighlight
+  static bool get multiHighlight =>
+      instance.getBool(multiHighlightPref) ?? defaultMultiHighlight;
+  static set multiHighlight(bool value) =>
+      instance.setBool(multiHighlightPref, value);
 
   // ===========================================================================
   // Helpers

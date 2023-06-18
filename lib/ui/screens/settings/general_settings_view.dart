@@ -63,6 +63,8 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           const Divider(),
           _getDictionaryToClipboardSwitch(),
           const Divider(),
+          _getMultiHighlightSwitch(),
+          const Divider(),
           _getMultiTabsModeSwitch(),
           const Divider(),
           _getNewTabAtEndSwitch(),
@@ -149,6 +151,24 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
             });
           },
           value: _clipboard,
+        ),
+      ),
+    );
+  }
+
+  Widget _getMultiHighlightSwitch() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: ListTile(
+        title: Text(AppLocalizations.of(context)!
+            .multiHighlight), // You might want to localize this string as well
+        trailing: Switch(
+          onChanged: (value) {
+            setState(() {
+              Prefs.multiHighlight = value;
+            });
+          },
+          value: Prefs.multiHighlight,
         ),
       ),
     );

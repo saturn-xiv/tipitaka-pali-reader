@@ -104,7 +104,8 @@
   "later":                    "Later",
   "rateAppNow":               "Rate App Now",
   "folloingExtensions":       "The following extensions were previously installed:",
-  "wouldYouLikeToInstall":    "Would you like to install them?"
+  "wouldYouLikeToInstall":    "Would you like to install them?",
+  "multiHighlight":           "Multiple Highlight"
 }
 
 
