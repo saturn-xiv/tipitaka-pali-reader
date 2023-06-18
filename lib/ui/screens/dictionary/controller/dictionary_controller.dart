@@ -182,8 +182,8 @@ class DictionaryController with ChangeNotifier {
       //List<String> dpdList = dpdHeadWords.split(RegExp(r"[, ]"));
       List<String> dpdList = dpdHeadWords.split(",");
 
-      // remove the left bracket and single quotes
-      String dpdword = dpdList[0].replaceAll(RegExp(r"[\'\[\]]"), "");
+      // remove the left bracket and single quotes      String dpdword = dpdList[0].replaceAll(RegExp(r"[\'\[\]]"), "");
+      String dpdword = dpdList[0].replaceAll(RegExp(r"[\'\[\]\d\s]"), "");
 
 //small case switch.. little hack.
       switch (dpdword) {
