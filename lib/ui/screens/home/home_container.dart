@@ -21,12 +21,13 @@ class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    Timer(Duration(seconds: 3), () async {
+    // for now .. remove the pop up
+    /*Timer(Duration(seconds: 3), () async {
       if (Prefs.isUsageAttained()) {
         await RateAppDialog.showUsageRateMeDialog(context);
       }
     });
-
+*/
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => NavigationProvider()),

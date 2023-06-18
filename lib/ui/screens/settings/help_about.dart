@@ -5,6 +5,7 @@ import '../../dialogs/about_tpr_dialog.dart';
 import '../../widgets/colored_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'dart:io' show Platform;
 
 class HelpAboutView extends StatefulWidget {
   const HelpAboutView({Key? key}) : super(key: key);
@@ -105,19 +106,21 @@ class _HelpAboutViewState extends State<HelpAboutView> {
   }
 
   Widget _getReviewAppTile(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 32.0),
-      child: ListTile(
-        title: ColoredText(AppLocalizations.of(context)!.rateThisApp),
-        focusColor: Theme.of(context).focusColor,
-        hoverColor: Theme.of(context).hoverColor,
-        onTap: () {
-          final InAppReview inAppReview = InAppReview.instance;
-          inAppReview.openStoreListing(
-              appStoreId: '1541426949', microsoftStoreId: '9MTH9TD82TGR');
-        },
-      ),
-    );
+    return (Platform.isLinux)
+        ? const SizedBox.shrink()
+        : Padding(
+            padding: const EdgeInsets.only(left: 32.0),
+            child: ListTile(
+              title: ColoredText(AppLocalizations.of(context)!.rateThisApp),
+              focusColor: Theme.of(context).focusColor,
+              hoverColor: Theme.of(context).hoverColor,
+              onTap: () {
+                final InAppReview inAppReview = InAppReview.instance;
+                inAppReview.openStoreListing(
+                    appStoreId: '1541426949', microsoftStoreId: '9MTH9TD82TGR');
+              },
+            ),
+          );
   }
 
   Widget _getResetDataTile(BuildContext context) {

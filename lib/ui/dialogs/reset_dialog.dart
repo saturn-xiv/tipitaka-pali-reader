@@ -13,12 +13,14 @@ doResetDialog(BuildContext context) async {
 }
 
 Future<OkCancelAction?> _getConfirmataion(BuildContext context) async {
+  String msg =
+      "${AppLocalizations.of(context)!.areYouSureReset}\n\nDir=${Prefs.databaseDirPath}";
   return await showDialog<OkCancelAction>(
       context: context,
       builder: (context) {
         return ConfirmDialog(
           title: AppLocalizations.of(context)!.confirmation,
-          message: AppLocalizations.of(context)!.areYouSureReset,
+          message: msg,
           okLabel: AppLocalizations.of(context)!.delete,
           cancelLabel: AppLocalizations.of(context)!.cancel,
         );
