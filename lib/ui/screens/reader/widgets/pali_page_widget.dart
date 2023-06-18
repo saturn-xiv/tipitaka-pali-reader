@@ -72,7 +72,6 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     List<Element> richTexts = [];
     void pickRichTexts(Element element) {
       if (element.widget is RichText) {
-        // column = element.widget as Column;
         richTexts.add(element);
       }
       element.visitChildren(pickRichTexts);
