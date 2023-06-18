@@ -45,11 +45,15 @@ class PaliPageWidget extends StatefulWidget {
   State<PaliPageWidget> createState() => _PaliPageWidgetState();
 }
 
+final nonPali = RegExp(r'[^a-zāīūṅñṭḍṇḷṃ]+', caseSensitive: false);
+
 class PaliWidgetFactory extends WidgetFactory {}
 
 class _PaliPageWidgetState extends State<PaliPageWidget> {
   final _myFactory = PaliWidgetFactory();
   String? highlightedWord;
+  int? highlightedWordIndex;
+
   final GlobalKey _textKey = GlobalKey();
   int? _pageToHighlight;
 
@@ -64,6 +68,31 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     });
   }
 
+  int findOccurrencesBefore(String word, RenderParagraph target) {
+    List<Element> richTexts = [];
+    void pickRichTexts(Element element) {
+      if (element.widget is RichText) {
+        // column = element.widget as Column;
+        richTexts.add(element);
+      }
+      element.visitChildren(pickRichTexts);
+    }
+    _textKey.currentContext?.visitChildElements((element) {
+      pickRichTexts(element);
+    });
+
+    int occurrencesBefore = 0;
+    for (final rte in richTexts) {
+      if (rte.renderObject == target) {
+        break;
+      }
+      final paragraphText = (rte.widget as RichText).text.toPlainText();
+      final matchesInParagraph = word.allMatches(paragraphText).length;
+      occurrencesBefore += matchesInParagraph;
+    }
+    return occurrencesBefore;
+  }
+
   @override
   Widget build(BuildContext context) {
     int fontSize = context.watch<ReaderFontProvider>().fontSize;
@@ -76,6 +105,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       child: GestureDetector(
         onTapUp: (details) {
           final box = _textKey.currentContext?.findRenderObject()! as RenderBox;
+
           final result = BoxHitTestResult();
           final offset = box.globalToLocal(details.globalPosition);
           if (!box.hitTest(result, position: offset)) {
@@ -90,22 +120,31 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
             final p = target.getPositionForOffset(entry.localPosition);
             final text = target.text.toPlainText();
+
+            debugPrint('${_textKey.currentContext?.widget}');
             if (text.isNotEmpty && p.offset < text.length) {
               final int offset = p.offset;
-              // print('pargraph: $text');
               final charUnderTap = text[offset];
               final leftChars = getLeftCharacters(text, offset);
               final rightChars = getRightCharacters(text, offset);
               final word = leftChars + charUnderTap + rightChars;
-              if (word == highlightedWord) {
+
+              final textBefore = text.substring(0, p.offset - leftChars.length);
+              final occurrencesInTextBefore = word.allMatches(textBefore).length;
+              final wordIndex = findOccurrencesBefore(word, target) + occurrencesInTextBefore;
+
+              if (word == highlightedWord && highlightedWordIndex == wordIndex) {
                 setState(() {
                   highlightedWord = null;
+                  highlightedWordIndex = null;
                   _pageToHighlight = null;
                 });
               } else {
                 setState(() {
                   widget.onClick?.call(word);
                   highlightedWord = word;
+                  highlightedWordIndex = wordIndex;
+
                   _pageToHighlight = widget.pageNumber;
                 });
               }
@@ -496,6 +535,15 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
   String _addHighlight(String content, String textToHighlight,
       {highlightClass = "highlighted", addId = true}) {
+
+    final singleHighlight = true;
+
+    if (singleHighlight) {
+      final highlighted = '<span class = "$highlightClass">$textToHighlight</span>';
+      Match match = textToHighlight.allMatches(content).elementAt(highlightedWordIndex ?? 0);
+      return content.replaceRange(match.start, match.end, highlighted);
+    }
+
     // TODO - optimize highlight for some query text
 
     textToHighlight = PaliScript.getScriptOf(
@@ -553,7 +601,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
   String getLeftCharacters(String text, int offset) {
     StringBuffer chars = StringBuffer();
     for (int i = offset - 1; i >= 0; i--) {
-      if (text[i] == ' ') break;
+      if (nonPali.hasMatch(text[i])) break;
       chars.write(text[i]);
     }
     return chars.toString().split('').reversed.join();
@@ -561,8 +609,9 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
   String getRightCharacters(String text, int offset) {
     StringBuffer chars = StringBuffer();
+
     for (int i = offset + 1; i < text.length; i++) {
-      if (text[i] == ' ') break;
+      if (nonPali.hasMatch(text[i])) break;
       chars.write(text[i]);
     }
     return chars.toString();
