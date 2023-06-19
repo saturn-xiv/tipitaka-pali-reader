@@ -31,6 +31,7 @@ jobs:
       # Download the zip file using gdown
       - name: Download zip file
         run: curl -L -o assets/database/tipitaka_pali.zip https://dl.dropboxusercontent.com/s/svnrlo29dnblyad/tipitaka_pali.zip?dl=0
+      
       # Extract the zip file
       - name: Extract zip file
         run: unzip assets/database/tipitaka_pali.zip -d assets/database/
@@ -45,8 +46,38 @@ jobs:
 
       # Flutter build for Linux and Android
       - name: Build Flutter project (Linux and Android)
-        if: matrix.os == 'ubuntu-latest'
         run: |
           flutter pub get
           flutter build apk --release # For Android
           flutter build linux --release # For Linux
+
+      # Download the AppImage tool
+      - name: Download AppImage tool
+        run: |
+          wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+
+      # Build the AppImage
+      - name: Build AppImage
+        run: ARCH=x86_64 ./appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage
+
+      # Upload Android APK
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      # Upload Linux build
+      - name: Upload Linux build
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-build
+          path: build/linux/x64/release/bundle
+
+      # Upload AppImage
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-appimage
+          path: tipitaka_pali_reader.AppImage
