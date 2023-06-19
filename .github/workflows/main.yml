@@ -78,6 +78,21 @@ jobs:
         run: |
           flutter pub get
           flutter build windows --release # For Windows
+          
+      - name: Download SQLite DLL
+        run: |
+          curl -sSL -o sqlite.zip https://www.sqlite.org/2023/sqlite-dll-win64-x64-3420000.zip
+
+      - name: Extract SQLite DLL
+        run: unzip sqlite.zip
+
+      - name: Copy SQLite DLL to Build Release
+        run: |
+          cp sqlite3.dll build/windows/runner/Release/          
+          
+          
+      - name: Copy SQLite DLL to Build Release
+        run:  |
           dart  run msix:create
 
       # Upload Android APK
