@@ -7,7 +7,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, macos-latest, windows-latest]
 
     steps:
       - name: Checkout repository
@@ -35,12 +38,25 @@ jobs:
       - name: Run split.sh script
         run: bash assets/database/split.sh
 
-      # Flutter build
-      - name: Build Flutter project
+      # Flutter build for Linux and Android
+      - name: Build Flutter project (Linux and Android)
+        if: matrix.os == 'ubuntu-18.04'
         run: |
           flutter pub get
           flutter build apk --release # For Android
-          flutter build ios --release # For iOS (You would need a macOS runner for this)
-          # flutter build macos --release # For macOS (You would need a macOS runner for this)
-          flutter build windows --release # For Windows (You would need a Windows runner for this)
           flutter build linux --release # For Linux
+
+      # Flutter build for macOS and iOS
+      - name: Build Flutter project (macOS and iOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          flutter pub get
+          flutter build ios --release # For iOS
+          flutter build macos --release # For macOS
+
+      # Flutter build for Windows
+      - name: Build Flutter project (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          flutter pub get
+          flutter build windows --release # For Windows
