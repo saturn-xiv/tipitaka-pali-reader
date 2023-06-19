@@ -54,9 +54,9 @@ jobs:
       - name: Copy build files into AppDir
         run: |
           cd TipitakaPaliReader.AppDir
-          cp -r ~/git/tipitaka-pali-reader/build/linux/x64/release/bundle/* .
+          cp -r ../build/linux/x64/release/bundle/* .
           cd ..
-
+          
       # Download the AppImage tool
       - name: Download AppImage tool
         run: |
