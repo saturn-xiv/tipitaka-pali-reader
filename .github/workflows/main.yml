@@ -21,41 +21,33 @@ jobs:
           channel: 'stable'
           flutter-version: 3.10.x
 
-      # Download the zip file
+      # Install additional tools
+      - name: Install additional tools
+        run: |
+          sudo apt update
+          sudo apt install p7zip-full p7zip-rar unzip python3-pip python-pip -y
+          pip install gdown
+
+      # Download the zip file using gdown
       - name: Download zip file
-        run: curl -L -o assets/database/data.zip "https://drive.google.com/uc?export=download&id=1II8XYSQw0JzZxJk2J4QT9XyN2SnqT9qm"
+        run: gdown https://drive.google.com/uc?export=download&id=1II8XYSQw0JzZxJk2J4QT9XyN2SnqT9qm -O assets/database/tipitaka_pali.zip
 
       # Extract the zip file
       - name: Extract zip file
-        run: unzip assets/database/data.zip -d assets/database/
+        run: unzip assets/database/tipitaka_pali.zip -d assets/database/
 
       # Delete the original zip file
       - name: Delete zip file
-        run: rm assets/database/data.zip
+        run: rm assets/database/tipitaka_pali.zip
 
       # Run the split.sh script
       - name: Run split.sh script
         run: bash assets/database/split.sh
 
-     # Flutter build for Linux and Android
+      # Flutter build for Linux and Android
       - name: Build Flutter project (Linux and Android)
-        if: matrix.os == 'ubuntu-18.04'
+        if: matrix.os == 'ubuntu-latest'
         run: |
           flutter pub get
           flutter build apk --release # For Android
           flutter build linux --release # For Linux
-          
-    # Commented out for now
-      # - name: Build Flutter project (macOS and iOS)
-      #   if: matrix.os == 'macos-latest'
-      #   run: |
-      #     flutter pub get
-      #     flutter build ios --release # For iOS
-      #     flutter build macos --release # For macOS
-
-      # Commented out for now
-      # - name: Build Flutter project (Windows)
-      #   if: matrix.os == 'windows-latest'
-      #   run: |
-      #     flutter pub get
-      #     flutter build windows --release # For Windows
