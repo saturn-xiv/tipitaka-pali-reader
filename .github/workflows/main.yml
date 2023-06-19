@@ -25,10 +25,9 @@ jobs:
       - name: Install additional tools
         run: |
           sudo apt update
-          sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev -y
+          sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev libfuse2 -y
         
-
-      # Download the zip file using gdown
+      # Download the zip file
       - name: Download zip file
         run: curl -L -o assets/database/tipitaka_pali.zip https://dl.dropboxusercontent.com/s/svnrlo29dnblyad/tipitaka_pali.zip?dl=0
       
@@ -50,6 +49,13 @@ jobs:
           flutter pub get
           flutter build apk --release # For Android
           flutter build linux --release # For Linux
+
+      # Copy build files into AppDir
+      - name: Copy build files into AppDir
+        run: |
+          cd TipitakaPaliReader.AppDir
+          cp -r ~/git/tipitaka-pali-reader/build/linux/x64/release/bundle/* .
+          cd ..
 
       # Download the AppImage tool
       - name: Download AppImage tool
