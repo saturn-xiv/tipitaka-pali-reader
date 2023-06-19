@@ -36,25 +36,25 @@ jobs:
       - name: Run split.sh script
         run: bash assets/database/split.sh
 
-      # Flutter build for Linux and Android
+     # Flutter build for Linux and Android
       - name: Build Flutter project (Linux and Android)
         if: matrix.os == 'ubuntu-18.04'
         run: |
           flutter pub get
           flutter build apk --release # For Android
           flutter build linux --release # For Linux
+          
+    # Commented out for now
+      # - name: Build Flutter project (macOS and iOS)
+      #   if: matrix.os == 'macos-latest'
+      #   run: |
+      #     flutter pub get
+      #     flutter build ios --release # For iOS
+      #     flutter build macos --release # For macOS
 
-      # Flutter build for macOS and iOS
-      - name: Build Flutter project (macOS and iOS)
-        if: matrix.os == 'macos-latest'
-        run: |
-          flutter pub get
-          flutter build ios --release # For iOS
-          flutter build macos --release # For macOS
-
-      # Flutter build for Windows
-      - name: Build Flutter project (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          flutter pub get
-          flutter build windows --release # For Windows
+      # Commented out for now
+      # - name: Build Flutter project (Windows)
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     flutter pub get
+      #     flutter build windows --release # For Windows
