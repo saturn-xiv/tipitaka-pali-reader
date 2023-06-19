@@ -1,9 +1,7 @@
-name: CI
+name: Run TPR Builds Manually
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build:
