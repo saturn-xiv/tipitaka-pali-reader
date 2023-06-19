@@ -25,7 +25,7 @@ jobs:
       - name: Install additional tools
         run: |
           sudo apt update
-          sudo apt install p7zip-full p7zip-rar unzip python3-pip python-pip -y
+          sudo apt install p7zip-full p7zip-rar unzip python-pip -y
           pip install gdown
 
       # Download the zip file using gdown
