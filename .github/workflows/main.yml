@@ -86,10 +86,10 @@ jobs:
       - name: Extract SQLite DLL
         run: unzip sqlite.zip
 
-      - name: Copy SQLite DLL to Build Release
+      - name: Copy SQLite DLL to Build Release (Windows)
+        if: matrix.os == 'windows-latest'
         run: |
-          cp sqlite3.dll build/windows/runner/Release/          
-          
+          copy sqlite3.dll build\windows\runner\Release\
           
       - name: Copy SQLite DLL to Build Release
         run:  |
