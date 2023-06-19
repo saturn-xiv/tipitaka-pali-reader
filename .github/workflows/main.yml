@@ -22,16 +22,15 @@ jobs:
           flutter-version: 3.10.x
 
       # Install additional tools
-      - name: Install additional tools
-        run: |
-          sudo apt update
-          sudo apt install p7zip-full p7zip-rar unzip python-pip -y
-          pip install gdown
+      #- name: Install additional tools
+       # run: |
+        #  sudo apt update
+        #  sudo apt install p7zip-full p7zip-rar unzip python-pip -y
+        #  pip install gdown
 
       # Download the zip file using gdown
       - name: Download zip file
-        run: gdown https://drive.google.com/uc?export=download&id=1II8XYSQw0JzZxJk2J4QT9XyN2SnqT9qm -O assets/database/tipitaka_pali.zip
-
+        run: curl -L -o assets/database/tipitaka_pali.zip https://dl.dropboxusercontent.com/s/svnrlo29dnblyad/tipitaka_pali.zip?dl=0
       # Extract the zip file
       - name: Extract zip file
         run: unzip assets/database/tipitaka_pali.zip -d assets/database/
