@@ -1,0 +1,60 @@
+name: Run TPR Builds Manually
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Set up Flutter
+      - name: Install Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: 'latest'
+
+      # Download the zip file
+      - name: Download zip file
+        run: curl -L -o assets/database/data.zip "https://drive.google.com/uc?export=download&id=1II8XYSQw0JzZxJk2J4QT9XyN2SnqT9qm"
+
+      # Extract the zip file
+      - name: Extract zip file
+        run: unzip assets/database/data.zip -d assets/database/
+
+      # Delete the original zip file
+      - name: Delete zip file
+        run: rm assets/database/data.zip
+
+      # Run the split.sh script
+      - name: Run split.sh script
+        run: bash assets/database/split.sh
+
+      # Flutter build for Linux and Android
+      - name: Build Flutter project (Linux and Android)
+        if: matrix.os == 'ubuntu-18.04'
+        run: |
+          flutter pub get
+          flutter build apk --release # For Android
+          flutter build linux --release # For Linux
+
+      # Flutter build for macOS and iOS
+      - name: Build Flutter project (macOS and iOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          flutter pub get
+          flutter build ios --release # For iOS
+          flutter build macos --release # For macOS
+
+      # Flutter build for Windows
+      - name: Build Flutter project (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          flutter pub get
+          flutter build windows --release # For Windows
