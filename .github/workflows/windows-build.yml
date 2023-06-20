@@ -86,7 +86,10 @@ jobs:
           $appID = "26554BhikkhuSangha.TipitakaPaliReader"
 
           # Step 3: Create a new submission
-          $newSubmission = Invoke-WebRequest -Method POST -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/$appID/submissions" -Headers @{ "Authorization" = "Bearer $access_token" } -ContentType "application/json"
+          $headers = @{
+          "Authorization" = "Bearer $access_token"
+          }
+          $newSubmission = Invoke-WebRequest -Method POST -Uri "https://manage.devcenter.microsoft.com/v1.0/my/applications/$appID/submissions" -Headers $headers -ContentType "application/json"
           $submissionId = ($newSubmission.Content | ConvertFrom-Json).id
 
           # Step 4: Upload the MSIX package (you need to provide the path to your MSIX file)
