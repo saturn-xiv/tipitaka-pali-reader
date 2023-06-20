@@ -63,7 +63,7 @@ jobs:
         run: |
           copy sqlite3.dll build\windows\runner\Release\
           
-      - name: Copy SQLite DLL to Build Release
+      - name: Build MSIX Release
         run:  |
           dart  run msix:create
 
