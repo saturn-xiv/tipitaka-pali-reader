@@ -69,7 +69,16 @@ jobs:
 
       # extract the appimage
       - name:  extract the appimage
-        run: ./tipitaka_pali_reader.AppImage--appimage-extract 
+        run: ./tipitaka_pali_reader.AppImage --appimage-extract 
+        
+      # Upload Linux unpacked appimage
+      - name: appimage extract
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-build-squash
+          path: squashfs-root
+
+        
 
       # Upload Linux build
       - name: Upload Linux build
