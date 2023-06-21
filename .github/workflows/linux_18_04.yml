@@ -15,7 +15,7 @@ jobs:
       # Set up Flutter
       - name: Install Flutter
         run : |
-          sudo snap install flutter --classic
+          snap install flutter --classic
           flutter doctor
 
       # Linux specific setup
