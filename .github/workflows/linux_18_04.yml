@@ -1,62 +1,83 @@
-name: Build inside Ubuntu 18.04 Docker container
+name: Ubuntu 18.04 (Docker Minimal)
 
 on:
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Build Docker container
-      - name: Build Docker container
-        run: docker build -t my-linux-app .
+      # Set up Flutter
+      - name: Install Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+          flutter-version: 3.10.x
 
-      # Run Docker container
-      - name: Run Docker container
-        run: docker run --name my-build-container -v ${PWD}:/app -d my-linux-app tail -f /dev/null
-
+      # Linux specific setup
+      - name: Install Linux dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev libfuse2 -y
       # Download the zip file
       - name: Download zip file
-        run: docker exec my-build-container curl -L -o /app/assets/database/tipitaka_pali.zip https://dl.dropboxusercontent.com/s/svnrlo29dnblyad/tipitaka_pali.zip?dl=0
+        run: curl -L -o assets/database/tipitaka_pali.zip https://dl.dropboxusercontent.com/s/svnrlo29dnblyad/tipitaka_pali.zip?dl=0
 
       # Extract the zip file
       - name: Extract zip file
-        run: docker exec my-build-container unzip /app/assets/database/tipitaka_pali.zip -d /app/assets/database/
+        run: unzip assets/database/tipitaka_pali.zip -d assets/database/
 
       # Delete the original zip file
       - name: Delete zip file
-        run: docker exec my-build-container rm /app/assets/database/tipitaka_pali.zip
+        run: rm assets/database/tipitaka_pali.zip
 
       # Run the split.sh script
       - name: Run split.sh script
-        run: docker exec my-build-container bash /app/assets/database/split.sh
+        run: bash assets/database/split.sh
 
-      # Build linux Flutter project
-      - name: Build linux Flutter project
-        run: docker exec my-build-container /bin/bash -c "cd /app && flutter pub get && flutter build linux --release"
+      # fun flutter doctor which will show version
+      - name: Run Flutter doctor
+        run: flutter doctor
 
-      # Copy build files into AppDir
+      # Flutter build for Linux and Android
+      - name: Build linux Flutter project (Linux and Android)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          flutter pub get
+          # flutter build apk --release # For Android
+          flutter build linux --release # For Linux
+      # Copy build files into AppDir (Linux only)
       - name: Copy build files into AppDir
-        run: docker exec my-build-container /bin/bash -c "cd /app/TipitakaPaliReader.AppDir && cp -r /app/build/linux/x64/release/bundle/* ."
-
-      # Download the AppImage tool
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd TipitakaPaliReader.AppDir
+          cp -r ../build/linux/x64/release/bundle/* .
+          cd ..
+      # Download the AppImage tool (Linux only)
       - name: Download AppImage tool
-        run: docker exec my-build-container /bin/bash -c "cd /app && wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage && chmod +x appimagetool-x86_64.AppImage"
-
-      # Build the AppImage
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+      # Build the AppImage (Linux only)
       - name: Build AppImage
-        run: docker exec my-build-container /bin/bash -c "cd /app && ARCH=x86_64 ./appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage"
+        run: ARCH=x86_64 ./appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage
 
-      # Copy build artifacts from container
-      - name: Copy build artifacts from container
-        run: docker cp my-build-container:/app/tipitaka_pali_reader.AppImage .
+      # Upload Linux build
+      - name: Upload Linux build
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-build
+          path: build/linux/x64/release/bundle
 
       # Upload AppImage
       - name: Upload AppImage
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
         with:
           name: linux-appimage
