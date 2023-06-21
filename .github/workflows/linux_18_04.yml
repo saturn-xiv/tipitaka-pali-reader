@@ -69,14 +69,17 @@ jobs:
 
       # extract the appimage
       - name:  extract the appimage
-        run: ./tipitaka_pali_reader.AppImage --appimage-extract 
+        run: |
+             ./tipitaka_pali_reader.AppImage --appimage-extract
+             mv squashfs-root TPR-Bundle
+             chmod +x TPR-Bundle/tipitaka_pali_reader
         
       # Upload Linux unpacked appimage
       - name: appimage extract
         uses: actions/upload-artifact@v2
         with:
-          name: linux-build-squash
-          path: squashfs-root
+          name: TPR-Bundle
+          path: TPR-Bundle
 
         
 
