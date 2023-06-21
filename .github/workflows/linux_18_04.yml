@@ -14,10 +14,9 @@ jobs:
 
       # Set up Flutter
       - name: Install Flutter
-        uses: subosito/flutter-action@v1
-        with:
-          channel: 'stable'
-          flutter-version: 3.10.x
+        run : |
+          sudo snap install flutter --classic
+          flutter doctor
 
       # Linux specific setup
       - name: Install Linux dependencies
@@ -41,9 +40,6 @@ jobs:
       - name: Run split.sh script
         run: bash assets/database/split.sh
         
-      # fun flutter doctor which will show version
-      - name: Run Flutter doctor
-        run: flutter doctor
 
       # Flutter build for Linux and Android
       - name: Build linux Flutter project (Linux and Android)
