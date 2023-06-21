@@ -1,4 +1,4 @@
-name: Ubuntu 20.04
+name: Build on Ubuntu 20.04
 
 on:
   workflow_dispatch:
@@ -40,30 +40,29 @@ jobs:
       - name: Run split.sh script
         run: bash assets/database/split.sh
 
-      # fun flutter doctor which will show version
+      # run flutter doctor which will show version
       - name: Run Flutter doctor
         run: flutter doctor
 
       # Flutter build for Linux and Android
       - name: Build linux Flutter project (Linux and Android)
-        if: matrix.os == 'ubuntu-latest'
         run: |
           flutter pub get
-          # flutter build apk --release # For Android
           flutter build linux --release # For Linux
-      # Copy build files into AppDir (Linux only)
+
+     # Copy build files into AppDir (Linux only)
       - name: Copy build files into AppDir
-        if: matrix.os == 'ubuntu-latest'
         run: |
           cd TipitakaPaliReader.AppDir
           cp -r ../build/linux/x64/release/bundle/* .
           cd ..
+
       # Download the AppImage tool (Linux only)
       - name: Download AppImage tool
-        if: matrix.os == 'ubuntu-latest'
         run: |
           wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
           chmod +x appimagetool-x86_64.AppImage
+
       # Build the AppImage (Linux only)
       - name: Build AppImage
         run: ARCH=x86_64 ./appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage
@@ -74,7 +73,6 @@ jobs:
 
       # Upload Linux build
       - name: Upload Linux build
-        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
         with:
           name: linux-build
@@ -82,7 +80,6 @@ jobs:
 
       # Upload AppImage
       - name: Upload AppImage
-        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
         with:
           name: linux-appimage
