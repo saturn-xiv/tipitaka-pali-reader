@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.3.4+51
+version: 2.3.4+52
 
 environment:
   sdk: ">=2.18.0 <=3.7.0"
@@ -92,7 +92,7 @@ msix_config:
   publisher: CN=76DA55C6-0663-4AE1-AE5E-609E9823DC18
   store: true
   logo_path: assets\icon\icon.png
-  msix_version: 1.1.38.0
+  msix_version: 1.1.39.0
 #######  for testing locally  ################
   #publisher:  CN=76DA55C6-0663-4AE1-AE5E-609E9823DC18, O=Msix Testing... # required
   #sign_msix: false
