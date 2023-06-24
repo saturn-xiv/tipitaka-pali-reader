@@ -120,7 +120,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
             }
 
             final p = target.getPositionForOffset(entry.localPosition);
-            final text = target.text.toPlainText().replaceAll('\ufffc', '');
+            final text = target.text.toPlainText(); //.replaceAll('\ufffc', '');
 
             debugPrint('${_textKey.currentContext?.widget}');
             if (text.isNotEmpty && p.offset < text.length) {
