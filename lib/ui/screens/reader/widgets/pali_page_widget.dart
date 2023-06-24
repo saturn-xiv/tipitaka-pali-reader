@@ -61,6 +61,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
   void initState() {
     super.initState();
     highlightedWord = widget.highlightedWord;
+    highlightedWordIndex = null;
     _pageToHighlight = widget.pageToHighlight;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -538,15 +539,16 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
   String _addHighlight(String content, String textToHighlight,
       {highlightClass = "highlighted", addId = true}) {
-    //final singleHighlight = true;
 
-    if (!Prefs.multiHighlight) {
+    final hwi = highlightedWordIndex;
+    if (!Prefs.multiHighlight && hwi != null) {
       final highlighted =
           '<span class = "$highlightClass">$textToHighlight</span>';
-      Match match = textToHighlight
-          .allMatches(content)
-          .elementAt(highlightedWordIndex ?? 0);
-      return content.replaceRange(match.start, match.end, highlighted);
+      final matches = textToHighlight.allMatches(content);
+      if (matches.length > hwi) {
+        final match = matches.elementAt(hwi);
+        return content.replaceRange(match.start, match.end, highlighted);
+      }
     }
 
     // TODO - optimize highlight for some query text
