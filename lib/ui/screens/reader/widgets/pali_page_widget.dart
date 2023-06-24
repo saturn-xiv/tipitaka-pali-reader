@@ -120,7 +120,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
             }
 
             final p = target.getPositionForOffset(entry.localPosition);
-            final text = target.text.toPlainText();
+            final text = target.text.toPlainText().replaceAll('\ufffc', '');
 
             debugPrint('${_textKey.currentContext?.widget}');
             if (text.isNotEmpty && p.offset < text.length) {
@@ -539,7 +539,6 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
   String _addHighlight(String content, String textToHighlight,
       {highlightClass = "highlighted", addId = true}) {
-
     final hwi = highlightedWordIndex;
     if (!Prefs.multiHighlight && hwi != null) {
       final highlighted =
