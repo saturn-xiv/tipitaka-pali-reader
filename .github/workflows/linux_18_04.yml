@@ -1,0 +1,98 @@
+name: Build on Ubuntu 20.04
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Set up Flutter
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: 3.10.x
+
+      # Linux specific setup
+      - name: Install Linux dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libfuse2 -y
+      
+      # Download the zip file
+      - name: Download zip file
+        run: curl -L -o assets/database/tipitaka_pali.zip https://dl.dropboxusercontent.com/s/svnrlo29dnblyad/tipitaka_pali.zip?dl=0
+
+      # Extract the zip file
+      - name: Extract zip file
+        run: unzip assets/database/tipitaka_pali.zip -d assets/database/
+
+      # Delete the original zip file
+      - name: Delete zip file
+        run: rm assets/database/tipitaka_pali.zip
+
+      # Run the split.sh script
+      - name: Run split.sh script
+        run: bash assets/database/split.sh
+
+      # run flutter doctor which will show version
+      - name: Run Flutter doctor
+        run: flutter doctor
+
+      # Flutter build for Linux and Android
+      - name: Build linux Flutter project (Linux and Android)
+        run: |
+          flutter pub get
+          flutter build linux --release # For Linux
+
+     # Copy build files into AppDir (Linux only)
+      - name: Copy build files into AppDir
+        run: |
+          cd TipitakaPaliReader.AppDir
+          cp -r ../build/linux/x64/release/bundle/* .
+          cd ..
+
+      # Download the AppImage tool (Linux only)
+      - name: Download AppImage tool
+        run: |
+          wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+
+      # Build the AppImage (Linux only)
+      - name: Build AppImage
+        run: ARCH=x86_64 ./appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage
+
+      # extract the appimage
+      - name:  extract the appimage
+        run: |
+             ./tipitaka_pali_reader.AppImage --appimage-extract
+             mv squashfs-root TPR-Bundle
+             chmod +x TPR-Bundle/tipitaka_pali_reader
+        
+      # Upload Linux unpacked appimage
+      - name: appimage extract
+        uses: actions/upload-artifact@v2
+        with:
+          name: TPR-Bundle
+          path: TPR-Bundle
+
+        
+
+      # Upload Linux build
+      - name: Upload Linux build
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-build
+          path: build/linux/x64/release/bundle
+
+      # Upload AppImage
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-appimage
+          path: tipitaka_pali_reader.AppImage
