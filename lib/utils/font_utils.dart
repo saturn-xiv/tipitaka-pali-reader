@@ -13,6 +13,8 @@ class FontUtils {
         return 'NotoSansDevanagari';
       case Script.laos:
         return 'Lao Pali Regular';
+      case Script.taitham:
+        return 'NotoSansTaiTham';
       default:
         return null;
     }

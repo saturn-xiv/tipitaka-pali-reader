@@ -540,6 +540,8 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       {highlightClass = "highlighted", addId = true}) {
     //final singleHighlight = true;
 
+    //TODO fix this later to prevent grey screen.
+    Prefs.multiHighlight = true;
     if (!Prefs.multiHighlight) {
       final highlighted =
           '<span class = "$highlightClass">$textToHighlight</span>';
