@@ -23,7 +23,7 @@
   "page":                 "ໜ້າ",
   "select_paragraph":     "ເລືອກຕອນ",
   "close":                "ປິດ",
-  "paragraph_number":     "ອັຖຖະຄາຖາຂອງຕອນນີ້",
+  "paragraph_number":     "ເລກຂອງຕອນນີ້",
   "table_of_contents":    "ສາລະບັນ",
   "goto":                 "ໄປທີ່",
   "paragraph":            "ຕອນ",
@@ -67,10 +67,10 @@
   "prefix":                 "ຄໍາຕື່ມຂ້າງໜ້າ",  
   "distance":               "ໄລຍະຫ່າງ",
   "anyPart":                "ສ່ວນໃດໜຶ່ງ",
-  "uiFontSize":             " ຂະໜາດຟັ້ອນຢູໄອ",
-  "sortBy":                 "ຈັດຮຽງຕາມ ",
+  "uiFontSize":             "ຂະໜາດຟັ້ອນຢູໄອ",
+  "sortBy":                 "ຮຽງຕາມ",
   "time":                   "ເວລາ",
-  "alphabetically":         "ຢ່າງແບບຕົວອັກສອນ",
+  "alphabetically":         "ແບບອັກສອນ",
   "noHistory":              "ບໍ່ມີປະຫວັດການຄົ້ນຫາ",
   "selectAll":              "ເລືອກທັງໝົດ",
   "selectNone":             "ບໍ່ເລືອກຫຍັງ",
@@ -95,5 +95,18 @@
   "finishedBuildingWordList": "ສ້າງບັນຊີຄໍາສັບສໍາເລັດ",
   "finishedBuildingIndexes":  "ສ້າງດັຊຊະນີສໍາເລັດ",
   "updatingStatus":           "ກະລຸນາລໍຖ້າການອັບເດດໃຫ້ສົມບູນ.\nອາດໃຊ້ເວລາໄລຍະໜຶ່ງ\nຖ້າສະຖານະບໍ່ປ່ຽນແປງເປັນເວລາ 60 ວິນາທີ,\n ກະລຸນາກົດປຸ່ມຕັ້ງຄ່າຄືນແລະດໍາເນີນການໃໝ່.",
-  "alwaysShowSplitter":       "ສະແດງຕົວແຍກຢູ່ສະເໝີ"
+  "alwaysShowSplitter":       "ສະແດງຕົວແຍກຢູ່ສະເໝີ",
+"rateThisApp":              "ຈັດອັນດັບແອັບນີ້",
+  "wouldLikeToRate":          "ທ່ານຕ້ອງການຈັດອັນດັບແອັບນີ້ບໍ?",
+  "booksOpened":              "ໜັງສືທີ່ເປີດ",
+  "wordsLookedUp":            "ຄໍາທີ່ຄົ້ນຫາ",
+  "never":                    "ບໍ່ສະແດງອີກ",
+  "later":                    "ພາຍຫຼັງ",
+  "rateAppNow":               "ຈັດອັນດັບດຽວນີ້",
+  "folloingExtensions":       "ສ່ວນຂະຫຍາຍຕໍ່ໄປນີ້ໄດ້ຕິດຕັ້ງມາກ່ອນ:",
+  "wouldYouLikeToInstall":    "ທ່ານຕ້ອງການຕິດຕັ້ງບໍ?",
+  "multiHighlight":           "ໄຮໄລທ໌ຫຼາຍສ່ວນ"
 }
+
+
+

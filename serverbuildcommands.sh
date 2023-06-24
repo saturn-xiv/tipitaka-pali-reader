@@ -53,4 +53,4 @@ ARCH=x86_64 ./appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_p
 # scp ~/Desktop/flutterstuff.zip root@SERVER_IP:/root/tipitaka-pali-reader/
 
 # Uncomment the following line if you want to copy the AppImage to a specific directory on your local machine
-# scp root@SERVER_IP:git/tipitaka-pali-reader/tipitaka_pali_reader.AppImage C:\Users\bksub\Downloads
+# scp root@147.182.235.87:git/tipitaka-pali-reader/tipitaka_pali_reader.AppImage C:\Users\bksub\Downloads

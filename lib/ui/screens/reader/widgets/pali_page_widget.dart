@@ -45,7 +45,7 @@ class PaliPageWidget extends StatefulWidget {
   State<PaliPageWidget> createState() => _PaliPageWidgetState();
 }
 
-final nonPali = RegExp(r'[^a-zāīūṅñṭḍṇḷṃ]+', caseSensitive: false);
+final nonPali = RegExp(r'[.,:?;" ]+"*', caseSensitive: false);
 
 class PaliWidgetFactory extends WidgetFactory {}
 
