@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/repositories/dictionary_repo.dart';
+import 'package:tipitaka_pali/ui/widgets/get_velthuis_help_widget.dart';
 import '../../../business_logic/models/dictionary_history.dart';
 import '../../../services/repositories/dictionary_history_repo.dart';
 import '../../widgets/colored_text.dart';
@@ -35,6 +36,7 @@ class _DictionaryPageState extends State<DictionaryPage>
       child: Consumer<DictionaryController>(builder: (context, dc, __) {
         return Scaffold(
           appBar: AppBar(
+            leading: getVelthuisHelp(context),
             title: const Text('Dictionary'),
             actions: [
               IconButton(

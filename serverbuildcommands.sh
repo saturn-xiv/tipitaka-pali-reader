@@ -16,7 +16,7 @@ sudo apt-get install libgtk-3-0 libblkid1 liblzma5 -y
 flutter doctor
 
 # Install additional tools
-sudo apt install p7zip-full p7zip-rar unzip python3-pip python-pip -y
+sudo apt install p7zip-full p7zip-rar unzip python3-pip python-pip zip -y
 pip install gdown
 
 # Clone the repository
@@ -43,14 +43,26 @@ cp -r ~/git/tipitaka-pali-reader/build/linux/x64/release/bundle/* .
 cd ..
 
 # Download the AppImage tool
-wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
+#wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
+wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
 chmod +x appimagetool-x86_64.AppImage
 
+#change the permissions of the app run file
+chmod +x TipitakaPaliReader.AppDir/AppRun
+
 # Build the AppImage
-ARCH=x86_64 ./appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage
+#ARCH=x86_64 ./appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage
+./appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage
+
+
+ chmod +x tipitaka_pali_reader.AppImage
+ ./tipitaka_pali_reader.AppImage --appimage-extract
+ mv squashfs-root TPR
+ zip -r TPR.zip TPR
 
 # Uncomment the following line if you want to copy the flutterstuff.zip file to the server
 # scp ~/Desktop/flutterstuff.zip root@SERVER_IP:/root/tipitaka-pali-reader/
 
 # Uncomment the following line if you want to copy the AppImage to a specific directory on your local machine
-# scp root@147.182.235.87:git/tipitaka-pali-reader/tipitaka_pali_reader.AppImage C:\Users\bksub\Downloads
+# scp root@137.184.81.217:git/tipitaka-pali-reader/tipitaka_pali_reader.AppImage C:\Users\bksub\Downloads
+# scp root@137.184.81.217:git/tipitaka-pali-reader/TPR.zip C:\Users\bksub\Downloads

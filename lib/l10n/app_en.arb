@@ -70,7 +70,7 @@
   "uiFontSize":             "UI fontSize",
   "sortBy":                 "Sort by: ",
   "time":                   "Time",
-  "alphabetically":         "Alphabetically",
+  "alphabetically":         "Alpha",
   "noHistory":              "no History",
   "selectAll":              "Select All",
   "selectNone":             "Select None",
@@ -105,8 +105,6 @@
   "rateAppNow":               "Rate App Now",
   "folloingExtensions":       "The following extensions were previously installed:",
   "wouldYouLikeToInstall":    "Would you like to install them?",
-  "multiHighlight":           "Multiple Highlight"
+  "multiHighlight":           "Multiple Highlight",
+  "velthuisHelp":             "Velthuis System:\naa=ā, ii=ī uu=ū\n \n.t = ṭ, .d = ḍ\n.n = ṇ, .l = ḷ .m = ṃ\n\"n = ṅ, ~n = ñ"
 }
-
-
-

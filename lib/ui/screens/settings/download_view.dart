@@ -63,21 +63,24 @@ class DownloadView extends StatelessWidget {
             }
             List<DownloadListItem> dlList =
                 downloadListItemFromJson(snapshot.data!.body);
-            // print(data);
 
-            // return Text('see');
             return ListView.builder(
               scrollDirection: Axis.vertical,
               shrinkWrap: false,
               itemCount: dlList.length,
               itemBuilder: (context, index) {
-                //      print(stores[index][index]['name']);
-                return ListTile(
-                  title: Text("${dlList[index].name} ${dlList[index].size}"),
-                  leading: Text(dlList[index].releaseDate),
-                  onTap: () async {
-                    await getDownload(downloadModel, dlList[index]);
-                  },
+                return Card(
+                  elevation: 5.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: ListTile(
+                    title: Text("${dlList[index].name} ${dlList[index].size}"),
+                    leading: Text(dlList[index].releaseDate),
+                    onTap: () async {
+                      await getDownload(downloadModel, dlList[index]);
+                    },
+                  ),
                 );
               },
             );

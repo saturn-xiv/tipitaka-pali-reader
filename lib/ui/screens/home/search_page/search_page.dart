@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/ui/widgets/get_velthuis_help_widget.dart';
 import 'package:tipitaka_pali/ui/widgets/value_listenser.dart';
 import '../../../../services/database/database_helper.dart';
 import '../../../../services/prefs.dart';
@@ -63,6 +64,7 @@ class _SearchPageState extends State<SearchPage> {
           final vm = context.read<SearchPageViewModel>();
           return Scaffold(
               appBar: AppBar(
+                leading: getVelthuisHelp(context),
                 automaticallyImplyLeading: false,
                 title: Text(AppLocalizations.of(context)!.search),
                 centerTitle: true,
