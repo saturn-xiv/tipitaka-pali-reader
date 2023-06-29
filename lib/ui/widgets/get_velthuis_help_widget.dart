@@ -8,7 +8,7 @@ import '../../utils/pali_script_converter.dart';
 
 Widget getVelthuisHelp(BuildContext context) {
   // if script = roman then return object.. else return null
-  final selectedScript = context.read<ScriptLanguageProvider>().currentScript;
+  final selectedScript = context.watch<ScriptLanguageProvider>().currentScript;
 
   if (selectedScript == Script.roman) {
     return Padding(
@@ -20,6 +20,6 @@ Widget getVelthuisHelp(BuildContext context) {
       ),
     );
   } else {
-    return SizedBox.shrink();
+    return const SizedBox.shrink();
   }
 }
