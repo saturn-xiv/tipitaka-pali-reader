@@ -4,16 +4,16 @@ import 'package:tipitaka_pali/services/repositories/book_repo.dart';
 import 'package:tipitaka_pali/services/repositories/category_repo.dart';
 
 class HomePageViewModel {
-  Future<List<ListItem>> fecthItems(String category) async {
+  Future<List<ListItem>> fecthItems(String mainCategory) async {
     final databaseProvider = DatabaseHelper();
     List<ListItem> listItems = [];
     final subCategories = await CategoryDatabaseRepository(databaseProvider)
-        .getCategories(category);
+        .getCategories(mainCategory);
 
     for (int i = 0; i < subCategories.length; ++i) {
       listItems.add(CategoryItem(subCategories[i]));
       final books = await BookDatabaseRepository(databaseProvider)
-          .getBooks(category, subCategories[i].id);
+          .getBooks(mainCategory, subCategories[i].id);
       final bookListItems = books.map((book) => BookItem(book)).toList();
       listItems.addAll(bookListItems);
     }

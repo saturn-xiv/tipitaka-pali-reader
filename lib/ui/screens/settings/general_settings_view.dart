@@ -69,6 +69,8 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           const Divider(),
           _getNewTabAtEndSwitch(),
           const Divider(),
+          _getExpandedBookListSwitch(),
+          const Divider(),
           _getAlwaysShowSplitterSwitch(),
         ],
       ),
@@ -186,6 +188,23 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
             });
           },
           value: Prefs.isNewTabAtEnd,
+        ),
+      ),
+    );
+  }
+
+  Widget _getExpandedBookListSwitch() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: ListTile(
+        title: const Text("Expanded Booklist"),
+        trailing: Switch(
+          onChanged: (value) {
+            setState(() {
+              Prefs.expandedBookList = value;
+            });
+          },
+          value: Prefs.expandedBookList,
         ),
       ),
     );

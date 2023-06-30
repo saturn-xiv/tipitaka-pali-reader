@@ -44,6 +44,7 @@ const String numberBooksOpenedPref = "numberBooksOpened";
 const String numberWordsLookedUpPref = "numberWordsLookedUp";
 const String okToRatePref = "okToRate";
 const String multiHighlightPref = "singleHighlight";
+const String expandedBookListPref = "expandedBookList";
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -81,6 +82,7 @@ const int defaultNumberBooksOpened = 0;
 const int defaultNumberWordsLookedUp = 0;
 const bool defaultOkToRate = true;
 const bool defaultMultiHighlight = false;
+const bool defaultExpandedBookList = false;
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -277,6 +279,12 @@ class Prefs {
       instance.getBool(multiHighlightPref) ?? defaultMultiHighlight;
   static set multiHighlight(bool value) =>
       instance.setBool(multiHighlightPref, value);
+
+// Add getter and setter for singleHighlight
+  static bool get expandedBookList =>
+      instance.getBool(expandedBookListPref) ?? defaultExpandedBookList;
+  static set expandedBookList(bool value) =>
+      instance.setBool(expandedBookListPref, value);
 
   // ===========================================================================
   // Helpers

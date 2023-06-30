@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/services/repositories/book_repo.dart';
+import 'package:tipitaka_pali/services/repositories/category_repo.dart';
 import 'package:tipitaka_pali/ui/screens/reader/mobile_reader_container.dart';
 
 import '../../../business_logic/models/book.dart';
@@ -63,12 +65,12 @@ class BookListPage extends StatelessWidget {
               color: Theme.of(context).appBarTheme.backgroundColor,
               child: TabBar(
                 tabs: _mainCategories.entries
-                    .map((category) => Tab(
+                    .map((mainCategory) => Tab(
                         text: PaliScript.getScriptOf(
                             script: context
                                 .watch<ScriptLanguageProvider>()
                                 .currentScript,
-                            romanText: category.value)))
+                            romanText: mainCategory.value)))
                     .toList(),
                 indicator: BoxDecoration(
                   color: Colors.white.withOpacity(0.1),
@@ -82,7 +84,7 @@ class BookListPage extends StatelessWidget {
             Expanded(
               child: TabBarView(
                   children: _mainCategories.entries
-                      .map((category) => _buildBookList(category.key))
+                      .map((mainCategory) => _buildBookList(mainCategory.key))
                       .toList()),
             ),
           ],
@@ -170,9 +172,15 @@ class BookListPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBookList(String category) {
+  Widget _buildBookList(String mainCategory) {
+    return (Prefs.expandedBookList)
+        ? _buildExpandedBookList(mainCategory)
+        : _buildCondesedBookListWithExpansionTiles(mainCategory);
+  }
+
+  Widget _buildExpandedBookList(String mainCategory) {
     return FutureBuilder(
-        future: _loadBooks(category),
+        future: _loadBooks(mainCategory),
         builder: (context, AsyncSnapshot<List<ListItem>> snapshot) {
           if (snapshot.hasData) {
             final listItems = snapshot.data!;
@@ -190,6 +198,43 @@ class BookListPage extends StatelessWidget {
                     thickness: 0,
                   );
                 });
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
+
+  Widget _buildCondesedBookListWithExpansionTiles(String mainCategory) {
+    return FutureBuilder(
+        future: _loadSubCategoriesAndBooks(mainCategory),
+        builder: (context, AsyncSnapshot<List<CategoryWithBooks>> snapshot) {
+          if (snapshot.hasData) {
+            final categoriesWithBooks = snapshot.data!;
+            return ListView.builder(
+              controller: ScrollController(),
+              itemCount: categoriesWithBooks.length,
+              itemBuilder: (context, index) {
+                final categoryWithBooks = categoriesWithBooks[index];
+                return Card(
+                  elevation: 4,
+                  child: ExpansionTile(
+                    title: categoryWithBooks.category.build(context),
+                    tilePadding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    collapsedBackgroundColor: Theme.of(context).cardColor,
+                    backgroundColor: Theme.of(context).cardColor,
+                    childrenPadding: const EdgeInsets.only(left: 16, bottom: 8),
+                    children: categoryWithBooks.books.map<Widget>((bookItem) {
+                      return ListTile(
+                        title: bookItem.build(context),
+                        onTap: () => _openBook(context, bookItem),
+                      );
+                    }).toList(),
+                  ),
+                );
+              },
+            );
           }
           return const Center(
             child: CircularProgressIndicator(),
@@ -278,4 +323,30 @@ class BookListPage extends StatelessWidget {
       },
     );
   }
+
+  Future<List<CategoryWithBooks>> _loadSubCategoriesAndBooks(
+      String mainCategory) async {
+    final databaseProvider = DatabaseHelper();
+    List<CategoryWithBooks> categoriesWithBooks = [];
+
+    final subCategories = await CategoryDatabaseRepository(databaseProvider)
+        .getCategories(mainCategory);
+
+    for (var subCategory in subCategories) {
+      final books = await BookDatabaseRepository(databaseProvider)
+          .getBooks(mainCategory, subCategory.id);
+      final bookListItems = books.map((book) => BookItem(book)).toList();
+      categoriesWithBooks.add(CategoryWithBooks(
+          category: CategoryItem(subCategory), books: bookListItems));
+    }
+
+    return categoriesWithBooks;
+  }
+}
+
+class CategoryWithBooks {
+  final CategoryItem category;
+  final List<BookItem> books;
+
+  CategoryWithBooks({required this.category, required this.books});
 }
