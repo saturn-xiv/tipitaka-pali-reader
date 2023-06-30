@@ -67,13 +67,10 @@ class App extends StatelessWidget {
                 create: (_) => OpenningBooksProvider())
           ],
           builder: (context, _) {
-            final themeChangeNotifier =
-                Provider.of<ThemeChangeNotifier>(context);
-            final localChangeNotifier =
-                Provider.of<LocaleChangeNotifier>(context);
-            // ignore: unused_local_variable
+            final themeChangeNotifier = context.watch<ThemeChangeNotifier>();
+            final localChangeNotifier = context.watch<LocaleChangeNotifier>();
             final scriptChangeNotifier =
-                Provider.of<ScriptLanguageProvider>(context);
+                context.watch<ScriptLanguageProvider>();
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               themeMode: themeChangeNotifier.themeMode,
