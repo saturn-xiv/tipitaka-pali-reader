@@ -101,7 +101,7 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
     List<Definition> defs = maps.map((x) => Definition.fromJson(x)).toList();
     if (defs.isNotEmpty) {
       defs[0].definition =
-          "----------- DPD Grammar -----------<br>${defs[0].definition}";
+          "<hr style='margin-top: 10px; margin-bottom: 10px;'><div style='text-align: center; margin-bottom: 10px;'>DPD Grammar</div><hr style='margin-top: 10px; margin-bottom: 10px;'><br>${defs[0].definition}";
       defs[0].bookName = "DPD Grammar";
       return defs[0];
     } else {

@@ -173,9 +173,7 @@ class BookListPage extends StatelessWidget {
   }
 
   Widget _buildBookList(String mainCategory) {
-    return (Prefs.expandedBookList)
-        ? _buildExpandedBookList(mainCategory)
-        : _buildCondesedBookListWithExpansionTiles(mainCategory);
+    return _buildCondensedBookListWithExpansionTiles(mainCategory);
   }
 
   Widget _buildExpandedBookList(String mainCategory) {
@@ -205,7 +203,7 @@ class BookListPage extends StatelessWidget {
         });
   }
 
-  Widget _buildCondesedBookListWithExpansionTiles(String mainCategory) {
+  Widget _buildCondensedBookListWithExpansionTiles(String mainCategory) {
     return FutureBuilder(
         future: _loadSubCategoriesAndBooks(mainCategory),
         builder: (context, AsyncSnapshot<List<CategoryWithBooks>> snapshot) {
@@ -219,6 +217,7 @@ class BookListPage extends StatelessWidget {
                 return Card(
                   elevation: 4,
                   child: ExpansionTile(
+                    initiallyExpanded: Prefs.expandedBookList,
                     title: categoryWithBooks.category.build(context),
                     tilePadding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

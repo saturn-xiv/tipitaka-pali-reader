@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
 
 import '../../services/prefs.dart';
 import '../../services/provider/script_language_provider.dart';
@@ -38,9 +39,15 @@ class BookItem implements ListItem {
   BookItem(this.book);
 
   @override
-  Widget build(BuildContext context) => Text(
-        PaliScript.getScriptOf(
-            script: context.read<ScriptLanguageProvider>().currentScript,
-            romanText: book.name),
+  Widget build(BuildContext context) => Card(
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: ColoredText(
+            PaliScript.getScriptOf(
+                script: context.read<ScriptLanguageProvider>().currentScript,
+                romanText: book.name),
+          ),
+        ),
       );
 }
