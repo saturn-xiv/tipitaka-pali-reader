@@ -1,38 +1,38 @@
 {
   "general": {
-    "message": "Welcome to TPR! Check out the new features.",
+    "message": "TPR now can inform you about what is new and new releases!\n\nSeveral chanting books are now available in our downloads section.\n\nDpd has a July update in the extensions",
     "messageDate": "20230703"
   },
   "android": {
-    "currentVersion": "1.0.1",
+    "currentVersion": "2.3.4+52",
     "message": "New Update Available! Improved performance and bug fixes.",
     "messageDate": "20230702",
     "peuDate": "20230702",
     "dpdDate": "20230802"
   },
   "ios": {
-    "currentVersion": "1.0.2",
+    "currentVersion": "not available",
     "message": "New Update Available! Added new exciting features.",
     "messageDate": "20230701",
     "peuDate": "20230701",
     "dpdDate": "20230801"
   },
   "macos": {
-    "currentVersion": "1.0.0",
+    "currentVersion": "not available",
     "message": "Welcome Mac users! Download our new MacOS app.",
     "messageDate": "20230629",
     "peuDate": "20230629",
     "dpdDate": "20230729"
   },
   "windows": {
-    "currentVersion": "1.0.3",
+    "currentVersion": "2.3.4+52",
     "message": "Windows update: Security patch and improvements.",
     "messageDate": "20230630",
     "peuDate": "20230630",
     "dpdDate": "20230730"
   },
   "linux": {
-    "currentVersion": "0.9.9",
+    "currentVersion": "2.3.4+52",
     "message": "Beta version available for Linux. Give it a try!",
     "messageDate": "20230628",
     "peuDate": "20230628",
