@@ -45,6 +45,9 @@ const String numberWordsLookedUpPref = "numberWordsLookedUp";
 const String okToRatePref = "okToRate";
 const String multiHighlightPref = "singleHighlight";
 const String expandedBookListPref = "expandedBookList";
+const String messagePref = "message";
+const String messageDatePref = "messageDate";
+const String lastDateCheckedMessagePref = "lastDateCheckedMessage";
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -83,6 +86,9 @@ const int defaultNumberWordsLookedUp = 0;
 const bool defaultOkToRate = true;
 const bool defaultMultiHighlight = false;
 const bool defaultExpandedBookList = false;
+const String defaultMessage = "";
+const String defaultMessageDate = "20230701";
+const String defaultLastDateCheckedMessage = "20230701";
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -280,11 +286,25 @@ class Prefs {
   static set multiHighlight(bool value) =>
       instance.setBool(multiHighlightPref, value);
 
-// Add getter and setter for singleHighlight
   static bool get expandedBookList =>
       instance.getBool(expandedBookListPref) ?? defaultExpandedBookList;
   static set expandedBookList(bool value) =>
       instance.setBool(expandedBookListPref, value);
+
+  static String get message =>
+      instance.getString(messagePref) ?? defaultMessage;
+  static set message(String value) => instance.setString(messagePref, value);
+
+  static String get messageDate =>
+      instance.getString(messageDatePref) ?? defaultMessageDate;
+  static set messageDate(String value) =>
+      instance.setString(messageDatePref, value);
+
+  static String get lastDateCheckedMessage =>
+      instance.getString(lastDateCheckedMessagePref) ??
+      defaultLastDateCheckedMessage;
+  static set lastDateCheckedMessage(String value) =>
+      instance.setString(lastDateCheckedMessagePref, value);
 
   // ===========================================================================
   // Helpers
