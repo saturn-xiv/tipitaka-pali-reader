@@ -110,9 +110,7 @@ class DownloadView extends StatelessWidget {
     // handled here in this view.
     if (await checkInternetConnection(dn)) {
       DownloadService downloadService = DownloadService(
-          buildContext: context,
-          downloadNotifier: dn,
-          downloadListItem: downloadListItem);
+          downloadNotifier: dn, downloadListItem: downloadListItem);
 
       dn.downloading = true;
       await downloadService.installSqlZip();

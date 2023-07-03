@@ -13,7 +13,6 @@ import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:dio/dio.dart';
 import 'package:tipitaka_pali/business_logic/models/page_content.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DatabaseUpdate {
   final insertLines = [];
@@ -29,7 +28,6 @@ class DownloadService {
   DownloadNotifier downloadNotifier;
   DownloadListItem downloadListItem;
   int batchAmount = 500;
-  BuildContext buildContext;
 
   String _dir = "";
 
@@ -38,9 +36,7 @@ class DownloadService {
   final dbService = DatabaseHelper();
 
   DownloadService(
-      {required this.buildContext,
-      required this.downloadNotifier,
-      required this.downloadListItem}) {
+      {required this.downloadNotifier, required this.downloadListItem}) {
     _zipPath = downloadListItem.url;
 
     _localZipFileName = downloadListItem.filename;
@@ -127,6 +123,7 @@ class DownloadService {
 
     if (downloadListItem.type.contains("index")) {
       downloadNotifier.message = 'Building fts';
+
       await doFts(db, newBooks);
       await makeEnglishWordList();
     }
@@ -137,9 +134,9 @@ class DownloadService {
     }
 
     // It costs 10 seconds to regen the indexes.. I'd like to do that.
-    downloadNotifier.message = 'Rebuilding index';
+    downloadNotifier.message = "Rebuilding Index";
     await dbService.buildIndex();
-    downloadNotifier.message = 'Reloading extension list';
+    downloadNotifier.message = "Reloading Extension List";
   }
 
   Future processEntries(DatabaseUpdate dbUpdate, Database db, int limit) async {
@@ -174,8 +171,7 @@ class DownloadService {
     //StringBuffer sb = StringBuffer("");
 
     //String deleteSql = sb.toString();
-    downloadNotifier.message =
-        AppLocalizations.of(buildContext)!.deletingRecords;
+    downloadNotifier.message = "Deleting Records";
 
     if (lines.isNotEmpty) {
       var batch = db.batch();
@@ -227,8 +223,7 @@ class DownloadService {
     }
     await batch.commit(noResult: true);
 
-    downloadNotifier.message =
-        AppLocalizations.of(buildContext)!.insertComplete;
+    downloadNotifier.message = "Insert Complete";
   }
 
   Future<void> doUpdates(Database db, String sql) async {
@@ -251,8 +246,7 @@ class DownloadService {
     }
     await batch.commit(noResult: true);
 
-    downloadNotifier.message =
-        AppLocalizations.of(buildContext)!.updateComplete;
+    downloadNotifier.message = "Update Complete";
   }
 
   Future<void> doFts(Database db, Set<String> newBooks) async {
@@ -284,7 +278,7 @@ class DownloadService {
       // commit remainder inserts after the loop stops.
       await batch.commit(noResult: true);
     }
-    downloadNotifier.message = AppLocalizations.of(buildContext)!.ftsIsComplete;
+    downloadNotifier.message = "FTS is complete";
   }
 
   void showDownloadProgress(received, total) {
@@ -349,8 +343,7 @@ class DownloadService {
     // insert the words to the word table with count -1
     //  final pageContentRepository =
     //    PageContentDatabaseRepository(DatabaseHelper());
-    downloadNotifier.message =
-        AppLocalizations.of(buildContext)!.creatingWordList;
+    downloadNotifier.message = "Creating unique wordlist";
     Database db = await dbService.database;
     List<String> uniqueWords = [];
 
@@ -400,8 +393,7 @@ class DownloadService {
         }
       }
     }
-    downloadNotifier.message =
-        AppLocalizations.of(buildContext)!.addingWordlist;
+    downloadNotifier.message = "Adding word list";
 
     // now delete all words from the table with -1 count
     await db.rawDelete("Delete from words where frequency = -1");
@@ -421,8 +413,7 @@ class DownloadService {
       }
     }
     await batch.commit();
-    downloadNotifier.message =
-        AppLocalizations.of(buildContext)!.englishWordListComplete;
+    downloadNotifier.message = "English word list is complete";
   }
 
   Future<List<File>> getExtensionFiles() async {

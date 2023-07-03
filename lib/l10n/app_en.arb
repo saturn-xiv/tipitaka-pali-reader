@@ -114,6 +114,10 @@
   "creatingWordList":         "Creating unique wordlist\n",
   "deletingRecords":          "\nNow Deleting Records",
   "insertComplete":            "Insert is complete",
-  "ftsIsComplete":            "FTS is complete"
+  "ftsIsComplete":            "FTS is complete",
+  "reloadingExtensionList":    "Reloading extension list",
+  "rebuildingIndex":           "Rebuilding Index",
+  "buildingFts":              "Building fts",
+  "message":                  "Message:"
 
 }
