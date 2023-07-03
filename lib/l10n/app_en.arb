@@ -106,5 +106,14 @@
   "folloingExtensions":       "The following extensions were previously installed:",
   "wouldYouLikeToInstall":    "Would you like to install them?",
   "multiHighlight":           "Multiple Highlight",
-  "velthuisHelp":             "Velthuis System:\naa=ā, ii=ī uu=ū\n \n.t = ṭ, .d = ḍ\n.n = ṇ, .l = ḷ .m = ṃ\n\"n = ṅ, ~n = ñ"
+  "velthuisHelp":             "Velthuis System:\naa=ā, ii=ī uu=ū\n \n.t = ṭ, .d = ḍ\n.n = ṇ, .l = ḷ .m = ṃ\n\"n = ṅ, ~n = ñ",
+  "turnOnInternet":           "Please turn on the internet to download files",
+  "updateComplete":           "Update is complete",
+  "addingWordlist":           "Adding English wordlist",
+  "englishWordListComplete":  "English wordlist is complete",
+  "creatingWordList":         "Creating unique wordlist\n",
+  "deletingRecords":          "\nNow Deleting Records",
+  "insertComplete":            "Insert is complete",
+  "ftsIsComplete":            "FTS is complete"
+
 }

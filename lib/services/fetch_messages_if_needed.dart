@@ -5,7 +5,6 @@ import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-import 'package:tipitaka_pali/ui/screens/splash_screen.dart';
 
 Future<bool> _isInternetAvailable() async {
   return await InternetConnection().hasInternetAccess;

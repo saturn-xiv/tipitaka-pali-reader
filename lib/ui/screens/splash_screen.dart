@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/data/constants.dart';
+import 'package:tipitaka_pali/services/get_database_status.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
 import 'home/home_container.dart';
 import 'initial_setup.dart';
-
-enum DatabaseStatus { uptoDate, outOfDate, notExist }
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final databaseStatus = _getDatabaseStatus();
+    final databaseStatus = getDatabaseStatus();
     late final Widget child;
 
     switch (databaseStatus) {
@@ -31,15 +30,5 @@ class SplashScreen extends StatelessWidget {
     }
 
     return Material(child: child);
-  }
-
-  DatabaseStatus _getDatabaseStatus() {
-    final isExist = Prefs.isDatabaseSaved;
-    if (!isExist) return DatabaseStatus.notExist;
-
-    final dbVersion = Prefs.databaseVersion;
-    if (DatabaseInfo.version == dbVersion) return DatabaseStatus.uptoDate;
-
-    return DatabaseStatus.outOfDate;
   }
 }

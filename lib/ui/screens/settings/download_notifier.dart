@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class DownloadNotifier extends ChangeNotifier {
   String _message = "Select Item";
+  bool connectionChecking = false;
 
   set message(String val) {
     _message = val;

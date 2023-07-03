@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
 import '../../../business_logic/models/download_list_item.dart';
 import 'download_service.dart';
 import 'download_notifier.dart';
@@ -6,47 +7,118 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 
+import 'dart:async';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
+
 class DownloadView extends StatelessWidget {
   const DownloadView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<DownloadNotifier>(
-        create: (context) => DownloadNotifier(),
-        child: SafeArea(
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(AppLocalizations.of(context)!.downloadTitle),
-            ),
-            body: Consumer<DownloadNotifier>(
-                builder: (context, downloadModel, child) {
+      create: (context) => DownloadNotifier(),
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)!.downloadTitle),
+          ),
+          body: Consumer<DownloadNotifier>(
+            builder: (context, downloadModel, child) {
               return Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(
-                      height: 60,
+                    Container(
+                      height: 50, // height fixed for two lines of text
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: ColoredText(
+                          downloadModel.message,
+                          maxLines: 2, // max two lines of text
+                          overflow: TextOverflow
+                              .ellipsis, // if the text is too long, show ellipsis
+                        ),
+                      ),
                     ),
-                    Text(downloadModel.message),
                     const SizedBox(
-                      height: 60,
+                      height: 20,
                     ),
-                    getFutureBuilder(context, downloadModel),
+                    if (downloadModel.downloading ||
+                        downloadModel.connectionChecking)
+                      const CircularProgressIndicator(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    FutureBuilder<bool>(
+                      future: checkInternetConnection(downloadModel),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const SizedBox.shrink();
+                        }
+                        if (snapshot.hasData && snapshot.data!) {
+                          return getFutureBuilder(context, downloadModel);
+                        } else {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.signal_wifi_off,
+                                    size: 80,
+                                    color: (!Prefs.darkThemeOn)
+                                        ? Theme.of(context)
+                                            .appBarTheme
+                                            .backgroundColor
+                                        : null),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                ColoredText(AppLocalizations.of(context)!
+                                    .turnOnInternet),
+                              ],
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   ],
                 ),
               );
-            }),
+            },
           ),
-        ));
+        ),
+      ),
+    );
   }
 
-  getDownload(DownloadNotifier dn, DownloadListItem downloadListItem) async {
-    DownloadService downloadService = DownloadService(
-        downloadNotifier: dn, downloadListItem: downloadListItem);
+  Future<bool> checkInternetConnection(DownloadNotifier downloadModel) async {
+    if (downloadModel.downloading) {
+      return true;
+    }
+    downloadModel.connectionChecking = true;
+    bool hasInternet = await InternetConnection().hasInternetAccess;
+    downloadModel.connectionChecking = false;
+    return hasInternet;
+  }
 
-    dn.downloading = true;
-    await downloadService.installSqlZip();
+  getDownload(BuildContext context, DownloadNotifier dn,
+      DownloadListItem downloadListItem) async {
+    // give another check before downloading..
+    // two times this is called..   to get the list.. and once before downloading
+    // handled here in this view.
+    if (await checkInternetConnection(dn)) {
+      DownloadService downloadService = DownloadService(
+          buildContext: context,
+          downloadNotifier: dn,
+          downloadListItem: downloadListItem);
+
+      dn.downloading = true;
+      await downloadService.installSqlZip();
+    } else {
+      dn.message = "No Internet";
+    }
   }
 
   getFutureBuilder(context, DownloadNotifier downloadModel) {
@@ -78,7 +150,7 @@ class DownloadView extends StatelessWidget {
                     title: Text("${dlList[index].name} ${dlList[index].size}"),
                     leading: Text(dlList[index].releaseDate),
                     onTap: () async {
-                      await getDownload(downloadModel, dlList[index]);
+                      await getDownload(context, downloadModel, dlList[index]);
                     },
                   ),
                 );

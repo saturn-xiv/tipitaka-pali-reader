@@ -4,8 +4,6 @@ import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'package:internet_connection_checker/internet_connection_checker.dart';
-
 import 'package:archive/archive_io.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 
@@ -15,6 +13,7 @@ import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:dio/dio.dart';
 import 'package:tipitaka_pali/business_logic/models/page_content.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DatabaseUpdate {
   final insertLines = [];
@@ -30,6 +29,7 @@ class DownloadService {
   DownloadNotifier downloadNotifier;
   DownloadListItem downloadListItem;
   int batchAmount = 500;
+  BuildContext buildContext;
 
   String _dir = "";
 
@@ -38,7 +38,9 @@ class DownloadService {
   final dbService = DatabaseHelper();
 
   DownloadService(
-      {required this.downloadNotifier, required this.downloadListItem}) {
+      {required this.buildContext,
+      required this.downloadNotifier,
+      required this.downloadListItem}) {
     _zipPath = downloadListItem.url;
 
     _localZipFileName = downloadListItem.filename;
@@ -69,20 +71,15 @@ class DownloadService {
 
   Future<void> installSqlZip() async {
     initDir();
+    downloadNotifier.connectionChecking = false;
+    downloadNotifier.downloading = true;
+    downloadNotifier.message =
+        "\nNow downlading file.. ${downloadListItem.size}\nPlease Wait.";
+    // now read a file
 
-    // check to see if there is a connection
-    bool hasInternet = await InternetConnectionChecker().hasConnection;
-    downloadNotifier.message = "Internet connection = $hasInternet";
-    if (hasInternet) {
-      downloadNotifier.downloading = true;
-      downloadNotifier.message =
-          "\nNow downlading file.. ${downloadListItem.size}\nPlease Wait.";
-      // now read a file
-
-      await downloadZip();
-      final downloadedFile = await _localFile;
-      await processLocalFile(downloadedFile);
-    }
+    await downloadZip();
+    final downloadedFile = await _localFile;
+    await processLocalFile(downloadedFile);
     downloadNotifier.downloading = false;
   }
 
@@ -140,8 +137,9 @@ class DownloadService {
     }
 
     // It costs 10 seconds to regen the indexes.. I'd like to do that.
-    downloadNotifier.message = 'rebuilding index';
+    downloadNotifier.message = 'Rebuilding index';
     await dbService.buildIndex();
+    downloadNotifier.message = 'Reloading extension list';
   }
 
   Future processEntries(DatabaseUpdate dbUpdate, Database db, int limit) async {
@@ -176,7 +174,8 @@ class DownloadService {
     //StringBuffer sb = StringBuffer("");
 
     //String deleteSql = sb.toString();
-    downloadNotifier.message = "\nNow Deleting Records";
+    downloadNotifier.message =
+        AppLocalizations.of(buildContext)!.deletingRecords;
 
     if (lines.isNotEmpty) {
       var batch = db.batch();
@@ -228,7 +227,8 @@ class DownloadService {
     }
     await batch.commit(noResult: true);
 
-    downloadNotifier.message = "Insert is complete";
+    downloadNotifier.message =
+        AppLocalizations.of(buildContext)!.insertComplete;
   }
 
   Future<void> doUpdates(Database db, String sql) async {
@@ -251,7 +251,8 @@ class DownloadService {
     }
     await batch.commit(noResult: true);
 
-    downloadNotifier.message = "Update is complete";
+    downloadNotifier.message =
+        AppLocalizations.of(buildContext)!.updateComplete;
   }
 
   Future<void> doFts(Database db, Set<String> newBooks) async {
@@ -283,7 +284,7 @@ class DownloadService {
       // commit remainder inserts after the loop stops.
       await batch.commit(noResult: true);
     }
-    downloadNotifier.message = "FTS is complete";
+    downloadNotifier.message = AppLocalizations.of(buildContext)!.ftsIsComplete;
   }
 
   void showDownloadProgress(received, total) {
@@ -307,7 +308,6 @@ class DownloadService {
     if (req.statusCode == 200) {
       var file = File('$_dir/$fileName');
       debugPrint("file.path ${file.path}");
-      downloadNotifier.message += "\nfile.path =  ${file.path}\n";
       return file.writeAsBytes(req.data);
     } else {
       throw Exception('Failed to load zip file');
@@ -349,7 +349,8 @@ class DownloadService {
     // insert the words to the word table with count -1
     //  final pageContentRepository =
     //    PageContentDatabaseRepository(DatabaseHelper());
-    downloadNotifier.message = "Creating unique wordlist\n";
+    downloadNotifier.message =
+        AppLocalizations.of(buildContext)!.creatingWordList;
     Database db = await dbService.database;
     List<String> uniqueWords = [];
 
@@ -399,7 +400,8 @@ class DownloadService {
         }
       }
     }
-    downloadNotifier.message = "Adding English wordlist";
+    downloadNotifier.message =
+        AppLocalizations.of(buildContext)!.addingWordlist;
 
     // now delete all words from the table with -1 count
     await db.rawDelete("Delete from words where frequency = -1");
@@ -419,7 +421,8 @@ class DownloadService {
       }
     }
     await batch.commit();
-    downloadNotifier.message = "English wordlist is complete";
+    downloadNotifier.message =
+        AppLocalizations.of(buildContext)!.englishWordListComplete;
   }
 
   Future<List<File>> getExtensionFiles() async {
@@ -436,14 +439,14 @@ class DownloadService {
     return extensions;
   }
 
-  Future<void> MaterialType(File file) async {
+  Future<void> materialType(File file) async {
     // Add your logic here to process the file
     // For example, you can read the contents of the file or perform any required operations
     // You can access the file path using `file.path`
 
     // Example: Reading the file contents
     final contents = await file.readAsString();
-    print('File: ${file.path}');
-    print('Contents: $contents');
+    debugPrint('File: ${file.path}');
+    debugPrint('Contents: $contents');
   }
 }
