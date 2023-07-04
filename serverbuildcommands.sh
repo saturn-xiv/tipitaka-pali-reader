@@ -64,5 +64,5 @@ chmod +x TipitakaPaliReader.AppDir/AppRun
 # scp ~/Desktop/flutterstuff.zip root@SERVER_IP:/root/tipitaka-pali-reader/
 
 # Uncomment the following line if you want to copy the AppImage to a specific directory on your local machine
-# scp root@137.184.81.217:git/tipitaka-pali-reader/tipitaka_pali_reader.AppImage C:\Users\bksub\Downloads
-# scp root@137.184.81.217:git/tipitaka-pali-reader/TPR.zip C:\Users\bksub\Downloads
+# scp root@147.182.199.79:git/tipitaka-pali-reader/tipitaka_pali_reader.AppImage C:\Users\bksub\Downloads
+# scp root@147.182.199.79:git/tipitaka-pali-reader/TPR.zip C:\Users\bksub\Downloads

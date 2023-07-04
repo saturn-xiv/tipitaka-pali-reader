@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'app.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
@@ -25,6 +26,9 @@ void main() async {
   // before the select language and before the select script are created
   // set the prefs to the current local if any OS but Win (not supported.)
   await setScriptAndLanguageByLocal();
+
+  final info = await PackageInfo.fromPlatform();
+  Prefs.versionNumber = '${info.version}+${info.buildNumber}';
 
   final rxPref = await StreamingSharedPreferences.instance;
 

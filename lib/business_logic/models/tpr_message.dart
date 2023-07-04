@@ -21,6 +21,11 @@ class TprMessage {
   final String macOsMessageDate;
   final String macOsPeuDate;
   final String macOsDpdDate;
+  final String linuxVersion;
+  final String linuxMessage;
+  final String linuxMessageDate;
+  final String linuxPeuDate;
+  final String linuxDpdDate;
 
   TprMessage({
     this.generalMessage = '',
@@ -45,6 +50,11 @@ class TprMessage {
     this.macOsMessageDate = '',
     this.macOsPeuDate = '',
     this.macOsDpdDate = '',
+    this.linuxVersion = '',
+    this.linuxMessage = '',
+    this.linuxMessageDate = '',
+    this.linuxPeuDate = '',
+    this.linuxDpdDate = '',
   });
 
   factory TprMessage.fromJson(Map<String, dynamic> json) {
@@ -71,6 +81,11 @@ class TprMessage {
       macOsMessageDate: json['macos']['messageDate'] ?? '',
       macOsPeuDate: json['macos']['peuDate'] ?? '',
       macOsDpdDate: json['macos']['dpdDate'] ?? '',
+      linuxVersion: json['linux']['currentVersion'] ?? '',
+      linuxMessage: json['linux']['message'] ?? '',
+      linuxMessageDate: json['linux']['messageDate'] ?? '',
+      linuxPeuDate: json['linux']['peuDate'] ?? '',
+      linuxDpdDate: json['linux']['dpdDate'] ?? '',
     );
   }
 }

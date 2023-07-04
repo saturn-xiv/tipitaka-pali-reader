@@ -18,6 +18,7 @@ import 'services/provider/script_language_provider.dart';
 import 'services/provider/theme_change_notifier.dart';
 import 'ui/screens/splash_screen.dart';
 import 'package:tipitaka_pali/services/fetch_messages_if_needed.dart';
+import 'package:tipitaka_pali/ui/screens/settings/download_view.dart';
 
 final Logger myLogger = Logger(
   printer: PrettyPrinter(
@@ -109,7 +110,7 @@ class App extends StatelessWidget {
                   if (snapshot.hasData &&
                       snapshot.data!.generalMessage.isNotEmpty) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                      showTprMessageDialog(context, snapshot.data!);
+                      showWhatsNewDialog(context, snapshot.data!);
                     });
                   }
                 }

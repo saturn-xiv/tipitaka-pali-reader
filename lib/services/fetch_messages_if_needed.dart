@@ -11,32 +11,44 @@ Future<bool> _isInternetAvailable() async {
 }
 
 Future<TprMessage> fetchMessageIfNeeded() async {
-  TprMessage tprMessage = TprMessage();
   String storedMessage = Prefs.message;
   DateTime currentDate = DateTime.now();
   String formattedCurrentDate =
       "${currentDate.year}-${currentDate.month.toString().padLeft(2, '0')}-${currentDate.day.toString().padLeft(2, '0')}";
 
+  // separate logic for each instead of combining
+  // to make easier.  Sending constructor sends empty message
+  // no display
+
+  // don't show on first time updating database
   DatabaseStatus databaseStatus = getDatabaseStatus();
   if (databaseStatus != DatabaseStatus.uptoDate) {
-    return tprMessage;
+    return TprMessage();
   }
 
+  // user settings Don't Show Whats new
+  if (!Prefs.showWhatsNew) {
+    return TprMessage();
+  }
+
+  // only fetch one time per day
   // Check if the message has already been fetched today
   DateTime lastCheckedDate = DateTime.parse(Prefs.lastDateCheckedMessage);
   if (lastCheckedDate.year == currentDate.year &&
       lastCheckedDate.month == currentDate.month &&
       lastCheckedDate.day == currentDate.day) {
     // Message was already fetched today
-    return tprMessage;
+    return TprMessage();
   }
 
   // If there is no internet, use the stored message.
+  // no need to prompt.. be silent
   if (!await _isInternetAvailable()) {
-    return tprMessage;
+    return TprMessage();
   }
 
   // Fetch the message from the internet
+  // and see if we should display
   try {
     final response = await http.get(Uri.parse(
         'https://github.com/bksubhuti/tipitaka-pali-reader/raw/master/messages.json'));
@@ -44,22 +56,26 @@ Future<TprMessage> fetchMessageIfNeeded() async {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
 
-      tprMessage = TprMessage.fromJson(data);
+      // get the data into the message
+      TprMessage newMessage = TprMessage.fromJson(data);
 
       // You can now use messageDetails object
-      // For example: messageDetails.generalMessage
-      // Store the fetched message and date
-      Prefs.message = tprMessage.generalMessage;
+      if (Prefs.lastDateCheckedMessage == formattedCurrentDate) {
+        // make empty tprMessage and return it.  Then it won't display
+        return TprMessage();
+      }
+      // Store the fetched message and date for comparing later
+      Prefs.message == newMessage.generalMessage;
       Prefs.lastDateCheckedMessage = formattedCurrentDate;
 
       // ...rest of your logic, like storing messages or comparing dates...
 
-      return tprMessage; // return the object
+      return newMessage; // return the object
     } else {
       debugPrint('Failed to load message');
-      return tprMessage;
+      return TprMessage();
     }
   } catch (e) {
-    return tprMessage;
+    return TprMessage();
   }
 }

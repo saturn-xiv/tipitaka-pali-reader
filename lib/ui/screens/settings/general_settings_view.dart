@@ -72,6 +72,8 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           _getExpandedBookListSwitch(),
           const Divider(),
           _getAlwaysShowSplitterSwitch(),
+          const Divider(),
+          _getShowWhatsNewSwitch(),
         ],
       ),
     );
@@ -300,6 +302,23 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
             });
           },
           value: Prefs.alwaysShowDpdSplitter,
+        ),
+      ),
+    );
+  }
+
+  Widget _getShowWhatsNewSwitch() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: ListTile(
+        title: Text(AppLocalizations.of(context)!.showWhatsNew),
+        trailing: Switch(
+          onChanged: (value) {
+            setState(() {
+              Prefs.showWhatsNew = value;
+            });
+          },
+          value: Prefs.showWhatsNew,
         ),
       ),
     );

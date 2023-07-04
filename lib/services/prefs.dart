@@ -48,6 +48,8 @@ const String expandedBookListPref = "expandedBookList";
 const String messagePref = "message";
 const String messageDatePref = "messageDate";
 const String lastDateCheckedMessagePref = "lastDateCheckedMessage";
+const String showWhatsNewPref = "dontShowMessage";
+const String versionNumberPref = "versionNumber";
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -89,6 +91,8 @@ const bool defaultExpandedBookList = false;
 const String defaultMessage = "";
 const String defaultMessageDate = "20230701";
 const String defaultLastDateCheckedMessage = "20230701";
+const bool defaultShowWhatsNew = true;
+const String defaultVersionNumber = "2.3.4+53";
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -305,6 +309,16 @@ class Prefs {
       defaultLastDateCheckedMessage;
   static set lastDateCheckedMessage(String value) =>
       instance.setString(lastDateCheckedMessagePref, value);
+
+  static bool get showWhatsNew =>
+      instance.getBool(showWhatsNewPref) ?? defaultShowWhatsNew;
+  static set showWhatsNew(bool value) =>
+      instance.setBool(showWhatsNewPref, value);
+
+  static String get versionNumber =>
+      instance.getString(versionNumberPref) ?? defaultVersionNumber;
+  static set versionNumber(String value) =>
+      instance.setString(versionNumberPref, value);
 
   // ===========================================================================
   // Helpers

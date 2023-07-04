@@ -104,7 +104,7 @@
   "later":                    "Later",
   "rateAppNow":               "Rate App Now",
   "folloingExtensions":       "The following extensions were previously installed:",
-  "wouldYouLikeToInstall":    "Would you like to install them?",
+  "wouldYouLikeToInstall":    "Would you like to install extesnsions?",
   "multiHighlight":           "Multiple Highlight",
   "velthuisHelp":             "Velthuis System:\naa=ā, ii=ī uu=ū\n \n.t = ṭ, .d = ḍ\n.n = ṇ, .l = ḷ .m = ṃ\n\"n = ṅ, ~n = ñ",
   "turnOnInternet":           "Please turn on the internet to download files",
@@ -118,6 +118,7 @@
   "reloadingExtensionList":    "Reloading extension list",
   "rebuildingIndex":           "Rebuilding Index",
   "buildingFts":              "Building fts",
-  "message":                  "Message:"
+  "whatsNew":                  "What's New:",
+  "showWhatsNew":              "Show What's New" 
 
 }
