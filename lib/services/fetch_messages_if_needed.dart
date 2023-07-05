@@ -64,8 +64,12 @@ Future<TprMessage> fetchMessageIfNeeded() async {
         // make empty tprMessage and return it.  Then it won't display
         return TprMessage();
       }
+
+      if (Prefs.message == newMessage.generalMessage) {
+        return TprMessage();
+      }
       // Store the fetched message and date for comparing later
-      Prefs.message == newMessage.generalMessage;
+      Prefs.message = newMessage.generalMessage;
       Prefs.lastDateCheckedMessage = formattedCurrentDate;
 
       // ...rest of your logic, like storing messages or comparing dates...
