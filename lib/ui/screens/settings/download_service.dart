@@ -343,7 +343,7 @@ class DownloadService {
     // insert the words to the word table with count -1
     //  final pageContentRepository =
     //    PageContentDatabaseRepository(DatabaseHelper());
-    downloadNotifier.message = "Creating unique wordlist";
+    downloadNotifier.message = "Creating unique wordlist\n";
     Database db = await dbService.database;
     List<String> uniqueWords = [];
 
@@ -357,7 +357,8 @@ class DownloadService {
     ];
 
     for (String x in categories) {
-      downloadNotifier.message += "processeing wordlist for $x\n";
+      downloadNotifier.message += "\nprocesseing wordlist for $x";
+      debugPrint(downloadNotifier.message);
       List<Map> list = await db.rawQuery(
           '''SELECT pages.id, pages.bookid, pages.page, pages.content, pages.paranum from pages,books,category 
           WHERE category.id ='$x'
@@ -374,6 +375,12 @@ class DownloadService {
         List<Bs4Element> englishLines = bs.findAll("p");
         for (Bs4Element bsEnglishLine in englishLines) {
           if (bsEnglishLine.toString().contains("t1")) {
+            englishPagesBuffer.write("${bsEnglishLine.text.toLowerCase()} ");
+            lines++;
+          }
+          if (x == "annya_pe_kn") {
+            // hack fix for dhpA
+            //TODO fix the import file so that it is t1 for english
             englishPagesBuffer.write("${bsEnglishLine.text.toLowerCase()} ");
             lines++;
           }
@@ -428,16 +435,5 @@ class DownloadService {
       }
     }
     return extensions;
-  }
-
-  Future<void> materialType(File file) async {
-    // Add your logic here to process the file
-    // For example, you can read the contents of the file or perform any required operations
-    // You can access the file path using `file.path`
-
-    // Example: Reading the file contents
-    final contents = await file.readAsString();
-    debugPrint('File: ${file.path}');
-    debugPrint('Contents: $contents');
   }
 }
