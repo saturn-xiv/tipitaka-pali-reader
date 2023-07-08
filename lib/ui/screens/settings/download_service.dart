@@ -125,7 +125,15 @@ class DownloadService {
       downloadNotifier.message = 'Building fts';
 
       await doFts(db, newBooks);
-      await makeEnglishWordList();
+
+      Stopwatch stopwatch = Stopwatch()..start();
+      await makeEnglishWordList2();
+      debugPrint('Making English Word List took ${stopwatch.elapsed}.');
+
+      // Original:
+      // 15s
+      // Improved:
+      // 6s
     }
 
     if (downloadListItem.type.contains("dpd_grammar")) {
@@ -413,6 +421,81 @@ class DownloadService {
       }
     }
     await batch.commit();
+    downloadNotifier.message = "English word list is complete";
+  }
+
+  Future<void> makeEnglishWordList2() async {
+    downloadNotifier.message = "Creating unique wordlist";
+    final Database db = await dbService.database;
+    final uniqueWords = <String>{};
+
+    final List<String> categories = [
+      "annya_pe_vinaya",
+      "annya_pe_dn",
+      "annya_pe_mn",
+      "annya_pe_sn",
+      "annya_pe_an",
+      "annya_pe_kn"
+    ];
+
+    final commas = List.filled(categories.length, '?').join(', ');
+    final QueryCursor cursor = await db.rawQueryCursor(
+        '''
+        SELECT pages.content
+        FROM pages
+        JOIN books on books.id = pages.bookid
+        JOIN category on category.id = books.category
+        WHERE category.id IN ($commas)
+        ''', [...categories]);
+
+    await cursor.moveNext();
+    final allowedLetters = RegExp('[^a-z —āīūṃṅñṭṭḍṇḷ]+');
+    final wordSplitter = RegExp(r"[\s—]+");
+
+    while(true) {
+      final List<Bs4Element> englishLines =
+          BeautifulSoup(cursor.current['content'] as String)
+              .findAll("p span.t1");
+      for (final Bs4Element bsEnglishLine in englishLines) {
+        if (bsEnglishLine.text.isEmpty) {
+          continue;
+        }
+        uniqueWords.addAll(bsEnglishLine.text
+            .toLowerCase()
+            .replaceAll(allowedLetters, '')
+            .split(wordSplitter)
+        );
+      }
+      final hasNext = await cursor.moveNext();
+      if (!hasNext) {
+        break;
+      }
+    }
+
+    downloadNotifier.message = "Adding word list";
+
+    // now delete all words from the table with -1 count
+    await db.rawDelete("Delete from words where frequency = -1");
+    var batch = db.batch();
+    int counter = 0;
+    for (final String word in uniqueWords) {
+      batch.rawInsert(
+          '''
+          INSERT OR IGNORE INTO 
+          words (word, plain, frequency) 
+          VALUES('$word', '$word', -1)
+          '''
+      );
+      counter++;
+      if (counter % 100 == 0) {
+        await batch.commit();
+        batch = db.batch();
+        downloadNotifier.message = "$counter of ${uniqueWords.length}";
+      }
+    }
+    if (counter % 100 != 0) {
+      await batch.commit();
+    }
     downloadNotifier.message = "English word list is complete";
   }
 
