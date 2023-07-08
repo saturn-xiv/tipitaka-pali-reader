@@ -440,56 +440,74 @@ class DownloadService {
 
     final commas = List.filled(categories.length, '?').join(', ');
 
-    final QueryCursor cursor = await db.rawQueryCursor(
-        '''
-        SELECT pages.content
-        FROM pages
-        JOIN books on books.id = pages.bookid
-        JOIN category on category.id = books.category
-        WHERE category.id IN ($commas)
-        ''', [...categories]);
-
-    await cursor.moveNext();
-    final allowedLetters = RegExp('[^a-z —āīūṃṅñṭṭḍṇḷ]+');
-    final wordSplitter = RegExp(r"[\s—]+");
-
-    const startTag = '<span class="t1">';
-    const startTagLen = startTag.length;
-    const endTag = '</span>';
-    const endTagLen = endTag.length;
-
+    var startId = 1;
+    var batchesCount = 0;
     while (true) {
-      final content = cursor.current['content'] as String;
-      var startFrom = 0;
-      while (true) {
-        final start = content.indexOf(startTag, startFrom);
-        if (start == -1) {
-          break;
-        }
-        final end = content.indexOf(endTag, start + startTagLen);
-        if (end == -1) {
-          break;
-        }
-        final text = content.substring(start + startTagLen, end);
-        startFrom = end + endTagLen;
+      final QueryCursor cursor = await db.rawQueryCursor(
+          '''
+        SELECT 
+          pages.id, pages.content
+        FROM 
+          pages
+        JOIN 
+          books on books.id = pages.bookid
+        JOIN 
+          category on category.id = books.category
+        WHERE 
+          pages.id > ? AND
+          category.id IN ($commas)
+        LIMIT 
+          5000
+        ''', [startId, ...categories]);
 
-        if (text == ' ' || text == ' ' || text == '') {
-          continue;
-        }
-
-        uniqueWords.addAll(text
-            .toLowerCase()
-            .replaceAll(allowedLetters, '')
-            .split(wordSplitter));
-      }
-
-      final hasNext = await cursor.moveNext();
-      if (!hasNext) {
+      final hasFirst = await cursor.moveNext();
+      if (!hasFirst) {
         break;
+      }
+      batchesCount++;
+
+      final allowedLetters = RegExp('[^a-z —āīūṃṅñṭṭḍṇḷ]+');
+      final wordSplitter = RegExp(r"[\s—]+");
+
+      const startTag = '<span class="t1">';
+      const startTagLen = startTag.length;
+      const endTag = '</span>';
+      const endTagLen = endTag.length;
+
+      while (true) {
+        final content = cursor.current['content'] as String;
+        startId = cursor.current['id'] as int;
+        var startFrom = 0;
+        while (true) {
+          final start = content.indexOf(startTag, startFrom);
+          if (start == -1) {
+            break;
+          }
+          final end = content.indexOf(endTag, start + startTagLen);
+          if (end == -1) {
+            break;
+          }
+          final text = content.substring(start + startTagLen, end);
+          startFrom = end + endTagLen;
+
+          if (text == ' ' || text == ' ' || text == '') {
+            continue;
+          }
+
+          uniqueWords.addAll(text
+              .toLowerCase()
+              .replaceAll(allowedLetters, '')
+              .split(wordSplitter));
+        }
+
+        final hasNext = await cursor.moveNext();
+        if (!hasNext) {
+          break;
+        }
       }
     }
 
-    debugPrint('Total unique: ${uniqueWords.length}');
+    debugPrint('Total unique: ${uniqueWords.length}, fetched in $batchesCount batches.');
 
     downloadNotifier.message = "Adding word list";
 
