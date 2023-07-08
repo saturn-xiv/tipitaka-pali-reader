@@ -446,6 +446,7 @@ class DownloadService {
     ];
 
     final commas = List.filled(categories.length, '?').join(', ');
+
     final QueryCursor cursor = await db.rawQueryCursor(
         '''
         SELECT pages.content
@@ -459,25 +460,43 @@ class DownloadService {
     final allowedLetters = RegExp('[^a-z —āīūṃṅñṭṭḍṇḷ]+');
     final wordSplitter = RegExp(r"[\s—]+");
 
-    while(true) {
-      final List<Bs4Element> englishLines =
-          BeautifulSoup(cursor.current['content'] as String)
-              .findAll("p span.t1");
-      for (final Bs4Element bsEnglishLine in englishLines) {
-        if (bsEnglishLine.text.isEmpty) {
+    const startTag = '<span class="t1">';
+    const startTagLen = startTag.length;
+    const endTag = '</span>';
+    const endTagLen = endTag.length;
+
+    while (true) {
+      final content = cursor.current['content'] as String;
+      var startFrom = 0;
+      while (true) {
+        final start = content.indexOf(startTag, startFrom);
+        if (start == -1) {
+          break;
+        }
+        final end = content.indexOf(endTag, start + startTagLen);
+        if (end == -1) {
+          break;
+        }
+        final text = content.substring(start + startTagLen, end);
+        startFrom = end + endTagLen;
+
+        if (text == '' || text == ' ' || text == ' ') {
           continue;
         }
-        uniqueWords.addAll(bsEnglishLine.text
+
+        uniqueWords.addAll(text
             .toLowerCase()
             .replaceAll(allowedLetters, '')
-            .split(wordSplitter)
-        );
+            .split(wordSplitter));
       }
+
       final hasNext = await cursor.moveNext();
       if (!hasNext) {
         break;
       }
     }
+
+    debugPrint('Total unique: ${uniqueWords.length}');
 
     downloadNotifier.message = "Adding word list";
 
