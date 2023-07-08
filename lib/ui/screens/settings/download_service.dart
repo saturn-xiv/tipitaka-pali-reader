@@ -440,7 +440,7 @@ class DownloadService {
 
     final commas = List.filled(categories.length, '?').join(', ');
 
-    var startId = 1;
+    var startId = 0;
     var batchesCount = 0;
     while (true) {
       final QueryCursor cursor = await db.rawQueryCursor(
