@@ -446,7 +446,7 @@ class DownloadService {
       final QueryCursor cursor = await db.rawQueryCursor(
           '''
         SELECT 
-          pages.id, pages.content
+          pages.id, pages.content, category.id as category
         FROM 
           pages
         JOIN 
@@ -469,13 +469,15 @@ class DownloadService {
       final allowedLetters = RegExp('[^a-z —āīūṃṅñṭṭḍṇḷ]+');
       final wordSplitter = RegExp(r"[\s—]+");
 
-      const startTag = '<span class="t1">';
-      const startTagLen = startTag.length;
-      const endTag = '</span>';
-      const endTagLen = endTag.length;
-
       while (true) {
         final content = cursor.current['content'] as String;
+        final category = cursor.current['category'] as String;
+
+        final startTag = category == 'annya_pe_kn' ? '<p>' : '<span class="t1">';
+        final startTagLen = startTag.length;
+        final endTag = category == 'annya_pe_kn' ? '</p>' : '</span>';
+        final endTagLen = endTag.length;
+
         startId = cursor.current['id'] as int;
         var startFrom = 0;
         while (true) {
