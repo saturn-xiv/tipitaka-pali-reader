@@ -466,7 +466,7 @@ class DownloadService {
         if (start == -1) {
           break;
         }
-        final end = content.indexOf('</span>', start + startTagLen);
+        final end = content.indexOf(endTag, start + startTagLen);
         if (end == -1) {
           break;
         }
