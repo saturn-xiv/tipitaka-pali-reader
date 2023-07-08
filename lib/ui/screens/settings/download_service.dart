@@ -473,7 +473,7 @@ class DownloadService {
         final text = content.substring(start + startTagLen, end);
         startFrom = end + endTagLen;
 
-        if (text == '' || text == ' ' || text == ' ') {
+        if (text == ' ' || text == ' ' || text == '') {
           continue;
         }
 
