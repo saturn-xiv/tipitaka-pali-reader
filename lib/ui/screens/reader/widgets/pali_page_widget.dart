@@ -523,7 +523,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     }
     // removing <a> tag of publication page number
     pageContent =
-        pageContent.replaceAll(RegExp('<a name="[MPTV](\\d+)\\.(\\d+)">'), '');
+        pageContent.replaceAll(RegExp('<a name="[MPTV](\\d+)\\.(\\d+)"></a>'), '');
 
     return '''
             <p style="color:brown;text-align:right;">${_getScriptPageNumber(widget.pageNumber)}</p>
