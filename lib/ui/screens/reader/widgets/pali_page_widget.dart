@@ -512,15 +512,18 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     if (publicationKeys.isNotEmpty) {
       for (var publicationKey in publicationKeys) {
         final publicationFormat =
-            RegExp('(<a name="$publicationKey(\\d+)\\.(\\d+)">)');
+            RegExp('<a name="$publicationKey(\\d+)\\.(\\d+)"></a>');
         pageContent = pageContent.replaceAllMapped(publicationFormat, (match) {
-          final volume = match.group(2)!;
+          final volume = match.group(1)!;
           // remove leading zero from page number
-          final pageNumber = int.parse(match.group(3)!).toString();
-          return '${match.group(1)}[$publicationKey $volume.$pageNumber]';
+          final pageNumber = int.parse(match.group(2)!).toString();
+          return '<span style="color:brown;">[$publicationKey $volume.$pageNumber]</span>';
         });
       }
     }
+    // removing <a> tag of publication page number
+    pageContent =
+        pageContent.replaceAll(RegExp('<a name="[MPTV](\\d+)\\.(\\d+)">'), '');
 
     return '''
             <p style="color:brown;text-align:right;">${_getScriptPageNumber(widget.pageNumber)}</p>
