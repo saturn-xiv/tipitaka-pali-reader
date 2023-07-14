@@ -57,6 +57,8 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
   final GlobalKey _textKey = GlobalKey();
   int? _pageToHighlight;
 
+  SelectedContent? _selectedContent;
+
   @override
   void initState() {
     super.initState();
@@ -235,31 +237,28 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
         focusNode: FocusNode(
           canRequestFocus: true,
         ),
-        selectionControls: FlutterSelectionControls(
-          toolBarItems: [
-            ToolBarItem(
-              item: const Text('Copy'),
-              itemControl: ToolBarItemControl.copy,
-            ),
-            ToolBarItem(
-              item: const Text('Select All'),
-              itemControl: ToolBarItemControl.selectAll,
-            ),
-            ToolBarItem(
-              item: const Text('Search'),
-              onItemPressed: (selectedText) {
-                widget.onSearch?.call(selectedText);
-              },
-            ),
-            ToolBarItem(
-              item: const Text('Share'),
-              onItemPressed: (selectedText) {
-                // do sharing
-                Share.share(selectedText, subject: 'Pāḷi text from TPR');
-              },
-            ),
-          ],
-        ),
+        contextMenuBuilder: (context, selectableRegionState) {
+          return AdaptiveTextSelectionToolbar.buttonItems(
+            anchors: selectableRegionState.contextMenuAnchors,
+            buttonItems: [
+              ...selectableRegionState.contextMenuButtonItems,
+              // ContextMenuButtonItem(
+              //     onPressed: () {
+              //       ContextMenuController.removeAny();
+              //       onSearch(_selectedContent!.plainText);
+              //     },
+              //     label: 'Search'),
+              ContextMenuButtonItem(
+                  onPressed: () {
+                    ContextMenuController.removeAny();
+                    Share.share(_selectedContent!.plainText,
+                        subject: 'Pāḷi text from TPR');
+                  },
+                  label: 'Share'),
+            ],
+          );
+        },
+        onSelectionChanged: (value) => _selectedContent = value,
         // clicking on blank area in html widget lose focus, and it is normal.
         // Container Widget with color can be used to acquire foucs
         // The color value is required for this container in order to acquire focus.
@@ -522,8 +521,8 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       }
     }
     // removing <a> tag of publication page number
-    pageContent =
-        pageContent.replaceAll(RegExp('<a name="[MPTV](\\d+)\\.(\\d+)"></a>'), '');
+    pageContent = pageContent.replaceAll(
+        RegExp('<a name="[MPTV](\\d+)\\.(\\d+)"></a>'), '');
 
     return '''
             <p style="color:brown;text-align:right;">${_getScriptPageNumber(widget.pageNumber)}</p>

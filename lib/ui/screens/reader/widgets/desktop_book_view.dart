@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:share_plus/share_plus.dart';
@@ -32,6 +33,8 @@ class _DesktopBookViewState extends State<DesktopBookView> {
   late final ItemScrollController itemScrollController;
 
   String searchText = '';
+
+  SelectedContent? _selectedContent;
 
   @override
   void initState() {
@@ -81,31 +84,27 @@ class _DesktopBookViewState extends State<DesktopBookView> {
               focusNode: FocusNode(
                 canRequestFocus: true,
               ),
-              selectionControls: FlutterSelectionControls(
-                toolBarItems: [
-                  ToolBarItem(
-                    item: const Text('Copy'),
-                    itemControl: ToolBarItemControl.copy,
-                  ),
-                  ToolBarItem(
-                    item: const Text('Select All'),
-                    itemControl: ToolBarItemControl.selectAll,
-                  ),
-                  ToolBarItem(
-                    item: const Text('Search'),
-                    onItemPressed: (selectedText) {
-                      onSearch(selectedText);
+              contextMenuBuilder: (context, selectableRegionState) {
+            return AdaptiveTextSelectionToolbar.buttonItems(
+              anchors: selectableRegionState.contextMenuAnchors,
+              buttonItems: [
+                ...selectableRegionState.contextMenuButtonItems,
+                ContextMenuButtonItem(
+                    onPressed: () {
+                      ContextMenuController.removeAny();
+                      onSearch(_selectedContent!.plainText);
                     },
-                  ),
-                  ToolBarItem(
-                    item: const Text('Share'),
-                    onItemPressed: (selectedText) {
-                      // do sharing
-                      Share.share(selectedText, subject: 'Pāḷi text from TPR');
+                    label: 'Search'),
+                ContextMenuButtonItem(
+                    onPressed: () {
+                      ContextMenuController.removeAny();
+                      Share.share(_selectedContent!.plainText, subject: 'Pāḷi text from TPR');
                     },
-                  ),
-                ],
-              ),
+                    label: 'Share'),
+              ],
+            );
+          },
+          onSelectionChanged: (value) => _selectedContent = value,              
               child: ScrollConfiguration(
                   behavior: ScrollConfiguration.of(context)
                       .copyWith(scrollbars: false),
