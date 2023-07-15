@@ -404,7 +404,7 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
   @override
   Future<int> deleteAll() async {
     final db = await databaseHelper.database;
-    return await db.rawDelete("DELETE FROM dictionary_history';");
+    return await db.rawDelete("DELETE FROM dictionary_history");
   }
 
   @override

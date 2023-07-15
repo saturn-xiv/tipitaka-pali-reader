@@ -18,7 +18,6 @@ import 'services/provider/script_language_provider.dart';
 import 'services/provider/theme_change_notifier.dart';
 import 'ui/screens/splash_screen.dart';
 import 'package:tipitaka_pali/services/fetch_messages_if_needed.dart';
-import 'package:tipitaka_pali/ui/screens/settings/download_view.dart';
 
 final Logger myLogger = Logger(
   printer: PrettyPrinter(

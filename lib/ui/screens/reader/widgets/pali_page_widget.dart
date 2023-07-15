@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:html/dom.dart' as dom;
 
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
@@ -7,9 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:tipitaka_pali/business_logic/models/book.dart';
 import 'package:tipitaka_pali/providers/font_provider.dart';
+import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/script_language_provider.dart';
+import 'package:tipitaka_pali/services/repositories/dictionary_history_repo.dart';
 import 'package:tipitaka_pali/utils/font_utils.dart';
 import 'package:tipitaka_pali/utils/platform_info.dart';
 
@@ -17,7 +21,6 @@ import '../../../../data/constants.dart';
 import '../../../../services/provider/theme_change_notifier.dart';
 import '../../../../utils/pali_script.dart';
 import '../../../../utils/pali_script_converter.dart';
-import '../../../widgets/custom_text_selection_control.dart';
 import '../controller/reader_view_controller.dart';
 
 class PaliPageWidget extends StatefulWidget {
@@ -27,19 +30,21 @@ class PaliPageWidget extends StatefulWidget {
   final String? highlightedWord;
   final String? searchText;
   final int? pageToHighlight;
+  final Book? book;
   final Function(String clickedWord)? onClick;
   final Function(String clickedWord)? onSearch;
-  const PaliPageWidget({
-    Key? key,
-    required this.pageNumber,
-    required this.htmlContent,
-    required this.script,
-    this.highlightedWord,
-    this.onClick,
-    this.onSearch,
-    this.searchText,
-    this.pageToHighlight,
-  }) : super(key: key);
+  const PaliPageWidget(
+      {Key? key,
+      required this.pageNumber,
+      required this.htmlContent,
+      required this.script,
+      this.highlightedWord,
+      this.onClick,
+      this.onSearch,
+      this.searchText,
+      this.pageToHighlight,
+      this.book})
+      : super(key: key);
 
   @override
   State<PaliPageWidget> createState() => _PaliPageWidgetState();
@@ -127,10 +132,17 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
             debugPrint('${_textKey.currentContext?.widget}');
             if (text.isNotEmpty && p.offset < text.length) {
               final int offset = p.offset;
+
+              final leftSentence = getLeftSentence(text, offset);
+              final rightSentence = getRightSentence(text, offset);
+              final sentence = leftSentence + rightSentence;
+
               final charUnderTap = text[offset];
               final leftChars = getLeftCharacters(text, offset);
               final rightChars = getRightCharacters(text, offset);
+
               final word = leftChars + charUnderTap + rightChars;
+              writeHistory(word, sentence, widget.pageNumber, widget.book!.id);
 
               final textBefore = text.substring(0, p.offset - leftChars.length);
               final occurrencesInTextBefore =
@@ -624,6 +636,32 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     }
     return chars.toString();
   }
+
+  String getLeftSentence(String text, int offset) {
+    StringBuffer chars = StringBuffer();
+    for (int i = offset - 1; i >= 0; i--) {
+      if (text[i] == '.' || text[i] == '?' || text[i] == '!') break;
+      chars.write(text[i]);
+    }
+    return chars.toString().split('').reversed.join().trimLeft();
+  }
+
+  String getRightSentence(String text, int offset) {
+    StringBuffer chars = StringBuffer();
+    for (int i = offset; i < text.length; i++) {
+      chars.write(text[i]);
+      if (text[i] == '.' || text[i] == '?' || text[i] == '!') break;
+    }
+    return chars.toString().trimRight();
+  }
+}
+
+writeHistory(String word, String context, int page, String bookId) async {
+  final DictionaryHistoryDatabaseRepository dictionaryHistoryRepository =
+      DictionaryHistoryDatabaseRepository(dbh: DatabaseHelper());
+
+  Clipboard.setData(ClipboardData(text: "$word>>$context\n${bookId}, $page"));
+  await dictionaryHistoryRepository.insert(word, context, page, bookId);
 }
 
 class _MyFactory extends WidgetFactory {

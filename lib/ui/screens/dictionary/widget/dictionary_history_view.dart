@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/business_logic/models/dictionary_history.dart';
+import 'package:tipitaka_pali/services/database/database_helper.dart';
+import 'package:tipitaka_pali/services/repositories/dictionary_repo.dart';
 import 'package:tipitaka_pali/ui/widgets/pali_text_view.dart';
 import 'package:tipitaka_pali/utils/pali_word.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -52,6 +54,16 @@ class _DictionaryHistoryViewState extends State<DictionaryHistoryView> {
     return Column(
       children: [
         _buildOrderSelector(),
+        TextButton.icon(
+            onPressed: () async {
+              await DictionaryDatabaseRepository(DatabaseHelper())
+                ..deleteAll();
+              setState(() {
+                histories.clear();
+              });
+            },
+            icon: Icon(Icons.auto_delete),
+            label: Text("Delete All")),
         Expanded(
           child: ListView.separated(
             itemCount: histories.length,

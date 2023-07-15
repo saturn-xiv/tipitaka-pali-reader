@@ -2,7 +2,12 @@ import 'package:tipitaka_pali/business_logic/models/dictionary_history.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 
 abstract class DictionaryHistoryRepository {
-  Future<int> insert(String word);
+  Future<int> insert(
+    String word,
+    String context,
+    int page,
+    String bookID,
+  );
 
   Future<int> delete(String word);
 
@@ -20,7 +25,8 @@ class DictionaryHistoryDatabaseRepository
   final _columnWord = 'word';
 
   @override
-  Future<int> insert(String word) async {
+  Future<int> insert(
+      String word, String context, int page, String bookId) async {
     final db = await dbh.database;
     // delete first if exists
     await db
@@ -28,7 +34,13 @@ class DictionaryHistoryDatabaseRepository
 
     return await db.insert(
       _historyTable,
-      DictionaryHistory(word: word, dateTime: DateTime.now()).toMap(),
+      DictionaryHistory(
+              word: word,
+              context: context,
+              bookId: bookId,
+              page: page,
+              dateTime: DateTime.now())
+          .toMap(),
     );
   }
 
@@ -48,7 +60,9 @@ class DictionaryHistoryDatabaseRepository
   @override
   Future<List<DictionaryHistory>> getAll() async {
     final db = await dbh.database;
-    final maps = await db.query(_historyTable,);
+    final maps = await db.query(
+      _historyTable,
+    );
     return maps.map((entry) => DictionaryHistory.fromMap(entry)).toList();
   }
 }

@@ -114,7 +114,7 @@ class DictionaryController with ChangeNotifier {
       // I'm removing the code to check if it is there already because
       // the insert function deletes and then re-adds it.. This will make the ording proper.
       //if (!isContainInHistories(_histories.value, romanWord)) {
-      await dictionaryHistoryRepository.insert(romanWord);
+      //TODO  remove this .. now done word click await dictionaryHistoryRepository.insert(romanWord);
       // refresh histories
       final histories = await dictionaryHistoryRepository.getAll();
       histories.sort((a, b) => a.dateTime.compareTo(b.dateTime));

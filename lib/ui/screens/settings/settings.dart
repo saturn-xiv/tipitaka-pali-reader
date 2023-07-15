@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
+import 'package:tipitaka_pali/ui/screens/settings/tools_settings.dart';
 import 'package:tipitaka_pali/ui/widgets/select_dictionary_widget.dart';
 import 'package:tipitaka_pali/ui/widgets/select_language_widget.dart';
 import 'package:tipitaka_pali/ui/widgets/select_theme_widget.dart';
@@ -33,7 +34,7 @@ class SettingPage extends StatelessWidget {
               ScriptSettingView(),
               GeneralSettingsView(),
               HelpAboutView(),
-              ExtensionsView(),
+              ToolsSettingsView(),
             ],
           ),
         ));
@@ -112,31 +113,6 @@ class LanguageSettingView extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge,
         ),
         trailing: SelectLanguageWidget(),
-      ),
-    );
-  }
-}
-
-class ExtensionsView extends StatelessWidget {
-  const ExtensionsView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 8,
-      child: ListTile(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const DownloadView()),
-          );
-        },
-        leading: const Icon(Icons.extension),
-        title: Text(
-          AppLocalizations.of(context)!.extensions,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        trailing: const Icon(Icons.navigate_next),
       ),
     );
   }

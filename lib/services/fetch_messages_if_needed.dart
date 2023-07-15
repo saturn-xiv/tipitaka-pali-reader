@@ -59,18 +59,16 @@ Future<TprMessage> fetchMessageIfNeeded() async {
       // get the data into the message
       TprMessage newMessage = TprMessage.fromJson(data);
 
-      // You can now use messageDetails object
-      if (Prefs.lastDateCheckedMessage == formattedCurrentDate) {
-        // make empty tprMessage and return it.  Then it won't display
-        return TprMessage();
-      }
+      // because we went online write the date
+      Prefs.lastDateCheckedMessage = formattedCurrentDate;
 
+      // message the same?  no need to display
       if (Prefs.message == newMessage.generalMessage) {
+        //return empty
         return TprMessage();
       }
       // Store the fetched message and date for comparing later
       Prefs.message = newMessage.generalMessage;
-      Prefs.lastDateCheckedMessage = formattedCurrentDate;
 
       // ...rest of your logic, like storing messages or comparing dates...
 

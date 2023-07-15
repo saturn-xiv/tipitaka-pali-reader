@@ -119,6 +119,8 @@
   "rebuildingIndex":           "Rebuilding Index",
   "buildingFts":              "Building fts",
   "whatsNew":                  "What's New:",
-  "showWhatsNew":              "Show What's New" 
+  "showWhatsNew":              "Show What's New",
+  "tools":                    "Tools",
+  "flashcards":               "Flashcards"
 
 }

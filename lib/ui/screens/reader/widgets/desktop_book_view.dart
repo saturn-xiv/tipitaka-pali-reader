@@ -85,26 +85,27 @@ class _DesktopBookViewState extends State<DesktopBookView> {
                 canRequestFocus: true,
               ),
               contextMenuBuilder: (context, selectableRegionState) {
-            return AdaptiveTextSelectionToolbar.buttonItems(
-              anchors: selectableRegionState.contextMenuAnchors,
-              buttonItems: [
-                ...selectableRegionState.contextMenuButtonItems,
-                ContextMenuButtonItem(
-                    onPressed: () {
-                      ContextMenuController.removeAny();
-                      onSearch(_selectedContent!.plainText);
-                    },
-                    label: 'Search'),
-                ContextMenuButtonItem(
-                    onPressed: () {
-                      ContextMenuController.removeAny();
-                      Share.share(_selectedContent!.plainText, subject: 'Pāḷi text from TPR');
-                    },
-                    label: 'Share'),
-              ],
-            );
-          },
-          onSelectionChanged: (value) => _selectedContent = value,              
+                return AdaptiveTextSelectionToolbar.buttonItems(
+                  anchors: selectableRegionState.contextMenuAnchors,
+                  buttonItems: [
+                    ...selectableRegionState.contextMenuButtonItems,
+                    ContextMenuButtonItem(
+                        onPressed: () {
+                          ContextMenuController.removeAny();
+                          onSearch(_selectedContent!.plainText);
+                        },
+                        label: 'Search'),
+                    ContextMenuButtonItem(
+                        onPressed: () {
+                          ContextMenuController.removeAny();
+                          Share.share(_selectedContent!.plainText,
+                              subject: 'Pāḷi text from TPR');
+                        },
+                        label: 'Share'),
+                  ],
+                );
+              },
+              onSelectionChanged: (value) => _selectedContent = value,
               child: ScrollConfiguration(
                   behavior: ScrollConfiguration.of(context)
                       .copyWith(scrollbars: false),
@@ -134,15 +135,15 @@ class _DesktopBookViewState extends State<DesktopBookView> {
                           'doSomething() executed in ${stopwatch.elapsedMilliseconds} ms');
 
                       return PaliPageWidget(
-                        pageNumber: pageContent.pageNumber!,
-                        htmlContent: htmlContent,
-                        script: script,
-                        highlightedWord: readerViewController.textToHighlight,
-                        searchText: searchText,
-                        pageToHighlight: readerViewController.pageToHighlight,
-                        onClick: onClickedWord,
-                        onSearch: onSearch,
-                      );
+                          pageNumber: pageContent.pageNumber!,
+                          htmlContent: htmlContent,
+                          script: script,
+                          highlightedWord: readerViewController.textToHighlight,
+                          searchText: searchText,
+                          pageToHighlight: readerViewController.pageToHighlight,
+                          onClick: onClickedWord,
+                          onSearch: onSearch,
+                          book: readerViewController.book);
                     },
                   )),
             ),
