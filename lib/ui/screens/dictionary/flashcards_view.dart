@@ -44,10 +44,7 @@ class FlashCardsView extends StatelessWidget {
     String? dir = await FilePicker.platform.getDirectoryPath();
     if (dir != null) {
       // Create file in the chosen directory
-      final file = File(path.join(
-//          dir,
-          "C:\\Users\\bksub\\OneDrive\\Desktop\\testing",
-          "anki_flashcards.csv"));
+      final file = File(path.join(dir, "anki_flashcards.csv"));
 
       // Write CSV to the file
       try {
