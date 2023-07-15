@@ -31,7 +31,7 @@ class FlashCardsView extends StatelessWidget {
       String def = await dictionaryController.loadDefinition(card.word);
       rows.add([
         def,
-        '<bold>${card.word}</bold><br>\n${_highlightOccurrences(card.context, card.word)}'
+        '<p><h3>${card.word}</h3>\n${_highlightOccurrences(card.context, card.word)}</p>'
       ]);
     }
 

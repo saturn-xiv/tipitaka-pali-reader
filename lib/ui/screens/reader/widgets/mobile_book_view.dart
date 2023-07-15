@@ -64,13 +64,13 @@ class _MobileBookViewState extends State<MobileBookView> {
             padding: const EdgeInsets.only(
                 bottom: 100.0), // estimated toolbar height
             child: PaliPageWidget(
-              pageNumber: pageContent.pageNumber!,
-              htmlContent: htmlContent,
-              script: script,
-              highlightedWord: readerViewController.textToHighlight,
-              pageToHighlight: readerViewController.pageToHighlight,
-              onClick: onClickedWord,
-            ),
+                pageNumber: pageContent.pageNumber!,
+                htmlContent: htmlContent,
+                script: script,
+                highlightedWord: readerViewController.textToHighlight,
+                pageToHighlight: readerViewController.pageToHighlight,
+                onClick: onClickedWord,
+                book: readerViewController.book),
           ),
         );
       },
