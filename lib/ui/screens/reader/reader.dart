@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:slidable_bar/slidable_bar.dart';
 import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
+import 'package:tipitaka_pali/ui/screens/reader/mobile_reader_container.dart';
 import 'package:tipitaka_pali/ui/screens/reader/widgets/search_widget.dart';
 
 import '../../../app.dart';
@@ -14,8 +15,8 @@ import '../../../services/repositories/page_content_repo.dart';
 import '../../../utils/platform_info.dart';
 import '../home/openning_books_provider.dart';
 import 'controller/reader_view_controller.dart';
-import 'widgets/desktop_book_view.dart';
-import 'widgets/mobile_book_view.dart';
+import 'widgets/vertical_book_view.dart';
+import 'widgets/horizontal_book_view.dart';
 import 'widgets/reader_tool_bar.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
@@ -23,12 +24,14 @@ class Reader extends StatelessWidget {
   final Book book;
   final int? initialPage;
   final String? textToHighlight;
+  final BookViewMode bookViewMode;
 
   const Reader({
     Key? key,
     required this.book,
     this.initialPage,
     this.textToHighlight,
+    required this.bookViewMode,
   }) : super(key: key);
 
   @override
@@ -59,19 +62,21 @@ class Reader extends StatelessWidget {
           initialPage: initialPage,
           textToHighlight: textToHighlight)
         ..loadDocument(),
-      child: ReaderView(),
+      child: ReaderView(bookViewMode: bookViewMode,),
     );
   }
 }
 
 class ReaderView extends StatelessWidget implements Searchable {
-  ReaderView({Key? key}) : super(key: key);
+  final BookViewMode bookViewMode;
+  ReaderView({Key? key,required this.bookViewMode}) : super(key: key);
   final _sc = SlidableBarController(initialStatus: Prefs.controlBarShow);
 
   @override
   void onSearchRequested(BuildContext context) {
     debugPrint('on search requested');
-    Provider.of<ReaderViewController>(context, listen: false).showSearchWidget(true);
+    Provider.of<ReaderViewController>(context, listen: false)
+        .showSearchWidget(true);
   }
 
   @override
@@ -79,22 +84,19 @@ class ReaderView extends StatelessWidget implements Searchable {
     return Shortcuts(
         shortcuts: <LogicalKeySet, Intent>{
           LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyF):
-          const SearchIntent(),
+              const SearchIntent(),
         },
-        child: Actions(
-            actions: <Type, Action<Intent>>{
-              SearchIntent: SearchAction(this, context),
-            },
-            child: _getReader(context)));
+        child: Actions(actions: <Type, Action<Intent>>{
+          SearchIntent: SearchAction(this, context),
+        }, child: _getReader(context)));
   }
 
   Widget _getReader(BuildContext context) {
-
     final showSearch = context.select<ReaderViewController, bool>(
-            (controller) => controller.showSearch);
+        (controller) => controller.showSearch);
 
     final isLoaded = context.select<ReaderViewController, bool>(
-            (controller) => controller.isloadingFinished);
+        (controller) => controller.isloadingFinished);
 
     if (!isLoaded) {
       // display fade loading
@@ -112,30 +114,29 @@ class ReaderView extends StatelessWidget implements Searchable {
       //     : const ReaderAppBar(),
       body: Consumer<ThemeChangeNotifier>(
           builder: ((context, themeChangeNotifier, child) => Container(
-            color: getChosenColor(),
-            child: SlidableBar(
-              slidableController: _sc,
-              side: Side.bottom,
-              barContent: const ReaderToolbar(),
-              size: 100,
-              clicker: SlidableClicker(controller: _sc),
-              frontColor: Colors.white,
-              backgroundColor: Colors.blue.withOpacity(0.3),
-              clickerSize: 32,
-              clickerPosition: 0.98,
-              child: Stack(children: [
-                if (showSearch)
-                  const SearchWidget(),
-                Padding(padding: EdgeInsets.only(top: showSearch ? 42 : 0), child: PlatformInfo.isDesktop || Mobile.isTablet(context)
-                // don't const these two guys, otherwise theme changes
-                // won't be reflected, alternatively: get notified about
-                // changes in the views themselves
-                    ? const DesktopBookView()
-                    : const MobileBookView()),
-
-              ])
-            ),
-          ))),
+                color: getChosenColor(),
+                child: SlidableBar(
+                    slidableController: _sc,
+                    side: Side.bottom,
+                    barContent: const ReaderToolbar(),
+                    size: 100,
+                    clicker: SlidableClicker(controller: _sc),
+                    frontColor: Colors.white,
+                    backgroundColor: Colors.blue.withOpacity(0.3),
+                    clickerSize: 32,
+                    clickerPosition: 0.98,
+                    child: Stack(children: [
+                      if (showSearch) const SearchWidget(),
+                      Padding(
+                          padding: EdgeInsets.only(top: showSearch ? 42 : 0),
+                          child: bookViewMode == BookViewMode.horizontal
+                              // don't const these two guys, otherwise theme changes
+                              // won't be reflected, alternatively: get notified about
+                              // changes in the views themselves
+                              ? const VerticalBookView()
+                              : const HorizontalBookView()),
+                    ])),
+              ))),
       // bottomNavigationBar: SafeArea(child: ControlBar()),
     );
   }
@@ -169,14 +170,14 @@ class SearchAction extends Action<SearchIntent> {
   final BuildContext context;
 
   @override
-  void invoke(covariant SearchIntent intent) => searchable.onSearchRequested(context);
+  void invoke(covariant SearchIntent intent) =>
+      searchable.onSearchRequested(context);
 }
 
 class SlidableClicker extends StatefulWidget {
-  const SlidableClicker({ super.key, required this.controller });
+  const SlidableClicker({super.key, required this.controller});
 
   final SlidableBarController controller;
-
 
   @override
   State<SlidableClicker> createState() => _SlidableClickerState();

@@ -112,7 +112,7 @@ class SearchResultController extends ChangeNotifier {
       // Navigator.pushNamed(context, readerRoute,
       //     arguments: {'book': bookItem.book});
       Navigator.push(context,
-          MaterialPageRoute(builder: (_) => const MobileReaderContrainer()));
+          MaterialPageRoute(builder: (_) => const MobileReaderContainer()));
     }
   }
 }

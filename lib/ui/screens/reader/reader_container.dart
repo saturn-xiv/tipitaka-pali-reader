@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ms_material_color/ms_material_color.dart';
 import 'package:provider/provider.dart';
 import 'package:tabbed_view/tabbed_view.dart';
+import 'package:tipitaka_pali/ui/screens/reader/mobile_reader_container.dart';
 
 import '../../../business_logic/models/book.dart';
 import '../../../data/flex_theme_data.dart';
@@ -46,6 +47,7 @@ class _ReaderContainerState extends State<ReaderContainer> {
       book: book,
       initialPage: currentPage,
       textToHighlight: textToHighlight,
+      bookViewMode: BookViewMode.horizontal, // horizontal for desktop
     );
     return reader;
   }

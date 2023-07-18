@@ -108,7 +108,7 @@ class BookListPage extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => const MobileReaderContrainer()));
+                        builder: (_) => const MobileReaderContainer()));
               }
             }
           },
@@ -262,7 +262,7 @@ class BookListPage extends StatelessWidget {
         // Navigator.pushNamed(context, readerRoute,
         //     arguments: {'book': bookItem.book});
         Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const MobileReaderContrainer()));
+            MaterialPageRoute(builder: (_) => const MobileReaderContainer()));
       }
     }
   }

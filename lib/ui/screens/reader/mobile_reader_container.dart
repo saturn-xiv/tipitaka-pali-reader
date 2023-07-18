@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/ui/screens/reader/reader.dart';
@@ -10,20 +12,28 @@ import '../../../services/provider/script_language_provider.dart';
 import '../../../utils/pali_script.dart';
 import '../home/openning_books_provider.dart';
 
-class MobileReaderContrainer extends StatefulWidget {
-  const MobileReaderContrainer({super.key});
-
-  @override
-  State<MobileReaderContrainer> createState() => _MobileReaderContrainerState();
+enum BookViewMode {
+  horizontal,
+  vertical,
 }
 
-class _MobileReaderContrainerState extends State<MobileReaderContrainer> {
+class MobileReaderContainer extends StatefulWidget {
+  const MobileReaderContainer({super.key});
+
+  @override
+  State<MobileReaderContainer> createState() => _MobileReaderContainerState();
+}
+
+class _MobileReaderContainerState extends State<MobileReaderContainer> {
   late final PageController pageController;
+  late final ValueNotifier<BookViewMode> bookViewModeNotifier;
 
   @override
   void initState() {
     super.initState();
     pageController = PageController();
+    bookViewModeNotifier =
+        ValueNotifier(BookViewMode.values[Prefs.bookViewModeIndex]);
   }
 
   @override
@@ -38,54 +48,77 @@ class _MobileReaderContrainerState extends State<MobileReaderContrainer> {
     final selectedBookIndex =
         context.watch<OpenningBooksProvider>().selectedBookIndex;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: openningBooks.isEmpty
-            ? null
-            : Text(PaliScript.getScriptOf(
-                script: context.read<ScriptLanguageProvider>().currentScript,
-                romanText:
-                    (openningBooks[selectedBookIndex]['book'] as Book).name)),
-        actions: [
-          TabCountIcon(
-              count: openningBooks.length,
-              onPressed: () async {
-                final selectedIndex = await _openOpenningBookListView(context);
-                if (selectedIndex != null) {
-                  context.read<OpenningBooksProvider>().updateSelectedBookIndex(
-                      selectedIndex,
-                      forceNotify: true);
-                  setState(() {
-                    // title need to update
-                    pageController.jumpToPage(selectedIndex);
-                  });
-                }
-              })
-        ],
-      ),
-      body: openningBooks.isEmpty
-          ? const Center(child: Text('There is no more openning book'))
-          : PageView.builder(
-              controller: pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: openningBooks.length,
-              itemBuilder: (context, index) {
-                final openedBook = openningBooks[index];
-                final book = openedBook['book'] as Book;
-                final pageNumber = openedBook['current_page'] as int?;
-                final textToHighlight =
-                    openedBook['text_to_highlight'] as String?;
-                // myLogger.i('openning book index: $index');
-                // myLogger.i('openning book name: ${book.name}');
+    return ValueListenableBuilder(
+        valueListenable: bookViewModeNotifier,
+        builder: (context, bookViewMode, _) {
+          return Scaffold(
+            appBar: AppBar(
+              title: openningBooks.isEmpty
+                  ? null
+                  : Text(PaliScript.getScriptOf(
+                      script:
+                          context.read<ScriptLanguageProvider>().currentScript,
+                      romanText:
+                          (openningBooks[selectedBookIndex]['book'] as Book)
+                              .name)),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    if (bookViewMode == BookViewMode.horizontal) {
+                      bookViewModeNotifier.value = BookViewMode.vertical;
+                    } else {
+                      bookViewModeNotifier.value = BookViewMode.horizontal;
+                    }
+                    // save to prefs
+                    Prefs.bookViewModeIndex = bookViewModeNotifier.value.index;
+                  },
+                  icon: bookViewMode == BookViewMode.horizontal
+                      ? const Icon(Icons.swap_horiz)
+                      : const Icon(Icons.swap_vert),
+                ),
+                TabCountIcon(
+                    count: openningBooks.length,
+                    onPressed: () async {
+                      final selectedIndex =
+                          await _openOpenningBookListView(context);
+                      if (selectedIndex != null) {
+                        context
+                            .read<OpenningBooksProvider>()
+                            .updateSelectedBookIndex(selectedIndex,
+                                forceNotify: true);
+                        setState(() {
+                          // title need to update
+                          pageController.jumpToPage(selectedIndex);
+                        });
+                      }
+                    })
+              ],
+            ),
+            body: openningBooks.isEmpty
+                ? const Center(child: Text('There is no more openning book'))
+                : PageView.builder(
+                    controller: pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: openningBooks.length,
+                    itemBuilder: (context, index) {
+                      final openedBook = openningBooks[index];
+                      final book = openedBook['book'] as Book;
+                      final pageNumber = openedBook['current_page'] as int?;
+                      final textToHighlight =
+                          openedBook['text_to_highlight'] as String?;
+                      // myLogger.i('openning book index: $index');
+                      // myLogger.i('openning book name: ${book.name}');
 
-                return Reader(
-                  key: Key('$index - ${book.id}'),
-                  book: book,
-                  initialPage: pageNumber,
-                  textToHighlight: textToHighlight,
-                );
-              }),
-    );
+                      return Reader(
+                        key: Key('$index - ${book.id}'),
+                        book: book,
+                        initialPage: pageNumber,
+                        textToHighlight: textToHighlight,
+                        bookViewMode: bookViewMode,
+                      );
+                    }),
+          );
+        });
   }
 
   Future<int?> _openOpenningBookListView(BuildContext context) async {

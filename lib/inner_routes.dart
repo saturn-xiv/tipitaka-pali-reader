@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/dictionary_page.dart';
 import 'package:tipitaka_pali/ui/screens/home/home_container.dart';
 import 'package:tipitaka_pali/ui/screens/home/search_page/search_page.dart';
+import 'package:tipitaka_pali/ui/screens/reader/mobile_reader_container.dart';
 import 'package:tipitaka_pali/ui/screens/reader/reader.dart';
 import 'package:tipitaka_pali/ui/screens/search_result/search_result_page.dart';
 import 'package:tipitaka_pali/ui/screens/settings/settings.dart';
 import 'package:tipitaka_pali/ui/screens/splash_screen.dart';
+import 'package:tipitaka_pali/utils/platform_info.dart';
+
+import 'services/prefs.dart';
 
 const splashRoute = '/';
 const homeRoute = '/home';
@@ -47,6 +51,8 @@ class RouteGenerator {
             book: arguments['book'],
             initialPage: arguments['currentPage'],
             textToHighlight: arguments['textToHighlight'],
+            bookViewMode: PlatformInfo.isDesktop ? BookViewMode.horizontal : 
+            BookViewMode.values[Prefs.bookViewModeIndex],
           );
         }
         break;

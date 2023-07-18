@@ -8,6 +8,10 @@ import 'package:tipitaka_pali/ui/screens/search_result/search_result_page.dart';
 import 'package:tipitaka_pali/ui/screens/settings/download_view.dart';
 import 'package:tipitaka_pali/ui/screens/settings/settings.dart';
 import 'package:tipitaka_pali/ui/screens/splash_screen.dart';
+import 'package:tipitaka_pali/utils/platform_info.dart';
+
+import 'services/prefs.dart';
+import 'ui/screens/reader/mobile_reader_container.dart';
 
 const splashRoute = '/';
 const homeRoute = '/home';
@@ -49,6 +53,8 @@ class RouteGenerator {
             book: arguments['book'],
             initialPage: arguments['currentPage'],
             textToHighlight: arguments['textToHighlight'],
+                        bookViewMode: PlatformInfo.isDesktop ? BookViewMode.horizontal : 
+            BookViewMode.values[Prefs.bookViewModeIndex],
           );
         }
         break;

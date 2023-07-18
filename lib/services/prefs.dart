@@ -50,6 +50,7 @@ const String messageDatePref = "messageDate";
 const String lastDateCheckedMessagePref = "lastDateCheckedMessage";
 const String showWhatsNewPref = "dontShowMessage";
 const String versionNumberPref = "versionNumber";
+const String keyBookViewModeIndex = 'book_view_mode';
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -93,6 +94,7 @@ const String defaultMessageDate = "20230701";
 const String defaultLastDateCheckedMessage = "20230701";
 const bool defaultShowWhatsNew = true;
 const String defaultVersionNumber = "2.3.4+53";
+const int defaultBookViewMode = 1; // vertical
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -341,4 +343,10 @@ class Prefs {
             numberWordsLookedUp > maxWordsLookedUp) &&
         okToRate;
   }
+
+  static int get bookViewModeIndex =>
+      instance.getInt(keyBookViewModeIndex) ?? defaultBookViewMode;
+
+  static set bookViewModeIndex(int value) =>
+      instance.setInt(keyBookViewModeIndex, value);
 }
