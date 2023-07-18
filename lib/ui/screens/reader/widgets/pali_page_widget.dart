@@ -660,7 +660,6 @@ writeHistory(String word, String context, int page, String bookId) async {
   final DictionaryHistoryDatabaseRepository dictionaryHistoryRepository =
       DictionaryHistoryDatabaseRepository(dbh: DatabaseHelper());
 
-  Clipboard.setData(ClipboardData(text: "$word>>$context\n${bookId}, $page"));
   await dictionaryHistoryRepository.insert(word, context, page, bookId);
 }
 

@@ -1,4 +1,6 @@
+import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
 import 'package:csv/csv.dart';
@@ -23,22 +25,31 @@ class FlashCardsView extends StatelessWidget {
     return source.replaceAll(context, '<b>$context</b>');
   }
 
+  String _highlightMDOccurrences(String source, String word) {
+    if (word.isEmpty || !source.contains(word)) {
+      return source;
+    }
+    return source.replaceAll(word, '**$word**');
+  }
+
+  final ValueNotifier<bool> isExporting = ValueNotifier<bool>(false);
   void _exportToAnki(BuildContext context) async {
+    isExporting.value = true;
     List<List<dynamic>> rows = [];
 
     // Add flashcards data
     for (var card in cards) {
       String def = await dictionaryController.loadDefinition(card.word);
       rows.add([
-        def,
-        '<p><h3>${card.word}</h3>\n${_highlightOccurrences(card.context, card.word)}</p>'
+        '<p><h3>${card.word}</h3>\n${_highlightOccurrences(card.context, card.word)}</p>',
+        def
       ]);
     }
 
-    String csv = const ListToCsvConverter().convert(rows);
-
-    // Here you have your csv ready, you can save it to a file or share it
-    // Implement saving or sharing of csv string...
+    String csv = const ListToCsvConverter(
+      fieldDelimiter: ';',
+      textEndDelimiter: '"',
+    ).convert(rows);
 
     // Pick directory
     String? dir = await FilePicker.platform.getDirectoryPath();
@@ -53,71 +64,147 @@ class FlashCardsView extends StatelessWidget {
         print('Error writing file: $e');
       }
 
+      isExporting.value = false;
       // File is saved. You can show a success message if you want.
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          duration: Duration(seconds: 2),
           content: Text('Flashcards exported successfully!'),
         ),
       );
     }
   }
 
+  _exportToRemNote(BuildContext context) async {
+    isExporting.value = true;
+    StringBuffer sb = StringBuffer();
+
+    // Add flashcards data
+    for (var card in cards) {
+      String def = await dictionaryController.loadDefinition(card.word);
+      BeautifulSoup bs = BeautifulSoup(def);
+      // Find all 'details' elements.
+      String defCard = "\n";
+      List<Bs4Element> bs4s = bs.findAll("details");
+      for (Bs4Element bs4 in bs4s) {
+        if (bs4.find('summary') != null) {
+          defCard += "\t- ";
+          defCard += bs4.find('summary')!.getText();
+          defCard += "\n";
+        }
+      }
+
+      String front =
+          "**${card.word}** =  ${_highlightMDOccurrences(card.context, card.word)}>>";
+      sb.write(front);
+      sb.write(defCard);
+    }
+    await Clipboard.setData(ClipboardData(text: sb.toString()));
+
+    isExporting.value = false;
+
+    // File is saved. You can show a success message if you want.
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text('Your Remnotes are ready to paste now!'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Flashcards'),
-      ),
-      body: ListView.builder(
-        itemCount: cards.length,
-        itemBuilder: (context, index) {
-          return FlashCard(
-            backWidget: Container(
-              height: 100,
-              width: 100,
-              child: Column(
-                children: [
-                  Text(
-                    cards[index].word, // Display the word
-                    style: TextStyle(fontSize: 30),
-                  ),
-                  HtmlWidget(
-                    _highlightOccurrences(cards[index].context,
-                        cards[index].word), // Highlight the word in the context
-                  ),
-                ],
+        appBar: AppBar(
+          title: Text('Flashcards'),
+        ),
+        body: ListView.builder(
+          itemCount: cards.length,
+          itemBuilder: (context, index) {
+            return FlashCard(
+              backWidget: Container(
+                height: 100,
+                width: 100,
+                child: Column(
+                  children: [
+                    Text(
+                      cards[index].word, // Display the word
+                      style: TextStyle(fontSize: 30),
+                    ),
+                    HtmlWidget(
+                      _highlightOccurrences(
+                          cards[index].context,
+                          cards[index]
+                              .word), // Highlight the word in the context
+                    ),
+                  ],
+                ),
               ),
+              frontWidget: FutureBuilder<String>(
+                future: dictionaryController
+                    .loadDefinition(cards[index].word), // your future operation
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator(); // or some kind of loading widget
+                  } else {
+                    if (snapshot.hasError)
+                      return const Text('Error: loading definition');
+                    else
+                      return SingleChildScrollView(
+                        child: HtmlWidget(
+                          (snapshot.data!).isEmpty
+                              ? "<p><h2>No Definition Found</h2></p>"
+                              : snapshot.data!,
+                        ),
+                      );
+                  }
+                },
+              ),
+              width: 300,
+              height: 400,
+            );
+          },
+        ),
+        bottomNavigationBar: BottomAppBar(
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: ValueListenableBuilder(
+                    valueListenable: isExporting,
+                    builder: (context, bool value, child) {
+                      return ElevatedButton.icon(
+                        onPressed: value ? null : () => _exportToAnki(context),
+                        icon: value
+                            ? CircularProgressIndicator()
+                            : Icon(Icons.download),
+                        label: value ? Text('') : Text('Export to Anki'),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: ValueListenableBuilder(
+                    valueListenable: isExporting,
+                    builder: (context, bool value, child) {
+                      return ElevatedButton.icon(
+                        onPressed:
+                            value ? null : () => _exportToRemNote(context),
+                        icon: value
+                            ? CircularProgressIndicator()
+                            : Icon(Icons.download),
+                        label: value ? Text('') : Text('Export to RemNote'),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-            frontWidget: FutureBuilder<String>(
-              future: dictionaryController
-                  .loadDefinition(cards[index].word), // your future operation
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator(); // or some kind of loading widget
-                } else {
-                  if (snapshot.hasError)
-                    return const Text('Error: loading definition');
-                  else
-                    return SingleChildScrollView(
-                      child: HtmlWidget(
-                        (snapshot.data!).isEmpty
-                            ? "<p><h2>No Definition Found</h2></p>"
-                            : snapshot.data!,
-                      ),
-                    );
-                }
-              },
-            ),
-            width: 300,
-            height: 400,
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _exportToAnki(context),
-        label: const Text('Export to Anki'),
-        icon: const Icon(Icons.download),
-      ),
-    );
+          ),
+        ));
   }
 }

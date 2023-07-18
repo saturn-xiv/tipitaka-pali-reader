@@ -71,56 +71,62 @@ class DictionaryContentView extends StatelessWidget {
                         }
                       }
                     },
-                    child: HtmlWidget(
-                      key: textKey,
-                      content,
-                      customStylesBuilder: (element) {
-                        if (element.classes.contains('dpdheader')) {
-                          return {'font-weight:': 'bold'};
-                        }
-                        return null;
-                      },
-                      customWidgetBuilder: (element) {
-                        /*             if (element.localName == "button") {
-                          final value = element.attributes['value'];
-                          if (value != null) {
-                            debugPrint("found button: $value");
-                            return TextButton(
-                                onPressed: showDeclension(context),
-                                child: const Text("Declension"));
+                    child: InteractiveViewer(
+                      boundaryMargin: EdgeInsets.all(20.0),
+                      minScale: 0.1,
+                      maxScale: 1.6,
+                      child: HtmlWidget(
+                        key: textKey,
+                        content,
+                        customStylesBuilder: (element) {
+                          if (element.classes.contains('dpdheader')) {
+                            return {'font-weight:': 'bold'};
                           }
-                        }
-                        */
-                        final href = element.attributes['href'];
-                        if (href != null) {
-                          String linkText = href.contains("wikipedia")
-                              ? "Wikipedia"
-                              : "Submit a correction";
+                          return null;
+                        },
+                        customWidgetBuilder: (element) {
+                          /*             if (element.localName == "button") {
+                                final value = element.attributes['value'];
+                                if (value != null) {
+                                  debugPrint("found button: $value");
+                                  return TextButton(
+                                      onPressed: showDeclension(context),
+                                      child: const Text("Declension"));
+                                }
+                              }
+                              */
+                          final href = element.attributes['href'];
+                          if (href != null) {
+                            String linkText = href.contains("wikipedia")
+                                ? "Wikipedia"
+                                : "Submit a correction";
 
-                          return InkWell(
-                            onTap: () {
-                              launchUrl(Uri.parse(href),
-                                  mode: LaunchMode.externalApplication);
+                            return InkWell(
+                              onTap: () {
+                                launchUrl(Uri.parse(href),
+                                    mode: LaunchMode.externalApplication);
 
-                              debugPrint('will launch $href.');
-                            },
-                            child: Text(
-                              linkText,
-                              style: const TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: Colors.blue,
-                                  fontSize: 10),
-                            ),
-                          );
-                        }
-                        return null;
-                      },
-                      textStyle: TextStyle(
-                          fontSize: Prefs.dictionaryFontSize.toDouble(),
-                          color: context.watch<ThemeChangeNotifier>().isDarkMode
-                              ? Colors.white
-                              : Colors.black,
-                          inherit: false),
+                                debugPrint('will launch $href.');
+                              },
+                              child: Text(
+                                linkText,
+                                style: const TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.blue,
+                                    fontSize: 10),
+                              ),
+                            );
+                          }
+                          return null;
+                        },
+                        textStyle: TextStyle(
+                            fontSize: Prefs.dictionaryFontSize.toDouble(),
+                            color:
+                                context.watch<ThemeChangeNotifier>().isDarkMode
+                                    ? Colors.white
+                                    : Colors.black,
+                            inherit: false),
+                      ),
                     ),
                   ),
                 ))),
