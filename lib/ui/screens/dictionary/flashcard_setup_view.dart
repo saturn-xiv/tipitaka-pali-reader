@@ -4,9 +4,6 @@ import 'package:tipitaka_pali/ui/screens/dictionary/flashcards_view.dart';
 import '../../../business_logic/models/dictionary_history.dart';
 import '../../../services/repositories/dictionary_history_repo.dart';
 import '../../../services/database/database_helper.dart';
-import 'dart:convert';
-import 'dart:io';
-import 'package:csv/csv.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/controller/dictionary_controller.dart';
 
 class FlashCardSetupView extends StatefulWidget {

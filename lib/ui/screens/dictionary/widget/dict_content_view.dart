@@ -72,7 +72,7 @@ class DictionaryContentView extends StatelessWidget {
                       }
                     },
                     child: InteractiveViewer(
-                      boundaryMargin: EdgeInsets.all(20.0),
+                      boundaryMargin: const EdgeInsets.all(20.0),
                       minScale: 0.1,
                       maxScale: 1.6,
                       child: HtmlWidget(

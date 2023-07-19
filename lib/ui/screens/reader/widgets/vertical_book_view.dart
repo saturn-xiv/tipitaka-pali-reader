@@ -134,21 +134,16 @@ class _VerticalBookViewState extends State<VerticalBookView> {
                       print(
                           'doSomething() executed in ${stopwatch.elapsedMilliseconds} ms');
 
-                      return InteractiveViewer(
-                        boundaryMargin: EdgeInsets.all(20.0),
-                        minScale: 0.1,
-                        maxScale: 1.6,
-                        child: PaliPageWidget(
-                            pageNumber: pageContent.pageNumber!,
-                            htmlContent: htmlContent,
-                            script: script,
-                            highlightedWord: readerViewController.textToHighlight,
-                            searchText: searchText,
-                            pageToHighlight: readerViewController.pageToHighlight,
-                            onClick: onClickedWord,
-                            onSearch: onSearch,
-                            book: readerViewController.book),
-                      );
+                      return PaliPageWidget(
+                          pageNumber: pageContent.pageNumber!,
+                          htmlContent: htmlContent,
+                          script: script,
+                          highlightedWord: readerViewController.textToHighlight,
+                          searchText: searchText,
+                          pageToHighlight: readerViewController.pageToHighlight,
+                          onClick: onClickedWord,
+                          onSearch: onSearch,
+                          book: readerViewController.book);
                     },
                   )),
             ),

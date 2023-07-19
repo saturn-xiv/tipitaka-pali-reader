@@ -63,19 +63,14 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
           child: Padding(
             padding: const EdgeInsets.only(
                 bottom: 100.0), // estimated toolbar height
-            child: InteractiveViewer(
-              boundaryMargin: EdgeInsets.all(20.0),
-                        minScale: 0.1,
-                        maxScale: 1.6,
-              child: PaliPageWidget(
-                  pageNumber: pageContent.pageNumber!,
-                  htmlContent: htmlContent,
-                  script: script,
-                  highlightedWord: readerViewController.textToHighlight,
-                  pageToHighlight: readerViewController.pageToHighlight,
-                  onClick: onClickedWord,
-                  book: readerViewController.book),
-            ),
+            child: PaliPageWidget(
+                pageNumber: pageContent.pageNumber!,
+                htmlContent: htmlContent,
+                script: script,
+                highlightedWord: readerViewController.textToHighlight,
+                pageToHighlight: readerViewController.pageToHighlight,
+                onClick: onClickedWord,
+                book: readerViewController.book),
           ),
         );
       },

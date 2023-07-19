@@ -1,6 +1,7 @@
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
 import 'package:csv/csv.dart';
@@ -61,13 +62,13 @@ class FlashCardsView extends StatelessWidget {
       try {
         await file.writeAsString(csv);
       } catch (e) {
-        print('Error writing file: $e');
+        debugPrint('Error writing file: $e');
       }
 
       isExporting.value = false;
       // File is saved. You can show a success message if you want.
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           duration: Duration(seconds: 2),
           content: Text('Flashcards exported successfully!'),
         ),
@@ -88,14 +89,14 @@ class FlashCardsView extends StatelessWidget {
       List<Bs4Element> bs4s = bs.findAll("details");
       for (Bs4Element bs4 in bs4s) {
         if (bs4.find('summary') != null) {
-          defCard += "\t- ";
+          defCard += "\t\t- ";
           defCard += bs4.find('summary')!.getText();
           defCard += "\n";
         }
       }
 
       String front =
-          "**${card.word}** =  ${_highlightMDOccurrences(card.context, card.word)}>>";
+          "**${card.word}** \n\t-${_highlightMDOccurrences(card.context, card.word)}";
       sb.write(front);
       sb.write(defCard);
     }
@@ -105,7 +106,7 @@ class FlashCardsView extends StatelessWidget {
 
     // File is saved. You can show a success message if you want.
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         duration: Duration(seconds: 2),
         content: Text('Your Remnotes are ready to paste now!'),
       ),
@@ -116,7 +117,7 @@ class FlashCardsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Flashcards'),
+          title: const Text('Flashcards'),
         ),
         body: ListView.builder(
           itemCount: cards.length,
@@ -129,7 +130,7 @@ class FlashCardsView extends StatelessWidget {
                   children: [
                     Text(
                       cards[index].word, // Display the word
-                      style: TextStyle(fontSize: 30),
+                      style: const TextStyle(fontSize: 30),
                     ),
                     HtmlWidget(
                       _highlightOccurrences(
@@ -148,9 +149,9 @@ class FlashCardsView extends StatelessWidget {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator(); // or some kind of loading widget
                   } else {
-                    if (snapshot.hasError)
+                    if (snapshot.hasError) {
                       return const Text('Error: loading definition');
-                    else
+                    } else {
                       return SingleChildScrollView(
                         child: HtmlWidget(
                           (snapshot.data!).isEmpty
@@ -158,6 +159,7 @@ class FlashCardsView extends StatelessWidget {
                               : snapshot.data!,
                         ),
                       );
+                    }
                   }
                 },
               ),
@@ -166,45 +168,53 @@ class FlashCardsView extends StatelessWidget {
             );
           },
         ),
-        bottomNavigationBar: BottomAppBar(
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: ValueListenableBuilder(
-                    valueListenable: isExporting,
-                    builder: (context, bool value, child) {
-                      return ElevatedButton.icon(
-                        onPressed: value ? null : () => _exportToAnki(context),
-                        icon: value
-                            ? CircularProgressIndicator()
-                            : Icon(Icons.download),
-                        label: value ? Text('') : Text('Export to Anki'),
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: ValueListenableBuilder(
-                    valueListenable: isExporting,
-                    builder: (context, bool value, child) {
-                      return ElevatedButton.icon(
-                        onPressed:
-                            value ? null : () => _exportToRemNote(context),
-                        icon: value
-                            ? CircularProgressIndicator()
-                            : Icon(Icons.download),
-                        label: value ? Text('') : Text('Export to RemNote'),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
+        floatingActionButton: buildSpeedDial(context));
+  }
+
+  SpeedDial buildSpeedDial(BuildContext context) {
+    return SpeedDial(
+      icon: Icons.download,
+      label: const Text("Export"),
+      activeIcon: Icons.close,
+      //buttonSize: 56.0,
+      visible: true,
+      closeManually: false,
+      renderOverlay: false,
+      curve: Curves.bounceIn,
+      overlayColor: Colors.black,
+      overlayOpacity: 0.5,
+      tooltip: 'Export',
+      heroTag: 'speed-dial-hero-tag',
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black,
+      elevation: 8.0,
+      shape: const CircleBorder(),
+      children: [
+        SpeedDialChild(
+          child: Image.asset(
+            'assets/images/anki.png',
+            width: 34.0,
+            height: 34.0,
+            fit: BoxFit.cover,
           ),
-        ));
+          backgroundColor: Colors.white,
+          label: 'Anki',
+          labelStyle: const TextStyle(fontSize: 18.0),
+          onTap: () => _exportToAnki(context),
+        ),
+        SpeedDialChild(
+          child: Image.asset(
+            'assets/images/remnote.jpg',
+            width: 34.0,
+            height: 34.0,
+            fit: BoxFit.cover,
+          ),
+          backgroundColor: Colors.white,
+          label: 'Remnote',
+          labelStyle: const TextStyle(fontSize: 18.0),
+          onTap: () => _exportToRemNote(context),
+        ),
+      ],
+    );
   }
 }

@@ -37,7 +37,7 @@ class InitialSetup extends StatelessWidget {
 
   Widget _buildHomeView(BuildContext context, InitialSetupNotifier notifier) {
     if (notifier.setupIsFinished) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         concludeTheSetup(context);
       });
     }

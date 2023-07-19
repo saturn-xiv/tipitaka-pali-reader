@@ -81,6 +81,7 @@ dependencies:
   flashcardplus: ^0.0.2
   csv: ^5.0.2
   file_picker: 5.3.1
+  flutter_speed_dial: ^7.0.0
 
 
 dev_dependencies:
@@ -118,6 +119,8 @@ flutter:
     - assets/web/
     - assets/icon/icon.png
     - assets/icon/tpr_dictionary.png
+    - assets/images/anki.png
+    - assets/images/remnote.jpg
 
   fonts:
     - family: Pyidaungsu

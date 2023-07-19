@@ -63,7 +63,7 @@ class _DictionaryHistoryViewState extends State<DictionaryHistoryView> {
               });
             },
             icon: Icon(Icons.auto_delete),
-            label: Text("Delete All")),
+            label: const Text("Delete All")),
         Expanded(
           child: ListView.separated(
             itemCount: histories.length,
