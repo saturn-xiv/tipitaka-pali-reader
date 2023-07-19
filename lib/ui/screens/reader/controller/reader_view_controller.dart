@@ -209,7 +209,7 @@ class ReaderViewController extends ChangeNotifier {
     return await repository.getPageNumber(book.id, paragraphNumber);
   }
 
-  Future<void> onGoto({required int pageNumber, String? word}) async {
+  Future<void> onGoto({required int pageNumber, String? word, bool saveToRecent = true}) async {
     myLogger.i('current page number: $pageNumber');
     // update current page
     _currentPage.value = pageNumber;
@@ -219,7 +219,9 @@ class ReaderViewController extends ChangeNotifier {
     final openedBookController = context.read<OpenningBooksProvider>();
     openedBookController.update(newPageNumber: _currentPage.value);
     // persit
+    if(saveToRecent){
     await _saveToRecent();
+    }
   }
 
   // Future onPageChanged(int index) async {

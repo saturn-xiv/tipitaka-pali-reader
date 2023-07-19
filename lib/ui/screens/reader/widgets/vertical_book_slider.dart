@@ -58,11 +58,11 @@ class _BookSliderState extends State<VerticalBookSlider> {
           max: max,
           label: currentPage.toString(),
           divisions: divisions,
-          onChanged: (value) {
+          onChanged: (value) async{
             // setState(() {
             //   currentPage = value.toInt();
             // });
-            readerViewController.onGoto(pageNumber: value.toInt());
+            await readerViewController.onGoto(pageNumber: value.toInt(), saveToRecent: false);
           },
           // onChangeStart: null,
           onChangeEnd: (value) {
