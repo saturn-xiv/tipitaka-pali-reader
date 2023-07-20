@@ -204,19 +204,38 @@ class BookListPage extends StatelessWidget {
   }
 
   Widget _buildCondensedBookListWithExpansionTiles(String mainCategory) {
+    final ScrollController scrollController = ScrollController();
     return FutureBuilder(
         future: _loadSubCategoriesAndBooks(mainCategory),
         builder: (context, AsyncSnapshot<List<CategoryWithBooks>> snapshot) {
           if (snapshot.hasData) {
             final categoriesWithBooks = snapshot.data!;
             return ListView.builder(
-              controller: ScrollController(),
+              controller: scrollController,
               itemCount: categoriesWithBooks.length,
               itemBuilder: (context, index) {
+                final GlobalKey expansionTileKey = GlobalKey();
                 final categoryWithBooks = categoriesWithBooks[index];
                 return Card(
                   elevation: 4,
                   child: ExpansionTile(
+                    key: expansionTileKey, // Assigning key here
+                    onExpansionChanged: (isExpanding) {
+                      if (isExpanding) {
+                        // Delay scrolling a bit to allow for the expansion animation to start.
+                        Future.delayed(const Duration(milliseconds: 200))
+                            .then((value) {
+                          RenderObject? renderObject = expansionTileKey
+                              .currentContext
+                              ?.findRenderObject();
+                          renderObject?.showOnScreen(
+                            rect: renderObject.semanticBounds,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.ease,
+                          );
+                        });
+                      }
+                    },
                     initiallyExpanded: Prefs.expandedBookList,
                     title: categoryWithBooks.category.build(context),
                     tilePadding:
