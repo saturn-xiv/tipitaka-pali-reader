@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:tipitaka_pali/business_logic/models/toc_list_item.dart';
 import 'package:tipitaka_pali/business_logic/view_models/toc_view_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class TocDialog extends StatelessWidget {
+class TocDialog extends StatefulWidget {
   final String bookID;
+  final int? currentPage;
 
-  const TocDialog({Key? key, required this.bookID}) : super(key: key);
+  const TocDialog({
+    Key? key,
+    required this.bookID,
+    this.currentPage,
+  }) : super(key: key);
+
+  @override
+  State<TocDialog> createState() => _TocDialogState();
+}
+
+class _TocDialogState extends State<TocDialog> {
+  int currentIndex = 0;
+  AutoScrollController autoScrollController = AutoScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,21 +44,32 @@ class TocDialog extends StatelessWidget {
           ]),
           const Divider(color: Colors.grey),
           FutureBuilder<List<TocListItem>>(
-              future: TocViewModel(bookID).fetchTocListItems(),
+              future: TocViewModel(widget.bookID).fetchTocListItems(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final listItems = snapshot.data!;
+                  currentIndex = getIndex(widget.currentPage, listItems);
+                  Future.delayed(const Duration(milliseconds: 500), () {
+                    autoScrollController.scrollToIndex(
+                      currentIndex,
+                      duration: const Duration(milliseconds: 100),
+                      preferPosition: AutoScrollPosition.middle,
+                    );
+                  });
                   return Expanded(
                     child: ListView.separated(
+                      controller: autoScrollController,
                       itemCount: listItems.length,
                       itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            // final pageNumber = listItems[index].getPageNumber();
-                            Navigator.pop(context, listItems[index].toc);
-                          },
+                        return AutoScrollTag(
+                          key: ValueKey(index),
+                          controller: autoScrollController,
+                          index: index,
                           child: ListTile(
+                            onTap: () =>
+                                Navigator.pop(context, listItems[index].toc),
                             title: listItems[index].build(context),
+                            selected: currentIndex == index,
                           ),
                         );
                       },
@@ -63,5 +88,25 @@ class TocDialog extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  int getIndex(int? currentPage, List<TocListItem> listItems) {
+    if (currentPage == null) return 0;
+
+    // current page contains toc
+    for (int i = 0; i < listItems.length; i++) {
+      if (listItems[i].toc.pageNumber == currentPage) {
+        return i;
+      }
+    }
+
+    // current page does not contain toc
+    for (int i = 0; i < listItems.length; i++) {
+      if (listItems[i].toc.pageNumber > currentPage) {
+        return i - 1;
+      }
+    }
+
+    return 0;
   }
 }

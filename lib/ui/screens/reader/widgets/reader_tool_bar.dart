@@ -337,7 +337,10 @@ class LowerRow extends StatelessWidget {
                     topLeft: Radius.circular(16),
                     bottomLeft: Radius.circular(16),
                   )),
-              child: TocDialog(bookID: vm.book.id),
+              child: TocDialog(
+                bookID: vm.book.id,
+                currentPage: vm.currentPage.value,
+              ),
             ),
           ),
         );
