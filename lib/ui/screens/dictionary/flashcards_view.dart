@@ -14,6 +14,7 @@ import '../../../business_logic/models/dictionary_history.dart';
 class FlashCardsView extends StatelessWidget {
   final List<DictionaryHistory> cards;
   final DictionaryController dictionaryController;
+  final ValueNotifier<bool> isExporting = ValueNotifier<bool>(false);
 
   FlashCardsView(
       {Key? key, required this.cards, required this.dictionaryController})
@@ -33,18 +34,25 @@ class FlashCardsView extends StatelessWidget {
     return source.replaceAll(word, '**$word**');
   }
 
-  final ValueNotifier<bool> isExporting = ValueNotifier<bool>(false);
-  void _exportToAnki(BuildContext context) async {
+  void _exportToAnki(BuildContext context, bool note3) async {
     isExporting.value = true;
     List<List<dynamic>> rows = [];
 
     // Add flashcards data
     for (var card in cards) {
       String def = await dictionaryController.loadDefinition(card.word);
-      rows.add([
-        '<p><h3>${card.word}</h3>\n${_highlightOccurrences(card.context, card.word)}</p>',
-        def
-      ]);
+      if (note3) {
+        rows.add([
+          '<p><h3>${card.word}</h3></p>',
+          '<p>${_highlightOccurrences(card.context, card.word)}</p>',
+          def
+        ]);
+      } else {
+        rows.add([
+          '<p><h3>${card.word}</h3>\n${_highlightOccurrences(card.context, card.word)}</p>',
+          def
+        ]);
+      }
     }
 
     String csv = const ListToCsvConverter(
@@ -200,7 +208,19 @@ class FlashCardsView extends StatelessWidget {
           backgroundColor: Colors.white,
           label: 'Anki',
           labelStyle: const TextStyle(fontSize: 18.0),
-          onTap: () => _exportToAnki(context),
+          onTap: () => _exportToAnki(context, false),
+        ),
+        SpeedDialChild(
+          child: Image.asset(
+            'assets/images/anki.png',
+            width: 34.0,
+            height: 34.0,
+            fit: BoxFit.cover,
+          ),
+          backgroundColor: Color.fromARGB(255, 61, 61, 59),
+          label: 'Anki 3 Field Note',
+          labelStyle: const TextStyle(fontSize: 18.0),
+          onTap: () => _exportToAnki(context, true),
         ),
         SpeedDialChild(
           child: Image.asset(
