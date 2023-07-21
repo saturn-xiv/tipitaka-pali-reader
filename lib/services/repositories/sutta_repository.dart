@@ -393,94 +393,94 @@ WHERE suttas.name LIKE '%$filterdWord%'
         openPage = 167;
         break;
       case 21:
-        openPage = 92;
-        break;
-      case 22:
-        openPage = 97;
-        break;
-      case 23:
-        openPage = 118;
-        break;
-      case 24:
-        openPage = 126;
-        break;
-      case 25:
-        openPage = 132;
-        break;
-      case 26:
-        openPage = 145;
-        break;
-      case 27:
-        openPage = 149;
-        break;
-      case 28:
-        openPage = 154;
-        break;
-      case 29:
-        openPage = 161;
-        break;
-      case 30:
-        openPage = 167;
-        break;
-      case 31:
         openPage = 173;
         break;
-      case 32:
+      case 22:
         openPage = 182;
         break;
-      case 33:
-        openPage = 195;
+      case 23:
+        openPage = 197;
         break;
-      case 34:
-        openPage = 199;
+      case 24:
+        openPage = 200;
         break;
-      case 35:
+      case 25:
         openPage = 205;
         break;
-      case 36:
+      case 26:
         openPage = 216;
         break;
-      case 37:
+      case 27:
         openPage = 232;
         break;
-      case 38:
+      case 28:
         openPage = 242;
         break;
-      case 39:
+      case 29:
         openPage = 250;
         break;
-      case 40:
+      case 30:
         openPage = 257;
         break;
-      case 41:
+      case 31:
         openPage = 266;
         break;
-      case 42:
+      case 32:
         openPage = 272;
         break;
-      case 43:
+      case 33:
         openPage = 281;
         break;
-      case 44:
+      case 34:
         openPage = 286;
         break;
-      case 45:
+      case 35:
         openPage = 289;
         break;
-      case 46:
+      case 36:
         openPage = 299;
         break;
-      case 47:
+      case 37:
         openPage = 318;
         break;
-      case 48:
+      case 38:
         openPage = 323;
         break;
-      case 49:
+      case 39:
         openPage = 338;
         break;
-      case 50:
+      case 40:
         openPage = 349;
+        break;
+      case 41:
+        openPage = 354;
+        break;
+      case 42:
+        openPage = 360;
+        break;
+      case 43:
+        openPage = 365;
+        break;
+      case 44:
+        openPage = 373;
+        break;
+      case 45:
+        openPage = 379;
+        break;
+      case 46:
+        openPage = 384;
+        break;
+      case 47:
+        openPage = 392;
+        break;
+      case 48:
+        openPage = 395;
+        break;
+      case 49:
+        openPage = 401;
+        break;
+      case 50:
+        openPage = 407;
         break;
       case 51:
         openPage = 1;
