@@ -9,6 +9,8 @@ import 'package:tipitaka_pali/business_logic/view_models/search_page_view_model.
 import 'package:tipitaka_pali/services/rx_prefs.dart';
 import 'package:tipitaka_pali/ui/screens/reader/widgets/vertical_book_slider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:tipitaka_pali/utils/platform_info.dart';
+import 'package:wtf_sliding_sheet/wtf_sliding_sheet.dart';
 
 import '../../../../business_logic/models/page_content.dart';
 import '../../../../providers/navigation_provider.dart';
@@ -237,56 +239,110 @@ class _VerticalBookViewState extends State<VerticalBookView> {
     word = word.toLowerCase();
 
     // displaying dictionary in the side navigation view
-    if (context.read<NavigationProvider>().isNavigationPaneOpened) {
-      context.read<NavigationProvider>().moveToDictionaryPage();
-      // delay a little miliseconds to wait for DictionaryPage Initialation
-      await Future.delayed(const Duration(milliseconds: 50),
-          () => globalLookupWord.value = word);
-      return;
-    }
+    if ((PlatformInfo.isDesktop || Mobile.isTablet(context))) {
+      if (context.read<NavigationProvider>().isNavigationPaneOpened) {
+        context.read<NavigationProvider>().moveToDictionaryPage();
+        // delay a little miliseconds to wait for DictionaryPage Initialation
+        await Future.delayed(const Duration(milliseconds: 50),
+            () => globalLookupWord.value = word);
+        return;
+      }
 
-    // displaying dictionary in dialog
-    final sideSheetWidth = context
-        .read<StreamingSharedPreferences>()
-        .getDouble(panelSizeKey, defaultValue: defaultPanelSize)
-        .getValue();
+      // displaying dictionary in side sheet dialog 
+      final sideSheetWidth = context
+          .read<StreamingSharedPreferences>()
+          .getDouble(panelSizeKey, defaultValue: defaultPanelSize)
+          .getValue();
 
-    showGeneralDialog(
-      context: context,
-      barrierLabel: 'TOC',
-      barrierDismissible: true,
-      transitionDuration: Duration(milliseconds: Prefs.animationSpeed.round()),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return SlideTransition(
-          position: Tween(begin: const Offset(-1, 0), end: const Offset(0, 0))
-              .animate(
-            CurvedAnimation(parent: animation, curve: Curves.linear),
-          ),
-          child: child,
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: Material(
-            type: MaterialType.transparency,
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-              width: sideSheetWidth,
-              height: MediaQuery.of(context).size.height - 80,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.background,
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    bottomRight: Radius.circular(16),
-                  )),
-              child: DictionaryDialog(word: word),
+      showGeneralDialog(
+        context: context,
+        barrierLabel: 'TOC',
+        barrierDismissible: true,
+        transitionDuration:
+            Duration(milliseconds: Prefs.animationSpeed.round()),
+        transitionBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween(begin: const Offset(-1, 0), end: const Offset(0, 0))
+                .animate(
+              CurvedAnimation(parent: animation, curve: Curves.linear),
             ),
+            child: child,
+          );
+        },
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: Material(
+              type: MaterialType.transparency,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                width: sideSheetWidth,
+                height: MediaQuery.of(context).size.height - 80,
+                decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background,
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(16),
+                      bottomRight: Radius.circular(16),
+                    )),
+                child: DictionaryDialog(word: word),
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      // displaying dictionary using bottom sheet dialog
+      await showSlidingBottomSheet(
+      context,
+      builder: (context) {
+        //Widget for SlidingSheetDialog's builder method
+        final statusBarHeight = MediaQuery.of(context).padding.top;
+        final screenHeight = MediaQuery.of(context).size.height;
+        const marginTop = 24.0;
+        final slidingSheetDialogContent = SizedBox(
+          height: screenHeight - (statusBarHeight + marginTop),
+          child: DictionaryDialog(word: word),
+        );
+
+        return SlidingSheetDialog(
+          elevation: 8,
+          cornerRadius: 16,
+          duration: Duration(
+            milliseconds: Prefs.animationSpeed.round(),
           ),
+          // minHeight: 200,
+          snapSpec: const SnapSpec(
+            snap: true,
+            snappings: [0.4, 0.6, 0.8, 1.0],
+            positioning: SnapPositioning.relativeToSheetHeight,
+          ),
+          headerBuilder: (context, _) {
+            // building drag handle view
+            return Center(
+                heightFactor: 1,
+                child: Container(
+                  width: 56,
+                  height: 10,
+                  // color: Colors.black45,
+                  decoration: BoxDecoration(
+                    // border: Border.all(color: Colors.red),
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ));
+          },
+          // this builder is called when state change
+          // normaly three states occurs
+          // first state - isLaidOut = false
+          // second state - islaidOut = true , isShown = false
+          // thirs state - islaidOut = true , isShown = ture
+          // to avoid there times rebuilding, return  prebuild content
+          builder: (context, state) => slidingSheetDialogContent,
         );
       },
     );
+    }
   }
 
   Future<void> onSearch(String word) async {

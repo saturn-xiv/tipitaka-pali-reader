@@ -1,13 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:html/dom.dart' as dom;
 
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:tipitaka_pali/business_logic/models/book.dart';
 import 'package:tipitaka_pali/providers/font_provider.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
@@ -15,7 +13,6 @@ import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/script_language_provider.dart';
 import 'package:tipitaka_pali/services/repositories/dictionary_history_repo.dart';
 import 'package:tipitaka_pali/utils/font_utils.dart';
-import 'package:tipitaka_pali/utils/platform_info.dart';
 
 import '../../../../data/constants.dart';
 import '../../../../services/provider/theme_change_notifier.dart';
@@ -62,8 +59,6 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
   final GlobalKey _textKey = GlobalKey();
   int? _pageToHighlight;
 
-  SelectedContent? _selectedContent;
-
   @override
   void initState() {
     super.initState();
@@ -108,173 +103,139 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     final fontName = FontUtils.getfontName(
         script: context.read<ScriptLanguageProvider>().currentScript);
 
-    final child = Container(
-      color: Colors.transparent,
-      child: GestureDetector(
-        onTapUp: (details) {
-          final box = _textKey.currentContext?.findRenderObject()! as RenderBox;
-
-          final result = BoxHitTestResult();
-          final offset = box.globalToLocal(details.globalPosition);
-          if (!box.hitTest(result, position: offset)) {
-            return;
-          }
-
-          for (final entry in result.path) {
-            final target = entry.target;
-            if (entry is! BoxHitTestEntry || target is! RenderParagraph) {
-              continue;
-            }
-
-            final p = target.getPositionForOffset(entry.localPosition);
-            final text = target.text.toPlainText(); //.replaceAll('\ufffc', '');
-
-            debugPrint('${_textKey.currentContext?.widget}');
-            if (text.isNotEmpty && p.offset < text.length) {
-              final int offset = p.offset;
-
-              final leftSentence = getLeftSentence(text, offset);
-              final rightSentence = getRightSentence(text, offset);
-              final sentence = leftSentence + rightSentence;
-
-              final charUnderTap = text[offset];
-              final leftChars = getLeftCharacters(text, offset);
-              final rightChars = getRightCharacters(text, offset);
-
-              final word = leftChars + charUnderTap + rightChars;
-              writeHistory(word, sentence, widget.pageNumber, widget.book!.id);
-
-              final textBefore = text.substring(0, p.offset - leftChars.length);
-              final occurrencesInTextBefore =
-                  word.allMatches(textBefore).length;
-              final wordIndex =
-                  findOccurrencesBefore(word, target) + occurrencesInTextBefore;
-
-              if (word == highlightedWord &&
-                  highlightedWordIndex == wordIndex) {
-                setState(() {
-                  highlightedWord = null;
-                  highlightedWordIndex = null;
-                  _pageToHighlight = null;
-                });
-              } else {
-                setState(() {
-                  widget.onClick?.call(word);
-                  highlightedWord = word;
-                  highlightedWordIndex = wordIndex;
-
-                  _pageToHighlight = widget.pageNumber;
-                });
-              }
-            }
-          }
-        },
-        child: HtmlWidget(
-          key: _textKey,
-          html,
-          factoryBuilder: () => _myFactory,
-          textStyle: TextStyle(
-              fontSize: fontSize.toDouble(),
-              inherit: true,
-              fontFamily: fontName),
-          customStylesBuilder: (element) {
-            // if (element.className == 'title' ||
-            //     element.className == 'book' ||
-            //     element.className == 'chapter' ||
-            //     element.className == 'subhead' ||
-            //     element.className == 'nikaya') {
-            //   return {
-            //     'text-align': 'center',
-            //     // 'text-decoration': 'none',
-            //   };
-            // }
-            if (element.localName == 'a') {
-              // print('found a tag: ${element.outerHtml}');
-              final isHighlight =
-                  element.parent!.className.contains('search-highlight') ==
-                      true;
-              if (isHighlight) {
-                return {'color': '#000', 'text-decoration': 'none'};
-              }
-
-              if (context.read<ThemeChangeNotifier>().isDarkMode) {
-                return {
-                  'color': 'white',
-                  'text-decoration': 'none',
-                };
-              } else {
-                return {
-                  'color': 'black',
-                  'text-decoration': 'none',
-                };
-              }
-            }
-
-            if (element.className == 'highlighted') {
-              String styleColor = (Prefs.darkThemeOn) ? "white" : "black";
-              Color c = Theme.of(context).primaryColorLight;
-              return {
-                'background': 'rgb(${c.red},${c.green},${c.blue})',
-                'color': styleColor,
-              };
-            }
-            // no style
-            return {'text-decoration': 'none'};
-          },
-          onTapUrl: (word) {
-            if (widget.onClick != null) {
-              // #goto is used for scrolling to selected text
-              if (word != '#goto') {
-                setState(() {
-                  highlightedWord = word;
-                  widget.onClick!(word);
-                });
-              }
-            }
-            return false;
-          },
-        ),
-      ),
-    );
-
-    if (!Mobile.isPhone(context)) {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: child,
-      );
-    }
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: SelectionArea(
-        focusNode: FocusNode(
-          canRequestFocus: true,
+      child: Container(
+        color: Colors.transparent,
+        child: GestureDetector(
+          onTapUp: (details) {
+            final box =
+                _textKey.currentContext?.findRenderObject()! as RenderBox;
+
+            final result = BoxHitTestResult();
+            final offset = box.globalToLocal(details.globalPosition);
+            if (!box.hitTest(result, position: offset)) {
+              return;
+            }
+
+            for (final entry in result.path) {
+              final target = entry.target;
+              if (entry is! BoxHitTestEntry || target is! RenderParagraph) {
+                continue;
+              }
+
+              final p = target.getPositionForOffset(entry.localPosition);
+              final text =
+                  target.text.toPlainText(); //.replaceAll('\ufffc', '');
+
+              debugPrint('${_textKey.currentContext?.widget}');
+              if (text.isNotEmpty && p.offset < text.length) {
+                final int offset = p.offset;
+
+                final leftSentence = getLeftSentence(text, offset);
+                final rightSentence = getRightSentence(text, offset);
+                final sentence = leftSentence + rightSentence;
+
+                final charUnderTap = text[offset];
+                final leftChars = getLeftCharacters(text, offset);
+                final rightChars = getRightCharacters(text, offset);
+
+                final word = leftChars + charUnderTap + rightChars;
+                writeHistory(
+                    word, sentence, widget.pageNumber, widget.book!.id);
+
+                final textBefore =
+                    text.substring(0, p.offset - leftChars.length);
+                final occurrencesInTextBefore =
+                    word.allMatches(textBefore).length;
+                final wordIndex = findOccurrencesBefore(word, target) +
+                    occurrencesInTextBefore;
+
+                if (word == highlightedWord &&
+                    highlightedWordIndex == wordIndex) {
+                  setState(() {
+                    highlightedWord = null;
+                    highlightedWordIndex = null;
+                    _pageToHighlight = null;
+                  });
+                } else {
+                  setState(() {
+                    widget.onClick?.call(word);
+                    highlightedWord = word;
+                    highlightedWordIndex = wordIndex;
+
+                    _pageToHighlight = widget.pageNumber;
+                  });
+                }
+              }
+            }
+          },
+          child: HtmlWidget(
+            key: _textKey,
+            html,
+            factoryBuilder: () => _myFactory,
+            textStyle: TextStyle(
+                fontSize: fontSize.toDouble(),
+                inherit: true,
+                fontFamily: fontName),
+            customStylesBuilder: (element) {
+              // if (element.className == 'title' ||
+              //     element.className == 'book' ||
+              //     element.className == 'chapter' ||
+              //     element.className == 'subhead' ||
+              //     element.className == 'nikaya') {
+              //   return {
+              //     'text-align': 'center',
+              //     // 'text-decoration': 'none',
+              //   };
+              // }
+              if (element.localName == 'a') {
+                // print('found a tag: ${element.outerHtml}');
+                final isHighlight =
+                    element.parent!.className.contains('search-highlight') ==
+                        true;
+                if (isHighlight) {
+                  return {'color': '#000', 'text-decoration': 'none'};
+                }
+
+                if (context.read<ThemeChangeNotifier>().isDarkMode) {
+                  return {
+                    'color': 'white',
+                    'text-decoration': 'none',
+                  };
+                } else {
+                  return {
+                    'color': 'black',
+                    'text-decoration': 'none',
+                  };
+                }
+              }
+
+              if (element.className == 'highlighted') {
+                String styleColor = (Prefs.darkThemeOn) ? "white" : "black";
+                Color c = Theme.of(context).primaryColorLight;
+                return {
+                  'background': 'rgb(${c.red},${c.green},${c.blue})',
+                  'color': styleColor,
+                };
+              }
+              // no style
+              return {'text-decoration': 'none'};
+            },
+            onTapUrl: (word) {
+              if (widget.onClick != null) {
+                // #goto is used for scrolling to selected text
+                if (word != '#goto') {
+                  setState(() {
+                    highlightedWord = word;
+                    widget.onClick!(word);
+                  });
+                }
+              }
+              return false;
+            },
+          ),
         ),
-        contextMenuBuilder: (context, selectableRegionState) {
-          return AdaptiveTextSelectionToolbar.buttonItems(
-            anchors: selectableRegionState.contextMenuAnchors,
-            buttonItems: [
-              ...selectableRegionState.contextMenuButtonItems,
-              // ContextMenuButtonItem(
-              //     onPressed: () {
-              //       ContextMenuController.removeAny();
-              //       onSearch(_selectedContent!.plainText);
-              //     },
-              //     label: 'Search'),
-              ContextMenuButtonItem(
-                  onPressed: () {
-                    ContextMenuController.removeAny();
-                    Share.share(_selectedContent!.plainText,
-                        subject: 'Pāḷi text from TPR');
-                  },
-                  label: 'Share'),
-            ],
-          );
-        },
-        onSelectionChanged: (value) => _selectedContent = value,
-        // clicking on blank area in html widget lose focus, and it is normal.
-        // Container Widget with color can be used to acquire foucs
-        // The color value is required for this container in order to acquire focus.
-        child: child,
       ),
     );
   }

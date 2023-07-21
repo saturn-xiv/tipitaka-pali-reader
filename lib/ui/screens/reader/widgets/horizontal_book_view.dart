@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:wtf_sliding_sheet/wtf_sliding_sheet.dart';
 
 import '../../../../business_logic/models/page_content.dart';
@@ -20,6 +22,8 @@ class HorizontalBookView extends StatefulWidget {
 class _HorizontalBookViewState extends State<HorizontalBookView> {
   late final ReaderViewController readerViewController;
   late final PageController pageController;
+
+  SelectedContent? _selectedContent;
 
   @override
   void initState() {
@@ -63,14 +67,41 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
           child: Padding(
             padding: const EdgeInsets.only(
                 bottom: 100.0), // estimated toolbar height
-            child: PaliPageWidget(
-                pageNumber: pageContent.pageNumber!,
-                htmlContent: htmlContent,
-                script: script,
-                highlightedWord: readerViewController.textToHighlight,
-                pageToHighlight: readerViewController.pageToHighlight,
-                onClick: onClickedWord,
-                book: readerViewController.book),
+            child: SelectionArea(
+              focusNode: FocusNode(
+          canRequestFocus: true,
+        ),
+        contextMenuBuilder: (context, selectableRegionState) {
+          return AdaptiveTextSelectionToolbar.buttonItems(
+            anchors: selectableRegionState.contextMenuAnchors,
+            buttonItems: [
+              ...selectableRegionState.contextMenuButtonItems,
+              // ContextMenuButtonItem(
+              //     onPressed: () {
+              //       ContextMenuController.removeAny();
+              //       onSearch(_selectedContent!.plainText);
+              //     },
+              //     label: 'Search'),
+              ContextMenuButtonItem(
+                  onPressed: () {
+                    ContextMenuController.removeAny();
+                    Share.share(_selectedContent!.plainText,
+                        subject: 'Pāḷi text from TPR');
+                  },
+                  label: 'Share'),
+            ],
+          );
+        },
+        onSelectionChanged: (value) => _selectedContent = value,
+              child: PaliPageWidget(
+                  pageNumber: pageContent.pageNumber!,
+                  htmlContent: htmlContent,
+                  script: script,
+                  highlightedWord: readerViewController.textToHighlight,
+                  pageToHighlight: readerViewController.pageToHighlight,
+                  onClick: onClickedWord,
+                  book: readerViewController.book),
+            ),
           ),
         );
       },
