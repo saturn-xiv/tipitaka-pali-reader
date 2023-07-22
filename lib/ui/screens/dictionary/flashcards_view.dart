@@ -87,18 +87,62 @@ class FlashCardsView extends StatelessWidget {
   _exportToRemNote(BuildContext context) async {
     isExporting.value = true;
     StringBuffer sb = StringBuffer();
+    BeautifulSoup testBs = BeautifulSoup(
+        '<html><body><h3 style="background-color: #450a0f; color: #ffffff; text-align:center;  padding-bottom:5px; padding-top: 5px;">PEU Algo Used</h3></body></html>');
+    List<Bs4Element> test = testBs.findAll('h3');
+    print(test.length);
 
     // Add flashcards data
     for (var card in cards) {
       String def = await dictionaryController.loadDefinition(card.word);
+      debugPrint(def);
       BeautifulSoup bs = BeautifulSoup(def);
-      // Find all 'details' elements.
       String defCard = "\n";
-      List<Bs4Element> bs4s = bs.findAll("details");
-      for (Bs4Element bs4 in bs4s) {
-        if (bs4.find('summary') != null) {
+      List<Bs4Element> divs = bs.findAll("div");
+      List<Bs4Element> h3s = bs.findAll("h3");
+      List<Bs4Element> elements = []
+        ..addAll(h3s)
+        ..addAll(divs);
+
+      bool isDigitalPaliDictionary = false;
+
+      for (Bs4Element el in elements) {
+        if (el.name == "h3") {
+          isDigitalPaliDictionary = el.getText() == "Digital Pāḷi Dictionary";
+          continue;
+        }
+
+        if (!isDigitalPaliDictionary) {
           defCard += "\t\t- ";
-          defCard += bs4.find('summary')!.getText();
+          defCard += el.getText();
+          defCard += "\n";
+          continue;
+        }
+
+        // Handle special div with class 'dpd_grammar'
+        if (el.hasAttr('class') && el.getAttrValue('class') == 'dpd_grammar') {
+          List<Bs4Element> trs = el.findAll('tr');
+          for (Bs4Element tr in trs) {
+            defCard += "\t\t\t";
+            List<Bs4Element> tds = tr.findAll('td');
+            for (Bs4Element td in tds) {
+              defCard += td.getText() + " ";
+            }
+            defCard += "\n";
+          }
+          continue; // Skip the rest and go to the next div
+        }
+
+        Bs4Element? summary = el.find('summary');
+        if (summary != null) {
+          // Process summary tag
+          defCard += "\t\t- ";
+          defCard += summary.getText();
+          defCard += "\n";
+        } else {
+          // If no summary tag found, get the entire div
+          defCard += "\t\t- ";
+          defCard += el.getText();
           defCard += "\n";
         }
       }
@@ -108,7 +152,9 @@ class FlashCardsView extends StatelessWidget {
       sb.write(front);
       sb.write(defCard);
     }
-    await Clipboard.setData(ClipboardData(text: sb.toString()));
+
+    await Clipboard.setData(
+        ClipboardData(text: sb.toString().replaceAll("•", "")));
 
     isExporting.value = false;
 
