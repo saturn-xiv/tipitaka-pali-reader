@@ -18,6 +18,8 @@ class SettingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sc = ScrollController(); // for auto scroll
+
     return Scaffold(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.settings),
@@ -26,15 +28,16 @@ class SettingPage extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ListView(
-            children: const <Widget>[
-              DictionarySettingView(),
-              ThemeSettingView(),
-              DarkModeSettingView(),
-              LanguageSettingView(),
-              ScriptSettingView(),
-              GeneralSettingsView(),
-              HelpAboutView(),
-              ToolsSettingsView(),
+            controller: sc, // Attach the ScrollController to ListVie
+            children: <Widget>[
+              const DictionarySettingView(),
+              const ThemeSettingView(),
+              const DarkModeSettingView(),
+              const LanguageSettingView(),
+              const ScriptSettingView(),
+              const GeneralSettingsView(),
+              const HelpAboutView(),
+              ToolsSettingsView(scrollController: sc),
             ],
           ),
         ));

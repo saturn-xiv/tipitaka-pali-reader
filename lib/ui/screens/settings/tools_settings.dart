@@ -5,21 +5,41 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
 
 class ToolsSettingsView extends StatefulWidget {
-  const ToolsSettingsView({Key? key}) : super(key: key);
+  final ScrollController scrollController;
+
+  const ToolsSettingsView({Key? key, required this.scrollController})
+      : super(key: key);
 
   @override
   State<ToolsSettingsView> createState() => _ToolsSettingsViewState();
 }
 
 class _ToolsSettingsViewState extends State<ToolsSettingsView> {
+  final GlobalKey expansionTileKey = GlobalKey(); // Declare a GlobalKey
+
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 8,
       child: ExpansionTile(
+        key: expansionTileKey, // Assign the key to the ExpansionTile
         leading: const Icon(Icons.build),
         title: Text(AppLocalizations.of(context)!.tools,
             style: Theme.of(context).textTheme.titleLarge),
+        onExpansionChanged: (expanded) {
+          if (expanded) {
+            // Scroll to the end of the list
+            Future.delayed(Duration(milliseconds: 200)).then((_) {
+              RenderObject? renderObject =
+                  expansionTileKey.currentContext?.findRenderObject();
+              renderObject?.showOnScreen(
+                rect: renderObject.semanticBounds,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeOut,
+              );
+            });
+          }
+        },
         children: [
           const SizedBox(
             height: 10,
