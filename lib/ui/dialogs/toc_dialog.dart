@@ -68,6 +68,9 @@ class _TocDialogState extends State<TocDialog> {
                           child: ListTile(
                             onTap: () =>
                                 Navigator.pop(context, listItems[index].toc),
+                            leading: currentIndex == index
+                                ? const Icon(Icons.check)
+                                : const SizedBox.shrink(),
                             title: listItems[index].build(context),
                             selected: currentIndex == index,
                           ),
