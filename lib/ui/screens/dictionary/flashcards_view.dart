@@ -87,10 +87,6 @@ class FlashCardsView extends StatelessWidget {
   _exportToRemNote(BuildContext context) async {
     isExporting.value = true;
     StringBuffer sb = StringBuffer();
-    BeautifulSoup testBs = BeautifulSoup(
-        '<html><body><h3 style="background-color: #450a0f; color: #ffffff; text-align:center;  padding-bottom:5px; padding-top: 5px;">PEU Algo Used</h3></body></html>');
-    List<Bs4Element> test = testBs.findAll('h3');
-    print(test.length);
 
     // Add flashcards data
     for (var card in cards) {
@@ -98,52 +94,40 @@ class FlashCardsView extends StatelessWidget {
       debugPrint(def);
       BeautifulSoup bs = BeautifulSoup(def);
       String defCard = "\n";
-      List<Bs4Element> divs = bs.findAll("div");
-      List<Bs4Element> h3s = bs.findAll("h3");
-      List<Bs4Element> elements = []
-        ..addAll(h3s)
-        ..addAll(divs);
 
-      bool isDigitalPaliDictionary = false;
+      // Separate by h3 and p.definition
+      List<Bs4Element> pdefs = bs.findAll("h3, div, p.definition");
 
-      for (Bs4Element el in elements) {
-        if (el.name == "h3") {
-          isDigitalPaliDictionary = el.getText() == "Digital Pāḷi Dictionary";
-          continue;
-        }
-
-        if (!isDigitalPaliDictionary) {
-          defCard += "\t\t- ";
-          defCard += el.getText();
-          defCard += "\n";
-          continue;
-        }
-
-        // Handle special div with class 'dpd_grammar'
-        if (el.hasAttr('class') && el.getAttrValue('class') == 'dpd_grammar') {
-          List<Bs4Element> trs = el.findAll('tr');
-          for (Bs4Element tr in trs) {
-            defCard += "\t\t\t";
-            List<Bs4Element> tds = tr.findAll('td');
-            for (Bs4Element td in tds) {
-              defCard += td.getText() + " ";
-            }
-            defCard += "\n";
-          }
-          continue; // Skip the rest and go to the next div
-        }
-
-        Bs4Element? summary = el.find('summary');
-        if (summary != null) {
-          // Process summary tag
-          defCard += "\t\t- ";
-          defCard += summary.getText();
-          defCard += "\n";
+      for (Bs4Element pdef in pdefs) {
+        if (pdef.name == "h3") {
+          defCard += "\t\t- **${pdef.getText()}**\n";
         } else {
-          // If no summary tag found, get the entire div
-          defCard += "\t\t- ";
-          defCard += el.getText();
-          defCard += "\n";
+          if (pdef.hasAttr('class') &&
+              pdef.getAttrValue('class') == 'dpd_grammar') {
+            List<Bs4Element> trs = pdef.findAll('tr');
+            for (Bs4Element tr in trs) {
+              defCard += "\t\t\t\t";
+              List<Bs4Element> tds = tr.findAll('td');
+              for (Bs4Element td in tds) {
+                defCard += td.getText() + " ";
+              }
+              defCard += "\n";
+            }
+            continue; // Skip the rest and go to the next pdef
+          } else {
+            Bs4Element? summary = pdef.find('summary');
+            if (summary != null) {
+              // Process summary tag
+              defCard += "\t\t\t- ";
+              defCard += summary.getText();
+              defCard += "\n";
+            } else {
+              // If no summary tag found, get the entire pdef
+              defCard += "\t\t\t- ";
+              defCard += pdef.getText();
+              defCard += "\n";
+            }
+          }
         }
       }
 
