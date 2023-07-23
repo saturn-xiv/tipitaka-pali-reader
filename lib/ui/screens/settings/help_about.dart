@@ -39,6 +39,7 @@ class _HelpAboutViewState extends State<HelpAboutView> {
           ),
           _getHelpTile(context),
           _getAboutTile(context),
+          _getYouTubeChannel(context),
           _getReviewAppTile(context),
           _getReportIssueTile(context),
           _getResetDataTile(context),
@@ -68,6 +69,7 @@ class _HelpAboutViewState extends State<HelpAboutView> {
     return Padding(
       padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
+        leading: const Icon(Icons.info), // Added Icon
         title: ColoredText(AppLocalizations.of(context)!.about),
         focusColor: Theme.of(context).focusColor,
         hoverColor: Theme.of(context).hoverColor,
@@ -80,6 +82,7 @@ class _HelpAboutViewState extends State<HelpAboutView> {
     return Padding(
       padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
+        leading: const Icon(Icons.help), // Added Icon
         title: ColoredText(AppLocalizations.of(context)!.help),
         focusColor: Theme.of(context).focusColor,
         hoverColor: Theme.of(context).hoverColor,
@@ -90,10 +93,27 @@ class _HelpAboutViewState extends State<HelpAboutView> {
     );
   }
 
+  Widget _getYouTubeChannel(context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: ListTile(
+        leading: const Icon(Icons.video_library), // Added Icon
+        title: ColoredText("YouTube Channel"),
+        focusColor: Theme.of(context).focusColor,
+        hoverColor: Theme.of(context).hoverColor,
+        onTap: () => launchUrl(
+            Uri.parse(
+                "https://www.youtube.com/channel/UCMKjBJT7vMjyWt8RU4lpiDg"),
+            mode: LaunchMode.externalApplication),
+      ),
+    );
+  }
+
   Widget _getReportIssueTile(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
+        leading: const Icon(Icons.report), // Added Icon
         title: ColoredText(AppLocalizations.of(context)!.reportIssue),
         focusColor: Theme.of(context).focusColor,
         hoverColor: Theme.of(context).hoverColor,
@@ -111,6 +131,7 @@ class _HelpAboutViewState extends State<HelpAboutView> {
         : Padding(
             padding: const EdgeInsets.only(left: 32.0),
             child: ListTile(
+              leading: const Icon(Icons.star), // Added Icon
               title: ColoredText(AppLocalizations.of(context)!.rateThisApp),
               focusColor: Theme.of(context).focusColor,
               hoverColor: Theme.of(context).hoverColor,
@@ -127,6 +148,7 @@ class _HelpAboutViewState extends State<HelpAboutView> {
     return Padding(
       padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
+          leading: const Icon(Icons.refresh), // Added Icon
           title: ColoredText(AppLocalizations.of(context)!.resetData),
           focusColor: Theme.of(context).focusColor,
           hoverColor: Theme.of(context).hoverColor,
