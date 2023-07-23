@@ -49,7 +49,8 @@ class _TprSearchBarState extends State<TprSearchBar> {
         controller: widget.controller,
         textInputAction: TextInputAction.search,
         maxLines: 1,
-        focusNode: FocusNode()..requestFocus(),
+        // this cause the keyboard to endlessly pop up
+        // focusNode: FocusNode()..requestFocus(),
         onSubmitted: (text) => widget.onSubmitted(text),
         onChanged: (text) {
           final scriptLanguage = ScriptDetector.getLanguage(text);
