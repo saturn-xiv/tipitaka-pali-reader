@@ -5,9 +5,12 @@ import 'package:share_plus/share_plus.dart';
 import 'package:wtf_sliding_sheet/wtf_sliding_sheet.dart';
 
 import '../../../../business_logic/models/page_content.dart';
+import '../../../../business_logic/view_models/search_page_view_model.dart';
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
+import '../../../../utils/platform_info.dart';
 import '../../../dialogs/dictionary_dialog.dart';
+import '../../home/search_page/search_page.dart';
 import '../controller/reader_view_controller.dart';
 import 'pali_page_widget.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
@@ -69,30 +72,30 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
                 bottom: 100.0), // estimated toolbar height
             child: SelectionArea(
               focusNode: FocusNode(
-          canRequestFocus: true,
-        ),
-        contextMenuBuilder: (context, selectableRegionState) {
-          return AdaptiveTextSelectionToolbar.buttonItems(
-            anchors: selectableRegionState.contextMenuAnchors,
-            buttonItems: [
-              ...selectableRegionState.contextMenuButtonItems,
-              // ContextMenuButtonItem(
-              //     onPressed: () {
-              //       ContextMenuController.removeAny();
-              //       onSearch(_selectedContent!.plainText);
-              //     },
-              //     label: 'Search'),
-              ContextMenuButtonItem(
-                  onPressed: () {
-                    ContextMenuController.removeAny();
-                    Share.share(_selectedContent!.plainText,
-                        subject: 'Pāḷi text from TPR');
-                  },
-                  label: 'Share'),
-            ],
-          );
-        },
-        onSelectionChanged: (value) => _selectedContent = value,
+                canRequestFocus: true,
+              ),
+              contextMenuBuilder: (context, selectableRegionState) {
+                return AdaptiveTextSelectionToolbar.buttonItems(
+                  anchors: selectableRegionState.contextMenuAnchors,
+                  buttonItems: [
+                    ...selectableRegionState.contextMenuButtonItems,
+                    ContextMenuButtonItem(
+                        onPressed: () {
+                          ContextMenuController.removeAny();
+                          onSearch(_selectedContent!.plainText);
+                        },
+                        label: 'Search'),
+                    ContextMenuButtonItem(
+                        onPressed: () {
+                          ContextMenuController.removeAny();
+                          Share.share(_selectedContent!.plainText,
+                              subject: 'Pāḷi text from TPR');
+                        },
+                        label: 'Share'),
+                  ],
+                );
+              },
+              onSelectionChanged: (value) => _selectedContent = value,
               child: PaliPageWidget(
                   pageNumber: pageContent.pageNumber!,
                   htmlContent: htmlContent,
@@ -188,6 +191,29 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
           builder: (context, state) => slidingSheetDialogContent,
         );
       },
+    );
+  }
+
+  Future<void> onSearch(String word) async {
+    // removing puntuations etc.
+    // convert to roman if display script is not roman
+    word = PaliScript.getRomanScriptFrom(
+        script: context.read<ScriptLanguageProvider>().currentScript,
+        text: word);
+    word = word.replaceAll(RegExp(r'[^a-zA-ZāīūṅñṭḍṇḷṃĀĪŪṄÑṬḌHṆḶṂ ]'), '');
+    // convert ot lower case
+    word = word.toLowerCase();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SearchPage()),
+    );
+
+    // delay a little miliseconds to wait for SearchPage Initialization
+
+    Future.delayed(
+      const Duration(milliseconds: 50),
+      () => globalSearchWord.value = word,
     );
   }
 }

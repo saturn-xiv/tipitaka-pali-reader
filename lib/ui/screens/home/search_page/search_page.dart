@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/ui/widgets/get_velthuis_help_widget.dart';
 import 'package:tipitaka_pali/ui/widgets/value_listenser.dart';
+import 'package:tipitaka_pali/utils/platform_info.dart';
 import '../../../../services/database/database_helper.dart';
 import '../../../../services/prefs.dart';
 import '../../../../services/repositories/search_history_repo.dart';
@@ -64,8 +65,9 @@ class _SearchPageState extends State<SearchPage> {
           final vm = context.read<SearchPageViewModel>();
           return Scaffold(
               appBar: AppBar(
-                leading: getVelthuisHelp(context),
-                automaticallyImplyLeading: false,
+                // disable because of conflit with mobile search
+                // leading: getVelthuisHelp(context),
+                automaticallyImplyLeading: Mobile.isPhone(context),
                 title: Text(AppLocalizations.of(context)!.search),
                 centerTitle: true,
                 actions: [

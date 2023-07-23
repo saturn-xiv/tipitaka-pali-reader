@@ -7,6 +7,7 @@ import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/app.dart';
 import 'package:tipitaka_pali/business_logic/view_models/search_page_view_model.dart';
 import 'package:tipitaka_pali/services/rx_prefs.dart';
+import 'package:tipitaka_pali/ui/screens/home/search_page/search_page.dart';
 import 'package:tipitaka_pali/ui/screens/reader/widgets/vertical_book_slider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/utils/platform_info.dart';
@@ -248,7 +249,7 @@ class _VerticalBookViewState extends State<VerticalBookView> {
         return;
       }
 
-      // displaying dictionary in side sheet dialog 
+      // displaying dictionary in side sheet dialog
       final sideSheetWidth = context
           .read<StreamingSharedPreferences>()
           .getDouble(panelSizeKey, defaultValue: defaultPanelSize)
@@ -294,54 +295,54 @@ class _VerticalBookViewState extends State<VerticalBookView> {
     } else {
       // displaying dictionary using bottom sheet dialog
       await showSlidingBottomSheet(
-      context,
-      builder: (context) {
-        //Widget for SlidingSheetDialog's builder method
-        final statusBarHeight = MediaQuery.of(context).padding.top;
-        final screenHeight = MediaQuery.of(context).size.height;
-        const marginTop = 24.0;
-        final slidingSheetDialogContent = SizedBox(
-          height: screenHeight - (statusBarHeight + marginTop),
-          child: DictionaryDialog(word: word),
-        );
+        context,
+        builder: (context) {
+          //Widget for SlidingSheetDialog's builder method
+          final statusBarHeight = MediaQuery.of(context).padding.top;
+          final screenHeight = MediaQuery.of(context).size.height;
+          const marginTop = 24.0;
+          final slidingSheetDialogContent = SizedBox(
+            height: screenHeight - (statusBarHeight + marginTop),
+            child: DictionaryDialog(word: word),
+          );
 
-        return SlidingSheetDialog(
-          elevation: 8,
-          cornerRadius: 16,
-          duration: Duration(
-            milliseconds: Prefs.animationSpeed.round(),
-          ),
-          // minHeight: 200,
-          snapSpec: const SnapSpec(
-            snap: true,
-            snappings: [0.4, 0.6, 0.8, 1.0],
-            positioning: SnapPositioning.relativeToSheetHeight,
-          ),
-          headerBuilder: (context, _) {
-            // building drag handle view
-            return Center(
-                heightFactor: 1,
-                child: Container(
-                  width: 56,
-                  height: 10,
-                  // color: Colors.black45,
-                  decoration: BoxDecoration(
-                    // border: Border.all(color: Colors.red),
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ));
-          },
-          // this builder is called when state change
-          // normaly three states occurs
-          // first state - isLaidOut = false
-          // second state - islaidOut = true , isShown = false
-          // thirs state - islaidOut = true , isShown = ture
-          // to avoid there times rebuilding, return  prebuild content
-          builder: (context, state) => slidingSheetDialogContent,
-        );
-      },
-    );
+          return SlidingSheetDialog(
+            elevation: 8,
+            cornerRadius: 16,
+            duration: Duration(
+              milliseconds: Prefs.animationSpeed.round(),
+            ),
+            // minHeight: 200,
+            snapSpec: const SnapSpec(
+              snap: true,
+              snappings: [0.4, 0.6, 0.8, 1.0],
+              positioning: SnapPositioning.relativeToSheetHeight,
+            ),
+            headerBuilder: (context, _) {
+              // building drag handle view
+              return Center(
+                  heightFactor: 1,
+                  child: Container(
+                    width: 56,
+                    height: 10,
+                    // color: Colors.black45,
+                    decoration: BoxDecoration(
+                      // border: Border.all(color: Colors.red),
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ));
+            },
+            // this builder is called when state change
+            // normaly three states occurs
+            // first state - isLaidOut = false
+            // second state - islaidOut = true , isShown = false
+            // thirs state - islaidOut = true , isShown = ture
+            // to avoid there times rebuilding, return  prebuild content
+            builder: (context, state) => slidingSheetDialogContent,
+          );
+        },
+      );
     }
   }
 
@@ -355,15 +356,23 @@ class _VerticalBookViewState extends State<VerticalBookView> {
     // convert ot lower case
     word = word.toLowerCase();
 
-    // displaying dictionary in the side navigation view
-    if (!context.read<NavigationProvider>().isNavigationPaneOpened) {
-      context.read<NavigationProvider>().toggleNavigationPane();
+    if (PlatformInfo.isDesktop || Mobile.isTablet(context)) {
+      // displaying dictionary in the side navigation view
+      if (!context.read<NavigationProvider>().isNavigationPaneOpened) {
+        context.read<NavigationProvider>().toggleNavigationPane();
+      }
+      context.read<NavigationProvider>().moveToSearchPage();
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const SearchPage()),
+      );
     }
-    context.read<NavigationProvider>().moveToSearchPage();
     // delay a little miliseconds to wait for SearchPage Initialization
 
-    Future.delayed(const Duration(milliseconds: 50), () {
-      globalSearchWord.value = word;
-    });
+    Future.delayed(
+      const Duration(milliseconds: 50),
+      () => globalSearchWord.value = word,
+    );
   }
 }
