@@ -1,42 +1,55 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class ValueListener<T> extends StatefulWidget {
-  final ValueNotifier<T> notifier;
+class ValueListenableListener<T> extends StatefulWidget {
+  final ValueListenable<T> valueListenable;
   final Widget child;
-  final void Function(T)? onChanged;
+  final ValueChanged<T>? onValueChanged;
 
-  const ValueListener({
+  const ValueListenableListener({
     Key? key,
-    required this.notifier,
+    required this.valueListenable,
     required this.child,
-    this.onChanged,
+    this.onValueChanged,
   }) : super(key: key);
 
   @override
-  _ValueListenerState<T> createState() => _ValueListenerState<T>();
+  State<ValueListenableListener<T>> createState() =>
+      _ValueListenableListenerState<T>();
 }
 
-class _ValueListenerState<T> extends State<ValueListener<T>> {
+class _ValueListenableListenerState<T>
+    extends State<ValueListenableListener<T>> {
   late T _value;
 
   @override
   void initState() {
     super.initState();
-    _value = widget.notifier.value;
-    widget.notifier.addListener(_handleValueChanged);
+    _value = widget.valueListenable.value;
+    widget.valueListenable.addListener(_handleValueChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant ValueListenableListener<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.valueListenable != widget.valueListenable) {
+      oldWidget.valueListenable.removeListener(_handleValueChanged);
+      _value = widget.valueListenable.value;
+      widget.valueListenable.addListener(_handleValueChanged);
+    }
   }
 
   @override
   void dispose() {
-    widget.notifier.removeListener(_handleValueChanged);
+    widget.valueListenable.removeListener(_handleValueChanged);
     super.dispose();
   }
 
   void _handleValueChanged() {
-    final newValue = widget.notifier.value;
+    final newValue = widget.valueListenable.value;
     if (newValue != _value) {
       _value = newValue;
-      widget.onChanged?.call(newValue);
+      widget.onValueChanged?.call(newValue);
     }
   }
 

@@ -43,9 +43,9 @@ class _SearchPageState extends State<SearchPage> {
     controller = TextEditingController();
     isShowingSearchModeView = false;
     super.initState();
-    globalSearchWord.addListener(() {
-      setState(() {});
-    });
+    // globalSearchWord.addListener(() {
+    //   setState(() {});
+    // });
   }
 
   @override
@@ -89,13 +89,13 @@ class _SearchPageState extends State<SearchPage> {
                   )
                 ],
               ),
-              body: ValueListener(
-                onChanged: (searchWord) {
+              body: ValueListenableListener(
+                onValueChanged: (searchWord) {
                   if (searchWord != null) {
                     _onSubmitted(searchWord, vm);
                   }
                 },
-                notifier: globalSearchWord,
+                valueListenable: globalSearchWord,
                 child: Column(
                   children: [
                     SearchTypeSegmentedControl(
