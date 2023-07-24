@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:slidable_bar/slidable_bar.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
+import 'package:tipitaka_pali/services/rx_prefs.dart';
 import 'package:tipitaka_pali/ui/screens/reader/mobile_reader_container.dart';
 import 'package:tipitaka_pali/ui/screens/reader/widgets/search_widget.dart';
+import 'package:wtf_sliding_sheet/wtf_sliding_sheet.dart';
 
 import '../../../app.dart';
 import '../../../business_logic/models/book.dart';
+import '../../../business_logic/view_models/search_page_view_model.dart';
+import '../../../providers/navigation_provider.dart';
 import '../../../services/database/database_helper.dart';
+import '../../../services/provider/script_language_provider.dart';
 import '../../../services/repositories/book_repo.dart';
 import '../../../services/repositories/page_content_repo.dart';
+import '../../../utils/pali_script.dart';
 import '../../../utils/platform_info.dart';
+import '../../dialogs/dictionary_dialog.dart';
+import '../dictionary/controller/dictionary_controller.dart';
 import '../home/openning_books_provider.dart';
+import '../home/search_page/search_page.dart';
 import 'controller/reader_view_controller.dart';
 import 'widgets/vertical_book_view.dart';
 import 'widgets/horizontal_book_view.dart';
@@ -62,14 +73,16 @@ class Reader extends StatelessWidget {
           initialPage: initialPage,
           textToHighlight: textToHighlight)
         ..loadDocument(),
-      child: ReaderView(bookViewMode: bookViewMode,),
+      child: ReaderView(
+        bookViewMode: bookViewMode,
+      ),
     );
   }
 }
 
 class ReaderView extends StatelessWidget implements Searchable {
   final BookViewMode bookViewMode;
-  ReaderView({Key? key,required this.bookViewMode}) : super(key: key);
+  ReaderView({Key? key, required this.bookViewMode}) : super(key: key);
   final _sc = SlidableBarController(initialStatus: Prefs.controlBarShow);
 
   @override
@@ -133,12 +146,173 @@ class ReaderView extends StatelessWidget implements Searchable {
                               // don't const these two guys, otherwise theme changes
                               // won't be reflected, alternatively: get notified about
                               // changes in the views themselves
-                              ? const VerticalBookView()
-                              : const HorizontalBookView()),
+                              ? VerticalBookView(
+                                  onSearchedSelectedText: (text) =>
+                                      _onSearchSelectedText(text, context),
+                                  onSharedSelectedText: _onShareSelectedText,
+                                  onClickedWord: (word) => _onClickedWord(word, context),
+                                )
+                              : HorizontalBookView(
+                                  onSearchedSelectedText: (text) =>
+                                      _onSearchSelectedText(text, context),
+                                  onSharedSelectedText: _onShareSelectedText,
+                                  onClickedWord: (word) => _onClickedWord(word, context),
+                                )),
                     ])),
               ))),
       // bottomNavigationBar: SafeArea(child: ControlBar()),
     );
+  }
+
+  void _onSearchSelectedText(String text, BuildContext context) {
+    // removing puntuations etc.
+    // convert to roman if display script is not roman
+    var word = PaliScript.getRomanScriptFrom(
+        script: context.read<ScriptLanguageProvider>().currentScript,
+        text: text);
+    word = word.replaceAll(RegExp(r'[^a-zA-ZāīūṅñṭḍṇḷṃĀĪŪṄÑṬḌHṆḶṂ ]'), '');
+    // convert ot lower case
+    word = word.toLowerCase();
+
+    if (PlatformInfo.isDesktop || Mobile.isTablet(context)) {
+      // displaying dictionary in the side navigation view
+      if (!context.read<NavigationProvider>().isNavigationPaneOpened) {
+        context.read<NavigationProvider>().toggleNavigationPane();
+      }
+      context.read<NavigationProvider>().moveToSearchPage();
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const SearchPage()),
+      );
+    }
+    // delay a little miliseconds to wait for SearchPage Initialization
+
+    Future.delayed(
+      const Duration(milliseconds: 50),
+      () => globalSearchWord.value = word,
+    );
+  }
+
+  void _onShareSelectedText(String text) {
+    Share.share(text, subject: 'Pāḷi text from TPR');
+  }
+
+  Future<void> _onClickedWord(String word, BuildContext context) async {
+    // removing puntuations etc.
+    // convert to roman if display script is not roman
+    word = PaliScript.getRomanScriptFrom(
+        script: context.read<ScriptLanguageProvider>().currentScript,
+        text: word);
+    word = word.replaceAll(RegExp(r'[^a-zA-ZāīūṅñṭḍṇḷṃĀĪŪṄÑṬḌHṆḶṂ]'), '');
+    // convert ot lower case
+    word = word.toLowerCase();
+
+    // displaying dictionary in the side navigation view
+    if ((PlatformInfo.isDesktop || Mobile.isTablet(context))) {
+      if (context.read<NavigationProvider>().isNavigationPaneOpened) {
+        context.read<NavigationProvider>().moveToDictionaryPage();
+        // delay a little miliseconds to wait for DictionaryPage Initialation
+        await Future.delayed(const Duration(milliseconds: 50),
+            () => globalLookupWord.value = word);
+        return;
+      }
+
+      // displaying dictionary in side sheet dialog
+      final sideSheetWidth = context
+          .read<StreamingSharedPreferences>()
+          .getDouble(panelSizeKey, defaultValue: defaultPanelSize)
+          .getValue();
+
+      showGeneralDialog(
+        context: context,
+        barrierLabel: 'TOC',
+        barrierDismissible: true,
+        transitionDuration:
+            Duration(milliseconds: Prefs.animationSpeed.round()),
+        transitionBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween(begin: const Offset(-1, 0), end: const Offset(0, 0))
+                .animate(
+              CurvedAnimation(parent: animation, curve: Curves.linear),
+            ),
+            child: child,
+          );
+        },
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: Material(
+              type: MaterialType.transparency,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                width: sideSheetWidth,
+                height: MediaQuery.of(context).size.height - 80,
+                decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background,
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(16),
+                      bottomRight: Radius.circular(16),
+                    )),
+                child: DictionaryDialog(word: word),
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      // displaying dictionary using bottom sheet dialog
+      await showSlidingBottomSheet(
+        context,
+        builder: (context) {
+          //Widget for SlidingSheetDialog's builder method
+          final statusBarHeight = MediaQuery.of(context).padding.top;
+          final screenHeight = MediaQuery.of(context).size.height;
+          const marginTop = 24.0;
+          final slidingSheetDialogContent = SizedBox(
+            height: screenHeight - (statusBarHeight + marginTop),
+            child: DictionaryDialog(word: word),
+          );
+
+          return SlidingSheetDialog(
+            elevation: 8,
+            cornerRadius: 16,
+            duration: Duration(
+              milliseconds: Prefs.animationSpeed.round(),
+            ),
+            // minHeight: 200,
+            snapSpec: const SnapSpec(
+              snap: true,
+              snappings: [0.4, 0.6, 0.8, 1.0],
+              positioning: SnapPositioning.relativeToSheetHeight,
+            ),
+            headerBuilder: (context, _) {
+              // building drag handle view
+              return Center(
+                  heightFactor: 1,
+                  child: Container(
+                    width: 56,
+                    height: 10,
+                    // color: Colors.black45,
+                    decoration: BoxDecoration(
+                      // border: Border.all(color: Colors.red),
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ));
+            },
+            // this builder is called when state change
+            // normaly three states occurs
+            // first state - isLaidOut = false
+            // second state - islaidOut = true , isShown = false
+            // thirs state - islaidOut = true , isShown = ture
+            // to avoid there times rebuilding, return  prebuild content
+            builder: (context, state) => slidingSheetDialogContent,
+          );
+        },
+      );
+    }
   }
 
   Color getChosenColor() {

@@ -2,29 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
-import 'package:tipitaka_pali/app.dart';
-import 'package:tipitaka_pali/business_logic/view_models/search_page_view_model.dart';
-import 'package:tipitaka_pali/services/rx_prefs.dart';
-import 'package:tipitaka_pali/ui/screens/home/search_page/search_page.dart';
-import 'package:tipitaka_pali/ui/screens/reader/widgets/vertical_book_slider.dart';
-import 'package:tipitaka_pali/services/prefs.dart';
-import 'package:tipitaka_pali/utils/platform_info.dart';
-import 'package:wtf_sliding_sheet/wtf_sliding_sheet.dart';
 
+import '../../../../app.dart';
 import '../../../../business_logic/models/page_content.dart';
-import '../../../../providers/navigation_provider.dart';
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
-import '../../../dialogs/dictionary_dialog.dart';
-import '../../../widgets/custom_text_selection_control.dart';
-import '../../dictionary/controller/dictionary_controller.dart';
 import '../controller/reader_view_controller.dart';
 import 'pali_page_widget.dart';
+import 'vertical_book_slider.dart';
 
 class VerticalBookView extends StatefulWidget {
-  const VerticalBookView({Key? key}) : super(key: key);
+  const VerticalBookView({
+    Key? key,
+    this.onSearchedSelectedText,
+    this.onSharedSelectedText,
+    this.onClickedWord,
+  }) : super(key: key);
+  final ValueChanged<String>? onSearchedSelectedText;
+  final ValueChanged<String>? onSharedSelectedText;
+  final ValueChanged<String>? onClickedWord;
 
   @override
   State<VerticalBookView> createState() => _VerticalBookViewState();
@@ -95,14 +91,17 @@ class _VerticalBookViewState extends State<VerticalBookView> {
                     ContextMenuButtonItem(
                         onPressed: () {
                           ContextMenuController.removeAny();
-                          onSearch(_selectedContent!.plainText);
+                          widget.onSearchedSelectedText
+                              ?.call(_selectedContent!.plainText);
                         },
                         label: 'Search'),
                     ContextMenuButtonItem(
                         onPressed: () {
                           ContextMenuController.removeAny();
-                          Share.share(_selectedContent!.plainText,
-                              subject: 'Pāḷi text from TPR');
+                          widget.onSharedSelectedText
+                              ?.call(_selectedContent!.plainText);
+                          // Share.share(_selectedContent!.plainText,
+                          //     subject: 'Pāḷi text from TPR');
                         },
                         label: 'Share'),
                   ],
@@ -144,8 +143,7 @@ class _VerticalBookViewState extends State<VerticalBookView> {
                           highlightedWord: readerViewController.textToHighlight,
                           searchText: searchText,
                           pageToHighlight: readerViewController.pageToHighlight,
-                          onClick: onClickedWord,
-                          onSearch: onSearch,
+                          onClick: widget.onClickedWord,
                           book: readerViewController.book);
                     },
                   )),
@@ -229,150 +227,4 @@ class _VerticalBookViewState extends State<VerticalBookView> {
     }
   }
 
-  Future<void> onClickedWord(String word) async {
-    // removing puntuations etc.
-    // convert to roman if display script is not roman
-    word = PaliScript.getRomanScriptFrom(
-        script: context.read<ScriptLanguageProvider>().currentScript,
-        text: word);
-    word = word.replaceAll(RegExp(r'[^a-zA-ZāīūṅñṭḍṇḷṃĀĪŪṄÑṬḌHṆḶṂ]'), '');
-    // convert ot lower case
-    word = word.toLowerCase();
-
-    // displaying dictionary in the side navigation view
-    if ((PlatformInfo.isDesktop || Mobile.isTablet(context))) {
-      if (context.read<NavigationProvider>().isNavigationPaneOpened) {
-        context.read<NavigationProvider>().moveToDictionaryPage();
-        // delay a little miliseconds to wait for DictionaryPage Initialation
-        await Future.delayed(const Duration(milliseconds: 50),
-            () => globalLookupWord.value = word);
-        return;
-      }
-
-      // displaying dictionary in side sheet dialog
-      final sideSheetWidth = context
-          .read<StreamingSharedPreferences>()
-          .getDouble(panelSizeKey, defaultValue: defaultPanelSize)
-          .getValue();
-
-      showGeneralDialog(
-        context: context,
-        barrierLabel: 'TOC',
-        barrierDismissible: true,
-        transitionDuration:
-            Duration(milliseconds: Prefs.animationSpeed.round()),
-        transitionBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween(begin: const Offset(-1, 0), end: const Offset(0, 0))
-                .animate(
-              CurvedAnimation(parent: animation, curve: Curves.linear),
-            ),
-            child: child,
-          );
-        },
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return Align(
-            alignment: Alignment.centerLeft,
-            child: Material(
-              type: MaterialType.transparency,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-                width: sideSheetWidth,
-                height: MediaQuery.of(context).size.height - 80,
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.background,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(16),
-                      bottomRight: Radius.circular(16),
-                    )),
-                child: DictionaryDialog(word: word),
-              ),
-            ),
-          );
-        },
-      );
-    } else {
-      // displaying dictionary using bottom sheet dialog
-      await showSlidingBottomSheet(
-        context,
-        builder: (context) {
-          //Widget for SlidingSheetDialog's builder method
-          final statusBarHeight = MediaQuery.of(context).padding.top;
-          final screenHeight = MediaQuery.of(context).size.height;
-          const marginTop = 24.0;
-          final slidingSheetDialogContent = SizedBox(
-            height: screenHeight - (statusBarHeight + marginTop),
-            child: DictionaryDialog(word: word),
-          );
-
-          return SlidingSheetDialog(
-            elevation: 8,
-            cornerRadius: 16,
-            duration: Duration(
-              milliseconds: Prefs.animationSpeed.round(),
-            ),
-            // minHeight: 200,
-            snapSpec: const SnapSpec(
-              snap: true,
-              snappings: [0.4, 0.6, 0.8, 1.0],
-              positioning: SnapPositioning.relativeToSheetHeight,
-            ),
-            headerBuilder: (context, _) {
-              // building drag handle view
-              return Center(
-                  heightFactor: 1,
-                  child: Container(
-                    width: 56,
-                    height: 10,
-                    // color: Colors.black45,
-                    decoration: BoxDecoration(
-                      // border: Border.all(color: Colors.red),
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ));
-            },
-            // this builder is called when state change
-            // normaly three states occurs
-            // first state - isLaidOut = false
-            // second state - islaidOut = true , isShown = false
-            // thirs state - islaidOut = true , isShown = ture
-            // to avoid there times rebuilding, return  prebuild content
-            builder: (context, state) => slidingSheetDialogContent,
-          );
-        },
-      );
-    }
-  }
-
-  Future<void> onSearch(String word) async {
-    // removing puntuations etc.
-    // convert to roman if display script is not roman
-    word = PaliScript.getRomanScriptFrom(
-        script: context.read<ScriptLanguageProvider>().currentScript,
-        text: word);
-    word = word.replaceAll(RegExp(r'[^a-zA-ZāīūṅñṭḍṇḷṃĀĪŪṄÑṬḌHṆḶṂ ]'), '');
-    // convert ot lower case
-    word = word.toLowerCase();
-
-    if (PlatformInfo.isDesktop || Mobile.isTablet(context)) {
-      // displaying dictionary in the side navigation view
-      if (!context.read<NavigationProvider>().isNavigationPaneOpened) {
-        context.read<NavigationProvider>().toggleNavigationPane();
-      }
-      context.read<NavigationProvider>().moveToSearchPage();
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const SearchPage()),
-      );
-    }
-    // delay a little miliseconds to wait for SearchPage Initialization
-
-    Future.delayed(
-      const Duration(milliseconds: 50),
-      () => globalSearchWord.value = word,
-    );
-  }
 }

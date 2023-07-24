@@ -29,7 +29,6 @@ class PaliPageWidget extends StatefulWidget {
   final int? pageToHighlight;
   final Book? book;
   final Function(String clickedWord)? onClick;
-  final Function(String clickedWord)? onSearch;
   const PaliPageWidget(
       {Key? key,
       required this.pageNumber,
@@ -37,7 +36,6 @@ class PaliPageWidget extends StatefulWidget {
       required this.script,
       this.highlightedWord,
       this.onClick,
-      this.onSearch,
       this.searchText,
       this.pageToHighlight,
       this.book})

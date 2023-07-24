@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:wtf_sliding_sheet/wtf_sliding_sheet.dart';
 
 import '../../../../business_logic/models/page_content.dart';
-import '../../../../business_logic/view_models/search_page_view_model.dart';
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
-import '../../../../utils/platform_info.dart';
-import '../../../dialogs/dictionary_dialog.dart';
-import '../../home/search_page/search_page.dart';
 import '../controller/reader_view_controller.dart';
 import 'pali_page_widget.dart';
-import 'package:tipitaka_pali/services/prefs.dart';
 
 class HorizontalBookView extends StatefulWidget {
-  const HorizontalBookView({Key? key}) : super(key: key);
+  const HorizontalBookView({
+    Key? key,
+    this.onSearchedSelectedText,
+    this.onSharedSelectedText,
+    this.onClickedWord,
+  }) : super(key: key);
+  final ValueChanged<String>? onSearchedSelectedText;
+  final ValueChanged<String>? onSharedSelectedText;
+  final ValueChanged<String>? onClickedWord;
 
   @override
   State<HorizontalBookView> createState() => _HorizontalBookViewState();
@@ -82,14 +83,18 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
                     ContextMenuButtonItem(
                         onPressed: () {
                           ContextMenuController.removeAny();
-                          onSearch(_selectedContent!.plainText);
+                          widget.onSearchedSelectedText
+                              ?.call(_selectedContent!.plainText);
+                          // onSearch(_selectedContent!.plainText);
                         },
                         label: 'Search'),
                     ContextMenuButtonItem(
                         onPressed: () {
                           ContextMenuController.removeAny();
-                          Share.share(_selectedContent!.plainText,
-                              subject: 'Pāḷi text from TPR');
+                          widget.onSharedSelectedText
+                              ?.call(_selectedContent!.plainText);
+                          // Share.share(_selectedContent!.plainText,
+                          //     subject: 'Pāḷi text from TPR');
                         },
                         label: 'Share'),
                   ],
@@ -102,7 +107,7 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
                   script: script,
                   highlightedWord: readerViewController.textToHighlight,
                   pageToHighlight: readerViewController.pageToHighlight,
-                  onClick: onClickedWord,
+                  onClick: widget.onClickedWord,
                   book: readerViewController.book),
             ),
           ),
@@ -133,87 +138,4 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
     pageController.jumpToPage(pageIndex);
   }
 
-  Future<void> onClickedWord(String word) async {
-    // removing puntuations etc.
-    // convert to roman if display script is not roman
-    word = PaliScript.getRomanScriptFrom(
-        script: context.read<ScriptLanguageProvider>().currentScript,
-        text: word);
-    word = word.replaceAll(RegExp(r'[^a-zA-ZāīūṅñṭḍṇḷṃĀĪŪṄÑṬḌHṆḶṂ]'), '');
-    // convert ot lower case
-    word = word.toLowerCase();
-
-    await showSlidingBottomSheet(
-      context,
-      builder: (context) {
-        //Widget for SlidingSheetDialog's builder method
-        final statusBarHeight = MediaQuery.of(context).padding.top;
-        final screenHeight = MediaQuery.of(context).size.height;
-        const marginTop = 24.0;
-        final slidingSheetDialogContent = SizedBox(
-          height: screenHeight - (statusBarHeight + marginTop),
-          child: DictionaryDialog(word: word),
-        );
-
-        return SlidingSheetDialog(
-          elevation: 8,
-          cornerRadius: 16,
-          duration: Duration(
-            milliseconds: Prefs.animationSpeed.round(),
-          ),
-          // minHeight: 200,
-          snapSpec: const SnapSpec(
-            snap: true,
-            snappings: [0.4, 0.6, 0.8, 1.0],
-            positioning: SnapPositioning.relativeToSheetHeight,
-          ),
-          headerBuilder: (context, _) {
-            // building drag handle view
-            return Center(
-                heightFactor: 1,
-                child: Container(
-                  width: 56,
-                  height: 10,
-                  // color: Colors.black45,
-                  decoration: BoxDecoration(
-                    // border: Border.all(color: Colors.red),
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ));
-          },
-          // this builder is called when state change
-          // normaly three states occurs
-          // first state - isLaidOut = false
-          // second state - islaidOut = true , isShown = false
-          // thirs state - islaidOut = true , isShown = ture
-          // to avoid there times rebuilding, return  prebuild content
-          builder: (context, state) => slidingSheetDialogContent,
-        );
-      },
-    );
-  }
-
-  Future<void> onSearch(String word) async {
-    // removing puntuations etc.
-    // convert to roman if display script is not roman
-    word = PaliScript.getRomanScriptFrom(
-        script: context.read<ScriptLanguageProvider>().currentScript,
-        text: word);
-    word = word.replaceAll(RegExp(r'[^a-zA-ZāīūṅñṭḍṇḷṃĀĪŪṄÑṬḌHṆḶṂ ]'), '');
-    // convert ot lower case
-    word = word.toLowerCase();
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const SearchPage()),
-    );
-
-    // delay a little miliseconds to wait for SearchPage Initialization
-
-    Future.delayed(
-      const Duration(milliseconds: 50),
-      () => globalSearchWord.value = word,
-    );
-  }
 }
