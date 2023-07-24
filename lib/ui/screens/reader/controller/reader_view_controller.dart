@@ -106,9 +106,16 @@ class ReaderViewController extends ChangeNotifier {
     _currentSearchResult.value = 1;
   }
 
-  void showSearchWidget(bool show) {
+  void showSearchWidget(bool show, {String? searchText}) {
     _showSearch = show;
-    _searchText.value = '';
+    if (searchText != null) {
+      _searchText.value = searchText;
+      search(searchText);
+    } else {
+      _searchText.value = '';
+    }
+    _searchText.value = searchText ?? '';
+
     notifyListeners();
   }
 
@@ -209,7 +216,8 @@ class ReaderViewController extends ChangeNotifier {
     return await repository.getPageNumber(book.id, paragraphNumber);
   }
 
-  Future<void> onGoto({required int pageNumber, String? word, bool saveToRecent = true}) async {
+  Future<void> onGoto(
+      {required int pageNumber, String? word, bool saveToRecent = true}) async {
     myLogger.i('current page number: $pageNumber');
     // update current page
     _currentPage.value = pageNumber;
@@ -219,8 +227,8 @@ class ReaderViewController extends ChangeNotifier {
     final openedBookController = context.read<OpenningBooksProvider>();
     openedBookController.update(newPageNumber: _currentPage.value);
     // persit
-    if(saveToRecent){
-    await _saveToRecent();
+    if (saveToRecent) {
+      await _saveToRecent();
     }
   }
 

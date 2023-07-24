@@ -139,7 +139,13 @@ class ReaderView extends StatelessWidget implements Searchable {
                     clickerSize: 32,
                     clickerPosition: 0.98,
                     child: Stack(children: [
-                      if (showSearch) const SearchWidget(),
+                      if (showSearch)
+                        SearchWidget(
+                          word: context
+                              .read<ReaderViewController>()
+                              .searchText
+                              .value,
+                        ),
                       Padding(
                           padding: EdgeInsets.only(top: showSearch ? 42 : 0),
                           child: bookViewMode == BookViewMode.horizontal
@@ -150,13 +156,23 @@ class ReaderView extends StatelessWidget implements Searchable {
                                   onSearchedSelectedText: (text) =>
                                       _onSearchSelectedText(text, context),
                                   onSharedSelectedText: _onShareSelectedText,
-                                  onClickedWord: (word) => _onClickedWord(word, context),
+                                  onClickedWord: (word) =>
+                                      _onClickedWord(word, context),
+                                  onSearchedInCurrentBook: (text) {
+                                    context
+                                        .read<ReaderViewController>()
+                                        .showSearchWidget(
+                                          true,
+                                          searchText: text,
+                                        );
+                                  },
                                 )
                               : HorizontalBookView(
                                   onSearchedSelectedText: (text) =>
                                       _onSearchSelectedText(text, context),
                                   onSharedSelectedText: _onShareSelectedText,
-                                  onClickedWord: (word) => _onClickedWord(word, context),
+                                  onClickedWord: (word) =>
+                                      _onClickedWord(word, context),
                                 )),
                     ])),
               ))),

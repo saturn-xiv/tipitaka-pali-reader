@@ -17,10 +17,12 @@ class VerticalBookView extends StatefulWidget {
     this.onSearchedSelectedText,
     this.onSharedSelectedText,
     this.onClickedWord,
+    this.onSearchedInCurrentBook,
   }) : super(key: key);
   final ValueChanged<String>? onSearchedSelectedText;
   final ValueChanged<String>? onSharedSelectedText;
   final ValueChanged<String>? onClickedWord;
+  final ValueChanged<String>? onSearchedInCurrentBook;
 
   @override
   State<VerticalBookView> createState() => _VerticalBookViewState();
@@ -95,6 +97,12 @@ class _VerticalBookViewState extends State<VerticalBookView> {
                               ?.call(_selectedContent!.plainText);
                         },
                         label: 'Search'),
+                    ContextMenuButtonItem(
+                        onPressed: () {
+                          ContextMenuController.removeAny();
+                          widget.onSearchedInCurrentBook?.call(_selectedContent!.plainText);
+                        },
+                        label: 'Search in current'),
                     ContextMenuButtonItem(
                         onPressed: () {
                           ContextMenuController.removeAny();
@@ -226,5 +234,4 @@ class _VerticalBookViewState extends State<VerticalBookView> {
       itemScrollController.jumpTo(index: pageIndex);
     }
   }
-
 }

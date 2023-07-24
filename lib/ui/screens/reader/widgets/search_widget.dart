@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 
 import '../../../../services/provider/theme_change_notifier.dart';
 import '../../../../utils/pali_script_converter.dart';
@@ -9,7 +10,8 @@ import '../../../widgets/labeled_checkbox.dart';
 import '../controller/reader_view_controller.dart';
 
 class SearchWidget extends StatefulWidget {
-  const SearchWidget({Key? key}) : super(key: key);
+  const SearchWidget({Key? key, this.word}) : super(key: key);
+  final String? word;
 
   @override
   State<SearchWidget> createState() => _SearchWidgetState();
@@ -21,7 +23,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   late final double max;
   late final int divisions;
   late int currentPage;
-  final TextEditingController _controller = TextEditingController();
+  late final TextEditingController _controller = TextEditingController(text: widget.word);
 
   @override
   void initState() {
