@@ -23,7 +23,8 @@ class _SearchWidgetState extends State<SearchWidget> {
   late final double max;
   late final int divisions;
   late int currentPage;
-  late final TextEditingController _controller = TextEditingController(text: widget.word);
+  late final TextEditingController _controller =
+      TextEditingController(text: widget.word);
 
   @override
   void initState() {
@@ -77,105 +78,138 @@ class _SearchWidgetState extends State<SearchWidget> {
         ? baseColor
         : baseColor.withAlpha(100);
 
-    return SizedBox(
-        width: double.infinity,
-        height: 42,
-        child: Container(
-          padding: const EdgeInsets.all(3),
-          height: 42,
+    return LayoutBuilder(
+      builder: (_, BoxConstraints boxConstraints) {
+        bool haveRoom = boxConstraints.maxWidth > 600;
+        // debugPrint('width: ${boxConstraints.maxWidth}');
+        return Container(
           decoration: const BoxDecoration(
               border: Border(bottom: BorderSide(color: Colors.grey))),
-          child: Row(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                width: 256,
-                child: TextField(
-                  controller: _controller,
-                  autofocus: true,
-                  style: TextStyle(color: textColor),
-                  decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          _controller.clear();
-                        },
-                        icon: const Icon(
-                          Icons.clear,
-                          size: 18,
+                  width: double.infinity,
+                  height: 42,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        flex: 2,
+                        child: TextField(
+                          controller: _controller,
+                          autofocus: true,
+                          style: TextStyle(color: textColor),
+                          decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  _controller.clear();
+                                },
+                                icon: const Icon(
+                                  Icons.clear,
+                                  size: 18,
+                                ),
+                              ),
+                              border: const OutlineInputBorder(),
+                              contentPadding:
+                                  const EdgeInsets.only(left: 8, right: 8)),
                         ),
                       ),
-                      border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.only(left: 8, right: 8)),
-                ),
-              ),
-              if (readerViewController.searchResultCount.value == 0)
-                const Padding(
-                  padding: EdgeInsets.only(left: 10.0),
-                  child: Text('0 results'),
-                ),
-              if (readerViewController.searchResultCount.value > 0)
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Text(
-                      '${readerViewController.currentSearchResult.value} / ${readerViewController.searchResultCount.value}'),
-                ),
-              Padding(
-                  padding: const EdgeInsets.all(2),
-                  child: SizedBox(
-                      height: 38.0,
-                      width: 38.0,
-                      child: IconButton(
-                        padding: const EdgeInsets.all(0.0),
-                        icon: const Icon(Icons.arrow_upward, size: 22.0),
-                        onPressed: () {
-                          readerViewController.searchUpward();
-                        },
-                      ))),
-              Padding(
-                  padding: const EdgeInsets.all(2),
-                  child: SizedBox(
-                      height: 38.0,
-                      width: 38.0,
-                      child: IconButton(
-                        padding: const EdgeInsets.all(0.0),
-                        icon: const Icon(Icons.arrow_downward, size: 22.0),
-                        onPressed: () {
-                          readerViewController.searchDownward();
-                        },
-                      ))),
-              const VerticalDivider(
-                width: 20,
-                thickness: 1,
-                indent: 0,
-                endIndent: 0,
-                color: Colors.grey,
-              ),
-              LabeledCheckbox(
-                value: readerViewController.highlightEveryMatch.value,
-                label: 'Highlight every match',
-                onChanged: (value) {
-                  setState(() {
-                    readerViewController.setHighlightEveryMatch(value);
-                  });
-                },
-                padding: EdgeInsets.zero,
-              ),
-              Expanded(child: Container()),
-              Padding(
-                  padding: const EdgeInsets.all(2),
-                  child: SizedBox(
-                      height: 38.0,
-                      width: 38.0,
-                      child: IconButton(
-                        padding: const EdgeInsets.all(0.0),
-                        icon: const Icon(Icons.close, size: 22.0),
-                        onPressed: () {
-                          rvc.showSearchWidget(false);
-                        },
-                      )))
+                      if (readerViewController.searchResultCount.value == 0)
+                        const Padding(
+                          padding: EdgeInsets.only(left: 10.0),
+                          child: Text('0 results'),
+                        ),
+                      if (readerViewController.searchResultCount.value > 0)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Text(
+                              '${readerViewController.currentSearchResult.value} / ${readerViewController.searchResultCount.value}'),
+                        ),
+                      Padding(
+                          padding: const EdgeInsets.all(2),
+                          child: SizedBox(
+                              height: 38.0,
+                              width: 38.0,
+                              child: IconButton(
+                                padding: const EdgeInsets.all(0.0),
+                                icon:
+                                    const Icon(Icons.arrow_upward, size: 22.0),
+                                onPressed: () {
+                                  readerViewController.searchUpward();
+                                },
+                              ))),
+                      Padding(
+                          padding: const EdgeInsets.all(2),
+                          child: SizedBox(
+                              height: 38.0,
+                              width: 38.0,
+                              child: IconButton(
+                                padding: const EdgeInsets.all(0.0),
+                                icon: const Icon(Icons.arrow_downward,
+                                    size: 22.0),
+                                onPressed: () {
+                                  readerViewController.searchDownward();
+                                },
+                              ))),
+                      const VerticalDivider(
+                        width: 20,
+                        thickness: 1,
+                        indent: 0,
+                        endIndent: 0,
+                        color: Colors.grey,
+                      ),
+                      // adding blank space to prohibit textfield from expanding to hight
+                      if (boxConstraints.maxWidth > 800)
+                        const Flexible(flex: 1, child: SizedBox.expand()),
+                      if (haveRoom)
+                        LabeledCheckbox(
+                          value: readerViewController.highlightEveryMatch.value,
+                          label: 'Highlight every match',
+                          onChanged: (value) {
+                            setState(() {
+                              readerViewController
+                                  .setHighlightEveryMatch(value);
+                            });
+                          },
+                          padding: EdgeInsets.zero,
+                        ),
+                      // Expanded(child: Container()),
+                      Padding(
+                          padding: const EdgeInsets.all(2),
+                          child: SizedBox(
+                              height: 38.0,
+                              width: 38.0,
+                              child: IconButton(
+                                padding: const EdgeInsets.all(0.0),
+                                icon: const Icon(Icons.close, size: 22.0),
+                                onPressed: () {
+                                  rvc.showSearchWidget(false);
+                                },
+                              )))
+                    ],
+                  )),
+              //
+              if (!haveRoom)
+                Row(
+                  children: [
+                    LabeledCheckbox(
+                      value: readerViewController.highlightEveryMatch.value,
+                      label: 'Highlight every match',
+                      onChanged: (value) {
+                        setState(() {
+                          readerViewController.setHighlightEveryMatch(value);
+                        });
+                      },
+                      padding: EdgeInsets.zero,
+                    ),
+                  ],
+                )
             ],
           ),
-        ));
+        );
+      },
+    );
   }
 
   void _listenPageChange() {

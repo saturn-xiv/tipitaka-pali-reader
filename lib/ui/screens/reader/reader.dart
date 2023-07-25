@@ -138,7 +138,7 @@ class ReaderView extends StatelessWidget implements Searchable {
                     backgroundColor: Colors.blue.withOpacity(0.3),
                     clickerSize: 32,
                     clickerPosition: 0.98,
-                    child: Stack(children: [
+                    child: Column(children: [
                       if (showSearch)
                         SearchWidget(
                           word: context
@@ -146,8 +146,8 @@ class ReaderView extends StatelessWidget implements Searchable {
                               .searchText
                               .value,
                         ),
-                      Padding(
-                          padding: EdgeInsets.only(top: showSearch ? 42 : 0),
+                      Expanded(
+                          // padding: EdgeInsets.only(top: showSearch ? 42 : 0),
                           child: bookViewMode == BookViewMode.horizontal
                               // don't const these two guys, otherwise theme changes
                               // won't be reflected, alternatively: get notified about
