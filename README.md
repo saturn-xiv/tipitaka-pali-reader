@@ -12,7 +12,7 @@ https://docs.google.com/document/d/1gQ5B16EjiGMyDUy9S6viJaBv-vZqiZpggkDQHn3z4kc/
 
 Function Requirements Document (FRC)
 
-The Tipitaka Pali Projector will be overhauled and rewritten with the tpp used as a functional requirement model and partial design.  Many things will be redesigned from the base upwards.  The new TPP will be referred to as TPP2 and perhaps renamed to TUPR
+
 
 # New Road Map
 * 1.)  ~~Dictionary History and management items~~
