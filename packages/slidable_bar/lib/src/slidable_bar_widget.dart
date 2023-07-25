@@ -82,6 +82,14 @@ class _SlidableSideBarState extends State<SlidableBar> {
   }
 
   @override
+  void didUpdateWidget(covariant SlidableBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.slidableController != widget.slidableController) {
+      controller = widget.slidableController ?? SlidableBarController();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder<bool>(
         stream: controller.statusStream,
