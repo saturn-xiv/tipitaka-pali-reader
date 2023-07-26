@@ -14,10 +14,12 @@ class HorizontalBookView extends StatefulWidget {
     this.onSearchedSelectedText,
     this.onSharedSelectedText,
     this.onClickedWord,
+    this.onSearchedInCurrentBook,
   }) : super(key: key);
   final ValueChanged<String>? onSearchedSelectedText;
   final ValueChanged<String>? onSharedSelectedText;
   final ValueChanged<String>? onClickedWord;
+  final ValueChanged<String>? onSearchedInCurrentBook;
 
   @override
   State<HorizontalBookView> createState() => _HorizontalBookViewState();
@@ -27,6 +29,7 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
   late final ReaderViewController readerViewController;
   late final PageController pageController;
 
+  String searchText = '';
   SelectedContent? _selectedContent;
 
   @override
@@ -39,12 +42,27 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
             readerViewController.book.firstPage);
 
     readerViewController.currentPage.addListener(_listenPageChange);
+    readerViewController.searchText.addListener(_onSearchTextChanged);
+    readerViewController.currentSearchResult.addListener(() {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+    readerViewController.highlightEveryMatch.addListener(() {
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   @override
   void dispose() {
     readerViewController.currentPage.removeListener(_listenPageChange);
     pageController.dispose();
+    readerViewController.currentSearchResult
+        .removeListener(_onSearchTextChanged);
+    readerViewController.highlightEveryMatch
+        .removeListener(_onSearchTextChanged);
     super.dispose();
   }
 
@@ -91,6 +109,13 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
                     ContextMenuButtonItem(
                         onPressed: () {
                           ContextMenuController.removeAny();
+                          widget.onSearchedInCurrentBook
+                              ?.call(_selectedContent!.plainText);
+                        },
+                        label: 'Search in current'),
+                    ContextMenuButtonItem(
+                        onPressed: () {
+                          ContextMenuController.removeAny();
                           widget.onSharedSelectedText
                               ?.call(_selectedContent!.plainText);
                           // Share.share(_selectedContent!.plainText,
@@ -106,6 +131,7 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
                   htmlContent: htmlContent,
                   script: script,
                   highlightedWord: readerViewController.textToHighlight,
+                  searchText: searchText,
                   pageToHighlight: readerViewController.pageToHighlight,
                   onClick: widget.onClickedWord,
                   book: readerViewController.book),
@@ -138,4 +164,11 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
     pageController.jumpToPage(pageIndex);
   }
 
+  void _onSearchTextChanged() {
+    if (mounted) {
+      setState(() {
+        searchText = readerViewController.searchText.value;
+      });
+    }
+  }
 }

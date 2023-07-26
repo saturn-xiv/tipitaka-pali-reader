@@ -158,14 +158,8 @@ class ReaderView extends StatelessWidget implements Searchable {
                                   onSharedSelectedText: _onShareSelectedText,
                                   onClickedWord: (word) =>
                                       _onClickedWord(word, context),
-                                  onSearchedInCurrentBook: (text) {
-                                    context
-                                        .read<ReaderViewController>()
-                                        .showSearchWidget(
-                                          true,
-                                          searchText: text,
-                                        );
-                                  },
+                                  onSearchedInCurrentBook: (text) =>
+                                      _onClickedSearchInCurrent(context, text),
                                 )
                               : HorizontalBookView(
                                   onSearchedSelectedText: (text) =>
@@ -173,6 +167,8 @@ class ReaderView extends StatelessWidget implements Searchable {
                                   onSharedSelectedText: _onShareSelectedText,
                                   onClickedWord: (word) =>
                                       _onClickedWord(word, context),
+                                  onSearchedInCurrentBook: (text) =>
+                                      _onClickedSearchInCurrent(context, text),
                                 )),
                     ])),
               ))),
@@ -329,6 +325,13 @@ class ReaderView extends StatelessWidget implements Searchable {
         },
       );
     }
+  }
+
+  void _onClickedSearchInCurrent(BuildContext context, String text) {
+    context.read<ReaderViewController>().showSearchWidget(
+          true,
+          searchText: text,
+        );
   }
 
   Color getChosenColor() {

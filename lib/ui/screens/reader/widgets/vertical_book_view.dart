@@ -48,10 +48,14 @@ class _VerticalBookViewState extends State<VerticalBookView> {
     readerViewController.currentPage.addListener(_listenPageChange);
     readerViewController.searchText.addListener(_onSearchTextChanged);
     readerViewController.currentSearchResult.addListener(() {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
     readerViewController.highlightEveryMatch.addListener(() {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -100,7 +104,8 @@ class _VerticalBookViewState extends State<VerticalBookView> {
                     ContextMenuButtonItem(
                         onPressed: () {
                           ContextMenuController.removeAny();
-                          widget.onSearchedInCurrentBook?.call(_selectedContent!.plainText);
+                          widget.onSearchedInCurrentBook
+                              ?.call(_selectedContent!.plainText);
                         },
                         label: 'Search in current'),
                     ContextMenuButtonItem(

@@ -65,7 +65,9 @@ class _SearchWidgetState extends State<SearchWidget> {
   }
 
   void _onSearchCountChanged() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
