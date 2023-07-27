@@ -7,6 +7,7 @@ import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/services/rx_prefs.dart';
+import 'package:tipitaka_pali/ui/screens/reader/intents.dart';
 import 'package:tipitaka_pali/ui/screens/reader/mobile_reader_container.dart';
 import 'package:tipitaka_pali/ui/screens/reader/widgets/search_widget.dart';
 import 'package:wtf_sliding_sheet/wtf_sliding_sheet.dart';

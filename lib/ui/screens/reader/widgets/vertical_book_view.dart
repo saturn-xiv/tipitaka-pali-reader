@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:tipitaka_pali/ui/screens/reader/intents.dart';
 
 import '../../../../app.dart';
 import '../../../../business_logic/models/page_content.dart';
@@ -28,14 +30,22 @@ class VerticalBookView extends StatefulWidget {
   State<VerticalBookView> createState() => _VerticalBookViewState();
 }
 
-class _VerticalBookViewState extends State<VerticalBookView> {
+class _VerticalBookViewState extends State<VerticalBookView>
+    implements PageUp, PageDown, ScrollUp, ScrollDown {
   late final ReaderViewController readerViewController;
   late final ItemPositionsListener itemPositionsListener;
   late final ItemScrollController itemScrollController;
+  late final ScrollOffsetController scrollOffsetController;
+  late final ScrollOffsetListener scrollOffsetListener;
 
   String searchText = '';
 
   SelectedContent? _selectedContent;
+
+  // Todo calculate viewport height
+  double viewportHeight = 500;
+  // text line heihgt
+  final double lineHeight = 56;
 
   @override
   void initState() {
@@ -44,6 +54,8 @@ class _VerticalBookViewState extends State<VerticalBookView> {
         Provider.of<ReaderViewController>(context, listen: false);
     itemPositionsListener = ItemPositionsListener.create();
     itemScrollController = ItemScrollController();
+    scrollOffsetController = ScrollOffsetController();
+    scrollOffsetListener = ScrollOffsetListener.create();
     itemPositionsListener.itemPositions.addListener(_listenItemPosition);
     readerViewController.currentPage.addListener(_listenPageChange);
     readerViewController.searchText.addListener(_onSearchTextChanged);
@@ -82,91 +94,111 @@ class _VerticalBookViewState extends State<VerticalBookView> {
     debugPrint('searchText-searchText: $searchText');
 
     return LayoutBuilder(builder: (context, constraints) {
-      return Row(
-        children: [
-          Expanded(
-            child: SelectionArea(
-              focusNode: FocusNode(
-                canRequestFocus: true,
+      return Shortcuts(
+        shortcuts: <LogicalKeySet, Intent>{
+          LogicalKeySet(LogicalKeyboardKey.pageUp): const PageUpIntent(),
+          LogicalKeySet(LogicalKeyboardKey.pageDown): const PageDownIntent(),
+          LogicalKeySet(LogicalKeyboardKey.arrowUp): const ScrollUpIntent(),
+          LogicalKeySet(LogicalKeyboardKey.arrowDown): const ScrollDownIntent(),
+        },
+        child: Actions(
+          actions: <Type, Action<Intent>>{
+            PageUpIntent: PageUpAction(this, context),
+            PageDownIntent: PageDownAction(this, context),
+            ScrollUpIntent: ScrollUpAction(this, context),
+            ScrollDownIntent: ScrollDownAction(this, context),
+          },
+          child: Row(
+            children: [
+              Expanded(
+                child: SelectionArea(
+                  focusNode: FocusNode(
+                    canRequestFocus: true,
+                  ),
+                  contextMenuBuilder: (context, selectableRegionState) {
+                    return AdaptiveTextSelectionToolbar.buttonItems(
+                      anchors: selectableRegionState.contextMenuAnchors,
+                      buttonItems: [
+                        ...selectableRegionState.contextMenuButtonItems,
+                        ContextMenuButtonItem(
+                            onPressed: () {
+                              ContextMenuController.removeAny();
+                              widget.onSearchedSelectedText
+                                  ?.call(_selectedContent!.plainText);
+                            },
+                            label: 'Search'),
+                        ContextMenuButtonItem(
+                            onPressed: () {
+                              ContextMenuController.removeAny();
+                              widget.onSearchedInCurrentBook
+                                  ?.call(_selectedContent!.plainText);
+                            },
+                            label: 'Search in current'),
+                        ContextMenuButtonItem(
+                            onPressed: () {
+                              ContextMenuController.removeAny();
+                              widget.onSharedSelectedText
+                                  ?.call(_selectedContent!.plainText);
+                              // Share.share(_selectedContent!.plainText,
+                              //     subject: 'Pāḷi text from TPR');
+                            },
+                            label: 'Share'),
+                      ],
+                    );
+                  },
+                  onSelectionChanged: (value) => _selectedContent = value,
+                  child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context)
+                          .copyWith(scrollbars: false),
+                      child: ScrollablePositionedList.builder(
+                        initialScrollIndex: pageIndex,
+                        itemScrollController: itemScrollController,
+                        itemPositionsListener: itemPositionsListener,
+                        scrollOffsetController: scrollOffsetController,
+                        itemCount: readerViewController.pages.length,
+                        itemBuilder: (_, index) {
+                          final PageContent pageContent =
+                              readerViewController.pages[index];
+                          final script = context
+                              .read<ScriptLanguageProvider>()
+                              .currentScript;
+                          // transciption
+
+                          final id =
+                              '${readerViewController.book.name}-${readerViewController.book.id}-$index';
+
+                          final stopwatch = Stopwatch()..start();
+                          String htmlContent = PaliScript.getCachedScriptOf(
+                            script: script,
+                            romanText: pageContent.content,
+                            cacheId: id,
+                            isHtmlText: true,
+                          );
+                          print(
+                              'doSomething() executed in ${stopwatch.elapsedMilliseconds} ms');
+
+                          return PaliPageWidget(
+                              pageNumber: pageContent.pageNumber!,
+                              htmlContent: htmlContent,
+                              script: script,
+                              highlightedWord:
+                                  readerViewController.textToHighlight,
+                              searchText: searchText,
+                              pageToHighlight:
+                                  readerViewController.pageToHighlight,
+                              onClick: widget.onClickedWord,
+                              book: readerViewController.book);
+                        },
+                      )),
+                ),
               ),
-              contextMenuBuilder: (context, selectableRegionState) {
-                return AdaptiveTextSelectionToolbar.buttonItems(
-                  anchors: selectableRegionState.contextMenuAnchors,
-                  buttonItems: [
-                    ...selectableRegionState.contextMenuButtonItems,
-                    ContextMenuButtonItem(
-                        onPressed: () {
-                          ContextMenuController.removeAny();
-                          widget.onSearchedSelectedText
-                              ?.call(_selectedContent!.plainText);
-                        },
-                        label: 'Search'),
-                    ContextMenuButtonItem(
-                        onPressed: () {
-                          ContextMenuController.removeAny();
-                          widget.onSearchedInCurrentBook
-                              ?.call(_selectedContent!.plainText);
-                        },
-                        label: 'Search in current'),
-                    ContextMenuButtonItem(
-                        onPressed: () {
-                          ContextMenuController.removeAny();
-                          widget.onSharedSelectedText
-                              ?.call(_selectedContent!.plainText);
-                          // Share.share(_selectedContent!.plainText,
-                          //     subject: 'Pāḷi text from TPR');
-                        },
-                        label: 'Share'),
-                  ],
-                );
-              },
-              onSelectionChanged: (value) => _selectedContent = value,
-              child: ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(context)
-                      .copyWith(scrollbars: false),
-                  child: ScrollablePositionedList.builder(
-                    initialScrollIndex: pageIndex,
-                    itemScrollController: itemScrollController,
-                    itemPositionsListener: itemPositionsListener,
-                    itemCount: readerViewController.pages.length,
-                    itemBuilder: (_, index) {
-                      final PageContent pageContent =
-                          readerViewController.pages[index];
-                      final script =
-                          context.read<ScriptLanguageProvider>().currentScript;
-                      // transciption
-
-                      final id =
-                          '${readerViewController.book.name}-${readerViewController.book.id}-$index';
-
-                      final stopwatch = Stopwatch()..start();
-                      String htmlContent = PaliScript.getCachedScriptOf(
-                        script: script,
-                        romanText: pageContent.content,
-                        cacheId: id,
-                        isHtmlText: true,
-                      );
-                      print(
-                          'doSomething() executed in ${stopwatch.elapsedMilliseconds} ms');
-
-                      return PaliPageWidget(
-                          pageNumber: pageContent.pageNumber!,
-                          htmlContent: htmlContent,
-                          script: script,
-                          highlightedWord: readerViewController.textToHighlight,
-                          searchText: searchText,
-                          pageToHighlight: readerViewController.pageToHighlight,
-                          onClick: widget.onClickedWord,
-                          book: readerViewController.book);
-                    },
-                  )),
-            ),
+              SizedBox(
+                  width: 32,
+                  height: constraints.maxHeight,
+                  child: const VerticalBookSlider()),
+            ],
           ),
-          SizedBox(
-              width: 32,
-              height: constraints.maxHeight,
-              child: const VerticalBookSlider()),
-        ],
+        ),
       );
     });
   }
@@ -238,5 +270,37 @@ class _VerticalBookViewState extends State<VerticalBookView> {
     if (!pagesInView.contains(pageIndex)) {
       itemScrollController.jumpTo(index: pageIndex);
     }
+  }
+
+  @override
+  void onPageDownRequested(BuildContext context) {
+    scrollOffsetController.animateScroll(
+      offset: viewportHeight,
+      duration: const Duration(milliseconds: 300),
+    );
+  }
+
+  @override
+  void onPageUpRequested(BuildContext context) {
+    scrollOffsetController.animateScroll(
+      offset: -viewportHeight,
+      duration: const Duration(milliseconds: 300),
+    );
+  }
+
+  @override
+  void onScrollDownRequested(BuildContext context) {
+    scrollOffsetController.animateScroll(
+      offset: lineHeight,
+      duration: const Duration(milliseconds: 100),
+    );
+  }
+
+  @override
+  void onScrollUpRequested(BuildContext context) {
+    scrollOffsetController.animateScroll(
+      offset: -lineHeight,
+      duration: const Duration(milliseconds: 100),
+    );
   }
 }
