@@ -84,7 +84,7 @@ class FlashCardsView extends StatelessWidget {
     }
   }
 
-  _exportToRemNote(BuildContext context) async {
+  _exportToRemNote(BuildContext context, {required bool writeFile} ) async {
     isExporting.value = true;
     StringBuffer sb = StringBuffer();
 
@@ -137,18 +137,42 @@ class FlashCardsView extends StatelessWidget {
       sb.write(defCard);
     }
 
-    await Clipboard.setData(
+    if (writeFile){
+      // Pick directory
+      String? dir = await FilePicker.platform.getDirectoryPath();
+      if (dir != null) {
+        // Create file in the chosen directory
+        final file = File(path.join(dir, "tpr_export.md"));
+
+        // Write CSV to the file
+        try {
+          await file.writeAsString(sb.toString().replaceAll("•", ""));
+        } catch (e) {
+          debugPrint('Error writing file: $e');
+        }
+
+        isExporting.value = false;
+        // File is saved. You can show a success message if you want.
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(seconds: 2),
+            content:   Text('MD Files exported'),
+          ),
+        );
+      }
+      else{
+        await Clipboard.setData(
         ClipboardData(text: sb.toString().replaceAll("•", "")));
-
+        // File is saved. You can show a success message if you want.
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(seconds: 2),
+            content: Text('Remnotes copied to paste buffer'),
+          ),
+        );
+      }
+    }
     isExporting.value = false;
-
-    // File is saved. You can show a success message if you want.
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        duration: Duration(seconds: 2),
-        content: Text('Your Remnotes are ready to paste now!'),
-      ),
-    );
   }
 
   @override
@@ -262,7 +286,19 @@ class FlashCardsView extends StatelessWidget {
           backgroundColor: Colors.white,
           label: 'Remnote',
           labelStyle: const TextStyle(fontSize: 18.0),
-          onTap: () => _exportToRemNote(context),
+          onTap: () => _exportToRemNote(context, writeFile: false),
+        ),
+          SpeedDialChild(
+          child: Image.asset(
+            'assets/images/vecteezy_md.jpg',
+            width: 34.0,
+            height: 34.0,
+            fit: BoxFit.cover,
+          ),
+          backgroundColor: Colors.white,
+          label: 'MD Export',
+          labelStyle: const TextStyle(fontSize: 18.0),
+          onTap: () => _exportToRemNote(context,writeFile: true),
         ),
       ],
     );
