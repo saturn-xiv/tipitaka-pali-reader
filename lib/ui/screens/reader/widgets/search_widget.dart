@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:tipitaka_pali/utils/pali_script.dart';
 
 import '../../../../services/provider/theme_change_notifier.dart';
 import '../../../../utils/pali_script_converter.dart';
@@ -48,6 +49,10 @@ class _SearchWidgetState extends State<SearchWidget> {
           _controller.value = TextEditingValue(text: uniText, selection: sel);
           text = uniText;
         }
+      } else if (text.isNotEmpty) {
+        // convert to roman
+        text =
+            PaliScript.getRomanScriptFrom(script: scriptLanguage, text: text);
       }
 
       if (text.length > 2) {

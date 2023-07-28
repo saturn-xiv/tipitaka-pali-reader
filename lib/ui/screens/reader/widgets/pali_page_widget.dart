@@ -252,7 +252,10 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     }
 
     if (widget.searchText?.isNotEmpty == true) {
-      content = _addHighlight2(content, '${widget.searchText}', context);
+      var textToHighlight = PaliScript.getScriptOf(
+          script: context.read<ScriptLanguageProvider>().currentScript,
+          romanText: widget.searchText!);
+      content = _addHighlight2(content, textToHighlight, context);
     }
     // content = _makeClickable(content, script);
     content = _changeToInlineStyle(content);
