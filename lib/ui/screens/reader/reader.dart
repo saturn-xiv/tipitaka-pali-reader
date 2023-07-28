@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -97,8 +99,11 @@ class ReaderView extends StatelessWidget implements Searchable {
   Widget build(BuildContext context) {
     return Shortcuts(
         shortcuts: <LogicalKeySet, Intent>{
-          LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.keyF):
-              const SearchIntent(),
+          LogicalKeySet(
+              Platform.isMacOS
+                  ? LogicalKeyboardKey.meta
+                  : LogicalKeyboardKey.control,
+              LogicalKeyboardKey.keyF): const SearchIntent(),
         },
         child: Actions(actions: <Type, Action<Intent>>{
           SearchIntent: SearchAction(this, context),
