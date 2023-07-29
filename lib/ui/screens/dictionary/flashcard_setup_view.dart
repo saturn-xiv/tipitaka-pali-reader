@@ -5,6 +5,7 @@ import '../../../business_logic/models/dictionary_history.dart';
 import '../../../services/repositories/dictionary_history_repo.dart';
 import '../../../services/database/database_helper.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/controller/dictionary_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FlashCardSetupView extends StatefulWidget {
   const FlashCardSetupView({Key? key}) : super(key: key);
@@ -91,7 +92,7 @@ class _FlashCardSetupViewState extends State<FlashCardSetupView> {
                   builder: (context) => FlashCardsView(
                       cards: selectedItems, dictionaryController: dc)));
         },
-        label: const Text('Practice Now'),
+        label: Text(AppLocalizations.of(context)!.practiceNow),
         icon: const Icon(Icons.play_arrow),
       ),
     );
