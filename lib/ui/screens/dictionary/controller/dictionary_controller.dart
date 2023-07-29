@@ -386,7 +386,7 @@ class DictionaryController with ChangeNotifier {
       return;
     }
 
-    if (index - 1 >= 0) {
+    if (index > 0) {
       _currentlookupWord = _histories.value[index - 1].word;
       _lookupDefinition();
     }
