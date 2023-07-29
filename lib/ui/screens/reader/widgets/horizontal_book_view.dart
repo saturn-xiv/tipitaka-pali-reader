@@ -7,6 +7,7 @@ import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
 import '../controller/reader_view_controller.dart';
 import 'pali_page_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HorizontalBookView extends StatefulWidget {
   const HorizontalBookView({
@@ -105,14 +106,14 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
                               ?.call(_selectedContent!.plainText);
                           // onSearch(_selectedContent!.plainText);
                         },
-                        label: 'Search'),
+                        label: AppLocalizations.of(context)!.searchSelected),
                     ContextMenuButtonItem(
                         onPressed: () {
                           ContextMenuController.removeAny();
                           widget.onSearchedInCurrentBook
                               ?.call(_selectedContent!.plainText);
                         },
-                        label: 'Search in current'),
+                        label: AppLocalizations.of(context)!.searchInCurrent),
                     ContextMenuButtonItem(
                         onPressed: () {
                           ContextMenuController.removeAny();
@@ -121,7 +122,7 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
                           // Share.share(_selectedContent!.plainText,
                           //     subject: 'Pāḷi text from TPR');
                         },
-                        label: 'Share'),
+                        label: AppLocalizations.of(context)!.share),
                   ],
                 );
               },
