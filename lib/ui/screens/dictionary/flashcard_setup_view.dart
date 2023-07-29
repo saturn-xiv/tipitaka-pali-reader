@@ -44,7 +44,7 @@ class _FlashCardSetupViewState extends State<FlashCardSetupView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flash Card Setup'),
+        title: Text(AppLocalizations.of(context)!.flashcardSetup),
       ),
       body: FutureBuilder<List<DictionaryHistory>>(
         future: _dictionaryHistoryFuture,
