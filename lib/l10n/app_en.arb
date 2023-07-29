@@ -126,5 +126,7 @@
   "practiceNow":              "Practice Now",
   "export":                   "Export",
   "searchSelected":           "Search Selected",
-  "searchInCurrent":          "Search in current"
+  "searchInCurrent":          "Search in current",
+  "upgrade":                  "Upgrade"
+  
 }
