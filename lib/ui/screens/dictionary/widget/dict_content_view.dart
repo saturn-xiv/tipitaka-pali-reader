@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
+import 'package:tipitaka_pali/services/repositories/dictionary_history_repo.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/widget/dictionary_history_view.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../services/prefs.dart';
 import '../controller/dictionary_controller.dart';
@@ -65,68 +68,67 @@ class DictionaryContentView extends StatelessWidget {
                           final rightChars = getRightCharacters(text, offset);
                           final word = leftChars + charUnderTap + rightChars;
                           debugPrint(word);
+                          writeHistory(
+                              word,
+                              AppLocalizations.of(context)!.dictionary,
+                              1,
+                              "dictionary");
                           context
                               .read<DictionaryController>()
                               .onWordClicked(word);
                         }
                       }
                     },
-                    child: InteractiveViewer(
-                      boundaryMargin: const EdgeInsets.all(20.0),
-                      minScale: 0.1,
-                      maxScale: 1.6,
-                      child: HtmlWidget(
-                        key: textKey,
-                        content,
-                        customStylesBuilder: (element) {
-                          if (element.classes.contains('dpdheader')) {
-                            return {'font-weight:': 'bold'};
-                          }
-                          return null;
-                        },
-                        customWidgetBuilder: (element) {
-                          /*             if (element.localName == "button") {
-                                final value = element.attributes['value'];
-                                if (value != null) {
-                                  debugPrint("found button: $value");
-                                  return TextButton(
-                                      onPressed: showDeclension(context),
-                                      child: const Text("Declension"));
-                                }
+                    child: HtmlWidget(
+                      key: textKey,
+                      content,
+                      customStylesBuilder: (element) {
+                        if (element.classes.contains('dpdheader')) {
+                          return {'font-weight:': 'bold'};
+                        }
+                        return null;
+                      },
+                      customWidgetBuilder: (element) {
+                        /*             if (element.localName == "button") {
+                              final value = element.attributes['value'];
+                              if (value != null) {
+                                debugPrint("found button: $value");
+                                return TextButton(
+                                    onPressed: showDeclension(context),
+                                    child: const Text("Declension"));
                               }
-                              */
-                          final href = element.attributes['href'];
-                          if (href != null) {
-                            String linkText = href.contains("wikipedia")
-                                ? "Wikipedia"
-                                : "Submit a correction";
+                            }
+                            */
+                        final href = element.attributes['href'];
+                        if (href != null) {
+                          String linkText = href.contains("wikipedia")
+                              ? "Wikipedia"
+                              : "Submit a correction";
 
-                            return InkWell(
-                              onTap: () {
-                                launchUrl(Uri.parse(href),
-                                    mode: LaunchMode.externalApplication);
+                          return InkWell(
+                            onTap: () {
+                              launchUrl(Uri.parse(href),
+                                  mode: LaunchMode.externalApplication);
 
-                                debugPrint('will launch $href.');
-                              },
-                              child: Text(
-                                linkText,
-                                style: const TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    color: Colors.blue,
-                                    fontSize: 10),
-                              ),
-                            );
-                          }
-                          return null;
-                        },
-                        textStyle: TextStyle(
-                            fontSize: Prefs.dictionaryFontSize.toDouble(),
-                            color:
-                                context.watch<ThemeChangeNotifier>().isDarkMode
-                                    ? Colors.white
-                                    : Colors.black,
-                            inherit: false),
-                      ),
+                              debugPrint('will launch $href.');
+                            },
+                            child: Text(
+                              linkText,
+                              style: const TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Colors.blue,
+                                  fontSize: 10),
+                            ),
+                          );
+                        }
+                        return null;
+                      },
+                      textStyle: TextStyle(
+                          fontSize: Prefs.dictionaryFontSize.toDouble(),
+                          color: context.watch<ThemeChangeNotifier>().isDarkMode
+                              ? Colors.white
+                              : Colors.black,
+                          inherit: false),
                     ),
                   ),
                 ))),
@@ -175,6 +177,14 @@ class DictionaryContentView extends StatelessWidget {
 }
 
 typedef WordChanged = void Function(String word);
+
+// put in a common place?  also used in paliPageWidget
+writeHistory(String word, String context, int page, String bookId) async {
+  final DictionaryHistoryDatabaseRepository dictionaryHistoryRepository =
+      DictionaryHistoryDatabaseRepository(dbh: DatabaseHelper());
+
+  await dictionaryHistoryRepository.insert(word, context, page, bookId);
+}
 
 /*
 class ClickableFactory extends WidgetFactory {
