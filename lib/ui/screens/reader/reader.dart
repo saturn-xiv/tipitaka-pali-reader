@@ -39,6 +39,7 @@ class Reader extends StatelessWidget {
   final int? initialPage;
   final String? textToHighlight;
   final BookViewMode bookViewMode;
+  final String bookUuid;
 
   const Reader({
     Key? key,
@@ -46,6 +47,7 @@ class Reader extends StatelessWidget {
     this.initialPage,
     this.textToHighlight,
     required this.bookViewMode,
+    required this.bookUuid,
   }) : super(key: key);
 
   @override
@@ -74,7 +76,8 @@ class Reader extends StatelessWidget {
               PageContentDatabaseRepository(DatabaseHelper()),
           book: book,
           initialPage: initialPage,
-          textToHighlight: textToHighlight)
+          textToHighlight: textToHighlight,
+          bookUuid: bookUuid)
         ..loadDocument(),
       child: ReaderView(
         bookViewMode: bookViewMode,

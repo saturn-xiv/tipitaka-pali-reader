@@ -362,7 +362,7 @@ class LowerRow extends StatelessWidget {
         );
       }
       print('wordToHighlight: $textToHighlight');
-      vm.onGoto(pageNumber: toc.pageNumber, word: textToHighlight);
+      vm.onGoto(pageNumber: toc.pageNumber, word: textToHighlight, bookUuid: vm.bookUuid);
       // vm.gotoPageAndScroll(toc.pageNumber.toDouble(), toc.name);
     }
   }

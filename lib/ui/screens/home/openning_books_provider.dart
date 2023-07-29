@@ -49,8 +49,12 @@ class OpenningBooksProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void update({required int newPageNumber}) {
+  void update({required int newPageNumber, String? bookUuid}) {
     var current = books[_selectedBookIndex];
+    if (bookUuid != null) {
+      current = books.firstWhere((element) => element['uuid'] == bookUuid);
+    }
+
     current['current_page'] = newPageNumber;
     books[_selectedBookIndex] = current;
   }

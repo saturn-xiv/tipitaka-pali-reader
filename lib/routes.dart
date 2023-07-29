@@ -55,6 +55,7 @@ class RouteGenerator {
             textToHighlight: arguments['textToHighlight'],
                         bookViewMode: PlatformInfo.isDesktop ? BookViewMode.horizontal : 
             BookViewMode.values[Prefs.bookViewModeIndex],
+            bookUuid: arguments['uuid'],
           );
         }
         break;

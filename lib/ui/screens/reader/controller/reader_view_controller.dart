@@ -68,6 +68,8 @@ class ReaderViewController extends ChangeNotifier {
 
   final List<SearchIndex> searchIndexes = [];
 
+  String bookUuid;
+
   // // script features
   // late final bool _isShowAlternatePali;
 
@@ -78,6 +80,7 @@ class ReaderViewController extends ChangeNotifier {
     required this.book,
     this.initialPage,
     this.textToHighlight,
+    required this.bookUuid,
   });
 
   void search(String text) {
@@ -217,7 +220,7 @@ class ReaderViewController extends ChangeNotifier {
   }
 
   Future<void> onGoto(
-      {required int pageNumber, String? word, bool saveToRecent = true}) async {
+      {required int pageNumber, String? word, bool saveToRecent = true, String? bookUuid}) async {
     myLogger.i('current page number: $pageNumber');
     // update current page
     _currentPage.value = pageNumber;
@@ -225,7 +228,7 @@ class ReaderViewController extends ChangeNotifier {
     textToHighlight = word;
     // update opened book list
     final openedBookController = context.read<OpenningBooksProvider>();
-    openedBookController.update(newPageNumber: _currentPage.value);
+    openedBookController.update(newPageNumber: _currentPage.value, bookUuid: bookUuid);
     // persit
     if (saveToRecent) {
       await _saveToRecent();

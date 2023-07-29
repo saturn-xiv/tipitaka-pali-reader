@@ -11,4 +11,9 @@ class Book {
       this.firstPage = 0,
       this.lastPage = 0,
       this.paraNum = 0});
+
+  @override
+  String toString() {
+    return 'Book #$id $name';
+  }
 }

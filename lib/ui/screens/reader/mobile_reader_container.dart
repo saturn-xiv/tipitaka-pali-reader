@@ -115,6 +115,7 @@ class _MobileReaderContainerState extends State<MobileReaderContainer> {
                         initialPage: pageNumber,
                         textToHighlight: textToHighlight,
                         bookViewMode: bookViewMode,
+                        bookUuid: openedBook['uuid'],
                       );
                     }),
           );
