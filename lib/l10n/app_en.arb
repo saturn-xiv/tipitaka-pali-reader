@@ -115,12 +115,16 @@
   "deletingRecords":          "\nNow Deleting Records",
   "insertComplete":            "Insert is complete",
   "ftsIsComplete":            "FTS is complete",
-  "reloadingExtensionList":    "Reloading extension list",
-  "rebuildingIndex":           "Rebuilding Index",
+  "reloadingExtensionList":   "Reloading extension list",
+  "rebuildingIndex":          "Rebuilding Index",
   "buildingFts":              "Building fts",
-  "whatsNew":                  "What's New:",
-  "showWhatsNew":              "Show What's New",
+  "whatsNew":                 "What's New:",
+  "showWhatsNew":             "Show What's New",
   "tools":                    "Tools",
-  "flashcards":               "Flashcards"
-
+  "flashcards":               "Flashcards",
+  "flashcardSetup":           "Flash Card Setup",
+  "practiceNow":              "Practice Now",
+  "export":                   "Export",
+  "searchSelected":           "Search Selected",
+  "searchInCurrent":          "Search in current"
 }
