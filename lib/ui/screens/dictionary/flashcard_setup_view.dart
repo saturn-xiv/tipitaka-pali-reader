@@ -26,7 +26,11 @@ class _FlashCardSetupViewState extends State<FlashCardSetupView> {
   void initState() {
     super.initState();
     // Initialize _dictionaryHistoryFuture
-    _dictionaryHistoryFuture = _repo.getAll();
+    _dictionaryHistoryFuture = _repo.getAll().then((value) {
+      value.sort((a, b) =>
+          b.dateTime.compareTo(a.dateTime)); // sort in descending order
+      return value; // return sorted list
+    });
   }
 
   DatabaseHelper getDatabaseHelper() {
@@ -55,11 +59,11 @@ class _FlashCardSetupViewState extends State<FlashCardSetupView> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             final items = snapshot.data ?? [];
-            items.forEach((item) {
+            for (var item in items) {
               if (!_selectedItems.containsKey(item)) {
                 _selectedItems[item] = true; // Default selected state is true
               }
-            });
+            }
 
             return ListView.builder(
               itemCount: items.length,
