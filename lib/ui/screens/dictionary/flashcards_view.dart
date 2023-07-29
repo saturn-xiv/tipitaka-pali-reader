@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/controller/dictionary_controller.dart';
 import '../../../business_logic/models/dictionary_history.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FlashCardsView extends StatelessWidget {
   final List<DictionaryHistory> cards;
@@ -84,7 +85,7 @@ class FlashCardsView extends StatelessWidget {
     }
   }
 
-  _exportToRemNote(BuildContext context, {required bool writeFile} ) async {
+  _exportToRemNote(BuildContext context, {required bool writeFile}) async {
     isExporting.value = true;
     StringBuffer sb = StringBuffer();
 
@@ -137,7 +138,7 @@ class FlashCardsView extends StatelessWidget {
       sb.write(defCard);
     }
 
-    if (writeFile){
+    if (writeFile) {
       // Pick directory
       String? dir = await FilePicker.platform.getDirectoryPath();
       if (dir != null) {
@@ -156,13 +157,12 @@ class FlashCardsView extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             duration: Duration(seconds: 2),
-            content:   Text('MD Files exported'),
+            content: Text('MD Files exported'),
           ),
         );
-      }
-      else{
+      } else {
         await Clipboard.setData(
-        ClipboardData(text: sb.toString().replaceAll("•", "")));
+            ClipboardData(text: sb.toString().replaceAll("•", "")));
         // File is saved. You can show a success message if you want.
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -236,7 +236,7 @@ class FlashCardsView extends StatelessWidget {
   SpeedDial buildSpeedDial(BuildContext context) {
     return SpeedDial(
       icon: Icons.download,
-      label: const Text("Export"),
+      label: Text(AppLocalizations.of(context)!.export),
       activeIcon: Icons.close,
       //buttonSize: 56.0,
       visible: true,
@@ -288,7 +288,7 @@ class FlashCardsView extends StatelessWidget {
           labelStyle: const TextStyle(fontSize: 18.0),
           onTap: () => _exportToRemNote(context, writeFile: false),
         ),
-          SpeedDialChild(
+        SpeedDialChild(
           child: Image.asset(
             'assets/images/vecteezy_md.jpg',
             width: 34.0,
@@ -296,9 +296,9 @@ class FlashCardsView extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           backgroundColor: Colors.white,
-          label: 'MD Export',
+          label: 'MD File',
           labelStyle: const TextStyle(fontSize: 18.0),
-          onTap: () => _exportToRemNote(context,writeFile: true),
+          onTap: () => _exportToRemNote(context, writeFile: true),
         ),
       ],
     );

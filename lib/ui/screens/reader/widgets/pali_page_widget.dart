@@ -296,7 +296,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
           final si = rvc.searchIndexes[rvc.currentSearchResult.value - 1];
           if (highlightIndex == si.index) {
             newNode.attributes['style'] =
-                'background: $bgColor; color: $textColor; border: 1px solid $borderColor;';
+                'background: $bgColor; color: $textColor;';
           } else if (!highlightAll) {
             newNode.attributes['style'] = 'border: 1px solid transparent;';
           }
@@ -322,7 +322,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       }
 
       final replace =
-          '<span style="background-color: #FFE959 !important; color: $textColor; border: 1px solid #FFE959;" class="search-highlight" data-is-highlighted="true">$textToHighlight</span>';
+          '<span style="background-color: #FFE959 !important; color: $textColor;" class="search-highlight" data-is-highlighted="true">$textToHighlight</span>';
       final replaced = (node.text ?? '').replaceAll(textToHighlight, replace);
       final highlighted = BeautifulSoup(replaced);
 

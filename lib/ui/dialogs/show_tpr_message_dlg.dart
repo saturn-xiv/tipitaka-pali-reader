@@ -5,6 +5,7 @@ import 'package:tipitaka_pali/business_logic/models/tpr_message.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/ui/screens/settings/download_view.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // stateful widget needed for switch.
 // is here in the same file for ease..
@@ -95,6 +96,35 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
           ButtonBar(
             children: [
               TextButton(
+                child: Text(AppLocalizations.of(context)!.upgrade),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close dialog
+
+                  // check the os and open a url for each os
+                  if (Platform.isAndroid) {
+                    launchUrl(
+                        Uri.parse(
+                            "https://play.google.com/store/apps/details?id=com.paauk.tipitakapalireader"),
+                        mode: LaunchMode.externalApplication);
+                  } else if (Platform.isWindows) {
+                    launchUrl(
+                        Uri.parse(
+                            "https://apps.microsoft.com/store/detail/tipitaka-pali-reader/9MTH9TD82TGR"),
+                        mode: LaunchMode.externalApplication);
+                  } else if (Platform.isLinux) {
+                    launchUrl(
+                        Uri.parse(
+                            "https://github.com/bksubhuti/tipitaka-pali-reader/releases/latest"),
+                        mode: LaunchMode.externalApplication);
+                  } else if (Platform.isMacOS || Platform.isIOS) {
+                    launchUrl(
+                        Uri.parse(
+                            "https://apps.apple.com/us/app/tipitaka-pali-reader/id1541426949"),
+                        mode: LaunchMode.externalApplication);
+                  }
+                },
+              ),
+              TextButton(
                 child: Text(AppLocalizations.of(context)!.extensions),
                 onPressed: () {
                   Navigator.of(context).pop(); // Close dialog
@@ -107,7 +137,7 @@ class _WhatsNewDialogState extends State<WhatsNewDialog> {
                 },
               ),
               TextButton(
-                child: Text(AppLocalizations.of(context)!.home),
+                child: Text(AppLocalizations.of(context)!.close),
                 onPressed: () {
                   Navigator.of(context).pop(); // Close dialog
                 },
