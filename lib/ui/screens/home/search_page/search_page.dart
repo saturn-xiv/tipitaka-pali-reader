@@ -34,7 +34,7 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
   late final TextEditingController controller;
   late bool isShowingSearchModeView;
 
@@ -270,4 +270,7 @@ class _SearchPageState extends State<SearchPage> {
       'wordDistance': vm.wordDistance,
     });
   }
+  
+  @override
+  bool get wantKeepAlive => true;
 }
