@@ -144,6 +144,10 @@ flutter:
       fonts:
         - asset: assets/fonts/NotoSansTaiTham-Medium.ttf
         - asset: assets/fonts/NotoSansTaiTham-Bold.ttf
+    - family: DejaVuSans
+      fonts:
+        - asset: assets/fonts/DejaVuSans.ttf
+        - asset: assets/fonts/DejaVuSans-Bold.ttf
     
 # fonts are licenced by bhikkhu Jayasaro.  He says it is okay to distribute and knows the copyrights.
   # For details regarding fonts from package dependencies,
