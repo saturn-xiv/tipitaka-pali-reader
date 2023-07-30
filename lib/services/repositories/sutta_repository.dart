@@ -20,6 +20,17 @@ class SuttaRepositoryDatabase implements SuttaRepository {
   // final String columnBookName = 'book_name';
   // final String columnPageNumber = 'page_number';
   bool _isValid = false;
+  Map<String, String> qjbooks = {
+    "kp": "mula_ku_01",
+    "dhp": "mula_ku_02",
+    "ud": "mula_ku_03",
+    "iti": "mula_ku_04",
+    "snp": "mula_ku_05",
+    "vv": "mula_ku_06",
+    "pv": "mula_ku_07",
+    "thag": "mula_ku_08",
+    "thig": "mula_ku_09",
+  };
 
   SuttaRepositoryDatabase(this.databaseProvider);
 
@@ -40,6 +51,7 @@ INNER JOIN books on books.id = suttas.book_id
     Book book = Book(id: "", name: "");
 
     if (filterdWord.contains(RegExp(r'[0-9]'))) {
+      String bookKey = getBookKey(filterdWord);
       //check now to see if it is a quickjump
       if (filterdWord.toLowerCase().contains("dn")) {
         book = getDnBookDetails(filterdWord, book); // get the number
@@ -59,6 +71,10 @@ INNER JOIN books on books.id = suttas.book_id
           book = await getAnBookDetails(filterdWord, book); // get the number
         }
       }
+      if (bookKey.isNotEmpty) {
+        return handleBook(filterdWord);
+      }
+
       var results = await db.rawQuery('''
 SELECT suttas.name, book_id, books.name as book_name, page_number from suttas
 INNER JOIN books on books.id = suttas.book_id 
@@ -1016,5 +1032,49 @@ WHERE suttas.name LIKE '%$filterdWord%'
     book.name = bookID;
     book.paraNum = paranum;
     return book;
+  }
+
+  String extractNumber(String input) {
+    final RegExp regExp = RegExp(r'\d+');
+    final String? match = regExp.stringMatch(input);
+    return match ?? '';
+  }
+
+  Future<List<Sutta>> handleBook(String filterdWord) async {
+    List<Sutta> suttas = [];
+
+    for (var entry in qjbooks.entries) {
+      if (filterdWord.toLowerCase().contains(entry.key)) {
+        String num = extractNumber(filterdWord);
+        if (num.isNotEmpty) {
+          int paranum = int.parse(num);
+
+          var book = Book(id: entry.value, name: entry.key);
+          final paraRepo = ParagraphDatabaseRepository(DatabaseHelper());
+          book.firstPage = await paraRepo.getPageNumber(entry.value, paranum);
+
+          Sutta sutta = Sutta(
+            bookID: entry.value,
+            bookName: entry.key,
+            name: num,
+            pageNumber: book.firstPage,
+          );
+          if (book.firstPage != -1) {
+            suttas.add(sutta);
+          }
+        }
+      }
+    }
+
+    return suttas;
+  }
+
+  String getBookKey(String filterdWord) {
+    for (String book in qjbooks.keys) {
+      if (filterdWord.toLowerCase().contains(book)) {
+        return book;
+      }
+    }
+    return "";
   }
 }

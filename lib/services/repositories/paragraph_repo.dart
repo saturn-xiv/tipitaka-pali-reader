@@ -45,6 +45,6 @@ class ParagraphDatabaseRepository implements ParagraphRepository {
         where: '$columnBookId = ? AND $columnParagraphNumber = ?',
         whereArgs: [bookID, paragraphNumber]);
 
-    return (maps.isEmpty) ? 1 : maps.first[columnPageNumber];
+    return (maps.isEmpty) ? -1 : maps.first[columnPageNumber];
   }
 }
