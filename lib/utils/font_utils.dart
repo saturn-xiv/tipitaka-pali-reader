@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 
 class FontUtils {
@@ -15,6 +16,12 @@ class FontUtils {
         return 'Lao Pali Regular';
       case Script.taitham:
         return 'NotoSansTaiTham';
+      case Script.roman:
+        if (Platform.isLinux) {
+          return 'DejaVuSans';
+        } else {
+          return null;
+        }
       default:
         return null;
     }
