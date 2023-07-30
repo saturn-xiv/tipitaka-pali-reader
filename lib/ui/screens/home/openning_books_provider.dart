@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -52,11 +53,14 @@ class OpenningBooksProvider extends ChangeNotifier {
   void update({required int newPageNumber, String? bookUuid}) {
     var current = books[_selectedBookIndex];
     if (bookUuid != null) {
-      current = books.firstWhere((element) => element['uuid'] == bookUuid);
+      current = books.firstWhereOrNull((element) => element['uuid'] == bookUuid) ?? current;
     }
 
     current['current_page'] = newPageNumber;
-    books[_selectedBookIndex] = current;
+    if (bookUuid == null) {
+      // why was this code needed?
+      books[_selectedBookIndex] = current;
+    }
   }
 
   void updateSelectedBookIndex(int index, {bool forceNotify = false}) {
