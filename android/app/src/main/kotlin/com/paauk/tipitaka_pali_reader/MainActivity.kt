@@ -1,4 +1,4 @@
-package com.paauk.tipitaka_pali_reader
+package com.paauk.tipitakapalireader
 
 import io.flutter.embedding.android.FlutterActivity
 
