@@ -17,7 +17,8 @@ class SelectLanguageWidget extends StatelessWidget {
     'বাংলা',
     'ខ្មែរ',
     'ລາວ',
-    '𑄌𑄋𑄴𑄟𑄳'
+    '𑄌𑄋𑄴𑄟𑄳',
+    'Italiano',
   ];
 
   @override

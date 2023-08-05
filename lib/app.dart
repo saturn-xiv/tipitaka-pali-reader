@@ -44,6 +44,7 @@ class App extends StatelessWidget {
   final String _kmLocale = 'km';
   final String _loLocale = 'lo';
   final String _chakmaLocale = 'ccp';
+  final String _itLocale = 'it';
 
   final StreamingSharedPreferences rxPref;
 
@@ -100,6 +101,7 @@ class App extends StatelessWidget {
               Locale(_kmLocale, ''), // khmer, no country code
               Locale(_loLocale, ''), // Lao country code
               Locale(_chakmaLocale), // Chakma, no country code
+              Locale(_itLocale, ""), // Italian, it
             ],
             home: FutureBuilder(
               future: fetchMessageIfNeeded(),

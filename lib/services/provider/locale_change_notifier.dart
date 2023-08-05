@@ -40,6 +40,9 @@ class LocaleChangeNotifier extends ChangeNotifier {
       case 10:
         localeString = "ccp";
         break;
+      case 11:
+        localeString = "it";
+        break;
     }
 
     return localeString;
