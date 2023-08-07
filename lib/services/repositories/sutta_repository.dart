@@ -415,10 +415,10 @@ WHERE suttas.name LIKE '%$filterdWord%'
         openPage = 182;
         break;
       case 23:
-        openPage = 197;
+        openPage = 195;
         break;
       case 24:
-        openPage = 200;
+        openPage = 199;
         break;
       case 25:
         openPage = 205;
