@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/business_logic/models/tpr_message.dart';
 import 'package:tipitaka_pali/providers/initial_setup_notifier.dart';
+import 'package:tipitaka_pali/services/provider/user_notifier.dart';
 import 'package:tipitaka_pali/ui/dialogs/show_tpr_message_dlg.dart';
 import 'package:tipitaka_pali/ui/screens/home/openning_books_provider.dart';
 import 'package:tipitaka_pali/unsupported_language_classes/ccp_intl.dart';
@@ -69,7 +70,8 @@ class App extends StatelessWidget {
           ChangeNotifierProvider<ReaderFontProvider>(
               create: (_) => ReaderFontProvider()),
           ChangeNotifierProvider<OpenningBooksProvider>(
-              create: (_) => OpenningBooksProvider())
+              create: (_) => OpenningBooksProvider()),
+          ChangeNotifierProvider<UserNotifier>(create: (_) => UserNotifier())
         ],
         builder: (context, _) {
           final themeChangeNotifier = context.watch<ThemeChangeNotifier>();

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/app.dart';
+import 'package:tipitaka_pali/services/repositories/bookmark_sync_repo.dart';
 
 import '../../../../business_logic/models/book.dart';
 import '../../../../business_logic/models/bookmark.dart';
@@ -220,7 +221,10 @@ class ReaderViewController extends ChangeNotifier {
   }
 
   Future<void> onGoto(
-      {required int pageNumber, String? word, bool saveToRecent = true, String? bookUuid}) async {
+      {required int pageNumber,
+      String? word,
+      bool saveToRecent = true,
+      String? bookUuid}) async {
     myLogger.i('current page number: $pageNumber');
     // update current page
     _currentPage.value = pageNumber;
@@ -228,7 +232,8 @@ class ReaderViewController extends ChangeNotifier {
     textToHighlight = word;
     // update opened book list
     final openedBookController = context.read<OpenningBooksProvider>();
-    openedBookController.update(newPageNumber: _currentPage.value, bookUuid: bookUuid);
+    openedBookController.update(
+        newPageNumber: _currentPage.value, bookUuid: bookUuid);
     // persit
     if (saveToRecent) {
       await _saveToRecent();
@@ -266,9 +271,10 @@ class ReaderViewController extends ChangeNotifier {
   // }
 
   void saveToBookmark(String note) {
-    BookmarkRepository repository =
-        BookmarkDatabaseRepository(DatabaseHelper(), BookmarkDao());
-    repository.insert(Bookmark(book.id, _currentPage.value, note));
+    BookmarkSyncRepo repository =
+        BookmarkSyncRepo(DatabaseHelper(), BookmarkDao());
+    repository.insert(
+        Bookmark(bookID: book.id, pageNumber: _currentPage.value, note: note));
   }
 
   Future _saveToRecent() async {

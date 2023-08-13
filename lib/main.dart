@@ -1,4 +1,10 @@
+import 'package:firedart/auth/firebase_auth.dart';
+import 'package:firedart/auth/token_store.dart';
+import 'package:firedart/firestore/firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'app.dart';
@@ -19,8 +25,28 @@ void main() async {
 
   // Required for async calls in `main`
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize SharedPrefs instance.
   await Prefs.init();
+  const projectId = "tipitaka-pali-reader-firestore";
+  await dotenv.load();
+  final apiKey = dotenv.env['FIREBASE_API_KEY'];
+  //check for internet connection
+
+  if (await InternetConnection().hasInternetAccess) {
+    FirebaseAuth.initialize(apiKey!, VolatileStore());
+    Firestore.initialize(projectId);
+    if (Prefs.email.isNotEmpty) {
+      try {
+        await FirebaseAuth.instance.signIn(Prefs.email, Prefs.password);
+        Prefs.isSignedIn = true;
+        debugPrint('login success');
+      } catch (e) {
+        Prefs.isSignedIn = false;
+        Prefs.email = '';
+        Prefs.password = '';
+        debugPrint(e.toString());
+      }
+    }
+  } // Initialize SharedPrefs instance.
 
   // This view is only called one time.
   // before the select language and before the select script are created

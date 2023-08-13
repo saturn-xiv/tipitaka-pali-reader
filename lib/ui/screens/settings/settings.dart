@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tipitaka_pali/services/provider/bookmark_provider.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
+import 'package:tipitaka_pali/ui/screens/settings/sync_settings.dart';
 import 'package:tipitaka_pali/ui/screens/settings/tools_settings.dart';
 import 'package:tipitaka_pali/ui/widgets/select_dictionary_widget.dart';
 import 'package:tipitaka_pali/ui/widgets/select_language_widget.dart';
@@ -37,6 +39,10 @@ class SettingPage extends StatelessWidget {
               const ScriptSettingView(),
               const GeneralSettingsView(),
               const HelpAboutView(),
+              ChangeNotifierProvider<BookmarkNotifier>(
+                create: (context) => BookmarkNotifier(),
+                child: SyncSettingsView(),
+              ),
               ToolsSettingsView(scrollController: sc),
             ],
           ),

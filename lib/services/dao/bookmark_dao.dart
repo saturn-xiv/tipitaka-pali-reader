@@ -11,9 +11,14 @@ class BookmarkDao extends Dao<Bookmark> {
   final columnName = 'name'; // from book table
 
   @override
+  @override
   Bookmark fromMap(Map<String, dynamic> query) {
-    return Bookmark(query[columnBookId], query[columnPageNumber],
-        query[columnNote], query[columnName]);
+    return Bookmark(
+      bookID: query[columnBookId],
+      pageNumber: query[columnPageNumber],
+      note: query[columnNote],
+      name: query[columnName],
+    );
   }
 
   @override

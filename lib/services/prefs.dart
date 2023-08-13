@@ -51,6 +51,10 @@ const String lastDateCheckedMessagePref = "lastDateCheckedMessage";
 const String showWhatsNewPref = "dontShowMessage";
 const String versionNumberPref = "versionNumber";
 const String keyBookViewModeIndex = 'book_view_mode';
+const String emailPref = 'username';
+const String passwordPref = 'password';
+const String isSignedInPref = 'isSignedIn'; // true if user is signed in
+const String lastSyncDatePref = 'lastSyncDate';
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -95,6 +99,10 @@ const String defaultLastDateCheckedMessage = "20230701";
 const bool defaultShowWhatsNew = true;
 const String defaultVersionNumber = "2.3.4+53";
 const int defaultBookViewMode = 1; // vertical
+const String defaultEmail = '';
+const String defaultPassword = '';
+const bool defaultIsSignedIn = false;
+const String defaltLastSyncDate = '197001010000';
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -321,6 +329,22 @@ class Prefs {
       instance.getString(versionNumberPref) ?? defaultVersionNumber;
   static set versionNumber(String value) =>
       instance.setString(versionNumberPref, value);
+
+  static String get email => instance.getString(emailPref) ?? defaultEmail;
+  static set email(String value) => instance.setString(emailPref, value);
+
+  static String get password =>
+      instance.getString(passwordPref) ?? defaultPassword;
+  static set password(String value) => instance.setString(passwordPref, value);
+
+  static bool get isSignedIn =>
+      instance.getBool(isSignedInPref) ?? defaultIsSignedIn;
+  static set isSignedIn(bool value) => instance.setBool(isSignedInPref, value);
+
+  static String get lastSyncDate =>
+      instance.getString(lastSyncDatePref) ?? defaltLastSyncDate;
+  static set lastSyncDate(String value) =>
+      instance.setString(lastSyncDatePref, value);
 
   // ===========================================================================
   // Helpers

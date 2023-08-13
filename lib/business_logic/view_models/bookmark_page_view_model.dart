@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/services/repositories/bookmark_sync_repo.dart';
 
-import '../../services/repositories/bookmark_repo.dart';
 import '../../ui/screens/home/openning_books_provider.dart';
 import '../../ui/screens/reader/mobile_reader_container.dart';
 import '../../utils/platform_info.dart';
@@ -10,7 +10,7 @@ import '../models/bookmark.dart';
 
 class BookmarkPageViewModel extends ChangeNotifier {
   BookmarkPageViewModel(this.repository);
-  final BookmarkRepository repository;
+  final BookmarkSyncRepo repository;
 
   List<Bookmark> _bookmarks = [];
   List<Bookmark> get bookmarks => _bookmarks;
@@ -22,18 +22,18 @@ class BookmarkPageViewModel extends ChangeNotifier {
 
   Future<void> delete(Bookmark bookmark) async {
     _bookmarks.remove(bookmark);
-    notifyListeners();
     await repository.delete(bookmark);
+    notifyListeners();
   }
 
   Future<void> deleteAll() async {
     _bookmarks.clear();
-    notifyListeners();
     await repository.deleteAll();
+    notifyListeners();
   }
 
   void openBook(Bookmark bookmark, BuildContext context) async {
-    final book = Book(id: bookmark.bookID, name: bookmark.bookName);
+    final book = Book(id: bookmark.bookID, name: bookmark.name);
     final openningBookProvider = context.read<OpenningBooksProvider>();
     openningBookProvider.add(book: book, currentPage: bookmark.pageNumber);
 

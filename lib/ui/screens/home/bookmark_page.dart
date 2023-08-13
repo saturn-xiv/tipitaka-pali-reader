@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/services/provider/bookmark_provider.dart';
+import 'package:tipitaka_pali/services/repositories/bookmark_sync_repo.dart';
 
 import '../../../business_logic/models/bookmark.dart';
 import '../../../business_logic/view_models/bookmark_page_view_model.dart';
 import '../../../services/dao/bookmark_dao.dart';
 import '../../../services/database/database_helper.dart';
-import '../../../services/repositories/bookmark_repo.dart';
 import '../../dialogs/confirm_dialog.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../services/provider/script_language_provider.dart';
@@ -17,15 +18,24 @@ class BookmarkPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<BookmarkPageViewModel>(
-      create: (_) => BookmarkPageViewModel(
-          BookmarkDatabaseRepository(DatabaseHelper(), BookmarkDao()))
-        ..fetchBookmarks(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<BookmarkPageViewModel>(
+          create: (_) => BookmarkPageViewModel(
+              BookmarkSyncRepo(DatabaseHelper(), BookmarkDao()))
+            ..fetchBookmarks(),
+        ),
+        ChangeNotifierProvider<BookmarkNotifier>(
+          create: (_) => BookmarkNotifier(),
+        ),
+      ],
       child: Scaffold(
         appBar: const BookmarkAppBar(),
-        body: Consumer<BookmarkPageViewModel>(
-          builder: (context, vm, child) {
-            final bookmarks = vm.bookmarks;
+        body: Consumer2<BookmarkPageViewModel, BookmarkNotifier>(
+          builder: (context, vm, bn, child) {
+            // Assuming BookmarkNotifier has a similar bookmarks list
+            final bookmarks =
+                vm.bookmarks; // You can also utilize 'bn.bookmarks' if needed
             return bookmarks.isEmpty
                 ? Center(child: Text(AppLocalizations.of(context)!.bookmark))
                 : ListView.separated(
@@ -36,7 +46,7 @@ class BookmarkPage extends StatelessWidget {
                         dense: true,
                         title: Text(bookmark.note),
                         subtitle: Text(localScript(context,
-                            "${bookmark.bookName}  --  ${bookmark.pageNumber.toString()}")),
+                            "${bookmark.name}  --  ${bookmark.pageNumber.toString()}")),
                         onTap: () => vm.openBook(bookmark, context),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -63,6 +73,14 @@ class BookmarkPage extends StatelessWidget {
                         const Divider(height: 1),
                   );
           },
+        ),
+        floatingActionButton: Builder(
+          builder: (innerContext) => FloatingActionButton(
+            onPressed: () {
+              //innerContext.read<BookmarkNotifier>().fetchBookmarks();
+            },
+            child: const Icon(Icons.refresh),
+          ),
         ),
       ),
     );

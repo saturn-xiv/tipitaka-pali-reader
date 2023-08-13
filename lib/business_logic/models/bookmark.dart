@@ -1,18 +1,76 @@
+import 'dart:convert';
+
+import 'package:tipitaka_pali/business_logic/models/book.dart';
+
+List<Bookmark> definitionFromJson(String str) =>
+    List<Bookmark>.from(json.decode(str).map((x) => Bookmark.fromJson(x)));
+
+String definitionToJson(List<Bookmark> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+enum BookmarkAction {
+  insert,
+  delete,
+  // Add more actions if needed
+}
+
 class Bookmark {
+  final String id;
   final String bookID;
   final int pageNumber;
   final String note;
-  final String bookName;
+  String name;
+  BookmarkAction action;
+  String actionDate;
+  String syncDate;
+  int synced;
 
-  Bookmark(this.bookID, this.pageNumber, this.note, [String? bookName])
-      : bookName = bookName ?? 'Unknown';
+  // Constructor with named parameters
+  Bookmark({
+    this.id = "n/a",
+    this.bookID = "n/a",
+    this.pageNumber = 0,
+    this.note = "n/a",
+    this.name = 'Unknown', // Setting default value for bookName
+    this.action = BookmarkAction.insert,
+    this.actionDate = 'n/a',
+    this.syncDate = 'n/a',
+    this.synced = 0,
+  });
 
   @override
   String toString() {
     return '''bookID: $bookID
-              bookName: $bookName
+              name: $name
               pageNumber: $pageNumber
               note: $note
     ''';
+    //removed bookname for now.
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'book_id': bookID,
+        'page_number': pageNumber,
+        'note': note,
+        'name': name,
+        'action': action,
+        'action_date': actionDate,
+        'sync_date': syncDate,
+        'synced': synced,
+      };
+
+  factory Bookmark.fromJson(Map<dynamic, dynamic> json) {
+    return Bookmark(
+      id: json['id'], // id is the primary key
+      bookID: json['book_id'],
+      pageNumber: json['page_number'],
+      note: json['note'],
+      name: json['name'] ?? 'Unknown',
+      action: json['action'] ?? BookmarkAction.insert,
+      actionDate: json['action_date'] ?? 'Unknown',
+      syncDate: json['sync_date'] ?? 'Unknown',
+      synced: json['synced'] ?? 1,
+    );
   }
 }
