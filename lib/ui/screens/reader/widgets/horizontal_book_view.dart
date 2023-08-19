@@ -16,11 +16,13 @@ class HorizontalBookView extends StatefulWidget {
     this.onSharedSelectedText,
     this.onClickedWord,
     this.onSearchedInCurrentBook,
+    this.onSelectionChanged
   }) : super(key: key);
   final ValueChanged<String>? onSearchedSelectedText;
   final ValueChanged<String>? onSharedSelectedText;
   final ValueChanged<String>? onClickedWord;
   final ValueChanged<String>? onSearchedInCurrentBook;
+  final ValueChanged<String>? onSelectionChanged;
 
   @override
   State<HorizontalBookView> createState() => _HorizontalBookViewState();
@@ -126,7 +128,10 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
                   ],
                 );
               },
-              onSelectionChanged: (value) => _selectedContent = value,
+              onSelectionChanged: (value) {
+                _selectedContent = value;
+                widget.onSelectionChanged?.call(value?.plainText ?? '');
+              },
               child: PaliPageWidget(
                   pageNumber: pageContent.pageNumber!,
                   htmlContent: htmlContent,

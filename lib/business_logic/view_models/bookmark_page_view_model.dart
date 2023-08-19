@@ -35,7 +35,7 @@ class BookmarkPageViewModel extends ChangeNotifier {
   void openBook(Bookmark bookmark, BuildContext context) async {
     final book = Book(id: bookmark.bookID, name: bookmark.name);
     final openningBookProvider = context.read<OpenningBooksProvider>();
-    openningBookProvider.add(book: book, currentPage: bookmark.pageNumber);
+    openningBookProvider.add(book: book, currentPage: bookmark.pageNumber, textToHighlight: bookmark.name);
 
     if (Mobile.isPhone(context)) {
       // Navigator.pushNamed(context, readerRoute,

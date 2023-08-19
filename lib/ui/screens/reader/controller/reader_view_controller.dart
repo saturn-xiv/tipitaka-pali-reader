@@ -37,6 +37,7 @@ class ReaderViewController extends ChangeNotifier {
   final Book book;
   int? initialPage;
   String? textToHighlight;
+  String? selection;
 
   final ValueNotifier<String> _searchText = ValueNotifier('');
   ValueListenable<String> get searchText => _searchText;
@@ -270,11 +271,11 @@ class ReaderViewController extends ChangeNotifier {
   //   //await _saveToRecent();
   // }
 
-  void saveToBookmark(String note) {
+  void saveToBookmark(String note, String? name) {
     BookmarkSyncRepo repository =
         BookmarkSyncRepo(DatabaseHelper(), BookmarkDao());
     repository.insert(
-        Bookmark(bookID: book.id, pageNumber: _currentPage.value, note: note));
+        Bookmark(bookID: book.id, pageNumber: _currentPage.value, note: note, name: name ?? ''));
   }
 
   Future _saveToRecent() async {

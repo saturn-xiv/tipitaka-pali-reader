@@ -20,11 +20,13 @@ class VerticalBookView extends StatefulWidget {
     this.onSharedSelectedText,
     this.onClickedWord,
     this.onSearchedInCurrentBook,
+    this.onSelectionChanged
   }) : super(key: key);
   final ValueChanged<String>? onSearchedSelectedText;
   final ValueChanged<String>? onSharedSelectedText;
   final ValueChanged<String>? onClickedWord;
   final ValueChanged<String>? onSearchedInCurrentBook;
+  final ValueChanged<String>? onSelectionChanged;
 
   @override
   State<VerticalBookView> createState() => _VerticalBookViewState();
@@ -146,7 +148,10 @@ class _VerticalBookViewState extends State<VerticalBookView>
                       ],
                     );
                   },
-                  onSelectionChanged: (value) => _selectedContent = value,
+                  onSelectionChanged: (value) {
+                    _selectedContent = value;
+                    widget.onSelectionChanged?.call(value?.plainText ?? '');
+                  },
                   child: ScrollConfiguration(
                       behavior: ScrollConfiguration.of(context)
                           .copyWith(scrollbars: false),

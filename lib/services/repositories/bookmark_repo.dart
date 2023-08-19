@@ -27,8 +27,8 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
     bm.synced = 0;
 
     String sql = '''
-        insert into bookmark (book_id, page_number, note, action, action_date, synced) 
-        values ('${bm.bookID}',${bm.pageNumber},'${bm.note}','${bm.action}','${bm.actionDate}',${bm.synced})
+        insert into bookmark (book_id, name, page_number, note, action, action_date, synced) 
+        values ('${bm.bookID}','${bm.name}', ${bm.pageNumber},'${bm.note}','${bm.action}','${bm.actionDate}',${bm.synced})
         ''';
 
     final db = await _databaseHelper.database;
@@ -41,7 +41,7 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
     final db = await _databaseHelper.database;
     String sql = '''
          Delete from bookmark 
-         Where bookID = ${bookmark.bookID} and pageNumber = ${bookmark.pageNumber} and note = ${bookmark.note}
+         Where book_id = '${bookmark.bookID}' and page_number = ${bookmark.pageNumber} and note = '${bookmark.note}' and name = '${bookmark.name}'
          ''';
     return await db.rawDelete(sql);
   }
@@ -59,7 +59,7 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
   Future<List<Bookmark>> getBookmarks() async {
     final db = await _databaseHelper.database;
     List<Map<String, dynamic>> maps = await db.rawQuery('''
-      SELECT bookID, page_number, name, note, action, action_date, synced, sync_date
+      SELECT id, book_id, page_number, name, note, action, action_date, synced, sync_date
       From bookmark
       ''');
 

@@ -169,6 +169,9 @@ class ReaderView extends StatelessWidget implements Searchable {
                                       _onClickedWord(word, context),
                                   onSearchedInCurrentBook: (text) =>
                                       _onClickedSearchInCurrent(context, text),
+                            onSelectionChanged: (text) {
+                              Provider.of<ReaderViewController>(context, listen: false).selection = text;
+                            },
                                 )
                               : HorizontalBookView(
                                   onSearchedSelectedText: (text) =>
@@ -178,6 +181,9 @@ class ReaderView extends StatelessWidget implements Searchable {
                                       _onClickedWord(word, context),
                                   onSearchedInCurrentBook: (text) =>
                                       _onClickedSearchInCurrent(context, text),
+                                  onSelectionChanged: (text) {
+                                    Provider.of<ReaderViewController>(context, listen: false).selection = text;
+                                  },
                                 )),
                     ])),
               ))),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/providers/font_provider.dart';
+import 'package:tipitaka_pali/ui/screens/dictionary/controller/dictionary_controller.dart';
 import 'package:tipitaka_pali/ui/screens/home/openning_books_provider.dart';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 import 'package:tipitaka_pali/utils/platform_info.dart';
@@ -112,6 +113,11 @@ class LowerRow extends StatelessWidget {
 
   void _addBookmark(BuildContext context) async {
     final vm = context.read<ReaderViewController>();
+    String? selectedText = vm.selection;
+    if (selectedText?.isEmpty ?? true) {
+      selectedText = globalLookupWord.value;
+    }
+
     final note = await showGeneralDialog<String>(
       context: context,
       transitionDuration: Duration(milliseconds: Prefs.animationSpeed.round()),
@@ -129,9 +135,15 @@ class LowerRow extends StatelessWidget {
         );
       },
     );
+
+    if (selectedText?.isEmpty ?? true) {
+      // do not save bookmark if no text is selected/highlighted
+      return;
+    }
+
     //print(note);
     if (note != null) {
-      vm.saveToBookmark(note);
+      vm.saveToBookmark(note, selectedText);
     }
   }
 

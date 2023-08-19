@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:tipitaka_pali/business_logic/models/book.dart';
 
 List<Bookmark> definitionFromJson(String str) =>
@@ -62,12 +63,12 @@ class Bookmark {
 
   factory Bookmark.fromJson(Map<dynamic, dynamic> json) {
     return Bookmark(
-      id: json['id'], // id is the primary key
+      id: json['id'] ?? 'n/a', // id is the primary key
       bookID: json['book_id'],
       pageNumber: json['page_number'],
       note: json['note'],
       name: json['name'] ?? 'Unknown',
-      action: json['action'] ?? BookmarkAction.insert,
+      action:  BookmarkAction.values.firstWhereOrNull((e) => e.toString() == json['action']) ?? BookmarkAction.insert,
       actionDate: json['action_date'] ?? 'Unknown',
       syncDate: json['sync_date'] ?? 'Unknown',
       synced: json['synced'] ?? 1,
