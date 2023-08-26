@@ -1,7 +1,10 @@
+import 'package:tipitaka_pali/services/prefs.dart';
+
 class PaliTools {
   PaliTools._();
   static String velthuisToUni({required String velthiusInput}) {
     if (velthiusInput.isEmpty) return velthiusInput;
+    if (Prefs.disableVelthuis) return velthiusInput;
 
     const nigahita = 'ṃ';
     const capitalNigahita = 'Ṃ';

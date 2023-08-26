@@ -127,6 +127,8 @@
   "export":                   "Export",
   "searchSelected":           "Search Selected",
   "searchInCurrent":          "Search in current",
-  "upgrade":                  "Upgrade"
+  "upgrade":                  "Upgrade",
+  "persistentSearchFilter":   "Persistent Search Filter",
+  "disableVelthuis":          "Disable Velthuis Input"
   
 }

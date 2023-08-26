@@ -19,6 +19,8 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
   bool _clipboard = Prefs.saveClickToClipboard;
   bool _multiTab = Prefs.multiTabMode;
   int _tabsVisible = Prefs.tabsVisible;
+  bool _disableVelthuis = Prefs.disableVelthuis;
+  bool _persitentSearchFilter = Prefs.persitentSearchFilter;
   double _currentSliderValue = 1;
   double _currentPanelFontSizeValue = 11;
   late double _currentUiFontSizeValue;
@@ -62,6 +64,10 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           const SizedBox(height: 10),
           const Divider(),
           _getDictionaryToClipboardSwitch(),
+          const Divider(),
+          _getVelthuisOnSwitch(),
+          const Divider(),
+          _getPersitentSearchFilterSwitch(),
           const Divider(),
           _getMultiHighlightSwitch(),
           const Divider(),
@@ -319,6 +325,40 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
             });
           },
           value: Prefs.showWhatsNew,
+        ),
+      ),
+    );
+  }
+
+  Widget _getVelthuisOnSwitch() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: ListTile(
+        title: Text(AppLocalizations.of(context)!.disableVelthuis),
+        trailing: Switch(
+          onChanged: (value) {
+            setState(() {
+              _disableVelthuis = Prefs.disableVelthuis = value;
+            });
+          },
+          value: _disableVelthuis,
+        ),
+      ),
+    );
+  }
+
+  Widget _getPersitentSearchFilterSwitch() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: ListTile(
+        title: Text(AppLocalizations.of(context)!.persistentSearchFilter),
+        trailing: Switch(
+          onChanged: (value) {
+            setState(() {
+              _persitentSearchFilter = Prefs.persitentSearchFilter = value;
+            });
+          },
+          value: _persitentSearchFilter,
         ),
       ),
     );

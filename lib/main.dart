@@ -58,6 +58,15 @@ void main() async {
 
   final rxPref = await StreamingSharedPreferences.instance;
 
+  // check to see if we should have persistence with the search filter chips.
+  // if not, (default), then we should reset the filter chips to all selected.
+  // this prevents user from forgetting that they disabled many items and getting
+  // empty searches.
+  if (Prefs.persitentSearchFilter == false) {
+    Prefs.selectedMainCategoryFilters = defaultSelectedMainCategoryFilters;
+    Prefs.selectedSubCategoryFilters = defultSelectedSubCategoryFilters;
+  }
+
   runApp(App(rxPref: rxPref));
 }
 

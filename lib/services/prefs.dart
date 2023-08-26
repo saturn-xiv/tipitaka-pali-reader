@@ -55,6 +55,8 @@ const String emailPref = 'username';
 const String passwordPref = 'password';
 const String isSignedInPref = 'isSignedIn'; // true if user is signed in
 const String lastSyncDatePref = 'lastSyncDate';
+const String disableVelthuisPref = 'disableVelthuis';
+const String persitentSearchFilterPref = 'persistentSearchFilter';
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -103,6 +105,8 @@ const String defaultEmail = '';
 const String defaultPassword = '';
 const bool defaultIsSignedIn = false;
 const String defaltLastSyncDate = '197001010000';
+const bool defaultDisableVelthuis = false;
+const bool defaultPersitentSearchFilter = false;
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -346,6 +350,16 @@ class Prefs {
   static set lastSyncDate(String value) =>
       instance.setString(lastSyncDatePref, value);
 
+  static bool get disableVelthuis =>
+      instance.getBool(disableVelthuisPref) ?? defaultDisableVelthuis;
+  static set disableVelthuis(bool value) =>
+      instance.setBool(disableVelthuisPref, value);
+
+  static bool get persitentSearchFilter =>
+      instance.getBool(persitentSearchFilterPref) ??
+      defaultPersitentSearchFilter;
+  static set persitentSearchFilter(bool value) =>
+      instance.setBool(persitentSearchFilterPref, value);
   // ===========================================================================
   // Helpers
 
