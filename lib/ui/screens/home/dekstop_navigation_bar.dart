@@ -34,43 +34,59 @@ class DeskTopNavigationBar extends StatelessWidget {
       labelType: NavigationRailLabelType.none,
       destinations: [
         NavigationRailDestination(
-          icon: const Icon(Icons.home_outlined),
+          icon: Tooltip(
+              message: AppLocalizations.of(context)!.home,
+              child: const Icon(Icons.home_outlined)),
           selectedIcon: const Icon(Icons.home),
           label: Text(AppLocalizations.of(context)!.home),
           padding: padding,
         ),
         NavigationRailDestination(
-          icon: const Icon(Icons.history_outlined),
+          icon: Tooltip(
+              message: AppLocalizations.of(context)!.recent,
+              child: const Icon(Icons.history_outlined)),
           selectedIcon: const Icon(Icons.history),
           label: Text(AppLocalizations.of(context)!.recent),
           padding: padding,
         ),
         NavigationRailDestination(
-          icon: const Icon(Icons.bookmark_outline),
+          icon: Tooltip(
+              message: AppLocalizations.of(context)!.bookmark,
+              child: const Icon(Icons.bookmark_outline)),
           selectedIcon: const Icon(Icons.bookmark),
           label: Text(AppLocalizations.of(context)!.bookmark),
           padding: padding,
         ),
         NavigationRailDestination(
-          icon: const Icon(Icons.search),
+          icon: Tooltip(
+              message: AppLocalizations.of(context)!.search,
+              child: const Icon(Icons.search)),
           selectedIcon: const Icon(Icons.search_outlined),
           label: Text(AppLocalizations.of(context)!.search),
           padding: padding,
         ),
         NavigationRailDestination(
-          icon: Image.asset("assets/icon/tpr_dictionary.png",
-              width: 24, height: 24, color: Theme.of(context).iconTheme.color),
-          selectedIcon: Image.asset(
-            "assets/icon/tpr_dictionary.png",
-            width: 24,
-            height: 24,
-            color: Theme.of(context).primaryColor,
-          ),
+          icon: Tooltip(
+              message: AppLocalizations.of(context)!.dictionary,
+              child: Image.asset("assets/icon/tpr_dictionary.png",
+                  width: 24,
+                  height: 24,
+                  color: Theme.of(context).iconTheme.color)),
+          selectedIcon: Tooltip(
+              message: AppLocalizations.of(context)!.dictionary,
+              child: Image.asset(
+                "assets/icon/tpr_dictionary.png",
+                width: 24,
+                height: 24,
+                color: Theme.of(context).primaryColor,
+              )),
           label: Text(AppLocalizations.of(context)!.dictionary),
           padding: padding,
         ),
         NavigationRailDestination(
-          icon: const Icon(Icons.settings_outlined),
+          icon: Tooltip(
+              message: AppLocalizations.of(context)!.settings,
+              child: const Icon(Icons.settings_outlined)),
           selectedIcon: const Icon(Icons.settings),
           label: Text(AppLocalizations.of(context)!.settings),
           padding: padding,
