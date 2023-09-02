@@ -214,6 +214,14 @@ class ReaderViewController extends ChangeNotifier {
     return await repository.getParagraphMappings(book.id, currentPage);
   }
 
+  Future<List<ParagraphMapping>> getBackWardParagraphs(int currentPage) async {
+    final DatabaseHelper databaseProvider = DatabaseHelper();
+    final ParagraphMappingRepository repository =
+        ParagraphMappingDatabaseRepository(databaseProvider);
+
+    return await repository.getBackWardParagraphMappings(book.id, currentPage);
+  }
+
   Future<int> getPageNumber(int paragraphNumber) async {
     final DatabaseHelper databaseProvider = DatabaseHelper();
     final ParagraphRepository repository =
@@ -274,8 +282,11 @@ class ReaderViewController extends ChangeNotifier {
   void saveToBookmark(String note, String? name) {
     BookmarkSyncRepo repository =
         BookmarkSyncRepo(DatabaseHelper(), BookmarkDao());
-    repository.insert(
-        Bookmark(bookID: book.id, pageNumber: _currentPage.value, note: note, name: name ?? ''));
+    repository.insert(Bookmark(
+        bookID: book.id,
+        pageNumber: _currentPage.value,
+        note: note,
+        name: name ?? ''));
   }
 
   Future _saveToRecent() async {

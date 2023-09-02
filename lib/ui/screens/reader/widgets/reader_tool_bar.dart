@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/providers/font_provider.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/controller/dictionary_controller.dart';
 import 'package:tipitaka_pali/ui/screens/home/openning_books_provider.dart';
+import 'package:tipitaka_pali/ui/screens/reader/widgets/mat_button.dart';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 import 'package:tipitaka_pali/utils/platform_info.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
@@ -74,6 +75,10 @@ class LowerRow extends StatelessWidget {
               onPressed: () => _openGotoDialog(context),
               icon: const Icon(Icons.directions_walk_outlined),
               tooltip: AppLocalizations.of(context)!.gotoPageParagraph),
+          MATButton(
+              onMulaButtonClicked: () => _onMulaButtomClicked(context),
+              onAtthaButtonClicked: () => _onAtthaButtomClicked(context),
+              onTikaButtonClicked: () => _onTikaButtomClicked(context)),
           IconButton(
               onPressed: () => _onMATButtomClicked(context),
               icon: const Icon(Icons.comment_outlined),
@@ -153,6 +158,163 @@ class LowerRow extends StatelessWidget {
 
   void _onDecreaseButtonClicked(BuildContext context) {
     context.read<ReaderFontProvider>().onDecreaseFontSize();
+  }
+
+  void _onMulaButtomClicked(BuildContext context) async {
+    final vm = context.read<ReaderViewController>();
+    if (vm.book.id.contains('mula')) {
+      // do nothing
+      return;
+    }
+
+    int currentPage = vm.currentPage.value;
+    List<ParagraphMapping> paragraphs =
+        await vm.getBackWardParagraphs(currentPage);
+    bool isResultFromPreviusPage = false;
+    if (paragraphs.isEmpty) {
+      isResultFromPreviusPage = true;
+      while (paragraphs.isEmpty && currentPage-- > 1) {
+        paragraphs = await vm.getBackWardParagraphs(currentPage);
+      }
+    }
+    if (context.mounted) {
+      if (paragraphs.isEmpty) {
+        _showNoExplanationDialog(context);
+        return;
+      }
+
+      final result = await _showParagraphSelectDialog(
+          context, paragraphs, isResultFromPreviusPage);
+      if (result != null) {
+        final bookId = result['book_id'] as String;
+        final bookName = result['book_name'] as String;
+        final pageNumber = result['page_number'] as int;
+
+        final book = Book(id: bookId, name: bookName);
+        if (context.mounted) {
+          final openedBookController = context.read<OpenningBooksProvider>();
+          openedBookController.add(book: book, currentPage: pageNumber);
+        }
+      }
+    }
+  }
+
+  void _onAtthaButtomClicked(BuildContext context) async {
+    final vm = context.read<ReaderViewController>();
+    if (vm.book.id.contains('attha')) {
+      // do nothing
+      return;
+    }
+    // forward
+    if (vm.book.id.contains('mula')) {
+      int currentPage = vm.currentPage.value;
+      List<ParagraphMapping> paragraphs = await vm.getParagraphs(currentPage);
+      bool isResultFromPreviusPage = false;
+      if (paragraphs.isEmpty) {
+        isResultFromPreviusPage = true;
+        while (paragraphs.isEmpty && currentPage-- > 1) {
+          paragraphs = await vm.getParagraphs(currentPage);
+        }
+      }
+      if (context.mounted) {
+        if (paragraphs.isEmpty) {
+          _showNoExplanationDialog(context);
+          return;
+        }
+        final result = await _showParagraphSelectDialog(
+            context, paragraphs, isResultFromPreviusPage);
+        if (result != null) {
+          final bookId = result['book_id'] as String;
+          final bookName = result['book_name'] as String;
+          final pageNumber = result['page_number'] as int;
+
+          final book = Book(id: bookId, name: bookName);
+          if (context.mounted) {
+            final openedBookController = context.read<OpenningBooksProvider>();
+            openedBookController.add(book: book, currentPage: pageNumber);
+          }
+        }
+      }
+      return;
+    }
+
+    // backward
+    if (vm.book.id.contains('tika')) {
+      int currentPage = vm.currentPage.value;
+      List<ParagraphMapping> paragraphs =
+          await vm.getBackWardParagraphs(currentPage);
+      bool isResultFromPreviusPage = false;
+      if (paragraphs.isEmpty) {
+        isResultFromPreviusPage = true;
+        while (paragraphs.isEmpty && currentPage-- > 1) {
+          paragraphs = await vm.getBackWardParagraphs(currentPage);
+        }
+      }
+      if (context.mounted) {
+        if (paragraphs.isEmpty) {
+          _showNoExplanationDialog(context);
+          return;
+        }
+
+        final result = await _showParagraphSelectDialog(
+            context, paragraphs, isResultFromPreviusPage);
+        if (result != null) {
+          final bookId = result['book_id'] as String;
+          final bookName = result['book_name'] as String;
+          final pageNumber = result['page_number'] as int;
+
+          final book = Book(id: bookId, name: bookName);
+          if (context.mounted) {
+            final openedBookController = context.read<OpenningBooksProvider>();
+            openedBookController.add(book: book, currentPage: pageNumber);
+          }
+        }
+      }
+    }
+  }
+
+  void _onTikaButtomClicked(BuildContext context) async {
+    final vm = context.read<ReaderViewController>();
+
+    if (vm.book.id.contains('tika')) {
+      // do nothing
+      return;
+    }
+    // forward
+    if (vm.book.id.contains('attha')) {
+      int currentPage = vm.currentPage.value;
+      List<ParagraphMapping> paragraphs = await vm.getParagraphs(currentPage);
+      bool isResultFromPreviusPage = false;
+      if (paragraphs.isEmpty) {
+        isResultFromPreviusPage = true;
+        while (paragraphs.isEmpty && currentPage-- > 1) {
+          paragraphs = await vm.getParagraphs(currentPage);
+        }
+      }
+      if (context.mounted) {
+        if (paragraphs.isEmpty) {
+          _showNoExplanationDialog(context);
+          return;
+        }
+        final result = await _showParagraphSelectDialog(
+            context, paragraphs, isResultFromPreviusPage);
+        if (result != null) {
+          final bookId = result['book_id'] as String;
+          final bookName = result['book_name'] as String;
+          final pageNumber = result['page_number'] as int;
+
+          final book = Book(id: bookId, name: bookName);
+          if (context.mounted) {
+            final openedBookController = context.read<OpenningBooksProvider>();
+            openedBookController.add(book: book, currentPage: pageNumber);
+          }
+        }
+      }
+    }
+    // dobule forward
+    if (vm.book.id.contains('mula')) {
+      // ToDo
+    }
   }
 
   void _onMATButtomClicked(BuildContext context) async {
@@ -259,7 +421,8 @@ class LowerRow extends StatelessWidget {
                   shrinkWrap: true,
                   itemBuilder: (_, i) {
                     return ListTile(
-                      subtitle: Text(
+                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                      title: Text(
                         PaliScript.getScriptOf(
                             script: context
                                 .read<ScriptLanguageProvider>()
@@ -267,8 +430,8 @@ class LowerRow extends StatelessWidget {
                             romanText:
                                 '${paragraphs[i].bookName} - ${paragraphs[i].expPageNumber}'),
                       ),
-                      title: Text(
-                          '${AppLocalizations.of(context)!.paragraph_number}: ${paragraphs[i].paragraph}'),
+                      // title: Text(
+                      //     '${AppLocalizations.of(context)!.paragraph_number}: ${paragraphs[i].paragraph}'),
                       onTap: () {
                         Navigator.pop(context, {
                           'book_id': paragraphs[i].expBookID,

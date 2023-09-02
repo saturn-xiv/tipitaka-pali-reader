@@ -5,6 +5,9 @@ import 'package:tipitaka_pali/services/database/database_helper.dart';
 abstract class ParagraphMappingRepository {
   Future<List<ParagraphMapping>> getParagraphMappings(
       String bookID, int pageNumber);
+
+  Future<List<ParagraphMapping>> getBackWardParagraphMappings(
+      String bookID, int pageNumber);
 }
 
 class ParagraphMappingDatabaseRepository implements ParagraphMappingRepository {
@@ -12,7 +15,6 @@ class ParagraphMappingDatabaseRepository implements ParagraphMappingRepository {
   final DatabaseHelper databaseProvider;
   ParagraphMappingDatabaseRepository(this.databaseProvider);
 
-  @override
   @override
   Future<List<ParagraphMapping>> getParagraphMappings(
       String bookID, int pageNumber) async {
@@ -27,6 +29,34 @@ class ParagraphMappingDatabaseRepository implements ParagraphMappingRepository {
       ${dao.columnBasePageNumber} = $pageNumber AND 
       ${dao.columnParagraph} != 0
       ''');
+
+    // List<Map> maps = await db.query(dao.tableParagraphMapping,
+    //     columns: [dao.columnParagraph, dao.columnExpBookID, dao.columnExpPageNumber],
+    //     where:
+    //         '${dao.columnBaseBookID} = ? AND ${dao.columnBasePageNumber} = ? AND ${dao.columnParagraph} != ?',
+    //     whereArgs: [bookID, pageNumber, 0]);
+
+    return dao.fromList(maps);
+  }
+
+  @override
+  Future<List<ParagraphMapping>> getBackWardParagraphMappings(
+      String bookID, int pageNumber) async {
+    final db = await databaseProvider.database;
+
+    final sql = '''
+      SELECT ${dao.columnParagraph}, ${dao.columnBaseBookID} as ${dao.columnExpBookID}, ${dao.columnBookName}, ${dao.columnBasePageNumber} as ${dao.columnExpPageNumber}
+      FROM ${dao.tableParagraphMapping}
+      INNER JOIN ${dao.tableBooks} ON ${dao.columnBookID} = 
+      ${dao.columnBaseBookID}
+      WHERE ${dao.columnExpBookID} = '$bookID' AND 
+      ${dao.columnExpPageNumber} = $pageNumber AND 
+      ${dao.columnParagraph} != 0
+      ''';
+
+    List<Map<String, dynamic>> maps = await db.rawQuery(sql);
+
+    print(maps);
 
     // List<Map> maps = await db.query(dao.tableParagraphMapping,
     //     columns: [dao.columnParagraph, dao.columnExpBookID, dao.columnExpPageNumber],
