@@ -421,14 +421,10 @@ class LowerRow extends StatelessWidget {
                   shrinkWrap: true,
                   itemBuilder: (_, i) {
                     return ListTile(
-                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                      visualDensity:
+                          const VisualDensity(horizontal: 0, vertical: -4),
                       title: Text(
-                        PaliScript.getScriptOf(
-                            script: context
-                                .read<ScriptLanguageProvider>()
-                                .currentScript,
-                            romanText:
-                                '${paragraphs[i].bookName} - ${paragraphs[i].expPageNumber}'),
+                        'Para.${paragraphs[i].paragraph} - ${PaliScript.getScriptOf(script: context.read<ScriptLanguageProvider>().currentScript, romanText: '${paragraphs[i].bookName} - ${paragraphs[i].expPageNumber}')}',
                       ),
                       // title: Text(
                       //     '${AppLocalizations.of(context)!.paragraph_number}: ${paragraphs[i].paragraph}'),
