@@ -206,12 +206,12 @@ class ReaderViewController extends ChangeNotifier {
     return await repository.getLastParagraph(book.id);
   }
 
-  Future<List<ParagraphMapping>> getParagraphs() async {
+  Future<List<ParagraphMapping>> getParagraphs(int currentPage) async {
     final DatabaseHelper databaseProvider = DatabaseHelper();
     final ParagraphMappingRepository repository =
         ParagraphMappingDatabaseRepository(databaseProvider);
 
-    return await repository.getParagraphMappings(book.id, _currentPage.value);
+    return await repository.getParagraphMappings(book.id, currentPage);
   }
 
   Future<int> getPageNumber(int paragraphNumber) async {

@@ -157,21 +157,33 @@ class LowerRow extends StatelessWidget {
 
   void _onMATButtomClicked(BuildContext context) async {
     final vm = context.read<ReaderViewController>();
-    final paragraphs = await vm.getParagraphs();
+    int currentPage = vm.currentPage.value;
+    List<ParagraphMapping> paragraphs = await vm.getParagraphs(currentPage);
+    bool isResultFromPreviusPage = false;
     if (paragraphs.isEmpty) {
-      _showNoExplanationDialog(context);
-      return;
+      isResultFromPreviusPage = true;
+      while (paragraphs.isEmpty && currentPage-- > 1) {
+        paragraphs = await vm.getParagraphs(currentPage);
+      }
     }
-    final result = await _showParagraphSelectDialog(context, paragraphs);
-    if (result != null) {
-      final bookId = result['book_id'] as String;
-      final bookName = result['book_name'] as String;
-      final pageNumber = result['page_number'] as int;
+    if (context.mounted) {
+      if (paragraphs.isEmpty) {
+        _showNoExplanationDialog(context);
+        return;
+      }
+      final result = await _showParagraphSelectDialog(
+          context, paragraphs, isResultFromPreviusPage);
+      if (result != null) {
+        final bookId = result['book_id'] as String;
+        final bookName = result['book_name'] as String;
+        final pageNumber = result['page_number'] as int;
 
-      final book = Book(id: bookId, name: bookName);
-
-      final openedBookController = context.read<OpenningBooksProvider>();
-      openedBookController.add(book: book, currentPage: pageNumber);
+        final book = Book(id: bookId, name: bookName);
+        if (context.mounted) {
+          final openedBookController = context.read<OpenningBooksProvider>();
+          openedBookController.add(book: book, currentPage: pageNumber);
+        }
+      }
     }
   }
 
@@ -206,7 +218,16 @@ class LowerRow extends StatelessWidget {
   }
 
   Future<Map<String, dynamic>?> _showParagraphSelectDialog(
-      BuildContext context, List<ParagraphMapping> paragraphs) {
+    BuildContext context,
+    List<ParagraphMapping> paragraphs,
+    bool isResultFromPreviusPage,
+  ) async {
+    StringBuffer buffer = StringBuffer();
+    if (isResultFromPreviusPage) {
+      buffer.writeln('There is no paragraph in current page');
+      buffer.writeln('Showing previous paragraphs');
+    }
+
     return showModalBottomSheet<Map<String, dynamic>>(
         context: context,
         constraints: const BoxConstraints(maxWidth: 400),
@@ -231,6 +252,9 @@ class LowerRow extends StatelessWidget {
                 height: 1,
                 color: Colors.grey.withOpacity(0.5),
               ),
+              isResultFromPreviusPage
+                  ? Text(buffer.toString())
+                  : const SizedBox.shrink(),
               ListView.separated(
                   shrinkWrap: true,
                   itemBuilder: (_, i) {
@@ -374,7 +398,10 @@ class LowerRow extends StatelessWidget {
         );
       }
       print('wordToHighlight: $textToHighlight');
-      vm.onGoto(pageNumber: toc.pageNumber, word: textToHighlight, bookUuid: vm.bookUuid);
+      vm.onGoto(
+          pageNumber: toc.pageNumber,
+          word: textToHighlight,
+          bookUuid: vm.bookUuid);
       // vm.gotoPageAndScroll(toc.pageNumber.toDouble(), toc.name);
     }
   }
