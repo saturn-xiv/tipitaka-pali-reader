@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:substring_highlight/substring_highlight.dart';
 import 'toc.dart';
 import '../../services/provider/script_language_provider.dart';
 import '../../utils/pali_script.dart';
@@ -7,7 +8,7 @@ import '../../utils/pali_script.dart';
 abstract class TocListItem {
   late Toc toc;
   int getPageNumber();
-  Widget build(BuildContext context);
+  Widget build(BuildContext context, String filterText);
 }
 
 class TocHeadingOne implements TocListItem {
@@ -24,7 +25,7 @@ class TocHeadingOne implements TocListItem {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, String filterText) {
     final tocName = PaliScript.getScriptOf(
         script: context.read<ScriptLanguageProvider>().currentScript,
         romanText: toc.name);
@@ -46,15 +47,20 @@ class TocHeadingTwo implements TocListItem {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, String filterText) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final tocName = PaliScript.getScriptOf(
         script: context.read<ScriptLanguageProvider>().currentScript,
         romanText: toc.name);
     return Padding(
-        padding: const EdgeInsets.only(left: 16.0),
-        child: Text(
-          tocName,
-        ));
+      padding: const EdgeInsets.only(left: 16.0),
+      child: SubstringHighlight(
+        text: tocName,
+        term: filterText,
+        textStyle: TextStyle(color: colorScheme.onSurface),
+        textStyleHighlight: TextStyle(color: colorScheme.primary),
+      ),
+    );
   }
 }
 
@@ -71,15 +77,20 @@ class TocHeadingThree implements TocListItem {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, String filterText) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final tocName = PaliScript.getScriptOf(
         script: context.read<ScriptLanguageProvider>().currentScript,
         romanText: toc.name);
     return Padding(
-        padding: const EdgeInsets.only(left: 32.0),
-        child: Text(
-          tocName,
-        ));
+      padding: const EdgeInsets.only(left: 32.0),
+      child: SubstringHighlight(
+        text: tocName,
+        term: filterText,
+        textStyle: TextStyle(color: colorScheme.onSurface),
+        textStyleHighlight: TextStyle(color: colorScheme.primary),
+      ),
+    );
   }
 }
 
@@ -96,15 +107,20 @@ class TocHeadingFour implements TocListItem {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, String filterText) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final tocName = PaliScript.getScriptOf(
         script: context.read<ScriptLanguageProvider>().currentScript,
         romanText: toc.name);
     return Padding(
-        padding: const EdgeInsets.only(left: 48.0),
-        child: Text(
-          tocName,
-        ));
+      padding: const EdgeInsets.only(left: 48.0),
+      child: SubstringHighlight(
+        text: tocName,
+        term: filterText,
+        textStyle: TextStyle(color: colorScheme.onSurface),
+        textStyleHighlight: TextStyle(color: colorScheme.primary),
+      ),
+    );
   }
 }
 
@@ -121,14 +137,19 @@ class TocHeadingFive implements TocListItem {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, String filterText) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final tocName = PaliScript.getScriptOf(
         script: context.read<ScriptLanguageProvider>().currentScript,
         romanText: toc.name);
     return Padding(
-        padding: const EdgeInsets.only(left: 64.0),
-        child: Text(
-          tocName,
-        ));
+      padding: const EdgeInsets.only(left: 64.0),
+      child: SubstringHighlight(
+        text: tocName,
+        term: filterText,
+        textStyle: TextStyle(color: colorScheme.onSurface),
+        textStyleHighlight: TextStyle(color: colorScheme.primary),
+      ),
+    );
   }
 }
