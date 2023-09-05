@@ -1,6 +1,7 @@
 // import 'package:aligned_dialog/aligned_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/providers/font_provider.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/controller/dictionary_controller.dart';
@@ -75,14 +76,12 @@ class LowerRow extends StatelessWidget {
               onPressed: () => _openGotoDialog(context),
               icon: const Icon(Icons.directions_walk_outlined),
               tooltip: AppLocalizations.of(context)!.gotoPageParagraph),
-          MATButton(
-              onMulaButtonClicked: () => _onMulaButtomClicked(context),
-              onAtthaButtonClicked: () => _onAtthaButtomClicked(context),
-              onTikaButtonClicked: () => _onTikaButtomClicked(context)),
-          IconButton(
-              onPressed: () => _onMATButtomClicked(context),
-              icon: const Icon(Icons.comment_outlined),
-              tooltip: AppLocalizations.of(context)!.openLinkedBook),
+          (PlatformInfo.isDesktop)
+              ? MATButton(
+                  onMulaButtonClicked: () => _onMulaButtonClicked(context),
+                  onAtthaButtonClicked: () => _onAtthaButtonClicked(context),
+                  onTikaButtonClicked: () => _onTikaButtonClicked(context))
+              : buildSpeedDial(context),
           IconButton(
               onPressed: () => _onDecreaseButtonClicked(context),
               icon: const Icon(Icons.remove_circle_outline),
@@ -160,7 +159,7 @@ class LowerRow extends StatelessWidget {
     context.read<ReaderFontProvider>().onDecreaseFontSize();
   }
 
-  void _onMulaButtomClicked(BuildContext context) async {
+  void _onMulaButtonClicked(BuildContext context) async {
     final vm = context.read<ReaderViewController>();
     if (vm.book.id.contains('mula')) {
       // do nothing
@@ -199,7 +198,7 @@ class LowerRow extends StatelessWidget {
     }
   }
 
-  void _onAtthaButtomClicked(BuildContext context) async {
+  void _onAtthaButtonClicked(BuildContext context) async {
     final vm = context.read<ReaderViewController>();
     if (vm.book.id.contains('attha')) {
       // do nothing
@@ -273,7 +272,7 @@ class LowerRow extends StatelessWidget {
     }
   }
 
-  void _onTikaButtomClicked(BuildContext context) async {
+  void _onTikaButtonClicked(BuildContext context) async {
     final vm = context.read<ReaderViewController>();
 
     if (vm.book.id.contains('tika')) {
@@ -563,5 +562,51 @@ class LowerRow extends StatelessWidget {
           bookUuid: vm.bookUuid);
       // vm.gotoPageAndScroll(toc.pageNumber.toDouble(), toc.name);
     }
+  }
+
+  SpeedDial buildSpeedDial(BuildContext context) {
+    return SpeedDial(
+      icon: Icons.collections_outlined,
+      //label: Text("MAT"),
+      activeIcon: Icons.close,
+      visible: true,
+      elevation: 0,
+      buttonSize: const Size(40, 40),
+      //childrenButtonSize: const Size(100, 40),
+      closeManually: false,
+      renderOverlay: false,
+      curve: Curves.bounceIn,
+      overlayColor: Colors.black,
+      overlayOpacity: 0.5,
+      tooltip: 'Linked Books',
+      heroTag: 'speed-dial-hero-tag',
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black,
+      //elevation: 8.0,
+      //shape: const CircleBorder(),
+      children: [
+        SpeedDialChild(
+          child: Text("Tika"),
+          backgroundColor: Colors.white,
+//          label: 'Tika',
+          labelStyle: const TextStyle(fontSize: 18.0),
+          onTap: () => _onTikaButtonClicked(context),
+        ),
+        SpeedDialChild(
+          child: Text("Aṭṭh"),
+          backgroundColor: Colors.white,
+//          label: 'Aṭṭhakathā',
+          labelStyle: const TextStyle(fontSize: 18.0),
+          onTap: () => _onAtthaButtonClicked(context),
+        ),
+        SpeedDialChild(
+          child: Text("Mula"),
+          backgroundColor: Colors.white,
+//          label: 'Mula',
+          labelStyle: const TextStyle(fontSize: 18.0),
+          onTap: () => _onMulaButtonClicked(context),
+        ),
+      ],
+    );
   }
 }

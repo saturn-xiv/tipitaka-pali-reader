@@ -27,7 +27,7 @@ import 'package:flutter/services.dart';
 ///```
 /// )
 ///
-class FlutterSelectionControls extends MaterialTextSelectionControls {
+/*class FlutterSelectionControls extends MaterialTextSelectionControls {
   /// FlutterSelectionControls takes a list of ToolBarItem(s) as arguments
   /// The ToolBarItems takes a widget as an argument and it will be shown on the tool bar when the text is selected
   ///
@@ -57,7 +57,7 @@ class FlutterSelectionControls extends MaterialTextSelectionControls {
     /// Handles the callback if the itemControl was passed as an argument to the pressed [ToolBarItem]
     if (item.itemControl != null) {
       final ToolBarItemControl control = item.itemControl!;
-
+/*
       /// Handle the callback if the itemControl passed is of type [ToolBarItemControl.copy]
       if (control == ToolBarItemControl.copy) {
         if (canCopy(delegate)) return handleCopy(delegate, clipboardStatus);
@@ -106,6 +106,7 @@ class FlutterSelectionControls extends MaterialTextSelectionControls {
         }
       });
     }
+    */
   }
 
   /// Builder for material-style copy/paste text selection toolbar.
@@ -150,7 +151,7 @@ class FlutterSelectionControls extends MaterialTextSelectionControls {
             item: item, delegate: delegate, clipboardStatus: clipboardStatus));
   }
 }
-
+*/
 class _SelectionToolBar extends StatefulWidget {
   const _SelectionToolBar(
       {Key? key,
@@ -233,6 +234,7 @@ class __SelectionToolBarState extends State<_SelectionToolBar> {
     cs.update();
   }
 
+/*
   @override
   void dispose() {
     super.dispose();
@@ -241,7 +243,7 @@ class __SelectionToolBarState extends State<_SelectionToolBar> {
       widget.clipboardStatus!.removeListener(_onChangedClipboardStatus);
     }
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     ///TODO GIVE OPTION TO SWITCH BETWEEN CUPERTINO AND MATERIAL TEXT SELECTION TOOL BAR TYPES
