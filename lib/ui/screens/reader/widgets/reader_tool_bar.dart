@@ -68,6 +68,10 @@ class LowerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _openTocDialog(context);
+    });
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
