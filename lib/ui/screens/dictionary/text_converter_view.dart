@@ -60,7 +60,7 @@ class TextConverterViewState extends State<TextConverterView> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -119,7 +119,7 @@ class TextConverterViewState extends State<TextConverterView> {
                       );
                     }).toList(),
                   ),
-                  SizedBox(width: 16.0),
+                  const SizedBox(width: 16.0),
                   IconButton(
                     icon: const Icon(Icons.copy),
                     onPressed: () {
