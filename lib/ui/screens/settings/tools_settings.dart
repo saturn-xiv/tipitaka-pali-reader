@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/flashcard_setup_view.dart';
+import 'package:tipitaka_pali/ui/screens/dictionary/text_converter_view.dart';
 import 'package:tipitaka_pali/ui/screens/settings/download_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
@@ -46,6 +47,7 @@ class _ToolsSettingsViewState extends State<ToolsSettingsView> {
           ),
           _getExtensionsTile(context),
           _getFlashCardExportTile(context),
+          _getTextConverterTile(context),
         ],
       ),
     );
@@ -88,6 +90,28 @@ class _ToolsSettingsViewState extends State<ToolsSettingsView> {
             MaterialPageRoute(builder: (context) => FlashCardSetupView()),
           );
         },
+      ),
+    );
+  }
+
+  Widget _getTextConverterTile(context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TextConverterView()),
+          );
+        },
+        leading: const Icon(Icons.translate),
+        title: ColoredText(
+          AppLocalizations.of(context)!.scriptConverter,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        focusColor: Theme.of(context).focusColor,
+        hoverColor: Theme.of(context).hoverColor,
+        trailing: const Icon(Icons.navigate_next),
       ),
     );
   }

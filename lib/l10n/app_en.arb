@@ -129,6 +129,10 @@
   "searchInCurrent":          "Search in current",
   "upgrade":                  "Upgrade",
   "persistentSearchFilter":   "Persistent Search Filter",
-  "disableVelthuis":          "Disable Velthuis Input"
+  "disableVelthuis":          "Disable Velthuis Input",
+  "scriptConverter":          "Script Converter",
+  "copy":                     "Copy",
+  "inputScript":              "Input Script",
+  "outputScript":             "Output Script"
   
 }
