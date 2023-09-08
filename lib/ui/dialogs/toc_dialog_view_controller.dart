@@ -26,8 +26,10 @@ class TocDialogViewController {
     if (filter.isEmpty) {
       _tocs.value = [..._allTocs];
     } else {
-      final filterdToc =
-          _allTocs.where((element) => element.name.contains(filter)).toList();
+      final filterdToc = _allTocs
+          .where((element) =>
+              element.name.toLowerCase().contains(filter.toLowerCase()))
+          .toList();
       _tocs.value = [...filterdToc];
     }
   }
