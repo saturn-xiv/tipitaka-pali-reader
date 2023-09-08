@@ -68,8 +68,11 @@ class LowerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // this gets anoyying very quickly..
+    // but could be useful to leave the code
+    // so I know the conditions to auto show toc
     Future.delayed(const Duration(milliseconds: 500), () {
-      _openTocDialog(context);
+      //_openTocDialog(context);
     });
 
     return SingleChildScrollView(
