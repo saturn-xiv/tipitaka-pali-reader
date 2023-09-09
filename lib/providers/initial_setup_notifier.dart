@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 class InitialSetupNotifier extends ChangeNotifier {
   String _status = '';
+  int stepsCompleted = 0;
 
   String get status => _status;
   bool _setupIsFinished = false;

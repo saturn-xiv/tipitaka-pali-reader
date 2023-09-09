@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/business_logic/view_models/initial_setup_service.dart';
@@ -71,6 +72,25 @@ class InitialSetup extends StatelessWidget {
                 AppLocalizations.of(context)!.copyingStatus,
                 textAlign: TextAlign.center,
               ),
+        const SizedBox(height: 10),
+        Consumer<InitialSetupNotifier>(
+          builder: (context, notifier, child) {
+            return LinearPercentIndicator(
+              alignment: MainAxisAlignment.center,
+              width: 140.0,
+              lineHeight: 14.0,
+              percent: notifier.stepsCompleted * 25 / 100,
+              center: Text(
+                "${AppLocalizations.of(context)!.completed} ${notifier.stepsCompleted} / 4",
+                style: const TextStyle(fontSize: 12.0),
+              ),
+              //trailing: Icon(Icons.mood),
+              //linearStrokeCap: LinearStrokeCap.roundAll,
+              backgroundColor: Colors.grey,
+              progressColor: Colors.blue,
+            );
+          },
+        ),
         const SizedBox(height: 10),
         Consumer<InitialSetupNotifier>(
           builder: (context, notifier, child) {
