@@ -191,7 +191,7 @@ class InitialSetupService {
     if (ftsResult == false) {
       // handle error
     }
-    _intialSetupNotifier.stepsCompleted = 4;
+    // no needed _intialSetupNotifier.stepsCompleted = 4;
 
     final timeAfterIndexing = DateTime.now();
     //_indexStatus =help
