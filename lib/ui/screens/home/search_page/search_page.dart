@@ -34,7 +34,8 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
+class _SearchPageState extends State<SearchPage>
+    with AutomaticKeepAliveClientMixin {
   late final TextEditingController controller;
   late bool isShowingSearchModeView;
 
@@ -56,6 +57,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ChangeNotifierProvider<SearchPageViewModel>(
         create: (_) => SearchPageViewModel(
               searchHistoryRepository:
@@ -123,35 +125,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                             onTextChanged: vm.onTextChanged,
                           ),
                         ),
-                        // IconButton(
-                        //   padding: EdgeInsets.zero,
-                        //   constraints: BoxConstraints(),
-                        //   icon: Prefs.isFuzzy
-                        //       ? Icon(Icons.lens_blur)
-                        //       : Icon(Icons.lens_outlined),
-                        //   onPressed: () {
-                        //     setState(() {
-                        //       Prefs.isFuzzy = !Prefs.isFuzzy;
-                        //       vm.isFuzzy = Prefs.isFuzzy;
-                        //       vm.onTextChanged(controller.text);
-                        //     });
-                        //   },
-                        //   tooltip: "Fuzzy Search",
-                        // ),
-                        /*IconButton(
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          icon: const Icon(Icons.filter_list),
-                          tooltip: AppLocalizations.of(context)!.filter,
-                          onPressed: () {
-                            setState(() {
-                              isShowingSearchModeView = !isShowingSearchModeView;
-                            });
-                          },
-                        ),*/
                         const SizedBox(width: 8),
                       ],
                     ),
+                    //const Text("message window"),
                     // search mode chooser view
                     AnimatedSize(
                       duration:
@@ -257,6 +234,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   // }
 
   void _onSubmitted(String searchWord, SearchPageViewModel vm) {
+    searchWord = searchWord.trimRight();
     final inputScriptLanguage = ScriptDetector.getLanguage(searchWord);
     if (inputScriptLanguage != Script.roman) {
       searchWord = PaliScript.getRomanScriptFrom(
@@ -270,7 +248,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       'wordDistance': vm.wordDistance,
     });
   }
-  
+
   @override
   bool get wantKeepAlive => true;
 }
