@@ -143,7 +143,7 @@ class DownloadService {
 
     // It costs 10 seconds to regen the indexes.. I'd like to do that.
     downloadNotifier.message = "Rebuilding Index";
-    await dbService.buildIndex();
+    await dbService.buildBothIndexes();
     downloadNotifier.message = "Reloading Extension List";
   }
 
@@ -450,8 +450,7 @@ class DownloadService {
     var startId = 0;
     var batchesCount = 0;
     while (true) {
-      final QueryCursor cursor = await db.rawQueryCursor(
-          '''
+      final QueryCursor cursor = await db.rawQueryCursor('''
         SELECT 
           pages.id, pages.content, category.id as category
         FROM 
@@ -480,7 +479,8 @@ class DownloadService {
         final content = cursor.current['content'] as String;
         final category = cursor.current['category'] as String;
 
-        final startTag = category == 'annya_pe_kn' ? '<p>' : '<span class="t1">';
+        final startTag =
+            category == 'annya_pe_kn' ? '<p>' : '<span class="t1">';
         final startTagLen = startTag.length;
         final endTag = category == 'annya_pe_kn' ? '</p>' : '</span>';
         final endTagLen = endTag.length;
@@ -516,7 +516,8 @@ class DownloadService {
       }
     }
 
-    debugPrint('Total unique: ${uniqueWords.length}, fetched in $batchesCount batches.');
+    debugPrint(
+        'Total unique: ${uniqueWords.length}, fetched in $batchesCount batches.');
 
     downloadNotifier.message = "Adding word list";
 
@@ -525,13 +526,11 @@ class DownloadService {
     var batch = db.batch();
     int counter = 0;
     for (final String word in uniqueWords) {
-      batch.rawInsert(
-          '''
+      batch.rawInsert('''
           INSERT OR IGNORE INTO 
           words (word, plain, frequency) 
           VALUES('$word', '$word', -1)
-          '''
-      );
+          ''');
       counter++;
       if (counter % 100 == 0) {
         await batch.commit();
