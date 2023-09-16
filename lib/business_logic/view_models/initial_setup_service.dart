@@ -179,7 +179,7 @@ class InitialSetupService {
     _intialSetupNotifier.stepsCompleted = 2;
 
     _intialSetupNotifier.status = "building indexes";
-    final indexResult = await databaseHelper.buildIndex();
+    final indexResult = await databaseHelper.buildBothIndexes();
     if (indexResult == false) {
       // handle error
     }
