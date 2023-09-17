@@ -158,10 +158,6 @@ class DictionaryController with ChangeNotifier {
     final differnt = after.difference(before);
     debugPrint('compute time: $differnt');
 
-    // final dh = DictionaryHistory(word: word);
-    //await dp.insertOrReplace(dh);
-    // Todo removed for release.  fix later.
-
     return definition;
   }
 

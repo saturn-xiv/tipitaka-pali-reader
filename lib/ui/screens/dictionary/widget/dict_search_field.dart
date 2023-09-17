@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/services/database/database_helper.dart';
+import 'package:tipitaka_pali/services/repositories/dictionary_history_repo.dart';
 
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
@@ -90,7 +92,10 @@ class _DictionarySearchFieldState extends State<DictionarySearchField> {
                         ));
                   }),
             ),
-            onSubmitted: context.read<DictionaryController>().onLookup,
+            onSubmitted: (word) async {
+              await insertHistory(word);
+              context.read<DictionaryController>().onLookup(word);
+            },
             onChanged: (text) {
               // convert velthuis input to uni
               if (text.isNotEmpty) {
@@ -130,12 +135,20 @@ class _DictionarySearchFieldState extends State<DictionarySearchField> {
                   script: context.read<ScriptLanguageProvider>().currentScript,
                   romanText: suggestion)));
         },
-        onSuggestionSelected: (String suggestion) {
+        onSuggestionSelected: (String suggestion) async {
           final inputLanguage =
               ScriptDetector.getLanguage(textEditingController.text);
           textEditingController.text = PaliScript.getScriptOf(
               script: inputLanguage, romanText: suggestion);
+          await insertHistory(suggestion);
           context.read<DictionaryController>().onLookup(suggestion);
         });
+  }
+
+  insertHistory(word) async {
+    final DictionaryHistoryDatabaseRepository dictionaryHistoryRepository =
+        DictionaryHistoryDatabaseRepository(dbh: DatabaseHelper());
+
+    await dictionaryHistoryRepository.insert(word, "", 1, "");
   }
 }
