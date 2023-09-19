@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:tipitaka_pali/providers/font_provider.dart';
 import 'package:tipitaka_pali/ui/screens/reader/intents.dart';
 
 import '../../../../app.dart';
@@ -14,14 +15,14 @@ import 'pali_page_widget.dart';
 import 'vertical_book_slider.dart';
 
 class VerticalBookView extends StatefulWidget {
-  const VerticalBookView({
-    Key? key,
-    this.onSearchedSelectedText,
-    this.onSharedSelectedText,
-    this.onClickedWord,
-    this.onSearchedInCurrentBook,
-    this.onSelectionChanged
-  }) : super(key: key);
+  VerticalBookView(
+      {Key? key,
+      this.onSearchedSelectedText,
+      this.onSharedSelectedText,
+      this.onClickedWord,
+      this.onSearchedInCurrentBook,
+      this.onSelectionChanged})
+      : super(key: key);
   final ValueChanged<String>? onSearchedSelectedText;
   final ValueChanged<String>? onSharedSelectedText;
   final ValueChanged<String>? onClickedWord;
@@ -33,7 +34,7 @@ class VerticalBookView extends StatefulWidget {
 }
 
 class _VerticalBookViewState extends State<VerticalBookView>
-    implements PageUp, PageDown, ScrollUp, ScrollDown {
+    implements PageUp, PageDown, ScrollUp, ScrollDown, IncreaseFont {
   late final ReaderViewController readerViewController;
   late final ItemPositionsListener itemPositionsListener;
   late final ItemScrollController itemScrollController;
@@ -102,6 +103,11 @@ class _VerticalBookViewState extends State<VerticalBookView>
           LogicalKeySet(LogicalKeyboardKey.pageDown): const PageDownIntent(),
           LogicalKeySet(LogicalKeyboardKey.arrowUp): const ScrollUpIntent(),
           LogicalKeySet(LogicalKeyboardKey.arrowDown): const ScrollDownIntent(),
+          LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.arrowUp):
+              const IncreaseFontIntent(),
+          LogicalKeySet(
+                  LogicalKeyboardKey.control, LogicalKeyboardKey.arrowDown):
+              const DecreaseFontIntent(),
         },
         child: Actions(
           actions: <Type, Action<Intent>>{
@@ -109,6 +115,8 @@ class _VerticalBookViewState extends State<VerticalBookView>
             PageDownIntent: PageDownAction(this, context),
             ScrollUpIntent: ScrollUpAction(this, context),
             ScrollDownIntent: ScrollDownAction(this, context),
+            IncreaseFontIntent: IncreaseFontAction(this, context),
+//            DecreaseFontIntent: DecreaseFontAction(this, context),
           },
           child: Row(
             children: [
@@ -307,5 +315,16 @@ class _VerticalBookViewState extends State<VerticalBookView>
       offset: -lineHeight,
       duration: const Duration(milliseconds: 100),
     );
+  }
+
+  @override
+  void onIncreaseFontRequested(BuildContext context) {
+    context.read<ReaderFontProvider>().onIncreaseFontSize();
+    debugPrint("increase font");
+  }
+
+  void onDecreaseFontRequested(BuildContext context) {
+    context.read<ReaderFontProvider>().onDecreaseFontSize();
+    debugPrint("increase font");
   }
 }

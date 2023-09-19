@@ -38,7 +38,6 @@ class PageUpAction extends Action<PageUpIntent> {
       pageUp.onPageUpRequested(context);
 }
 
-
 abstract class ScrollUp {
   void onScrollUpRequested(BuildContext context);
 }
@@ -57,6 +56,7 @@ class ScrollUpAction extends Action<ScrollUpIntent> {
   void invoke(covariant ScrollUpIntent intent) =>
       pageUp.onScrollUpRequested(context);
 }
+
 abstract class ScrollDown {
   void onScrollDownRequested(BuildContext context);
 }
@@ -74,4 +74,42 @@ class ScrollDownAction extends Action<ScrollDownIntent> {
   @override
   void invoke(covariant ScrollDownIntent intent) =>
       pageDown.onScrollDownRequested(context);
+}
+
+abstract class IncreaseFont {
+  void onIncreaseFontRequested(BuildContext context);
+}
+
+class IncreaseFontIntent extends Intent {
+  const IncreaseFontIntent();
+}
+
+class IncreaseFontAction extends Action<IncreaseFontIntent> {
+  IncreaseFontAction(this.increaseFont, this.context);
+
+  final IncreaseFont increaseFont;
+  final BuildContext context;
+
+  @override
+  void invoke(covariant IncreaseFontIntent intent) =>
+      increaseFont.onIncreaseFontRequested(context);
+}
+
+abstract class DecreaseFont {
+  void onDecreaseFontRequested(BuildContext context);
+}
+
+class DecreaseFontIntent extends Intent {
+  const DecreaseFontIntent();
+}
+
+class DecreaseFontAction extends Action<DecreaseFontIntent> {
+  DecreaseFontAction(this.decreaseFont, this.context);
+
+  final DecreaseFont decreaseFont;
+  final BuildContext context;
+
+  @override
+  void invoke(covariant DecreaseFontIntent intent) =>
+      decreaseFont.onDecreaseFontRequested(context);
 }
