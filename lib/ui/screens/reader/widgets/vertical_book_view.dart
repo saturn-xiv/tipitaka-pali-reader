@@ -34,7 +34,13 @@ class VerticalBookView extends StatefulWidget {
 }
 
 class _VerticalBookViewState extends State<VerticalBookView>
-    implements PageUp, PageDown, ScrollUp, ScrollDown, IncreaseFont {
+    implements
+        PageUp,
+        PageDown,
+        ScrollUp,
+        ScrollDown,
+        IncreaseFont,
+        DecreaseFont {
   late final ReaderViewController readerViewController;
   late final ItemPositionsListener itemPositionsListener;
   late final ItemScrollController itemScrollController;
@@ -103,10 +109,9 @@ class _VerticalBookViewState extends State<VerticalBookView>
           LogicalKeySet(LogicalKeyboardKey.pageDown): const PageDownIntent(),
           LogicalKeySet(LogicalKeyboardKey.arrowUp): const ScrollUpIntent(),
           LogicalKeySet(LogicalKeyboardKey.arrowDown): const ScrollDownIntent(),
-          LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.arrowUp):
+          LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.equal):
               const IncreaseFontIntent(),
-          LogicalKeySet(
-                  LogicalKeyboardKey.control, LogicalKeyboardKey.arrowDown):
+          LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.minus):
               const DecreaseFontIntent(),
         },
         child: Actions(
@@ -116,7 +121,7 @@ class _VerticalBookViewState extends State<VerticalBookView>
             ScrollUpIntent: ScrollUpAction(this, context),
             ScrollDownIntent: ScrollDownAction(this, context),
             IncreaseFontIntent: IncreaseFontAction(this, context),
-//            DecreaseFontIntent: DecreaseFontAction(this, context),
+            DecreaseFontIntent: DecreaseFontAction(this, context),
           },
           child: Row(
             children: [
