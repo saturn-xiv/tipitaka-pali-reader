@@ -133,5 +133,7 @@
   "scriptConverter":          "Script Converter",
   "copy":                     "Copy",
   "inputScript":              "Input Script",
-  "outputScript":             "Output Script"
+  "outputScript":             "Output Script",
+  "dictionaryPrevious":       "Previous (CTRL + ←)",
+  "dictionaryNext":           "Next (CTRL + →)"
 }
