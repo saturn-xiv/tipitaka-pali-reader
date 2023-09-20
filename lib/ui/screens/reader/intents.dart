@@ -113,3 +113,22 @@ class DecreaseFontAction extends Action<DecreaseFontIntent> {
   void invoke(covariant DecreaseFontIntent intent) =>
       decreaseFont.onDecreaseFontRequested(context);
 }
+
+abstract class Escape {
+  void onEscapeRequested(BuildContext context);
+}
+
+class EscapeIntent extends Intent {
+  const EscapeIntent();
+}
+
+class EscapeAction extends Action<EscapeIntent> {
+  EscapeAction(this.escape, this.context);
+
+  final Escape escape;
+  final BuildContext context;
+
+  @override
+  void invoke(covariant EscapeIntent intent) =>
+      escape.onEscapeRequested(context);
+}

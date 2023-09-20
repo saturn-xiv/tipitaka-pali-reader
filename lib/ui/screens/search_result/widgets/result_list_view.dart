@@ -6,8 +6,10 @@ import '../../home/widgets/search_result_list_tile.dart';
 import '../controller/search_result_provider.dart';
 import 'search_filter_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter/services.dart';
+import 'package:tipitaka_pali/ui/screens/reader/intents.dart';
 
-class ResultListView extends StatelessWidget {
+class ResultListView extends StatelessWidget implements Escape {
   const ResultListView(
       {Key? key,
       required this.searchWord,
@@ -22,40 +24,71 @@ class ResultListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final notifier = context.read<SearchResultController>();
 
-    return Scaffold(
-      // key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('Found ${results.length} in $bookCount books'),
-      ),
-      body: Stack(
-        children: [
-          results.isEmpty
-              ? const Center(
-                  child: Text('Not found'),
-                )
-              : ListView.builder(
-                  itemCount: results.length,
-                  padding: const EdgeInsets.only(bottom: 70),
-                  itemBuilder: (context, index) => SearchResultListTile(
-                    result: results[index],
-                    onTap: () => notifier.openBook(results[index], context),
-                  ),
-                  cacheExtent: 8000,
-                ),
-          Positioned(
-              bottom: 16,
-              right: 16,
-              child: Builder(builder: (context) {
-                return FloatingActionButton.extended(
-                  onPressed: () => Scaffold.of(context)
-                      .showBottomSheet((context) => const SearchFilterView()),
-                  label: Text(AppLocalizations.of(context)!.filter),
-                  icon: const Icon(Icons.filter_list),
-                );
-              }))
-        ],
+    return Shortcuts(
+      shortcuts: <LogicalKeySet, Intent>{
+        // push for sumbodhi
+        LogicalKeySet(LogicalKeyboardKey.escape): const EscapeIntent(),
+      },
+      child: Actions(
+        actions: <Type, Action<Intent>>{
+          EscapeIntent: EscapeAction(this, context),
+        },
+        child: Scaffold(
+          // key: _scaffoldKey,
+          appBar: AppBar(
+            title: Text('Found ${results.length} in $bookCount books'),
+          ),
+          body: RawKeyboardListener(
+            focusNode: FocusNode(), // Ensure the widget has focus
+            onKey: (event) => _handleKeyboardEvent(event, context),
+            child: Stack(
+              children: [
+                results.isEmpty
+                    ? const Center(
+                        child: Text('Not found'),
+                      )
+                    : ListView.builder(
+                        itemCount: results.length,
+                        padding: const EdgeInsets.only(bottom: 70),
+                        itemBuilder: (context, index) => SearchResultListTile(
+                          result: results[index],
+                          onTap: () =>
+                              notifier.openBook(results[index], context),
+                        ),
+                        cacheExtent: 8000,
+                      ),
+                Positioned(
+                    bottom: 16,
+                    right: 16,
+                    child: Builder(builder: (context) {
+                      return FloatingActionButton.extended(
+                        onPressed: () => Scaffold.of(context).showBottomSheet(
+                            (context) => const SearchFilterView()),
+                        label: Text(AppLocalizations.of(context)!.filter),
+                        icon: const Icon(Icons.filter_list),
+                      );
+                    }))
+              ],
+            ),
+          ),
+        ),
       ),
     );
+  }
+
+  void _handleKeyboardEvent(RawKeyEvent event, BuildContext context) {
+    // does not seem to work for LogicalKeyboardKey.escape
+    if (event is RawKeyUpEvent &&
+        event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      // it seems as though
+      Navigator.of(context).pop(); // Close the view
+    }
+  }
+
+  @override
+  void onEscapeRequested(BuildContext context) {
+    debugPrint("escape hit test");
+    Navigator.of(context).pop(); // Close the view
   }
 }
 
