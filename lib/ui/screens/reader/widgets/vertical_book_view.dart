@@ -183,7 +183,7 @@ class _VerticalBookViewState extends State<VerticalBookView>
                           // transciption
 
                           final id =
-                              '${readerViewController.book.name}-${readerViewController.book.id}-$index';
+                              '${readerViewController.book.name}-${readerViewController.book.id}-$index-$script';
 
                           final stopwatch = Stopwatch()..start();
                           String htmlContent = PaliScript.getCachedScriptOf(
