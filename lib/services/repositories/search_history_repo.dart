@@ -1,3 +1,4 @@
+import 'package:sqflite/sqflite.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 
 import '../../business_logic/models/search_history.dart';
@@ -10,10 +11,11 @@ abstract class SearchHistoryRepository {
   Future<void> deleteAll();
 
   Future<List<SearchHistory>> getAll();
+
+  Future<int> getWordCount();
 }
 
-class SearchHistoryDatabaseRepository
-    implements SearchHistoryRepository {
+class SearchHistoryDatabaseRepository implements SearchHistoryRepository {
   SearchHistoryDatabaseRepository({required this.dbh});
   DatabaseHelper dbh;
 
@@ -49,7 +51,20 @@ class SearchHistoryDatabaseRepository
   @override
   Future<List<SearchHistory>> getAll() async {
     final db = await dbh.database;
-    final maps = await db.query(_historyTable,);
+    final maps = await db.query(
+      _historyTable,
+    );
     return maps.map((entry) => SearchHistory.fromMap(entry)).toList();
+  }
+
+  @override
+  Future<int> getWordCount() async {
+    final db = await dbh.database;
+
+    final count = Sqflite.firstIntValue(
+      await db.rawQuery('SELECT COUNT(*) FROM words'),
+    );
+    //null check
+    return count ?? -1;
   }
 }

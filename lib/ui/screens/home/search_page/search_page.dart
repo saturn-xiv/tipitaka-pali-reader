@@ -64,7 +64,7 @@ class _SearchPageState extends State<SearchPage>
                   SearchHistoryDatabaseRepository(dbh: DatabaseHelper()),
             )..init(),
         child: Builder(builder: (context) {
-          final vm = context.read<SearchPageViewModel>();
+          final vm = context.watch<SearchPageViewModel>();
           return Scaffold(
               appBar: AppBar(
                 // disable because of conflit with mobile search
@@ -128,7 +128,7 @@ class _SearchPageState extends State<SearchPage>
                         const SizedBox(width: 8),
                       ],
                     ),
-                    //const Text("message window"),
+                    Text(vm.count.toString()),
                     // search mode chooser view
                     AnimatedSize(
                       duration:

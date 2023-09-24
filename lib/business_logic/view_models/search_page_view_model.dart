@@ -29,6 +29,10 @@ class SearchPageViewModel extends ChangeNotifier {
   final _histories = ValueNotifier<List<SearchHistory>>([]);
   ValueListenable<List<SearchHistory>> get histories => _histories;
 
+//  ValueNotifier<int> _count = ValueNotifier<int>(33);
+//  ValueListenable<int> get count => _count;
+
+  int count = 33;
   late QueryMode _queryMode;
   QueryMode get queryMode => _queryMode;
 
@@ -60,6 +64,12 @@ class SearchPageViewModel extends ChangeNotifier {
         onSubmmited(globalSearchWord.value!);
       });
     }
+
+    // do a check to see if the wordlist was somehow not complete.
+    searchHistoryRepository.getWordCount().then((value) {
+      count = value;
+      notifyListeners();
+    });
   }
 
   Future<void> onTextChanged(String filterWord) async {

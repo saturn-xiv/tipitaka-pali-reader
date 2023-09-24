@@ -35,8 +35,8 @@
   "openingBook":          "Openning Books",
   "animationSpeed":       "Animation Speed in ms",
   "generalSettings":      "General",
-  "increaseFontSize":     "Increase font size",
-  "decreaseFontSize":     "Decrease font size",
+  "increaseFontSize":     "Increase font size (Ctrl +)",
+  "decreaseFontSize":     "Decrease font size (Ctrl -)",
   "openLinkedBook":       "Open linked book",
   "gotoPageParagraph":    "Goto page or paragraph",
   "scriptLanguage":       "Script Language",
@@ -134,6 +134,6 @@
   "copy":                     "Copy",
   "inputScript":              "Input Script",
   "outputScript":             "Output Script",
-  "dictionaryPrevious":       "Previous (CTRL + ←)",
-  "dictionaryNext":           "Next (CTRL + →)"
+  "dictionaryPrevious":       "Previous (Ctrl + ←)",
+  "dictionaryNext":           "Next (Ctrl + →)"
 }
