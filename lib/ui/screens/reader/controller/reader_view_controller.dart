@@ -14,7 +14,6 @@ import '../../../../services/dao/bookmark_dao.dart';
 import '../../../../services/dao/recent_dao.dart';
 import '../../../../services/database/database_helper.dart';
 import '../../../../services/repositories/book_repo.dart';
-import '../../../../services/repositories/bookmark_repo.dart';
 import '../../../../services/repositories/page_content_repo.dart';
 import '../../../../services/repositories/paragraph_mapping_repo.dart';
 import '../../../../services/repositories/paragraph_repo.dart';

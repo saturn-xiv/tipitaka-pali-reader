@@ -97,13 +97,20 @@ class _TocDialogState extends State<TocDialog> {
                           key: ValueKey(index),
                           controller: autoScrollController,
                           index: index,
-                          child: ListTile(
-                            onTap: () => Navigator.pop(context, toc),
-                            leading: currentIndex == index
-                                ? const Icon(Icons.check)
-                                : const SizedBox.shrink(),
-                            title: getTocListItem(toc).build(context, tocDialogViewController.filterText),
-                            selected: currentIndex == index,
+                          child: Card(
+                            margin: EdgeInsets.all(1),
+                            elevation: .8,
+                            child: ListTile(
+                              minVerticalPadding: 1,
+                              onTap: () => Navigator.pop(context, toc),
+                              leading: currentIndex == index
+                                  ? const Icon(Icons.check)
+                                  : const SizedBox.shrink(),
+                              title: getTocListItem(toc).build(context, tocDialogViewController.filterText),
+                              selected: currentIndex == index,
+                               contentPadding: const EdgeInsets.symmetric(vertical: 1, horizontal: 5),
+                               dense: true,
+                            ),
                           ),
                         );
                       });

@@ -149,7 +149,7 @@ class _DictionaryPageState extends State<DictionaryPage>
       RawKeyEvent event, BuildContext context, DictionaryController dc) {
     // does not seem to work for LogicalKeyboardKey.escape
     debugPrint(event.toString());
-    if (event is RawKeyUpEvent && event.isControlPressed) {
+    if (event is RawKeyUpEvent && event.isAltPressed) {
       if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
         dc.onClickedPrevious();
       }
