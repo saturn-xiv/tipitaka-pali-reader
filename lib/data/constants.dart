@@ -23,6 +23,7 @@ class AssetsFile {
     'tipitaka_pali_part.aj',
     'tipitaka_pali_part.ak',
     'tipitaka_pali_part.al',
+    'tipitaka_pali_part.am',    
   ];
 }
 

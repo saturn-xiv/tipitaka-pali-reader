@@ -128,7 +128,7 @@ class _SearchPageState extends State<SearchPage>
                         const SizedBox(width: 8),
                       ],
                     ),
-                    Text(vm.count.toString()),
+                    _getMakeWordListButton(vm.count, context),
                     // search mode chooser view
                     AnimatedSize(
                       duration:
@@ -251,4 +251,74 @@ class _SearchPageState extends State<SearchPage>
 
   @override
   bool get wantKeepAlive => true;
+
+  Widget _getMakeWordListButton(int count, context) {
+    bool isTaskCompleted = false; // Track if the task is completed
+    String message = ""; // Store the message from the database helper
+
+    if (count > 8000000) {
+      return const SizedBox.shrink();
+    } else {
+      return TextButton(
+        onPressed: () async {
+          // Show a loading dialog
+          showDialog(
+            context: context,
+            barrierDismissible: false, // Prevent users from closing the dialog
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Processing"),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                        message), // Display the message from the database helper
+                    if (!isTaskCompleted) CircularProgressIndicator(),
+                  ],
+                ),
+                actions: <Widget>[
+                  if (isTaskCompleted) // Show the close button when the task is completed
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the dialog
+                      },
+                      child: Text("Close"),
+                    ),
+                ],
+              );
+            },
+          );
+
+          try {
+            // Perform your time-consuming task here
+            final DatabaseHelper databaseHelper = DatabaseHelper();
+            await databaseHelper.buildWordList((String incomingMessage) {
+              setState(() {
+                // Update the message when the database helper provides it
+                message = incomingMessage;
+              });
+            });
+
+            // Set isTaskCompleted to true when the task is finished
+            setState(() {
+              isTaskCompleted = true;
+            });
+          } catch (error) {
+            // Handle any errors that may occur during the task
+            setState(() {
+              message =
+                  "Error: $error"; // Update the message in case of an error
+              isTaskCompleted =
+                  true; // Set isTaskCompleted to true to enable the close button
+            });
+          }
+        },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+        ),
+        child: const Text("Fix Search Suggest Word List",
+            style: TextStyle(color: Colors.white)),
+      );
+    }
+  }
 }
