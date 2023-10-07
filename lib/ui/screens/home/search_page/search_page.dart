@@ -262,30 +262,35 @@ class _SearchPageState extends State<SearchPage>
       return TextButton(
         onPressed: () async {
           // Show a loading dialog
+
+          StateSetter? _ss;
           showDialog(
             context: context,
             barrierDismissible: false, // Prevent users from closing the dialog
             builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Processing"),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                        message), // Display the message from the database helper
-                    if (!isTaskCompleted) CircularProgressIndicator(),
+              return StatefulBuilder(builder: (BuildContext context, StateSetter ss) {
+                _ss = ss;
+                return AlertDialog(
+                  title: const Text("Processing"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                          message), // Display the message from the database helper
+                      if (!isTaskCompleted) CircularProgressIndicator(),
+                    ],
+                  ),
+                  actions: <Widget>[
+                    if (isTaskCompleted) // Show the close button when the task is completed
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        child: const Text("Close"),
+                      ),
                   ],
-                ),
-                actions: <Widget>[
-                  if (isTaskCompleted) // Show the close button when the task is completed
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Close the dialog
-                      },
-                      child: Text("Close"),
-                    ),
-                ],
-              );
+                );
+              });
             },
           );
 
@@ -293,19 +298,20 @@ class _SearchPageState extends State<SearchPage>
             // Perform your time-consuming task here
             final DatabaseHelper databaseHelper = DatabaseHelper();
             await databaseHelper.buildWordList((String incomingMessage) {
-              setState(() {
+              _ss?.call(() {
                 // Update the message when the database helper provides it
                 message = incomingMessage;
+
               });
             });
 
             // Set isTaskCompleted to true when the task is finished
-            setState(() {
+            _ss?.call(() {
               isTaskCompleted = true;
             });
           } catch (error) {
             // Handle any errors that may occur during the task
-            setState(() {
+            _ss?.call(() {
               message =
                   "Error: $error"; // Update the message in case of an error
               isTaskCompleted =
