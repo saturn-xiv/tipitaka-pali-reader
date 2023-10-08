@@ -44,7 +44,7 @@ class TocDialogViewController {
         );
 
         final filterdToc = _allTocs
-            .where((element) => element.name
+            .where((element) => element.simple
                 .toLowerCase()
                 .contains(simpleFilteredWord.toLowerCase()))
             .toList();
