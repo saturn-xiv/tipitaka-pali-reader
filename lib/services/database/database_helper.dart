@@ -176,7 +176,7 @@ class DatabaseHelper {
     await dbInstance
         .execute('CREATE INDEX IF NOT EXISTS toc_index ON tocs ( book_id );');
     await dbInstance.execute(
-        'CREATE UNIQUE INDEX IF NOT EXISTS word_index ON words ( "word", "plain");');
+        'CREATE INDEX IF NOT EXISTS word_index ON words ( "word", "plain");');
 
     return true;
   }
