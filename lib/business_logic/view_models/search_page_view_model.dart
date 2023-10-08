@@ -32,7 +32,7 @@ class SearchPageViewModel extends ChangeNotifier {
 //  ValueNotifier<int> _count = ValueNotifier<int>(33);
 //  ValueListenable<int> get count => _count;
 
-  int count = 33;
+  int count = 33000000;
   late QueryMode _queryMode;
   QueryMode get queryMode => _queryMode;
 

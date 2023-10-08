@@ -259,102 +259,73 @@ class _SearchPageState extends State<SearchPage>
     if (vm.count > 800000) {
       return const SizedBox.shrink();
     } else {
-      return FutureBuilder<bool>(
-        future:
-            _shouldShowButton(), // Use a Future to determine when to show the button
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // Return a loading indicator while waiting
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            // Handle any errors that may occur
-            return Text("Error: ${snapshot.error}");
-          } else if (snapshot.data == true) {
-            // Show the button when the condition is met
-            return TextButton(
-              onPressed: () async {
-                // Show a loading dialog
+      return TextButton(
+        onPressed: () async {
+          // Show a loading dialog
 
-                StateSetter? _ss;
-                showDialog(
-                  context: context,
-                  barrierDismissible:
-                      false, // Prevent users from closing the dialog
-                  builder: (BuildContext context) {
-                    return StatefulBuilder(
-                        builder: (BuildContext context, StateSetter ss) {
-                      _ss = ss;
-                      return AlertDialog(
-                        title: Text(AppLocalizations.of(context)!.processing),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                                message), // Display the message from the database helper
-                            if (!isTaskCompleted)
-                              const CircularProgressIndicator(),
-                          ],
-                        ),
-                        actions: <Widget>[
-                          if (isTaskCompleted) // Show the close button when the task is completed
-                            TextButton(
-                              onPressed: () {
-                                vm.init();
-                                Navigator.of(context).pop(); // Close the dialog
-                              },
-                              child: Text(AppLocalizations.of(context)!.close),
-                            ),
-                        ],
-                      );
-                    });
-                  },
+          StateSetter? _ss;
+          showDialog(
+            context: context,
+            barrierDismissible: false, // Prevent users from closing the dialog
+            builder: (BuildContext context) {
+              return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter ss) {
+                _ss = ss;
+                return AlertDialog(
+                  title: Text(AppLocalizations.of(context)!.processing),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                          message), // Display the message from the database helper
+                      if (!isTaskCompleted) CircularProgressIndicator(),
+                    ],
+                  ),
+                  actions: <Widget>[
+                    if (isTaskCompleted) // Show the close button when the task is completed
+                      TextButton(
+                        onPressed: () {
+                          vm.init();
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        child: Text(AppLocalizations.of(context)!.close),
+                      ),
+                  ],
                 );
+              });
+            },
+          );
 
-                try {
-                  // Perform your time-consuming task here
-                  final DatabaseHelper databaseHelper = DatabaseHelper();
-                  await databaseHelper.buildWordList((String incomingMessage) {
-                    _ss?.call(() {
-                      // Update the message when the database helper provides it
-                      message = incomingMessage;
-                    });
-                  });
+          try {
+            // Perform your time-consuming task here
+            final DatabaseHelper databaseHelper = DatabaseHelper();
+            await databaseHelper.buildWordList((String incomingMessage) {
+              _ss?.call(() {
+                // Update the message when the database helper provides it
+                message = incomingMessage;
+              });
+            });
 
-                  // Set isTaskCompleted to true when the task is finished
-                  _ss?.call(() {
-                    isTaskCompleted = true;
-                  });
-                } catch (error) {
-                  // Handle any errors that may occur during the task
-                  _ss?.call(() {
-                    message =
-                        "Error: $error"; // Update the message in case of an error
-                    isTaskCompleted =
-                        true; // Set isTaskCompleted to true to enable the close button
-                  });
-                }
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-              ),
-              child: Text(
-                AppLocalizations.of(context)!.fixWordlist,
-                style: const TextStyle(color: Colors.white),
-              ),
-            );
-          } else {
-            // Return an empty SizedBox when the condition is not met
-            return const SizedBox.shrink();
+            // Set isTaskCompleted to true when the task is finished
+            _ss?.call(() {
+              isTaskCompleted = true;
+            });
+          } catch (error) {
+            // Handle any errors that may occur during the task
+            _ss?.call(() {
+              message =
+                  "Error: $error"; // Update the message in case of an error
+              isTaskCompleted =
+                  true; // Set isTaskCompleted to true to enable the close button
+            });
           }
         },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+        ),
+        child: Text(AppLocalizations.of(context)!.fixWordlist,
+            style: const TextStyle(color: Colors.white)),
       );
     }
-  }
-
-  Future<bool> _shouldShowButton() async {
-    // You can implement your logic here to determine when to show the button
-    // For example, you can use a delay or a condition based on your requirements.
-    await Future.delayed(Duration(seconds: 5)); // Example delay of 5 seconds
-    return true; // Show the button after the delay
   }
 }
