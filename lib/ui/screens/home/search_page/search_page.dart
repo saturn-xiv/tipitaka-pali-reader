@@ -256,7 +256,7 @@ class _SearchPageState extends State<SearchPage>
     bool isTaskCompleted = false; // Track if the task is completed
     String message = ""; // Store the message from the database helper
 
-    if (count > 8000000) {
+    if (count > 800000) {
       return const SizedBox.shrink();
     } else {
       return TextButton(
@@ -268,7 +268,8 @@ class _SearchPageState extends State<SearchPage>
             context: context,
             barrierDismissible: false, // Prevent users from closing the dialog
             builder: (BuildContext context) {
-              return StatefulBuilder(builder: (BuildContext context, StateSetter ss) {
+              return StatefulBuilder(
+                  builder: (BuildContext context, StateSetter ss) {
                 _ss = ss;
                 return AlertDialog(
                   title: const Text("Processing"),
@@ -301,7 +302,6 @@ class _SearchPageState extends State<SearchPage>
               _ss?.call(() {
                 // Update the message when the database helper provides it
                 message = incomingMessage;
-
               });
             });
 
