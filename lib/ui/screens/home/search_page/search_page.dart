@@ -128,7 +128,7 @@ class _SearchPageState extends State<SearchPage>
                         const SizedBox(width: 8),
                       ],
                     ),
-                    _getMakeWordListButton(vm.count, context),
+                    _getMakeWordListButton(vm, context),
                     // search mode chooser view
                     AnimatedSize(
                       duration:
@@ -252,11 +252,11 @@ class _SearchPageState extends State<SearchPage>
   @override
   bool get wantKeepAlive => true;
 
-  Widget _getMakeWordListButton(int count, context) {
+  Widget _getMakeWordListButton(SearchPageViewModel vm, context) {
     bool isTaskCompleted = false; // Track if the task is completed
     String message = ""; // Store the message from the database helper
 
-    if (count > 800000) {
+    if (vm.count > 800000) {
       return const SizedBox.shrink();
     } else {
       return FutureBuilder<bool>(
@@ -291,13 +291,15 @@ class _SearchPageState extends State<SearchPage>
                           children: <Widget>[
                             Text(
                                 message), // Display the message from the database helper
-                            if (!isTaskCompleted) CircularProgressIndicator(),
+                            if (!isTaskCompleted)
+                              const CircularProgressIndicator(),
                           ],
                         ),
                         actions: <Widget>[
                           if (isTaskCompleted) // Show the close button when the task is completed
                             TextButton(
                               onPressed: () {
+                                vm.init();
                                 Navigator.of(context).pop(); // Close the dialog
                               },
                               child: Text(AppLocalizations.of(context)!.close),
