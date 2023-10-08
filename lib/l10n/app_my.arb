@@ -132,5 +132,16 @@
   "export":                   "တင်ပို့ခြင်",
   "searchSelected":           "စာအုပ်တိုင်း၌ ရှာ",
   "searchInCurrent":          "ဖွင့်ဆဲစာအုပ်၌ ရှာ",
-  "upgrade":                  "အဆင့်မြှင့်"
+  "upgrade":                  "အဆင့်မြှင့်",
+  "persistentSearchFilter":   "ဖစ်တာစစ်ပြီးရှာပါ", 
+  "disableVelthuis":          "Velthuis ထည့်သွင်းမှုမရနိုင်ပါ",
+  "scriptConverter":          "လက်ရေးမူ/စာလုံး ပြောင်းလဲခြင်း",
+  "copy":                     "ကော်ပီ/မိတ္တူ",
+  "inputScript":              "ထည့်သွင်းသော လက်ရေးမူ/စာလုံး",
+  "outputScript":             "ထွက်ပေါ်လာသောစာလုံး",
+  "dictionaryPrevious":       "အရင်/ကနဉီး (Alt + ←)",
+  "dictionaryNext":           "ပြီးနောက် (Alt + →)",
+  "notListed":                "စာရင်းမပြုစုထားပါ",
+  "processing":               "လုပ်ဆောင်နေပါသညါ",
+  "fixWordlist":              "စကားလုံးအတွက်အကြံပြုချက်ရယူပြီး အမှားကိုပြင်ဆင်ပါ"
 }

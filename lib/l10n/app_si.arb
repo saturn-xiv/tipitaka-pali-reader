@@ -138,8 +138,16 @@
   "export":                   "Export කරන්න",
   "searchSelected":           "තෝරාගෙන ඇති සෙවීම",
   "searchInCurrent":          "මෙහි සෙවීම කරන්න",
-  "upgrade":                  "Upgrade"
+  "upgrade":                  "උත්ශ්රේණි කිරීම",
+  "persistentSearchFilter":   "ස්ථිර සෙවුම් පෙරහන",
+  "disableVelthuis":          "Velthuis ආදානය අක්‍රීය කරන්න",
+  "scriptConverter":          "Script පරිවර්තකය",
+  "copy":                     "පිටපත් කිරීම",
+  "inputScript":              "ආදාන Script",
+  "outputScript":             "ප්රතිදාන Script",
+  "dictionaryPrevious":       "ආපසු (Alt + ←)",
+  "dictionaryNext":           "ඉදිරියට (Alt + →)",
+  "notListed":                "ලැයිස්තුගත කර නැත",
+  "processing":               "සැකසීම සිදු වෙමින් පවතී",
+  "fixWordlist":              "සෙවුම් යෝජනා වචන ලැයිස්තුව නිවැරදි කරන්න"
 }
-
-
-
