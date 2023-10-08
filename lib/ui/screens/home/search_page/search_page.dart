@@ -272,7 +272,7 @@ class _SearchPageState extends State<SearchPage>
                   builder: (BuildContext context, StateSetter ss) {
                 _ss = ss;
                 return AlertDialog(
-                  title: const Text("Processing"),
+                  title: Text(AppLocalizations.of(context)!.processing),
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
@@ -287,7 +287,7 @@ class _SearchPageState extends State<SearchPage>
                         onPressed: () {
                           Navigator.of(context).pop(); // Close the dialog
                         },
-                        child: const Text("Close"),
+                        child: Text(AppLocalizations.of(context)!.close),
                       ),
                   ],
                 );
@@ -322,8 +322,8 @@ class _SearchPageState extends State<SearchPage>
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
         ),
-        child: const Text("Fix Search Suggest Word List",
-            style: TextStyle(color: Colors.white)),
+        child: Text(AppLocalizations.of(context)!.fixWordlist,
+            style: const TextStyle(color: Colors.white)),
       );
     }
   }

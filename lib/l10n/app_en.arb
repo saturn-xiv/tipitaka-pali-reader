@@ -136,5 +136,7 @@
   "outputScript":             "Output Script",
   "dictionaryPrevious":       "Previous (Alt + ←)",
   "dictionaryNext":           "Next (Alt + →)",
-  "notListed":                "Not Listed"
+  "notListed":                "Not Listed",
+  "processing":               "Processing",
+  "fixWordlist":              "Fix Search Suggest Word List"
 }
