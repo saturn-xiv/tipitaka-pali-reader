@@ -3,6 +3,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:tipitaka_pali/business_logic/models/toc.dart';
 import 'package:tipitaka_pali/business_logic/models/toc_list_item.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/ui/dialogs/toc_dialog_view_controller.dart';
 import 'package:tipitaka_pali/ui/widgets/pali_search_field.dart';
 
@@ -57,7 +58,21 @@ class _TocDialogState extends State<TocDialog> {
                     icon: const Icon(Icons.close),
                     onPressed: () => Navigator.pop(context, null),
                   ),
-                ))
+                )),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: FilterChip(
+                  label: Text(
+                    AppLocalizations.of(context)!.fuzzy,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  selected: Prefs.isFuzzy,
+                  onSelected: (value) {
+                    setState(() {
+                      Prefs.isFuzzy = !Prefs.isFuzzy;
+                    });
+                  }),
+            ),
           ]),
           const Divider(color: Colors.grey),
           PaliSearchField(
@@ -106,10 +121,12 @@ class _TocDialogState extends State<TocDialog> {
                               leading: currentIndex == index
                                   ? const Icon(Icons.check)
                                   : const SizedBox.shrink(),
-                              title: getTocListItem(toc).build(context, tocDialogViewController.filterText),
+                              title: getTocListItem(toc).build(
+                                  context, tocDialogViewController.filterText),
                               selected: currentIndex == index,
-                               contentPadding: const EdgeInsets.symmetric(vertical: 1, horizontal: 5),
-                               dense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 1, horizontal: 5),
+                              dense: true,
                             ),
                           ),
                         );

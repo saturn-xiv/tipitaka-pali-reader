@@ -16,7 +16,12 @@ class TocDatabaseRepository implements TocRepository {
   Future<List<Toc>> getTocs(String bookID) async {
     final db = await databaseProvider.database;
     var results = await db.query(dao.tableName,
-        columns: [dao.columnName, dao.columnType, dao.columnPageNumber],
+        columns: [
+          dao.columnName,
+          dao.columnType,
+          dao.columnPageNumber,
+          dao.columnSimple
+        ],
         where: '${dao.columnBookID} = ?',
         whereArgs: [bookID]);
     return dao.fromList(results);

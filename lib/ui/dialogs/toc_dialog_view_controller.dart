@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:tipitaka_pali/business_logic/models/toc.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/repositories/toc_repo.dart';
 
 class TocDialogViewController {
@@ -26,11 +27,35 @@ class TocDialogViewController {
     if (filter.isEmpty) {
       _tocs.value = [..._allTocs];
     } else {
-      final filterdToc = _allTocs
-          .where((element) =>
-              element.name.toLowerCase().contains(filter.toLowerCase()))
-          .toList();
-      _tocs.value = [...filterdToc];
+      if (Prefs.isFuzzy) {
+        String simpleFilteredWord = filter.replaceAllMapped(
+          RegExp('[ṭḍṃāūīḷñṅ]'),
+          (match) => {
+            'ṭ': 't',
+            'ḍ': 'd',
+            'ṃ': 'm',
+            'ā': 'a',
+            'ū': 'u',
+            'ī': 'i',
+            'ḷ': 'l',
+            'ñ': 'n',
+            'ṅ': 'n'
+          }[match.group(0)]!,
+        );
+
+        final filterdToc = _allTocs
+            .where((element) => element.name
+                .toLowerCase()
+                .contains(simpleFilteredWord.toLowerCase()))
+            .toList();
+        _tocs.value = [...filterdToc];
+      } else {
+        final filterdToc = _allTocs
+            .where((element) =>
+                element.name.toLowerCase().contains(filter.toLowerCase()))
+            .toList();
+        _tocs.value = [...filterdToc];
+      }
     }
   }
 }
