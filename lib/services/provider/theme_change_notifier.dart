@@ -86,6 +86,7 @@ class ThemeChangeNotifier extends ChangeNotifier {
       FlexColorScheme.light(
         // As scheme colors we use the one from our list
         // pointed to by the current themeIndex.
+        useMaterial3: true,
         colors: myFlexSchemes[Prefs.themeIndex].light,
         // Medium strength surface branding used in this example.
         surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
