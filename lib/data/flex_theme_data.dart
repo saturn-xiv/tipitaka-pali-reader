@@ -159,7 +159,53 @@ final List<FlexSchemeData> myFlexSchemes = <FlexSchemeData>[
       swapOnMaterial3: true,
     ),
   ),
+  const FlexSchemeData(
+    name: 'Mahayana blue',
+    description: 'Mahayana Blue Color grey blue',
+    light: FlexSchemeColor(
+      primary: Color(0xFF00296B),
+      primaryContainer: Color(0xFFA0C2ED),
+      secondary: Color(0xFFD26900),
+      secondaryContainer: Color(0xFFFFD270),
+      tertiary: Color(0xFF5C5C95),
+      tertiaryContainer: Color(0xFFC8DBF8),
+      appBarColor: Colors.red,
+    ),
+    dark: FlexSchemeColor(
+      primary: Color(0xFFB1CFF5),
+      primaryContainer: Color(0xFF3873BA),
+      secondary: Color(0xFFFFD270),
+      secondaryContainer: Color(0xFFD26900),
+      tertiary: Color(0xFFC9CBFC),
+      tertiaryContainer: Color(0xFF535393),
+    ),
+  ),
+  const FlexSchemeData(
+    name: 'Pa-Auk Burgundy',
+    description: 'Paauka Color Burgundy',
+    light: FlexSchemeColor(
+      primary: Color.fromARGB(255, 61, 10, 41),
+      secondary: Color(0xFFD26900),
+      swapOnMaterial3: true,
+      appBarColor: FlexColor.mangoDarkTertiary,
+    ),
+    dark: FlexSchemeColor(
+      primary: Color.fromARGB(255, 61, 10, 41),
+      secondary: Color(0xFFD26900),
+      swapOnMaterial3: true,
+      appBarColor: FlexColor.amberDarkTertiary,
+    ),
+  ),
+  const FlexSchemeData(
+    name: 'Sayalay Pink',
+    description: 'Pink Color of Nun',
+    light: FlexSchemeColor(
+      primary: Color.fromARGB(255, 209, 158, 190),
+      secondary: Color.fromARGB(255, 72, 49, 69),
+    ),
+    dark: FlexSchemeColor(
+      primary: Color.fromARGB(255, 209, 158, 190),
+      secondary: Color.fromARGB(255, 72, 49, 69),
+    ),
+  ),
 ];
-
-
-

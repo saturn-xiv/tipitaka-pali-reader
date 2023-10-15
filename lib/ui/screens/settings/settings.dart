@@ -41,7 +41,7 @@ class SettingPage extends StatelessWidget {
               const HelpAboutView(),
               ChangeNotifierProvider<BookmarkNotifier>(
                 create: (context) => BookmarkNotifier(),
-                child: SyncSettingsView(),
+                child: const SyncSettingsView(),
               ),
               ToolsSettingsView(scrollController: sc),
             ],

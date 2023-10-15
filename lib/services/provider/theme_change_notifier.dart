@@ -10,7 +10,13 @@ class ThemeChangeNotifier extends ChangeNotifier {
   ThemeMode themeMode = (Prefs.darkThemeOn) ? ThemeMode.dark : ThemeMode.light;
   // ignore: unused_field
   int _themeIndex = 1;
+  bool _useM3 = true;
   final List<bool> _isSelected = [true, false, false];
+
+  set useM3(bool val) {
+    _useM3 = val;
+    notifyListeners();
+  }
 
   set themeIndex(int val) {
     _themeIndex = val;
@@ -78,12 +84,16 @@ class ThemeChangeNotifier extends ChangeNotifier {
         // Medium strength surface branding used in this example.
         surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        appBarStyle: FlexAppBarStyle.custom,
         textTheme: _textTheme,
+        useMaterial3: false,
+        blendLevel: 5,
+        appBarOpacity: 0.66,
       ).toTheme;
 
-  ThemeData get themeData =>
-      //ThemeData get themeData=>  myFlexSchemes[Prefs.themeIndex].light().toTheme();
-      FlexColorScheme.light(
+  ThemeData get themeData {
+    if (Prefs.useM3) {
+      return FlexColorScheme.light(
         // As scheme colors we use the one from our list
         // pointed to by the current themeIndex.
         useMaterial3: true,
@@ -93,6 +103,77 @@ class ThemeChangeNotifier extends ChangeNotifier {
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
         textTheme: _textTheme,
       ).toTheme;
+    } else {
+      return
+          //ThemeData get themeData=>  myFlexSchemes[Prefs.themeIndex].light().toTheme();
+          FlexThemeData.light(
+        colors: myFlexSchemes[Prefs.themeIndex].light,
+        appBarStyle: FlexAppBarStyle.primary,
+        appBarElevation: 4.0,
+        bottomAppBarElevation: 8.0,
+        tabBarStyle: FlexTabBarStyle.forAppBar,
+        subThemesData: const FlexSubThemesData(
+          interactionEffects: false,
+          tintedDisabledControls: false,
+          blendOnColors: false,
+          useTextTheme: true,
+          useM2StyleDividerInM3: true,
+          adaptiveRemoveElevationTint: FlexAdaptive.all(),
+          adaptiveElevationShadowsBack: FlexAdaptive.all(),
+          adaptiveAppBarScrollUnderOff: FlexAdaptive.all(),
+          defaultRadius: 4.0,
+          elevatedButtonSchemeColor: SchemeColor.onPrimary,
+          elevatedButtonSecondarySchemeColor: SchemeColor.primary,
+          inputDecoratorSchemeColor: SchemeColor.onSurface,
+          inputDecoratorBackgroundAlpha: 13,
+          inputDecoratorBorderSchemeColor: SchemeColor.primary,
+          inputDecoratorUnfocusedBorderIsColored: false,
+          fabUseShape: true,
+          fabAlwaysCircular: true,
+          chipSchemeColor: SchemeColor.primary,
+          chipRadius: 20.0,
+          popupMenuElevation: 8.0,
+          alignedDropdown: true,
+          tooltipRadius: 4,
+          dialogElevation: 24.0,
+          useInputDecoratorThemeInDialogs: true,
+          datePickerHeaderBackgroundSchemeColor: SchemeColor.primary,
+          snackBarBackgroundSchemeColor: SchemeColor.inverseSurface,
+          appBarScrolledUnderElevation: 4.0,
+          tabBarIndicatorSize: TabBarIndicatorSize.tab,
+          tabBarIndicatorWeight: 2,
+          tabBarIndicatorTopRadius: 0,
+          tabBarDividerColor: Color(0x00000000),
+          drawerElevation: 16.0,
+          drawerWidth: 304.0,
+          bottomSheetElevation: 10.0,
+          bottomSheetModalElevation: 20.0,
+          bottomNavigationBarSelectedLabelSchemeColor: SchemeColor.primary,
+          bottomNavigationBarSelectedIconSchemeColor: SchemeColor.primary,
+          bottomNavigationBarElevation: 8.0,
+          menuElevation: 8.0,
+          menuBarRadius: 0.0,
+          menuBarElevation: 1.0,
+          navigationBarSelectedLabelSchemeColor: SchemeColor.onSurface,
+          navigationBarUnselectedLabelSchemeColor: SchemeColor.onSurface,
+          navigationBarSelectedIconSchemeColor: SchemeColor.onSurface,
+          navigationBarUnselectedIconSchemeColor: SchemeColor.onSurface,
+          navigationBarIndicatorSchemeColor: SchemeColor.secondary,
+          navigationBarBackgroundSchemeColor: SchemeColor.surfaceVariant,
+          navigationBarElevation: 0.0,
+          navigationRailSelectedLabelSchemeColor: SchemeColor.onSurface,
+          navigationRailUnselectedLabelSchemeColor: SchemeColor.onSurface,
+          navigationRailSelectedIconSchemeColor: SchemeColor.onSurface,
+          navigationRailUnselectedIconSchemeColor: SchemeColor.onSurface,
+          navigationRailIndicatorSchemeColor: SchemeColor.secondary,
+        ),
+        visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        useMaterial3: true,
+        // To use the Playground font, add GoogleFonts package and uncomment
+        // fontFamily: GoogleFonts.notoSans().fontFamily,
+      );
+    }
+  }
 
   TextTheme get _textTheme {
     // this was changed for getting the laos font to work in the UI section of the
