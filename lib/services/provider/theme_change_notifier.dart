@@ -168,6 +168,8 @@ class ThemeChangeNotifier extends ChangeNotifier {
           navigationRailIndicatorSchemeColor: SchemeColor.secondary,
         ),
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        textTheme: _textTheme,
+
         useMaterial3: true,
         // To use the Playground font, add GoogleFonts package and uncomment
         // fontFamily: GoogleFonts.notoSans().fontFamily,
