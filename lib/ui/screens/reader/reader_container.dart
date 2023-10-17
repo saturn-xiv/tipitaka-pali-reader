@@ -195,7 +195,7 @@ Etaṃ buddhānasāsanaṃ
         ..selectedStatus.normalButtonColor = primaryColor
         ..selectedStatus.decoration = BoxDecoration(
           shape: BoxShape.rectangle,
-          color: Prefs.getChosenColor(),
+          color: Prefs.getChosenColor(context),
           border: const Border(
             left: BorderSide(color: Colors.grey),
             right: BorderSide(color: Colors.grey),

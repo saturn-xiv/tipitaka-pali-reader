@@ -369,14 +369,16 @@ class Prefs {
   // ===========================================================================
   // Helpers
 
-  static Color getChosenColor() {
+  static Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {
       case 0:
-        return Color(Colors.white.value);
+        return (Color(Colors.white.value));
       case 1:
-        return const Color(seypia);
+        return Theme.of(context)
+            .colorScheme
+            .surfaceVariant; // ?? (const Color(seypia));
       case 2:
-        return Color(Colors.black.value);
+        return (Color(Colors.black.value));
       default:
         return Color(Colors.white.value);
     }
