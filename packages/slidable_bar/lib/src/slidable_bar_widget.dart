@@ -152,9 +152,9 @@ class _SlidableSideBarState extends State<SlidableBar> {
                           decoration: BoxDecoration(
                               color: widget.backgroundColor ??
                                   Theme.of(context).colorScheme.onBackground,
-                              borderRadius: BorderRadius.only(
+                              borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(7)),
-                              boxShadow: [
+                              boxShadow: const [
                                 BoxShadow(
                                     color: Colors.black12,
                                     spreadRadius: 1,
@@ -164,7 +164,7 @@ class _SlidableSideBarState extends State<SlidableBar> {
                           child: Container(
                             width: widget.clickerSize * 0.23,
                             height: widget.clickerSize * 0.23,
-                            margin: EdgeInsets.all(6),
+                            margin: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
                                 color: widget.frontColor ??
                                     Theme.of(context).primaryColor,
@@ -264,7 +264,7 @@ class _SideBarContent extends StatelessWidget {
       width: [Side.left, Side.right].contains(side) ? width : null,
       height: [Side.left, Side.right].contains(side) ? null : width,
       decoration: BoxDecoration(
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 5),
         ],
         color: backgroundColor ?? Theme.of(context).colorScheme.onBackground,

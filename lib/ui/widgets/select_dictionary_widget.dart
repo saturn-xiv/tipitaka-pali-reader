@@ -35,9 +35,7 @@ class SelectDictionaryWidget extends StatelessWidget {
                   // subtitle: Text('${vm.userDicts[index].userOrder}'),
                   trailing: const Icon(Icons.drag_handle),
                 ),
-                const Divider(
-                  height: 1.0,
-                )
+                if (index < dictionaries.length - 1) const Divider(height: 1.0)
               ],
             );
           },

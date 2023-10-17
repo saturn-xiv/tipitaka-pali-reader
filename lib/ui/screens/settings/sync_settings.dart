@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Assuming SharedPreferences for storing user info.
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/user_notifier.dart';
 import 'package:tipitaka_pali/services/repositories/fire_user_repository.dart';
+
 import '../../widgets/colored_text.dart';
 
 class SyncSettingsView extends StatefulWidget {
@@ -15,8 +14,8 @@ class SyncSettingsView extends StatefulWidget {
 }
 
 class _SyncSettingsViewState extends State<SyncSettingsView> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -39,7 +38,6 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
         _passwordController.clear();
       }
       return Card(
-        elevation: 8,
         child: ExpansionTile(
           leading: const Icon(Icons.sync),
           title: Text(
@@ -60,7 +58,7 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
       padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
         leading: const Icon(Icons.refresh),
-        title: ColoredText("Sign In"), // Changed "Sign Up" to "Sign In"
+        title: const ColoredText("Sign In"), // Changed "Sign Up" to "Sign In"
         focusColor: Theme.of(context).focusColor,
         hoverColor: Theme.of(context).hoverColor,
         onTap: () {
@@ -77,7 +75,7 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
         children: [
           TextField(
             controller: _emailController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Email',
               icon: Icon(Icons.person),
             ),
@@ -85,10 +83,10 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
               Prefs.email = value;
             },
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           TextField(
             controller: _passwordController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Password',
               icon: Icon(Icons.lock),
             ),
@@ -97,7 +95,7 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
               Prefs.password = value;
             },
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           ElevatedButton(
             onPressed: Prefs.isSignedIn
                 ? () async {
@@ -117,7 +115,7 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                   },
             child: Text(Prefs.isSignedIn ? 'Sign Out' : 'Sign In'),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           (Prefs.isSignedIn)
               ? const SizedBox.shrink()
               : ElevatedButton(
@@ -127,7 +125,7 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                     await userRepository.register(
                         _emailController.text, _passwordController.text);
                   },
-                  child: Text('Register'),
+                  child: const Text('Register'),
                 )
         ],
       ),

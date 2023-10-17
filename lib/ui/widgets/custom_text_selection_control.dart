@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 /// This package allows you to create custom text selection controls and use them in the SelectableText widget or in the TextForm or TextFormField widgets.
 ///

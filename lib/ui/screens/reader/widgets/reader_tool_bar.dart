@@ -4,24 +4,24 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/providers/font_provider.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/controller/dictionary_controller.dart';
 import 'package:tipitaka_pali/ui/screens/home/openning_books_provider.dart';
 import 'package:tipitaka_pali/ui/screens/reader/widgets/mat_button.dart';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 import 'package:tipitaka_pali/utils/platform_info.dart';
-import 'package:tipitaka_pali/services/prefs.dart';
 
 import '../../../../app.dart';
 import '../../../../business_logic/models/book.dart';
 import '../../../../business_logic/models/paragraph_mapping.dart';
 import '../../../../business_logic/models/toc.dart';
-import '../controller/reader_view_controller.dart';
 import '../../../../routes.dart';
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
 import '../../../dialogs/goto_dialog.dart';
 import '../../../dialogs/simple_input_dialog.dart';
 import '../../../dialogs/toc_dialog.dart';
+import '../controller/reader_view_controller.dart';
 import 'book_slider.dart';
 
 class ReaderToolbar extends StatelessWidget {
@@ -483,7 +483,7 @@ class LowerRow extends StatelessWidget {
       ),
     );
     if (gotoResult != null) {
-      late final pageNumber;
+      late final int pageNumber;
       int? paragraphNumber;
       String? wordToHighlight;
       if (gotoResult.type == GotoType.page) {
@@ -528,13 +528,13 @@ class LowerRow extends StatelessWidget {
         );
       },
       pageBuilder: (context, animation, secondaryAnimation) {
+        double topPadding = MediaQuery.paddingOf(context).top;
         return Align(
           alignment: Alignment.centerRight,
           child: Material(
             type: MaterialType.transparency,
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+              padding: EdgeInsets.fromLTRB(8, 8 + topPadding, 8, 8),
               width: MediaQuery.of(context).size.width > 600
                   ? sideSheetWidth
                   : double.infinity,
@@ -599,22 +599,22 @@ class LowerRow extends StatelessWidget {
       //shape: const CircleBorder(),
       children: [
         SpeedDialChild(
-          child: Text("Tika"),
-          backgroundColor: Colors.white,
+          child: const Text("Tika"),
+          backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
 //          label: 'Tika',
           labelStyle: const TextStyle(fontSize: 18.0),
           onTap: () => _onTikaButtonClicked(context),
         ),
         SpeedDialChild(
-          child: Text("Aṭṭh"),
-          backgroundColor: Colors.white,
+          child: const Text("Aṭṭh"),
+          backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
 //          label: 'Aṭṭhakathā',
           labelStyle: const TextStyle(fontSize: 18.0),
           onTap: () => _onAtthaButtonClicked(context),
         ),
         SpeedDialChild(
-          child: Text("Mula"),
-          backgroundColor: Colors.white,
+          child: const Text("Mula"),
+          backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
 //          label: 'Mula',
           labelStyle: const TextStyle(fontSize: 18.0),
           onTap: () => _onMulaButtonClicked(context),

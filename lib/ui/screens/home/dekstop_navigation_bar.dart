@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/providers/navigation_provider.dart';
-import 'package:provider/provider.dart';
 
 class DeskTopNavigationBar extends StatelessWidget {
   const DeskTopNavigationBar({
@@ -23,7 +23,6 @@ class DeskTopNavigationBar extends StatelessWidget {
 
     return NavigationRail(
       minWidth: navigationBarWidth,
-      indicatorColor: Theme.of(context).focusColor,
       leading: Ink.image(
         height: navigationBarWidth,
         width: navigationBarWidth,

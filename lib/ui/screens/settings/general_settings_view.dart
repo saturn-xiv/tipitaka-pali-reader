@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/ui/screens/settings/panel_size_setting_view.dart';
@@ -41,7 +40,6 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 8,
       child: ExpansionTile(
         leading: const Icon(Icons.settings),
         title: Text(AppLocalizations.of(context)!.generalSettings,

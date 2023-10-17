@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../services/provider/script_language_provider.dart';
+import '../../../../utils/pali_script.dart';
 import '../../../business_logic/view_models/recent_page_view_model.dart';
 import '../../../services/dao/recent_dao.dart';
 import '../../../services/database/database_helper.dart';
 import '../../../services/prefs.dart';
 import '../../../services/repositories/recent_repo.dart';
 import '../../dialogs/confirm_dialog.dart';
-import '../../../../services/provider/script_language_provider.dart';
-import '../../../../utils/pali_script.dart';
 
 class RecentPage extends StatelessWidget {
   const RecentPage({Key? key}) : super(key: key);
@@ -22,6 +22,9 @@ class RecentPage extends StatelessWidget {
         ..fetchRecents(),
       child: Scaffold(
         appBar: const RecentAppBar(),
+        // Rydmike proposal: Consider converting the Drawer on Home screen
+        //    to a Widget and add it also to other top level screens.
+        // drawer: Mobile.isPhone(context) ? AppDrawer(context) : null,
         body: Consumer<RecentPageViewModel>(builder: (context, vm, child) {
           final recents = vm.recents;
           return recents.isEmpty
@@ -33,7 +36,7 @@ class RecentPage extends StatelessWidget {
                     return ListTile(
                       dense: true,
                       contentPadding: const EdgeInsets.all(0),
-                        visualDensity:
+                      visualDensity:
                           const VisualDensity(horizontal: 0, vertical: -4),
                       title: Padding(
                           padding: const EdgeInsets.only(left: 5),
@@ -78,6 +81,9 @@ class RecentAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(AppLocalizations.of(context)!.recent),
+      // Rydmike: Consider not having implicit back, as it will give idea that
+      //  user can go back, but back leads out of app in this case.
+      automaticallyImplyLeading: false,
       actions: [
         IconButton(
             icon: const Icon(Icons.delete),

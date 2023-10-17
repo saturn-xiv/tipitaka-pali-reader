@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/flashcard_setup_view.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/text_converter_view.dart';
 import 'package:tipitaka_pali/ui/screens/settings/download_view.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
 
 class ToolsSettingsView extends StatefulWidget {
@@ -21,7 +21,6 @@ class _ToolsSettingsViewState extends State<ToolsSettingsView> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 8,
       child: ExpansionTile(
         key: expansionTileKey, // Assign the key to the ExpansionTile
         leading: const Icon(Icons.build),
@@ -30,7 +29,7 @@ class _ToolsSettingsViewState extends State<ToolsSettingsView> {
         onExpansionChanged: (expanded) {
           if (expanded) {
             // Scroll to the end of the list
-            Future.delayed(Duration(milliseconds: 200)).then((_) {
+            Future.delayed(const Duration(milliseconds: 200)).then((_) {
               RenderObject? renderObject =
                   expansionTileKey.currentContext?.findRenderObject();
               renderObject?.showOnScreen(
@@ -79,7 +78,7 @@ class _ToolsSettingsViewState extends State<ToolsSettingsView> {
     return Padding(
       padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
-        leading: Icon(Icons.speaker_notes_outlined),
+        leading: const Icon(Icons.speaker_notes_outlined),
         title: ColoredText(AppLocalizations.of(context)!.flashcards),
         focusColor: Theme.of(context).focusColor,
         hoverColor: Theme.of(context).hoverColor,
@@ -87,7 +86,7 @@ class _ToolsSettingsViewState extends State<ToolsSettingsView> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => FlashCardSetupView()),
+            MaterialPageRoute(builder: (context) => const FlashCardSetupView()),
           );
         },
       ),
@@ -101,7 +100,7 @@ class _ToolsSettingsViewState extends State<ToolsSettingsView> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TextConverterView()),
+            MaterialPageRoute(builder: (context) => const TextConverterView()),
           );
         },
         leading: const Icon(Icons.translate),

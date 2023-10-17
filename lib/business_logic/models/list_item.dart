@@ -20,15 +20,14 @@ class CategoryItem implements ListItem {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Text(
-            PaliScript.getScriptOf(
-                script: context.read<ScriptLanguageProvider>().currentScript,
-                romanText: category.name),
-            style: TextStyle(
-                fontSize: Prefs.uiFontSize + 4,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor)));
+    return Text(
+        PaliScript.getScriptOf(
+            script: context.read<ScriptLanguageProvider>().currentScript,
+            romanText: category.name),
+        style: TextStyle(
+            fontSize: Prefs.uiFontSize + 4,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor));
   }
 }
 
@@ -40,7 +39,7 @@ class BookItem implements ListItem {
 
   @override
   Widget build(BuildContext context) => Card(
-        elevation: 2,
+        shadowColor: Colors.transparent,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: ColoredText(

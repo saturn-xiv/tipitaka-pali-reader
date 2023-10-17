@@ -7,9 +7,9 @@ import 'package:share_plus/share_plus.dart';
 import 'package:slidable_bar/slidable_bar.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/data/constants.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/services/rx_prefs.dart';
-import 'package:tipitaka_pali/ui/screens/reader/intents.dart';
 import 'package:tipitaka_pali/ui/screens/reader/mobile_reader_container.dart';
 import 'package:tipitaka_pali/ui/screens/reader/widgets/search_widget.dart';
 import 'package:wtf_sliding_sheet/wtf_sliding_sheet.dart';
@@ -29,10 +29,9 @@ import '../dictionary/controller/dictionary_controller.dart';
 import '../home/openning_books_provider.dart';
 import '../home/search_page/search_page.dart';
 import 'controller/reader_view_controller.dart';
-import 'widgets/vertical_book_view.dart';
 import 'widgets/horizontal_book_view.dart';
 import 'widgets/reader_tool_bar.dart';
-import 'package:tipitaka_pali/services/prefs.dart';
+import 'widgets/vertical_book_view.dart';
 
 class Reader extends StatelessWidget {
   final Book book;
@@ -169,9 +168,11 @@ class ReaderView extends StatelessWidget implements Searchable {
                                       _onClickedWord(word, context),
                                   onSearchedInCurrentBook: (text) =>
                                       _onClickedSearchInCurrent(context, text),
-                            onSelectionChanged: (text) {
-                              Provider.of<ReaderViewController>(context, listen: false).selection = text;
-                            },
+                                  onSelectionChanged: (text) {
+                                    Provider.of<ReaderViewController>(context,
+                                            listen: false)
+                                        .selection = text;
+                                  },
                                 )
                               : HorizontalBookView(
                                   onSearchedSelectedText: (text) =>
@@ -182,7 +183,9 @@ class ReaderView extends StatelessWidget implements Searchable {
                                   onSearchedInCurrentBook: (text) =>
                                       _onClickedSearchInCurrent(context, text),
                                   onSelectionChanged: (text) {
-                                    Provider.of<ReaderViewController>(context, listen: false).selection = text;
+                                    Provider.of<ReaderViewController>(context,
+                                            listen: false)
+                                        .selection = text;
                                   },
                                 )),
                     ])),
@@ -192,7 +195,7 @@ class ReaderView extends StatelessWidget implements Searchable {
   }
 
   void _onSearchSelectedText(String text, BuildContext context) {
-    // removing puntuations etc.
+    // removing punctuations etc.
     // convert to roman if display script is not roman
     var word = PaliScript.getRomanScriptFrom(
         script: context.read<ScriptLanguageProvider>().currentScript,
@@ -213,7 +216,7 @@ class ReaderView extends StatelessWidget implements Searchable {
         MaterialPageRoute(builder: (_) => const SearchPage()),
       );
     }
-    // delay a little miliseconds to wait for SearchPage Initialization
+    // delay a little milliseconds to wait for SearchPage Initialization
 
     Future.delayed(
       const Duration(milliseconds: 50),
@@ -226,7 +229,7 @@ class ReaderView extends StatelessWidget implements Searchable {
   }
 
   Future<void> _onClickedWord(String word, BuildContext context) async {
-    // removing puntuations etc.
+    // removing punctuations etc.
     // convert to roman if display script is not roman
     word = PaliScript.getRomanScriptFrom(
         script: context.read<ScriptLanguageProvider>().currentScript,
@@ -239,7 +242,7 @@ class ReaderView extends StatelessWidget implements Searchable {
     if ((PlatformInfo.isDesktop || Mobile.isTablet(context))) {
       if (context.read<NavigationProvider>().isNavigationPaneOpened) {
         context.read<NavigationProvider>().moveToDictionaryPage();
-        // delay a little miliseconds to wait for DictionaryPage Initialation
+        // delay a little milliseconds to wait for DictionaryPage initialization
         await Future.delayed(const Duration(milliseconds: 50),
             () => globalLookupWord.value = word);
         return;

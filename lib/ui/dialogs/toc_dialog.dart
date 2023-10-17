@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:tipitaka_pali/business_logic/models/toc.dart';
 import 'package:tipitaka_pali/business_logic/models/toc_list_item.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/ui/dialogs/toc_dialog_view_controller.dart';
 import 'package:tipitaka_pali/ui/widgets/pali_search_field.dart';
@@ -92,7 +92,7 @@ class _TocDialogState extends State<TocDialog> {
                   }
 
                   if (tocs.isEmpty) {
-                    return Center(child: Text('not found'));
+                    return const Center(child: Text('not found'));
                   }
                   currentIndex = getIndex(widget.currentPage, tocs);
                   Future.delayed(const Duration(milliseconds: 500), () {
@@ -113,7 +113,7 @@ class _TocDialogState extends State<TocDialog> {
                           controller: autoScrollController,
                           index: index,
                           child: Card(
-                            margin: EdgeInsets.all(1),
+                            margin: const EdgeInsets.all(1),
                             elevation: .8,
                             child: ListTile(
                               minVerticalPadding: 1,

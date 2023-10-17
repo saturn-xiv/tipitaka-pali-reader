@@ -73,7 +73,7 @@ class RouteGenerator {
         screen = const DownloadView();
         break;
       case '/text-converter-view':
-        screen = TextConverterView();
+        screen = const TextConverterView();
         break;
     }
     return MaterialPageRoute(builder: (BuildContext context) => screen);

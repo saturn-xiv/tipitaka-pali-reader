@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/providers/navigation_provider.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/rx_prefs.dart';
 
 import '../../../data/flex_theme_data.dart';
@@ -9,8 +11,6 @@ import '../../widgets/my_vertical_divider.dart';
 import '../reader/reader_container.dart';
 import 'dekstop_navigation_bar.dart';
 import 'navigation_pane.dart';
-import 'package:provider/provider.dart';
-import 'package:tipitaka_pali/services/prefs.dart';
 
 class DesktopHomeView extends StatefulWidget {
   const DesktopHomeView({Key? key}) : super(key: key);
@@ -67,6 +67,9 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
 
   @override
   Widget build(BuildContext context) {
+    // RydMike: Avoid things like this, prefer using themes correctly!
+    //   But OK sometimes needed, but rarely. Not sure why this is used in
+    //   conditional build below. Looks like some temp experiment. :)
     final isOrange2 = Prefs.themeName == MyThemes.orange2Name;
     return PreferenceBuilder<double>(
         preference: context
@@ -80,28 +83,22 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
                   if (isOrange2)
                     Container(
                       decoration: const BoxDecoration(
-                        border: Border(
-                          right: BorderSide(color: Colors.grey)
-                        )
-                      ),
+                          border:
+                              Border(right: BorderSide(color: Colors.grey))),
                       child: const DeskTopNavigationBar(),
                     ),
-                  if (!isOrange2)
-                    ...[
-                      const DeskTopNavigationBar(),
-                      const MyVerticalDivider(width: 2),
-                    ],
-                  // Naviagation Pane
+                  if (!isOrange2) ...[
+                    const DeskTopNavigationBar(),
+                    const MyVerticalDivider(width: 2),
+                  ],
+                  // Navigation Pane
                   SizeTransition(
                     sizeFactor: _tween.animate(_animation),
                     axis: Axis.horizontal,
                     axisAlignment: 1,
                     child: SizedBox(
                       width: width,
-                      child:
-                      const DetailNavigationPane(navigationCount: 7),
-
-
+                      child: const DetailNavigationPane(navigationCount: 7),
                     ),
                   ),
                   // reader view

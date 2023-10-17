@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/repositories/book_repo.dart';
 import 'package:tipitaka_pali/services/repositories/category_repo.dart';
 import 'package:tipitaka_pali/ui/screens/reader/mobile_reader_container.dart';
@@ -19,7 +20,6 @@ import '../../dialogs/about_tpr_dialog.dart';
 import '../../dialogs/sutta_list_dialog.dart';
 import '../../widgets/colored_text.dart';
 import 'openning_books_provider.dart';
-import 'package:tipitaka_pali/services/prefs.dart';
 
 class BookListPage extends StatelessWidget {
   BookListPage({Key? key}) : super(key: key);
@@ -41,46 +41,31 @@ class BookListPage extends StatelessWidget {
       child: Scaffold(
         appBar: Mobile.isPhone(context)
             ? AppBar(
-                title: Row(
-                  children: [
-                    Text(AppLocalizations.of(context)!.tipitaka_pali_reader),
-                    const Spacer(),
-                    IconButton(
-                      padding: const EdgeInsets.all(4.0),
-                      constraints: const BoxConstraints(),
-                      icon: const Icon(Icons.settings),
-                      onPressed: () async {
-                        await Navigator.pushNamed(context, settingRoute);
-                      },
-                    ),
-                  ],
-                ),
+                title: Text(AppLocalizations.of(context)!.tipitaka_pali_reader),
+                actions: [
+                  IconButton(
+                    padding: const EdgeInsets.all(4.0),
+                    constraints: const BoxConstraints(),
+                    icon: const Icon(Icons.settings),
+                    onPressed: () async {
+                      await Navigator.pushNamed(context, settingRoute);
+                    },
+                  ),
+                ],
+                bottom: _buildTabBar(context),
               )
             : null,
+        // Rydmike proposal: Consider converting the Drawer on this Home screen
+        //    to a Widget and then add it also to other top level screens.
+        // drawer: Mobile.isPhone(context) ? AppDrawer(context) : null,
         drawer: Mobile.isPhone(context) ? _buildDrawer(context) : null,
         body: Column(
           children: [
-            Container(
-              height: 56,
-              color: Theme.of(context).appBarTheme.backgroundColor,
-              child: TabBar(
-                tabs: _mainCategories.entries
-                    .map((mainCategory) => Tab(
-                        text: PaliScript.getScriptOf(
-                            script: context
-                                .watch<ScriptLanguageProvider>()
-                                .currentScript,
-                            romanText: mainCategory.value)))
-                    .toList(),
-                indicator: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
-                  ),
-                ),
+            if (!Mobile.isPhone(context))
+              Material(
+                color: Theme.of(context).appBarTheme.backgroundColor,
+                child: _buildTabBar(context),
               ),
-            ),
             Expanded(
               child: TabBarView(
                   children: _mainCategories.entries
@@ -101,7 +86,6 @@ class BookListPage extends StatelessWidget {
                 currentPage: sutta.pageNumber,
                 textToHighlight: sutta.name,
               );
-
               if (Mobile.isPhone(context) || Mobile.isTablet(context)) {
                 // Navigator.pushNamed(context, readerRoute,
                 //     arguments: {'book': bookItem.book});
@@ -117,6 +101,32 @@ class BookListPage extends StatelessWidget {
             romanText: ("Sutta"),
           )),
         ),
+      ),
+    );
+  }
+
+  TabBar _buildTabBar(BuildContext context) {
+    final theme = Theme.of(context);
+    return TabBar(
+      tabs: _mainCategories.entries
+          .map((mainCategory) => Tab(
+              text: PaliScript.getScriptOf(
+                  script: context.watch<ScriptLanguageProvider>().currentScript,
+                  romanText: mainCategory.value)))
+          .toList(),
+      indicator: BoxDecoration(
+        color: theme.useMaterial3
+            ? theme.focusColor
+            : Colors.white.withOpacity(0.1),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(15),
+          topRight: Radius.circular(15),
+        ),
+        // shape: BoxShape()
+      ),
+      splashBorderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(15),
+        topRight: Radius.circular(15),
       ),
     );
   }
@@ -217,7 +227,10 @@ class BookListPage extends StatelessWidget {
                 final GlobalKey expansionTileKey = GlobalKey();
                 final categoryWithBooks = categoriesWithBooks[index];
                 return Card(
-                  elevation: 4,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   child: ExpansionTile(
                     key: expansionTileKey, // Assigning key here
                     onExpansionChanged: (isExpanding) {
@@ -240,9 +253,7 @@ class BookListPage extends StatelessWidget {
                     title: categoryWithBooks.category.build(context),
                     tilePadding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    collapsedBackgroundColor: Theme.of(context).cardColor,
-                    backgroundColor: Theme.of(context).cardColor,
-                    childrenPadding: const EdgeInsets.only(left: 16, bottom: 8),
+                    childrenPadding: const EdgeInsets.only(left: 0, bottom: 8),
                     children: categoryWithBooks.books.map<Widget>((bookItem) {
                       return ListTile(
                         title: bookItem.build(context),

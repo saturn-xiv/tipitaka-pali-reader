@@ -1,16 +1,18 @@
-import 'package:beautiful_soup_dart/beautiful_soup.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:path/path.dart' as path;
 import 'dart:io';
+
+import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:csv/csv.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flash_card/flash_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:tipitaka_pali/ui/screens/dictionary/controller/dictionary_controller.dart';
-import '../../../business_logic/models/dictionary_history.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:path/path.dart' as path;
+import 'package:tipitaka_pali/ui/screens/dictionary/controller/dictionary_controller.dart';
+
+import '../../../business_logic/models/dictionary_history.dart';
 
 class FlashCardsView extends StatelessWidget {
   final List<DictionaryHistory> cards;
@@ -185,7 +187,7 @@ class FlashCardsView extends StatelessWidget {
           itemCount: cards.length,
           itemBuilder: (context, index) {
             return FlashCard(
-              backWidget: Container(
+              backWidget: SizedBox(
                 height: 100,
                 width: 100,
                 child: Column(
@@ -271,7 +273,7 @@ class FlashCardsView extends StatelessWidget {
             height: 34.0,
             fit: BoxFit.cover,
           ),
-          backgroundColor: Color.fromARGB(255, 61, 61, 59),
+          backgroundColor: const Color.fromARGB(255, 61, 61, 59),
           label: 'Anki 3 Field Note',
           labelStyle: const TextStyle(fontSize: 18.0),
           onTap: () => _exportToAnki(context, true),

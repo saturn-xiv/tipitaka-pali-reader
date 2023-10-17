@@ -15,7 +15,6 @@ class ScriptSettingView extends StatelessWidget {
         child: Consumer<ScriptSettingController>(
           builder: (context, controller, child) {
             return Card(
-              elevation: 8,
               child: ExpansionTile(
                 leading: const Icon(Icons.font_download_outlined),
                 title: Text(AppLocalizations.of(context)!.paliScript,

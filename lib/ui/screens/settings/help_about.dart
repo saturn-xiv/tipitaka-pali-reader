@@ -1,11 +1,13 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:tipitaka_pali/ui/dialogs/reset_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../dialogs/about_tpr_dialog.dart';
 import '../../widgets/colored_text.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:in_app_review/in_app_review.dart';
-import 'dart:io' show Platform;
 
 class HelpAboutView extends StatefulWidget {
   const HelpAboutView({Key? key}) : super(key: key);
@@ -28,7 +30,6 @@ class _HelpAboutViewState extends State<HelpAboutView> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 8,
       child: ExpansionTile(
         leading: const Icon(Icons.info),
         title: Text(AppLocalizations.of(context)!.helpAboutEtc,
@@ -98,7 +99,7 @@ class _HelpAboutViewState extends State<HelpAboutView> {
       padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
         leading: const Icon(Icons.video_library), // Added Icon
-        title: ColoredText("YouTube Channel"),
+        title: const ColoredText("YouTube Channel"),
         focusColor: Theme.of(context).focusColor,
         hoverColor: Theme.of(context).hoverColor,
         onTap: () => launchUrl(

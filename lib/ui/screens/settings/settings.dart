@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/provider/bookmark_provider.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/ui/screens/settings/sync_settings.dart';
@@ -6,14 +8,10 @@ import 'package:tipitaka_pali/ui/screens/settings/tools_settings.dart';
 import 'package:tipitaka_pali/ui/widgets/select_dictionary_widget.dart';
 import 'package:tipitaka_pali/ui/widgets/select_language_widget.dart';
 import 'package:tipitaka_pali/ui/widgets/select_theme_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
-import 'package:tipitaka_pali/data/constants.dart';
 
-import 'download_view.dart';
+import 'general_settings_view.dart';
 import 'help_about.dart';
 import 'script_setting_view.dart';
-import 'general_settings_view.dart';
 
 class SettingPage extends StatelessWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -23,15 +21,17 @@ class SettingPage extends StatelessWidget {
     final sc = ScrollController(); // for auto scroll
 
     return Scaffold(
+        extendBody: true,
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.settings),
           actions: const [],
         ),
         body: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: ListView(
             controller: sc, // Attach the ScrollController to ListVie
             children: <Widget>[
+              const SizedBox(height: 16),
               const DictionarySettingView(),
               const ThemeSettingView(),
               const DarkModeSettingView(),
@@ -56,7 +56,6 @@ class ThemeSettingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 8,
       child: ListTile(
           leading: const Icon(Icons.palette_outlined),
           title: Text(
@@ -74,29 +73,18 @@ class DarkModeSettingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 8,
       child: ListTile(
         leading: const Icon(Icons.brightness_2_outlined),
         trailing: ToggleButtons(
-          color: Colors.red,
           onPressed: (int index) {
             Provider.of<ThemeChangeNotifier>(context, listen: false)
                 .toggleTheme(index);
           },
           isSelected: context.read<ThemeChangeNotifier>().isSelected,
-          children: <Widget>[
-            CircleAvatar(
-              backgroundColor: Theme.of(context).highlightColor,
-              child: const Icon(Icons.article, color: Colors.white),
-            ),
-            CircleAvatar(
-              backgroundColor: Theme.of(context).highlightColor,
-              child: const Icon(Icons.article, color: Color(seypia)),
-            ),
-            CircleAvatar(
-              backgroundColor: Theme.of(context).highlightColor,
-              child: const Icon(Icons.article, color: Colors.black),
-            ),
+          children: const <Widget>[
+            Icon(Icons.wb_sunny),
+            Icon(Icons.phone_iphone),
+            Icon(Icons.bedtime),
           ],
         ),
         title: Text(
@@ -114,7 +102,6 @@ class LanguageSettingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 8,
       child: ListTile(
         leading: const Icon(Icons.language_outlined),
         title: Text(
@@ -133,7 +120,6 @@ class DictionarySettingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 8,
       child: ExpansionTile(
         leading: const Icon(Icons.sort_by_alpha_outlined),
         title: Text(AppLocalizations.of(context)!.dictionaries,

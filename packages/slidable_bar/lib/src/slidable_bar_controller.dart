@@ -4,7 +4,8 @@ class SlidableBarController {
   /// the initial bar state when it's build for the first time
   final bool initialStatus;
 
-  SlidableBarController({this.initialStatus = false}) : currentStatus = initialStatus;
+  SlidableBarController({this.initialStatus = false})
+      : currentStatus = initialStatus;
 
   /// return the current state for the bar
   /// open [true], close [false]
@@ -13,7 +14,7 @@ class SlidableBarController {
   /// stream for bar state changes
   Stream<bool> get statusStream => _barStatus.stream;
 
-  StreamController<bool> _barStatus = StreamController<bool>.broadcast();
+  final StreamController<bool> _barStatus = StreamController<bool>.broadcast();
 
   /// to hide the bar
   hide() {
