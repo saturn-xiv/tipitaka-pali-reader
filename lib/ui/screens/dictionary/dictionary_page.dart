@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/repositories/dictionary_repo.dart';
 import 'package:tipitaka_pali/ui/widgets/get_velthuis_help_widget.dart';
+
 import '../../../business_logic/models/dictionary_history.dart';
 import '../../../services/repositories/dictionary_history_repo.dart';
 import '../../widgets/colored_text.dart';
@@ -11,7 +13,6 @@ import 'controller/dictionary_controller.dart';
 import 'widget/dict_algo_selector.dart';
 import 'widget/dict_content_view.dart';
 import 'widget/dict_search_field.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DictionaryPage extends StatefulWidget {
   const DictionaryPage({Key? key}) : super(key: key);
@@ -40,6 +41,7 @@ class _DictionaryPageState extends State<DictionaryPage>
           onKey: (event) => _handleKeyboardEvent(event, context, dc),
 
           child: Scaffold(
+            extendBody: true,
             appBar: AppBar(
               leading: getVelthuisHelp(context),
               title: Text(AppLocalizations.of(context)!.dictionary),
