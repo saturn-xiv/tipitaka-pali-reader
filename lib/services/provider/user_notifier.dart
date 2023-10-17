@@ -5,7 +5,7 @@ class UserNotifier extends ChangeNotifier {
   bool get isSignedIn => Prefs.isSignedIn;
   bool get isSignedOut => !Prefs.isSignedIn;
   String _message = "";
-  void set message(String value) {
+  set message(String value) {
     _message = value;
     notifyListeners();
   }
