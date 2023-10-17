@@ -15,7 +15,7 @@ import 'pali_page_widget.dart';
 import 'vertical_book_slider.dart';
 
 class VerticalBookView extends StatefulWidget {
-  VerticalBookView(
+  const VerticalBookView(
       {Key? key,
       this.onSearchedSelectedText,
       this.onSharedSelectedText,
@@ -34,7 +34,13 @@ class VerticalBookView extends StatefulWidget {
 }
 
 class _VerticalBookViewState extends State<VerticalBookView>
-    implements PageUp, PageDown, ScrollUp, ScrollDown, IncreaseFont, DecreaseFont {
+    implements
+        PageUp,
+        PageDown,
+        ScrollUp,
+        ScrollDown,
+        IncreaseFont,
+        DecreaseFont {
   late final ReaderViewController readerViewController;
   late final ItemPositionsListener itemPositionsListener;
   late final ItemScrollController itemScrollController;
@@ -67,15 +73,12 @@ class _VerticalBookViewState extends State<VerticalBookView>
 
       if (pos.length == 1) {
         target = start + pos.first.index;
-
       } else if (pos.length >= 3) {
         // When there are more than 3 pages displayed the entire content of the
         // second page is visible on the screen
         target = start + pos[1].index;
-
       } else if (pos.first.itemTrailingEdge == pos.last.itemLeadingEdge) {
         target = start + pos.first.index;
-
       } else {
         // At this point we're dealing with 2 pages
         // whichever page covers more area
@@ -83,7 +86,6 @@ class _VerticalBookViewState extends State<VerticalBookView>
             ? pos.first
             : pos.last;
         target = start + page.index;
-
       }
 
       readerViewController.onGoto(pageNumber: target);
@@ -135,8 +137,7 @@ class _VerticalBookViewState extends State<VerticalBookView>
           LogicalKeySet(LogicalKeyboardKey.arrowDown): const ScrollDownIntent(),
           LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.equal):
               const IncreaseFontIntent(),
-          LogicalKeySet(
-                  LogicalKeyboardKey.control, LogicalKeyboardKey.minus):
+          LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.minus):
               const DecreaseFontIntent(),
         },
         child: Actions(
@@ -198,7 +199,7 @@ class _VerticalBookViewState extends State<VerticalBookView>
                         itemScrollController: itemScrollController,
                         itemPositionsListener: itemPositionsListener,
                         scrollOffsetController: scrollOffsetController,
-                        scrollOffsetListener:  scrollOffsetListener,
+                        scrollOffsetListener: scrollOffsetListener,
                         itemCount: readerViewController.pages.length,
                         itemBuilder: (_, index) {
                           final PageContent pageContent =
@@ -220,17 +221,18 @@ class _VerticalBookViewState extends State<VerticalBookView>
                           );
 
                           return PaliPageWidget(
-                              pageNumber: pageContent.pageNumber!,
-                              htmlContent: htmlContent,
-                              script: script,
-                              highlightedWord:
-                                  readerViewController.textToHighlight,
-                              searchText: searchText,
-                              pageToHighlight:
-                                  readerViewController.pageToHighlight,
-                              onClick: widget.onClickedWord,
-                              book: readerViewController.book,);
-                              // bookmarks: readerViewController.bookmarks,);
+                            pageNumber: pageContent.pageNumber!,
+                            htmlContent: htmlContent,
+                            script: script,
+                            highlightedWord:
+                                readerViewController.textToHighlight,
+                            searchText: searchText,
+                            pageToHighlight:
+                                readerViewController.pageToHighlight,
+                            onClick: widget.onClickedWord,
+                            book: readerViewController.book,
+                          );
+                          // bookmarks: readerViewController.bookmarks,);
                         },
                       )),
                 ),
