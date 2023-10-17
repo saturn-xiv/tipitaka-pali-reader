@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/services/get_database_status.dart';
-import 'package:tipitaka_pali/services/prefs.dart';
 
 import 'home/home_container.dart';
 import 'initial_setup.dart';
