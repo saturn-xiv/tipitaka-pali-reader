@@ -1,18 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:im_stepper/stepper.dart';
 import 'dart:io';
+
+import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:im_stepper/stepper.dart';
+import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/business_logic/view_models/initial_setup_service.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:tipitaka_pali/providers/initial_setup_notifier.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:tipitaka_pali/ui/dialogs/extension_prompt_dialog.dart';
 import 'package:tipitaka_pali/ui/screens/settings/download_view.dart';
+import 'package:tipitaka_pali/ui/screens/settings/select_script_language.dart';
 import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
 import 'package:tipitaka_pali/ui/widgets/select_language_widget.dart';
-import 'package:tipitaka_pali/ui/screens/settings/select_script_language.dart';
-import 'package:path/path.dart' as path;
+
 import '../dialogs/reset_dialog.dart';
-import 'package:tipitaka_pali/ui/dialogs/extension_prompt_dialog.dart';
 
 class InitialSetup extends StatelessWidget {
   final bool isUpdateMode;
@@ -27,10 +31,20 @@ class InitialSetup extends StatelessWidget {
     initialSetupService.setUp(isUpdateMode);
 
     return Material(
-      child: ChangeNotifierProvider.value(
-        value: initialSetupNotifier,
-        child: Center(
-          child: _buildHomeView(context, initialSetupNotifier),
+      // NOTE by Rydmike: Annotated region example for
+      // Android: No AppBar status scrim and no sys nav scrim.
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: FlexColorScheme.themedSystemNavigationBar(
+          context,
+          noAppBar: true,
+          systemNavBarStyle: FlexSystemNavBarStyle.transparent,
+          useDivider: false,
+        ),
+        child: ChangeNotifierProvider.value(
+          value: initialSetupNotifier,
+          child: Center(
+            child: _buildHomeView(context, initialSetupNotifier),
+          ),
         ),
       ),
     );
