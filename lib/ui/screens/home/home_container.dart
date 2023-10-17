@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/navigation_provider.dart';
@@ -11,7 +13,6 @@ import 'desktop_home_view.dart';
 import 'mobile_navigation_bar.dart';
 import 'navigation_pane.dart';
 import 'openning_books_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // enum Screen { Home, Bookmark, Recent, Search }
 
@@ -31,11 +32,17 @@ class Home extends StatelessWidget {
                   Platform.isWindows || Platform.isLinux ? true : false): () =>
               context.read<OpenningBooksProvider>().remove(),
         },
-        child: Focus(
-          autofocus: true,
-          child: Container(
-            color: Theme.of(context).appBarTheme.backgroundColor,
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: FlexColorScheme.themedSystemNavigationBar(
+            context,
+            systemNavBarStyle: FlexSystemNavBarStyle.transparent,
+            useDivider: false,
+          ),
+          child: Focus(
+            autofocus: true,
             child: SafeArea(
+              top: PlatformInfo.isDesktop || Mobile.isTablet(context),
+              bottom: PlatformInfo.isDesktop || Mobile.isTablet(context),
               child: WillPopScope(
                 onWillPop: () async {
                   return await _onWillPop(context);
