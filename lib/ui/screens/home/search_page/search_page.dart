@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:tipitaka_pali/ui/widgets/get_velthuis_help_widget.dart';
 import 'package:tipitaka_pali/ui/widgets/value_listenser.dart';
-import 'package:tipitaka_pali/utils/platform_info.dart';
-import '../../../../services/database/database_helper.dart';
-import '../../../../services/prefs.dart';
-import '../../../../services/repositories/search_history_repo.dart';
-import '../../../widgets/search_type_segmented_widget.dart';
-import 'search_history_view.dart';
-import 'search_suggestion_view.dart';
 
 import '../../../../business_logic/view_models/search_page_view_model.dart';
 import '../../../../inner_routes.dart';
+import '../../../../services/database/database_helper.dart';
+import '../../../../services/prefs.dart';
+import '../../../../services/repositories/search_history_repo.dart';
 import '../../../../utils/pali_script.dart';
 import '../../../../utils/pali_script_converter.dart';
 import '../../../../utils/script_detector.dart';
+import '../../../widgets/search_type_segmented_widget.dart';
 import '../widgets/search_bar.dart';
+import 'search_history_view.dart';
+import 'search_suggestion_view.dart';
 
 enum QueryMode { exact, prefix, distance, anywhere }
 
@@ -67,11 +65,20 @@ class _SearchPageState extends State<SearchPage>
           final vm = context.watch<SearchPageViewModel>();
           return Scaffold(
               appBar: AppBar(
-                // disable because of conflit with mobile search
+                // Disable because of conflict with mobile search
                 // leading: getVelthuisHelp(context),
-                automaticallyImplyLeading: Mobile.isPhone(context),
+
+                // Rydmike: Consider not having implicit back, as it will give idea that
+                //  user can go back, but back leads out of app in this case.
+                automaticallyImplyLeading: false, // Mobile.isPhone(context),
                 title: Text(AppLocalizations.of(context)!.search),
-                centerTitle: true,
+                // Rydmike info: Prefer consistent alignment on AppBar.
+                //  if default, iOs is centered, Android start by default
+                // centerTitle: true,
+
+                // Rydmike proposal: Consider converting Drawer on Home screen
+                //    to a Widget and add it also to other top level screens.
+                // drawer: Mobile.isPhone(context) ? AppDrawer(context) : null,
                 actions: [
                   FilterChip(
                       label: Text(
@@ -278,7 +285,7 @@ class _SearchPageState extends State<SearchPage>
                     children: <Widget>[
                       Text(
                           message), // Display the message from the database helper
-                      if (!isTaskCompleted) CircularProgressIndicator(),
+                      if (!isTaskCompleted) const CircularProgressIndicator(),
                     ],
                   ),
                   actions: <Widget>[
