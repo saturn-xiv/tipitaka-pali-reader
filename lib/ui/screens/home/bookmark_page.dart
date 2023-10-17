@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tipitaka_pali/services/provider/bookmark_provider.dart';
 import 'package:tipitaka_pali/services/repositories/bookmark_sync_repo.dart';
 
+import '../../../../services/provider/script_language_provider.dart';
+import '../../../../utils/pali_script.dart';
 import '../../../business_logic/models/bookmark.dart';
 import '../../../business_logic/view_models/bookmark_page_view_model.dart';
 import '../../../services/dao/bookmark_dao.dart';
 import '../../../services/database/database_helper.dart';
 import '../../dialogs/confirm_dialog.dart';
-import 'package:share_plus/share_plus.dart';
-import '../../../../services/provider/script_language_provider.dart';
-import '../../../../utils/pali_script.dart';
 
 class BookmarkPage extends StatelessWidget {
   const BookmarkPage({Key? key}) : super(key: key);
@@ -31,6 +31,9 @@ class BookmarkPage extends StatelessWidget {
       ],
       child: Scaffold(
         appBar: const BookmarkAppBar(),
+        // Rydmike proposal: Consider converting the Drawer on Home screen
+        //    to a Widget and add it also to other top level screens.
+        // drawer: Mobile.isPhone(context) ? AppDrawer(context) : null,
         body: Consumer2<BookmarkPageViewModel, BookmarkNotifier>(
           builder: (context, vm, bn, child) {
             // Assuming BookmarkNotifier has a similar bookmarks list
@@ -99,6 +102,9 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      // Rydmike: Consider not having implicit back, as it will give idea that
+      //  user can go back, but back leads out of app in this case.
+      automaticallyImplyLeading: false,
       title: Text(AppLocalizations.of(context)!.bookmark),
       actions: [
         IconButton(
