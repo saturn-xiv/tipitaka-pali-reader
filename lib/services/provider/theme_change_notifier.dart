@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/data/flex_theme_data.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/script_language_provider.dart';
 
 import '../../utils/font_utils.dart';
@@ -76,106 +76,108 @@ class ThemeChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  //returns // flexschemedata
-  get darkTheme => FlexColorScheme.dark(
-        // As scheme colors we use the one from our list
-        // pointed to by the current themeIndex.
+  // Returns dark ThemeData made by FlexColorScheme
+  ThemeData get darkTheme => FlexThemeData.dark(
         colors: myFlexSchemes[Prefs.themeIndex].dark,
-        // Medium strength surface branding used in this example.
         surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
-        visualDensity: FlexColorScheme.comfortablePlatformDensity,
-        appBarStyle: FlexAppBarStyle.custom,
-        textTheme: _textTheme,
-        useMaterial3: false,
-        blendLevel: 5,
-        appBarOpacity: 0.66,
-      ).toTheme;
-
-  ThemeData get themeData {
-    if (Prefs.useM3) {
-      return FlexColorScheme.light(
-        // As scheme colors we use the one from our list
-        // pointed to by the current themeIndex.
-        useMaterial3: true,
-        colors: myFlexSchemes[Prefs.themeIndex].light,
-        // Medium strength surface branding used in this example.
-        surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
-        visualDensity: FlexColorScheme.comfortablePlatformDensity,
-        textTheme: _textTheme,
-      ).toTheme;
-    } else {
-      return
-          //ThemeData get themeData=>  myFlexSchemes[Prefs.themeIndex].light().toTheme();
-          FlexThemeData.light(
-        colors: myFlexSchemes[Prefs.themeIndex].light,
-        appBarStyle: FlexAppBarStyle.primary,
-        appBarElevation: 4.0,
-        bottomAppBarElevation: 8.0,
+        blendLevel: 2,
         tabBarStyle: FlexTabBarStyle.forAppBar,
-        subThemesData: const FlexSubThemesData(
-          interactionEffects: false,
-          tintedDisabledControls: false,
+        transparentStatusBar: true,
+        subThemesData: FlexSubThemesData(
+          appBarScrolledUnderElevation: Prefs.useM3 ? 6 : 0,
+          blendOnLevel: 15,
+          useTextTheme: true,
+          useM2StyleDividerInM3: true,
+          elevatedButtonSchemeColor: SchemeColor.onPrimaryContainer,
+          elevatedButtonSecondarySchemeColor: SchemeColor.primaryContainer,
+          inputDecoratorSchemeColor: SchemeColor.primary,
+          inputDecoratorBackgroundAlpha: 28,
+          inputDecoratorRadius: 8.0,
+          inputDecoratorUnfocusedHasBorder: false,
+          fabUseShape: true,
+          fabAlwaysCircular: true,
+          fabSchemeColor: SchemeColor.secondary,
+          alignedDropdown: true,
+          useInputDecoratorThemeInDialogs: true,
+          drawerWidth: 300,
+          tabBarIndicatorSize: TabBarIndicatorSize.tab,
+          cardElevation: Prefs.useM3 ? 2 : 4,
+          interactionEffects: true,
+        ),
+        keyColors: Prefs.useM3
+            ? const FlexKeyColors(
+                useSecondary: true,
+                useTertiary: true,
+                keepPrimary: true,
+                keepSecondary: true,
+                keepTertiary: true,
+              )
+            : null,
+        tones: FlexTones.candyPop(Brightness.dark),
+        visualDensity: FlexColorScheme.comfortablePlatformDensity,
+        textTheme: _textTheme,
+        useMaterial3: Prefs.useM3,
+      ).copyWith(
+        // Custom ExpansionTileTheme that removes the extra borders.
+        expansionTileTheme: const ExpansionTileThemeData(
+          shape: Border(),
+          collapsedShape: Border(),
+        ),
+      );
+
+  // Returns light ThemeData made by FlexColorScheme
+  ThemeData get themeData => FlexThemeData.light(
+        colors: myFlexSchemes[Prefs.themeIndex].light,
+        surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
+        blendLevel: 1,
+        appBarStyle: Prefs.useM3 ? FlexAppBarStyle.surface : null,
+        tabBarStyle: FlexTabBarStyle.forAppBar,
+        transparentStatusBar: true,
+        appBarElevation: Prefs.useM3 ? 3 : 0,
+        subThemesData: FlexSubThemesData(
+          appBarScrolledUnderElevation: Prefs.useM3 ? 6 : 0,
+          blendOnLevel: 8,
           blendOnColors: false,
           useTextTheme: true,
           useM2StyleDividerInM3: true,
-          adaptiveRemoveElevationTint: FlexAdaptive.all(),
-          adaptiveElevationShadowsBack: FlexAdaptive.all(),
-          adaptiveAppBarScrollUnderOff: FlexAdaptive.all(),
-          defaultRadius: 4.0,
-          elevatedButtonSchemeColor: SchemeColor.onPrimary,
-          elevatedButtonSecondarySchemeColor: SchemeColor.primary,
-          inputDecoratorSchemeColor: SchemeColor.onSurface,
-          inputDecoratorBackgroundAlpha: 13,
-          inputDecoratorBorderSchemeColor: SchemeColor.primary,
-          inputDecoratorUnfocusedBorderIsColored: false,
+          elevatedButtonSchemeColor: SchemeColor.onPrimaryContainer,
+          elevatedButtonSecondarySchemeColor: SchemeColor.primaryContainer,
+          inputDecoratorSchemeColor: SchemeColor.primary,
+          inputDecoratorBackgroundAlpha: 23,
+          inputDecoratorRadius: 8.0,
+          inputDecoratorUnfocusedHasBorder: false,
           fabUseShape: true,
           fabAlwaysCircular: true,
-          chipSchemeColor: SchemeColor.primary,
-          chipRadius: 20.0,
-          popupMenuElevation: 8.0,
+          fabSchemeColor: SchemeColor.secondary,
           alignedDropdown: true,
-          tooltipRadius: 4,
-          dialogElevation: 24.0,
           useInputDecoratorThemeInDialogs: true,
-          datePickerHeaderBackgroundSchemeColor: SchemeColor.primary,
-          snackBarBackgroundSchemeColor: SchemeColor.inverseSurface,
-          appBarScrolledUnderElevation: 4.0,
+          drawerWidth: 300,
+          chipSelectedSchemeColor:
+              Prefs.useM3 ? SchemeColor.primaryContainer : null,
           tabBarIndicatorSize: TabBarIndicatorSize.tab,
-          tabBarIndicatorWeight: 2,
-          tabBarIndicatorTopRadius: 0,
-          tabBarDividerColor: Color(0x00000000),
-          drawerElevation: 16.0,
-          drawerWidth: 304.0,
-          bottomSheetElevation: 10.0,
-          bottomSheetModalElevation: 20.0,
-          bottomNavigationBarSelectedLabelSchemeColor: SchemeColor.primary,
-          bottomNavigationBarSelectedIconSchemeColor: SchemeColor.primary,
-          bottomNavigationBarElevation: 8.0,
-          menuElevation: 8.0,
-          menuBarRadius: 0.0,
-          menuBarElevation: 1.0,
-          navigationBarSelectedLabelSchemeColor: SchemeColor.onSurface,
-          navigationBarUnselectedLabelSchemeColor: SchemeColor.onSurface,
-          navigationBarSelectedIconSchemeColor: SchemeColor.onSurface,
-          navigationBarUnselectedIconSchemeColor: SchemeColor.onSurface,
-          navigationBarIndicatorSchemeColor: SchemeColor.secondary,
-          navigationBarBackgroundSchemeColor: SchemeColor.surfaceVariant,
-          navigationBarElevation: 0.0,
-          navigationRailSelectedLabelSchemeColor: SchemeColor.onSurface,
-          navigationRailUnselectedLabelSchemeColor: SchemeColor.onSurface,
-          navigationRailSelectedIconSchemeColor: SchemeColor.onSurface,
-          navigationRailUnselectedIconSchemeColor: SchemeColor.onSurface,
-          navigationRailIndicatorSchemeColor: SchemeColor.secondary,
+          cardElevation: Prefs.useM3 ? 2 : 4,
+          interactionEffects: true,
         ),
+        keyColors: Prefs.useM3
+            ? const FlexKeyColors(
+                useSecondary: true,
+                useTertiary: true,
+                keepPrimary: true,
+                keepSecondary: true,
+                keepTertiary: true,
+              )
+            : null,
+        tones: FlexTones.candyPop(Brightness.light),
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
         textTheme: _textTheme,
-
-        useMaterial3: true,
-        // To use the Playground font, add GoogleFonts package and uncomment
-        // fontFamily: GoogleFonts.notoSans().fontFamily,
+        useMaterial3: Prefs.useM3,
+      ).copyWith(
+        // Custom ExpansionTileTheme that removes the extra borders.
+        expansionTileTheme: const ExpansionTileThemeData(
+          shape: Border(),
+          collapsedShape: Border(),
+        ),
       );
-    }
-  }
 
   TextTheme get _textTheme {
     // this was changed for getting the laos font to work in the UI section of the
