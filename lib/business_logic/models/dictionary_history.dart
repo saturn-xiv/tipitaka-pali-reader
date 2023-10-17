@@ -17,13 +17,17 @@ class DictionaryHistory {
   DictionaryHistory copyWith({
     String? word,
     DateTime? dateTime,
+    String? context,
+    String? bookId,
+    int? page,
   }) {
     return DictionaryHistory(
-        word: word ?? this.word,
-        dateTime: dateTime ?? this.dateTime,
-        bookId: bookId ?? this.bookId,
-        page: page ?? this.page,
-        context: context ?? this.context);
+      word: word ?? this.word,
+      dateTime: dateTime ?? this.dateTime,
+      bookId: bookId ?? this.bookId,
+      page: page ?? this.page,
+      context: context ?? this.context,
+    );
   }
 
   Map<String, dynamic> toMap() {
