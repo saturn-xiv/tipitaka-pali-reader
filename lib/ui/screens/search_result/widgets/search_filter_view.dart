@@ -13,7 +13,7 @@ class SearchFilterView extends StatelessWidget {
   Widget build(BuildContext context) {
     final notifier = context.watch<SearchFilterController>();
     final closeButton = Positioned(
-        top: -18,
+        top: -20,
         child: GestureDetector(
           onTap: () => Navigator.pop(context),
           child: ClipOval(
@@ -29,33 +29,36 @@ class SearchFilterView extends StatelessWidget {
           ),
         ));
 
-    return Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.topCenter,
-        children: [
-          ListView(
-            shrinkWrap: true,
-            children: [
-              Container(height: 22),
-              _buildMainCategoryFilter(notifier),
-              _buildSubCategoryFilters(notifier),
-              ButtonBar(
-                alignment: MainAxisAlignment.center,
-                children: [
-                  FilledButton(
-                    onPressed: notifier.onSelectAll,
-                    child: Text(AppLocalizations.of(context)!.selectAll),
-                  ),
-                  FilledButton(
-                    onPressed: notifier.onSelectNone,
-                    child: Text(AppLocalizations.of(context)!.selectNone),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          closeButton,
-        ]);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 24, 0, 45),
+      child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.topCenter,
+          children: [
+            ListView(
+              shrinkWrap: true,
+              children: [
+                Container(height: 42),
+                _buildMainCategoryFilter(notifier),
+                _buildSubCategoryFilters(notifier),
+                ButtonBar(
+                  alignment: MainAxisAlignment.center,
+                  children: [
+                    FilledButton(
+                      onPressed: notifier.onSelectAll,
+                      child: Text(AppLocalizations.of(context)!.selectAll),
+                    ),
+                    FilledButton(
+                      onPressed: notifier.onSelectNone,
+                      child: Text(AppLocalizations.of(context)!.selectNone),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            closeButton,
+          ]),
+    );
   }
 
   Widget _buildMainCategoryFilter(SearchFilterController notifier) {
@@ -71,7 +74,6 @@ class SearchFilterView extends StatelessWidget {
                       padding: const EdgeInsets.all(4.0),
                       child: FilterChip(
                           label: Text(e.value),
-                          selectedColor: Colors.lightBlueAccent,
                           selected:
                               _selectedMainCategoryFilters.contains(e.key),
                           onSelected: (isSelected) {
@@ -95,7 +97,6 @@ class SearchFilterView extends StatelessWidget {
                       padding: const EdgeInsets.all(4.0),
                       child: FilterChip(
                           label: Text(e.value),
-                          selectedColor: Colors.lightBlueAccent,
                           selected: _selectedSubCategoryFilters.contains(e.key),
                           onSelected: (isSelected) {
                             notifier.onSubFilterChange(e.key, isSelected);

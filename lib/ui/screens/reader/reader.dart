@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -135,7 +136,7 @@ class ReaderView extends StatelessWidget implements Searchable {
       //     : const ReaderAppBar(),
       body: Consumer<ThemeChangeNotifier>(
           builder: ((context, themeChangeNotifier, child) => Container(
-                color: getChosenColor(),
+                color: getChosenColor(context),
                 child: SlidableBar(
                     slidableController: _sc,
                     side: Side.bottom,
@@ -352,12 +353,14 @@ class ReaderView extends StatelessWidget implements Searchable {
         );
   }
 
-  Color getChosenColor() {
+  Color getChosenColor(BuildContext context) {
     switch (Prefs.selectedPageColor) {
       case 0:
         return (Color(Colors.white.value));
       case 1:
-        return (const Color(seypia));
+        return Theme.of(context)
+            .colorScheme
+            .surfaceVariant; // ?? (const Color(seypia));
       case 2:
         return (Color(Colors.black.value));
       default:

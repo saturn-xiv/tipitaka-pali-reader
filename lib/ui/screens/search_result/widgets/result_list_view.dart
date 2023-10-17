@@ -61,11 +61,14 @@ class ResultListView extends StatelessWidget implements Escape {
                     bottom: 16,
                     right: 16,
                     child: Builder(builder: (context) {
-                      return FloatingActionButton.extended(
-                        onPressed: () => Scaffold.of(context).showBottomSheet(
-                            (context) => const SearchFilterView()),
-                        label: Text(AppLocalizations.of(context)!.filter),
-                        icon: const Icon(Icons.filter_list),
+                      return Padding(
+                        padding: const EdgeInsets.all(45.0),
+                        child: FloatingActionButton.extended(
+                          onPressed: () => Scaffold.of(context).showBottomSheet(
+                              (context) => const SearchFilterView()),
+                          label: Text(AppLocalizations.of(context)!.filter),
+                          icon: const Icon(Icons.filter_list),
+                        ),
                       );
                     }))
               ],

@@ -147,10 +147,11 @@ class LowerRow extends StatelessWidget {
       },
     );
 
-    if (selectedText?.isEmpty ?? true) {
+    /* if (selectedText?.isEmpty ?? true) {
       // do not save bookmark if no text is selected/highlighted
       return;
     }
+    */
 
     //print(note);
     if (note != null) {
