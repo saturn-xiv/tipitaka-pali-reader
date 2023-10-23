@@ -625,32 +625,6 @@ writeHistory(String word, String context, int page, String bookId) async {
   await dictionaryHistoryRepository.insert(word, context, page, bookId);
 }
 
-class _MyFactory extends WidgetFactory {
-  /// Controls whether text is rendered with [SelectableText] or [RichText].
-  ///
-  /// Default: `true`.
-  bool get selectableText => false;
-
-  /// The callback when user changes the selection of text.
-  ///
-  /// See [SelectableText.onSelectionChanged].
-  SelectionChangedCallback? get selectableTextOnChanged => null;
-
-  @override
-  Widget? buildText(BuildMetadata meta, TextStyleHtml tsh, InlineSpan text) {
-    if (meta.overflow == TextOverflow.clip && text is TextSpan) {
-      return Text.rich(
-        text,
-        style: tsh.style,
-        maxLines: meta.maxLines > 0 ? meta.maxLines : null,
-        textAlign: tsh.textAlign ?? TextAlign.start,
-        textDirection: tsh.textDirection,
-      );
-    }
-    return super.buildText(meta, tsh, text);
-  }
-}
-
 class ReplaceResult {
   dom.Node node;
   List<dom.Node> newNodes;
