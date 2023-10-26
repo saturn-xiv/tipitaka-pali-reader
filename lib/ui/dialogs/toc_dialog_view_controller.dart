@@ -27,35 +27,35 @@ class TocDialogViewController {
     if (filter.isEmpty) {
       _tocs.value = [..._allTocs];
     } else {
-      if (Prefs.isFuzzy) {
-        String simpleFilteredWord = filter.replaceAllMapped(
-          RegExp('[ṭḍṃāūīḷñṅ]'),
-          (match) => {
-            'ṭ': 't',
-            'ḍ': 'd',
-            'ṃ': 'm',
-            'ā': 'a',
-            'ū': 'u',
-            'ī': 'i',
-            'ḷ': 'l',
-            'ñ': 'n',
-            'ṅ': 'n'
-          }[match.group(0)]!,
-        );
-
-        final filterdToc = _allTocs
-            .where((element) => element.simple
-                .toLowerCase()
-                .contains(simpleFilteredWord.toLowerCase()))
-            .toList();
-        _tocs.value = [...filterdToc];
-      } else {
-        final filterdToc = _allTocs
-            .where((element) =>
-                element.name.toLowerCase().contains(filter.toLowerCase()))
-            .toList();
-        _tocs.value = [...filterdToc];
-      }
+      final filteredToc = _allTocs
+          .where((element) => matchFilter(element.name, filter))
+          .toList();
+      _tocs.value = [...filteredToc];
     }
+  }
+
+  bool matchFilter(String text, String filter) {
+    if (Prefs.isFuzzy) {
+      return normalizeText(text).contains(normalizeText(filter));
+    } else {
+      return text.toLowerCase().contains(filter.toLowerCase());
+    }
+  }
+
+  String normalizeText(String text) {
+    // Add any other normalizations as needed
+    return text.replaceAllMapped(RegExp('[ṭḍṃāūīḷñṅ]'), (match) {
+      return {
+        'ṭ': 't',
+        'ḍ': 'd',
+        'ṃ': 'm',
+        'ā': 'a',
+        'ū': 'u',
+        'ī': 'i',
+        'ḷ': 'l',
+        'ñ': 'n',
+        'ṅ': 'n',
+      }[match.group(0)]!;
+    }).toLowerCase();
   }
 }

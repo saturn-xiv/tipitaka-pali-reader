@@ -20,7 +20,6 @@ class TocDatabaseRepository implements TocRepository {
           dao.columnName,
           dao.columnType,
           dao.columnPageNumber,
-          dao.columnSimple
         ],
         where: '${dao.columnBookID} = ?',
         whereArgs: [bookID]);

@@ -7,7 +7,6 @@ class TocDao implements Dao<Toc> {
   final String columnName = 'name';
   final String columnType = 'type';
   final String columnPageNumber = 'page_number';
-  final String columnSimple = 'simple';
   @override
   List<Toc> fromList(List<Map<String, dynamic>> query) {
     return query.map((e) => fromMap(e)).toList();
@@ -15,8 +14,7 @@ class TocDao implements Dao<Toc> {
 
   @override
   Toc fromMap(Map<String, dynamic> query) {
-    return Toc(query[columnName], query[columnType], query[columnPageNumber],
-        query[columnSimple]);
+    return Toc(query[columnName], query[columnType], query[columnPageNumber]);
   }
 
   @override
