@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import '../../utils/pali_script.dart';
 import '../../utils/pali_script_converter.dart';
 
@@ -12,13 +13,13 @@ class PaliSearchField extends StatefulWidget {
   final String hint;
   final BorderRadius? borderRadius;
   const PaliSearchField({
-    Key? key,
+    super.key,
     this.controller,
     this.onSubmitted,
     this.onTextChanged,
     this.hint = 'search',
     this.borderRadius,
-  }) : super(key: key);
+  });
 
   @override
   State<PaliSearchField> createState() => _PaliSearchFieldState();
@@ -78,7 +79,7 @@ class _PaliSearchFieldState extends State<PaliSearchField> {
           }
           final script = ScriptDetector.getLanguage(text);
 
-          if (script == Script.roman) {
+          if (script == Script.roman && !Prefs.disableVelthuis) {
             // text controller naturally pushes to the beginning
             // fixed to keep natural position
 
@@ -127,7 +128,7 @@ class _PaliSearchFieldState extends State<PaliSearchField> {
 }
 
 class ClearButton extends StatelessWidget {
-  const ClearButton({Key? key, this.onTap}) : super(key: key);
+  const ClearButton({super.key, this.onTap});
   final GestureTapCallback? onTap;
 
   @override
