@@ -48,7 +48,6 @@ class _TocDialogState extends State<TocDialog> {
           Stack(alignment: Alignment.center, children: [
             Text(
               AppLocalizations.of(context)!.table_of_contents,
-              //style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             Align(
                 alignment: Alignment.centerRight,
@@ -126,7 +125,6 @@ class _TocDialogState extends State<TocDialog> {
                               selected: currentIndex == index,
                               contentPadding: const EdgeInsets.symmetric(
                                   vertical: 1, horizontal: 5),
-                              dense: true,
                             ),
                           ),
                         );

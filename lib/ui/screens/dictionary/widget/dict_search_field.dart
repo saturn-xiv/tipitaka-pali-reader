@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/repositories/dictionary_history_repo.dart';
+import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
@@ -12,8 +14,8 @@ import '../controller/dictionary_controller.dart';
 
 class DictionarySearchField extends StatefulWidget {
   const DictionarySearchField({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<DictionarySearchField> createState() => _DictionarySearchFieldState();
@@ -97,6 +99,9 @@ class _DictionarySearchFieldState extends State<DictionarySearchField> {
               context.read<DictionaryController>().onLookup(word);
             },
             onChanged: (text) {
+              String inputText = text;
+              final inputScript = ScriptDetector.getLanguage(inputText);
+
               // convert velthuis input to uni
               if (text.isNotEmpty) {
                 // text controller naturally pushes to the beginning
@@ -105,12 +110,15 @@ class _DictionarySearchFieldState extends State<DictionarySearchField> {
                 // before conversion get cursor position and length
                 int origTextLen = text.length;
                 int pos = textEditingController.selection.start;
-                final uniText = PaliTools.velthuisToUni(velthiusInput: text);
-                // after conversion get length and add the difference (if any)
-                int uniTextlen = uniText.length;
-                textEditingController.text = uniText;
-                textEditingController.selection = TextSelection.fromPosition(
-                    TextPosition(offset: pos + uniTextlen - origTextLen));
+
+                if (!Prefs.disableVelthuis && inputScript == Script.roman) {
+                  final uniText = PaliTools.velthuisToUni(velthiusInput: text);
+                  // after conversion get length and add the difference (if any)
+                  int uniTextlen = uniText.length;
+                  textEditingController.text = uniText;
+                  textEditingController.selection = TextSelection.fromPosition(
+                      TextPosition(offset: pos + uniTextlen - origTextLen));
+                }
               } else {
                 context.read<DictionaryController>().onInputIsEmpty();
               }

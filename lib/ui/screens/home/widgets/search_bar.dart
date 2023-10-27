@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 
 import '../../../../utils/pali_tools.dart';
@@ -56,7 +57,9 @@ class _TprSearchBarState extends State<TprSearchBar> {
           final scriptLanguage = ScriptDetector.getLanguage(text);
           //if (scriptLanguage == Script.roman) text = _toUni(text);
 
-          if (text.isNotEmpty && scriptLanguage == Script.roman) {
+          if (text.isNotEmpty &&
+              scriptLanguage == Script.roman &&
+              !Prefs.disableVelthuis) {
             // text controller naturally pushes to the beginning
             // fixed to keep natural position
 
@@ -97,20 +100,10 @@ class _TprSearchBarState extends State<TprSearchBar> {
       ),
     );
   }
-
-  String _toUni(String input) {
-    input = PaliTools.velthuisToUni(velthiusInput: input);
-
-    widget.controller.text = input;
-    widget.controller.selection = TextSelection.fromPosition(
-        TextPosition(offset: widget.controller.text.length));
-
-    return input;
-  }
 }
 
 class ClearButton extends StatelessWidget {
-  const ClearButton({Key? key, this.onTap}) : super(key: key);
+  const ClearButton({super.key, this.onTap});
   final GestureTapCallback? onTap;
 
   @override

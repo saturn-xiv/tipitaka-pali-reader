@@ -40,7 +40,9 @@ class _SearchWidgetState extends State<SearchWidget> {
       String text = _controller.value.text;
       final scriptLanguage = ScriptDetector.getLanguage(text);
 
-      if (text.isNotEmpty && scriptLanguage == Script.roman) {
+      if (text.isNotEmpty &&
+          scriptLanguage == Script.roman &&
+          !Prefs.disableVelthuis) {
         final uniText = PaliTools.velthuisToUni(velthiusInput: text);
         if (uniText != text) {
           final pos = _controller.selection.start;
