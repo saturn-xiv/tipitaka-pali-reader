@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MyVerticalDivider extends StatelessWidget {
-  const MyVerticalDivider({Key? key, required this. width}) : super(key: key);
+  const MyVerticalDivider({super.key, required this.width});
   final double width;
 
   @override

@@ -30,7 +30,7 @@ class _WelcomeContainerState extends State<WelcomeContainer> {
 
     // If message date is same as today's date or there is no internet, use the stored message.
     if (storedMessageDate == formattedCurrentDate || !_isInternetAvailable()) {
-      return storedMessage ?? "No message";
+      return storedMessage;
     }
 
     // Fetch the message from the internet

@@ -29,7 +29,7 @@ class FireUserRepository {
       notifier.setSignedIn(false);
     } catch (e) {
       debugPrint('Error during sign-out: $e');
-      throw e; // Optionally rethrow to handle the error on the UI side.
+      rethrow; // Optionally rethrow to handle the error on the UI side.
     }
   }
 
@@ -48,7 +48,7 @@ class FireUserRepository {
       notifier.message = e.toString();
 
       debugPrint('Error during sign-in: $e');
-      throw e; // Optionally rethrow to handle the error on the UI side.
+      rethrow; // Optionally rethrow to handle the error on the UI side.
     }
   }
 
@@ -65,7 +65,7 @@ class FireUserRepository {
       Prefs.password = "";
     } catch (e) {
       debugPrint('Error during registration: $e');
-      throw e; // Optionally rethrow to handle the error on the UI side.
+      rethrow; // Optionally rethrow to handle the error on the UI side.
     }
   }
 }

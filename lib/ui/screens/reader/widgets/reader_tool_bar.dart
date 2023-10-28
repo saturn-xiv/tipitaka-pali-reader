@@ -25,7 +25,7 @@ import '../controller/reader_view_controller.dart';
 import 'book_slider.dart';
 
 class ReaderToolbar extends StatelessWidget {
-  const ReaderToolbar({Key? key}) : super(key: key);
+  const ReaderToolbar({super.key});
   @override
   Widget build(BuildContext context) {
     myLogger.i('building control bar');
@@ -45,7 +45,7 @@ class ReaderToolbar extends StatelessWidget {
 }
 
 class UpperRow extends StatelessWidget {
-  const UpperRow({Key? key}) : super(key: key);
+  const UpperRow({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class UpperRow extends StatelessWidget {
 }
 
 class LowerRow extends StatelessWidget {
-  const LowerRow({Key? key}) : super(key: key);
+  const LowerRow({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -569,7 +569,7 @@ class LowerRow extends StatelessWidget {
           romanText: toc.name.trim(),
         );
       }
-      print('wordToHighlight: $textToHighlight');
+      debugPrint('wordToHighlight: $textToHighlight');
       vm.onGoto(
           pageNumber: toc.pageNumber,
           word: textToHighlight,

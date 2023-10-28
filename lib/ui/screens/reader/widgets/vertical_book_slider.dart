@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/ui/screens/reader/controller/reader_view_controller.dart';
 
 class VerticalBookSlider extends StatefulWidget {
-  const VerticalBookSlider({Key? key}) : super(key: key);
+  const VerticalBookSlider({super.key});
 
   @override
   State<VerticalBookSlider> createState() => _BookSliderState();
@@ -58,11 +58,12 @@ class _BookSliderState extends State<VerticalBookSlider> {
           max: max,
           label: currentPage.toString(),
           divisions: divisions,
-          onChanged: (value) async{
+          onChanged: (value) async {
             // setState(() {
             //   currentPage = value.toInt();
             // });
-            await readerViewController.onGoto(pageNumber: value.toInt(), saveToRecent: false);
+            await readerViewController.onGoto(
+                pageNumber: value.toInt(), saveToRecent: false);
           },
           // onChangeStart: null,
           onChangeEnd: (value) {

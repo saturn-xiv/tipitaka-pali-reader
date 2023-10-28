@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/business_logic/models/paragraph_mapping.dart';
 import 'package:tipitaka_pali/services/dao/paragraph_mapping_dao.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
@@ -56,7 +57,7 @@ class ParagraphMappingDatabaseRepository implements ParagraphMappingRepository {
 
     List<Map<String, dynamic>> maps = await db.rawQuery(sql);
 
-    print(maps);
+    debugPrint(maps.toString());
 
     // List<Map> maps = await db.query(dao.tableParagraphMapping,
     //     columns: [dao.columnParagraph, dao.columnExpBookID, dao.columnExpPageNumber],

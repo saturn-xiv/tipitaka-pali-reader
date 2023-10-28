@@ -5,7 +5,7 @@ import 'package:tipitaka_pali/services/rx_prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PanelSizeControlView extends StatefulWidget {
-  const PanelSizeControlView({Key? key}) : super(key: key);
+  const PanelSizeControlView({super.key});
 
   @override
   State<PanelSizeControlView> createState() => _PanelSizeControlViewState();

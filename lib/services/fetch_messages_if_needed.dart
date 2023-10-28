@@ -11,7 +11,6 @@ Future<bool> _isInternetAvailable() async {
 }
 
 Future<TprMessage> fetchMessageIfNeeded() async {
-  String storedMessage = Prefs.message;
   DateTime currentDate = DateTime.now();
   String formattedCurrentDate =
       "${currentDate.year}-${currentDate.month.toString().padLeft(2, '0')}-${currentDate.day.toString().padLeft(2, '0')}";

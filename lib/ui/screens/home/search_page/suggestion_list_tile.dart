@@ -6,14 +6,14 @@ import '../../../../utils/pali_script.dart';
 
 class SuggestionListTile extends StatelessWidget {
   const SuggestionListTile({
-    Key? key,
+    super.key,
     required this.suggestedWord,
     required this.frequency,
     this.isFirstWord = true,
     this.onClickedSubmitButton,
     this.onClickedSuggestion,
     this.onClickedAddButton,
-  }) : super(key: key);
+  });
 
   final String suggestedWord;
   final int frequency;
@@ -36,14 +36,17 @@ class SuggestionListTile extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       // suggested word
       title: Text(scriptWord, style: Theme.of(context).textTheme.bodyLarge),
-      leading: IconButton(onPressed: onClickedAddButton, icon: const Icon(Icons.library_add),),
+      leading: IconButton(
+        onPressed: onClickedAddButton,
+        icon: const Icon(Icons.library_add),
+      ),
       //subtitle: const Icon(Icons.library_add),
       // word frequency
-      trailing:           Text(
-              PaliScript.getScriptOf(
-                  script: context.read<ScriptLanguageProvider>().currentScript,
-                  romanText: (frequency == -1) ? " " : frequency.toString()),
-              style: Theme.of(context).textTheme.bodyLarge),
+      trailing: Text(
+          PaliScript.getScriptOf(
+              script: context.read<ScriptLanguageProvider>().currentScript,
+              romanText: (frequency == -1) ? " " : frequency.toString()),
+          style: Theme.of(context).textTheme.bodyLarge),
       onTap: onClickedSuggestion,
     );
   }

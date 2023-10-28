@@ -153,8 +153,7 @@ import 'package:flutter/material.dart';
 */
 class _SelectionToolBar extends StatefulWidget {
   const _SelectionToolBar(
-      {Key? key,
-      required this.anchorAbove,
+      {required this.anchorAbove,
       required this.anchorBelow,
       required this.clipboardStatus,
       required this.toolBarItems,
@@ -164,8 +163,7 @@ class _SelectionToolBar extends StatefulWidget {
       required this.canCopy,
       required this.canCut,
       required this.canPaste,
-      required this.canSelectAll})
-      : super(key: key);
+      required this.canSelectAll});
 
   /// The focal point above which the toolbar attempts to position itself.
   final Offset anchorAbove;

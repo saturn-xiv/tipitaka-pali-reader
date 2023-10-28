@@ -10,7 +10,7 @@ import '../../dialogs/about_tpr_dialog.dart';
 import '../../widgets/colored_text.dart';
 
 class HelpAboutView extends StatefulWidget {
-  const HelpAboutView({Key? key}) : super(key: key);
+  const HelpAboutView({super.key});
 
   @override
   State<HelpAboutView> createState() => _HelpAboutViewState();

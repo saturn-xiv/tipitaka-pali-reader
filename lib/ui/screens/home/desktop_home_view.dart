@@ -13,7 +13,7 @@ import 'dekstop_navigation_bar.dart';
 import 'navigation_pane.dart';
 
 class DesktopHomeView extends StatefulWidget {
-  const DesktopHomeView({Key? key}) : super(key: key);
+  const DesktopHomeView({super.key});
 
   @override
   State<DesktopHomeView> createState() => _DesktopHomeViewState();

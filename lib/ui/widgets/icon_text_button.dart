@@ -7,8 +7,7 @@ class IconTextButton extends StatelessWidget {
   final GestureTapCallback? onPressed;
 
   const IconTextButton(
-      {Key? key, required this.icon, required this.text, this.onPressed})
-      : super(key: key);
+      {super.key, required this.icon, required this.text, this.onPressed});
 
   @override
   Widget build(BuildContext context) {

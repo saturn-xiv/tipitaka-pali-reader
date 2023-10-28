@@ -22,7 +22,7 @@ import '../../widgets/colored_text.dart';
 import 'openning_books_provider.dart';
 
 class BookListPage extends StatelessWidget {
-  BookListPage({Key? key}) : super(key: key);
+  BookListPage({super.key});
 
   // key will be use for load book list from database
   // value will be use for TabBar Title
@@ -198,6 +198,7 @@ class BookListPage extends StatelessWidget {
                 itemBuilder: (context, index) => ListTile(
                       title: listItems[index].build(context),
                       onTap: () => _openBook(context, listItems[index]),
+                      minVerticalPadding: 4,
                     ),
                 separatorBuilder: (context, index) {
                   return Divider(
@@ -258,6 +259,7 @@ class BookListPage extends StatelessWidget {
                       return ListTile(
                         title: bookItem.build(context),
                         onTap: () => _openBook(context, bookItem),
+                        minVerticalPadding: 4,
                       );
                     }).toList(),
                   ),

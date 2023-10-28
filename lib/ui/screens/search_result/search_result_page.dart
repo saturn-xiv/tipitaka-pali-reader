@@ -15,11 +15,10 @@ class SearchResultPage extends StatelessWidget {
   //  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   const SearchResultPage(
-      {Key? key,
+      {super.key,
       required this.searchWord,
       required this.queryMode,
-      required this.wordDistance})
-      : super(key: key);
+      required this.wordDistance});
 
   @override
   Widget build(BuildContext context) {

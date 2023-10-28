@@ -20,8 +20,7 @@ class FlashCardsView extends StatelessWidget {
   final ValueNotifier<bool> isExporting = ValueNotifier<bool>(false);
 
   FlashCardsView(
-      {Key? key, required this.cards, required this.dictionaryController})
-      : super(key: key);
+      {super.key, required this.cards, required this.dictionaryController});
 
   String _highlightOccurrences(String source, String context) {
     if (context.isEmpty || !source.contains(context)) {

@@ -6,7 +6,7 @@ import '../../../services/provider/script_language_provider.dart';
 import '../../widgets/colored_text.dart';
 
 class SelectScriptLanguageWidget extends StatelessWidget {
-  const SelectScriptLanguageWidget({Key? key}) : super(key: key);
+  const SelectScriptLanguageWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,8 @@ class SelectScriptLanguageWidget extends StatelessWidget {
         onChanged: (value) {
           scriptLanguageProvider.onLanguageChage(value);
         },
-        items: scriptLanguageProvider.languages.map<DropdownMenuItem<ScriptInfo>>(
+        items:
+            scriptLanguageProvider.languages.map<DropdownMenuItem<ScriptInfo>>(
           (ScriptInfo value) {
             return DropdownMenuItem<ScriptInfo>(
               value: value,
@@ -26,7 +27,8 @@ class SelectScriptLanguageWidget extends StatelessWidget {
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.white
                     : Theme.of(context).primaryColor,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
             );
           },

@@ -17,7 +17,7 @@ import 'reader.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
 class ReaderContainer extends StatefulWidget {
-  const ReaderContainer({Key? key}) : super(key: key);
+  const ReaderContainer({super.key});
 
   @override
   State<ReaderContainer> createState() => _ReaderContainerState();

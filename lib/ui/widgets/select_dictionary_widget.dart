@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/business_logic/view_models/dictionary_settings_view_model.dart';
 
 class SelectDictionaryWidget extends StatelessWidget {
-  const SelectDictionaryWidget({Key? key}) : super(key: key);
+  const SelectDictionaryWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

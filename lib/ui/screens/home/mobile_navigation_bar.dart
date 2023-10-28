@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 
 class MobileNavigationBar extends StatelessWidget {
   const MobileNavigationBar({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

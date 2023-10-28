@@ -12,8 +12,7 @@ import 'recent_page.dart';
 import 'search_page/search_page.dart';
 
 class DetailNavigationPane extends StatefulWidget {
-  const DetailNavigationPane({Key? key, required this.navigationCount})
-      : super(key: key);
+  const DetailNavigationPane({super.key, required this.navigationCount});
   final int navigationCount;
 
   @override

@@ -1,8 +1,5 @@
-import 'package:firedart/auth/user_gateway.dart';
 import 'package:flutter/material.dart';
-import 'package:firedart/firedart.dart';
 import 'package:tipitaka_pali/business_logic/models/bookmark.dart';
-import 'package:tipitaka_pali/services/prefs.dart';
 
 class BookmarkNotifier with ChangeNotifier {
   List<Bookmark> _bookmarks = [];

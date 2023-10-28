@@ -11,11 +11,10 @@ import 'package:tipitaka_pali/ui/screens/reader/intents.dart';
 
 class ResultListView extends StatelessWidget implements Escape {
   const ResultListView(
-      {Key? key,
+      {super.key,
       required this.searchWord,
       required this.results,
-      required this.bookCount})
-      : super(key: key);
+      required this.bookCount});
   final String searchWord;
   final List<SearchResult> results;
   final int bookCount;
@@ -106,8 +105,8 @@ class ScrollBarThumb extends StatelessWidget {
     this.drawColor,
     this.height,
     this.title, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

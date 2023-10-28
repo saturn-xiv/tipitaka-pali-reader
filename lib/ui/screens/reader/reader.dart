@@ -1,13 +1,11 @@
 import 'dart:io';
 
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:slidable_bar/slidable_bar.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
-import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/services/rx_prefs.dart';
@@ -42,13 +40,13 @@ class Reader extends StatelessWidget {
   final String bookUuid;
 
   const Reader({
-    Key? key,
+    super.key,
     required this.book,
     this.initialPage,
     this.textToHighlight,
     required this.bookViewMode,
     required this.bookUuid,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +86,7 @@ class Reader extends StatelessWidget {
 
 class ReaderView extends StatelessWidget implements Searchable {
   final BookViewMode bookViewMode;
-  ReaderView({Key? key, required this.bookViewMode}) : super(key: key);
+  ReaderView({super.key, required this.bookViewMode});
   final _sc = SlidableBarController(initialStatus: Prefs.controlBarShow);
 
   @override

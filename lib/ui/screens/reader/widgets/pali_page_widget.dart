@@ -30,7 +30,7 @@ class PaliPageWidget extends StatefulWidget {
   final Book? book;
   final Function(String clickedWord)? onClick;
   const PaliPageWidget(
-      {Key? key,
+      {super.key,
       required this.pageNumber,
       required this.htmlContent,
       required this.script,
@@ -38,8 +38,7 @@ class PaliPageWidget extends StatefulWidget {
       this.onClick,
       this.searchText,
       this.pageToHighlight,
-      this.book})
-      : super(key: key);
+      this.book});
 
   @override
   State<PaliPageWidget> createState() => _PaliPageWidgetState();
@@ -279,7 +278,6 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     final soup = BeautifulSoup(content);
     final isDark = context.read<ThemeChangeNotifier>().isDarkMode;
     final textColor = isDark ? '#000' : '#000';
-    final borderColor = isDark ? '#6bb8ff' : '#000';
     final bgColor = isDark ? '#2994ff' : '#a6d2ff';
 
     List<ReplaceResult> toReplace = [];

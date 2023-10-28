@@ -7,7 +7,7 @@ import 'package:tipitaka_pali/services/repositories/fire_user_repository.dart';
 import '../../widgets/colored_text.dart';
 
 class SyncSettingsView extends StatefulWidget {
-  const SyncSettingsView({Key? key}) : super(key: key);
+  const SyncSettingsView({super.key});
 
   @override
   State<SyncSettingsView> createState() => _SyncSettingsViewState();

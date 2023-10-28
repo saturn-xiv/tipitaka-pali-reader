@@ -15,7 +15,7 @@ import 'widget/dict_content_view.dart';
 import 'widget/dict_search_field.dart';
 
 class DictionaryPage extends StatefulWidget {
-  const DictionaryPage({Key? key}) : super(key: key);
+  const DictionaryPage({super.key});
 
   @override
   State<DictionaryPage> createState() => _DictionaryPageState();

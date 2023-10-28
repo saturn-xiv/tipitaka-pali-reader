@@ -20,7 +20,7 @@ import '../dialogs/reset_dialog.dart';
 
 class InitialSetup extends StatelessWidget {
   final bool isUpdateMode;
-  InitialSetup({Key? key, this.isUpdateMode = false}) : super(key: key) {}
+  const InitialSetup({super.key, this.isUpdateMode = false});
 
   @override
   Widget build(BuildContext context) {

@@ -119,7 +119,7 @@ class ColoredText extends StatelessWidget {
   /// will not be rendered. Otherwise, it will be shown with the given overflow option.
   const ColoredText(
     String this.data, {
-    Key? key,
+    super.key,
     this.color,
     this.fontSize,
     this.fontWeight,
@@ -136,8 +136,7 @@ class ColoredText extends StatelessWidget {
     this.textWidthBasis,
     this.textHeightBehavior,
     this.selectionColor,
-  })  : textSpan = null,
-        super(key: key);
+  }) : textSpan = null;
 
   /// Creates a colored text widget with a [InlineSpan].
   ///

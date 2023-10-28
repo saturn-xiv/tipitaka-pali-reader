@@ -16,13 +16,12 @@ import 'vertical_book_slider.dart';
 
 class VerticalBookView extends StatefulWidget {
   const VerticalBookView(
-      {Key? key,
+      {super.key,
       this.onSearchedSelectedText,
       this.onSharedSelectedText,
       this.onClickedWord,
       this.onSearchedInCurrentBook,
-      this.onSelectionChanged})
-      : super(key: key);
+      this.onSelectionChanged});
   final ValueChanged<String>? onSearchedSelectedText;
   final ValueChanged<String>? onSharedSelectedText;
   final ValueChanged<String>? onClickedWord;
@@ -355,6 +354,7 @@ class _VerticalBookViewState extends State<VerticalBookView>
     debugPrint("increase font");
   }
 
+  @override
   void onDecreaseFontRequested(BuildContext context) {
     context.read<ReaderFontProvider>().onDecreaseFontSize();
     debugPrint("increase font");

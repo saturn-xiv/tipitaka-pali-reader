@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class EmptyResultView extends StatelessWidget {
-  const EmptyResultView({Key? key, required this.searchWord}) : super(key: key);
+  const EmptyResultView({super.key, required this.searchWord});
   final String searchWord;
 
   @override

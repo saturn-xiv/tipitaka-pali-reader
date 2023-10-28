@@ -18,13 +18,12 @@ class GotoDialog extends StatefulWidget {
   final double radius;
 
   const GotoDialog(
-      {Key? key,
+      {super.key,
       required this.firstPage,
       required this.lastPage,
       required this.firstParagraph,
       required this.lastParagraph,
-      this.radius = 16.0})
-      : super(key: key);
+      this.radius = 16.0});
 
   @override
   State<GotoDialog> createState() => _GotoDialogState();

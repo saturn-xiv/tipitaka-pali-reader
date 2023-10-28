@@ -11,7 +11,7 @@ import '../../../widgets/labeled_checkbox.dart';
 import '../controller/reader_view_controller.dart';
 
 class SearchWidget extends StatefulWidget {
-  const SearchWidget({Key? key, this.word}) : super(key: key);
+  const SearchWidget({super.key, this.word});
   final String? word;
 
   @override

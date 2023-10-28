@@ -23,7 +23,7 @@ Future<void> showWhatsNewDialog(
 class WhatsNewDialog extends StatefulWidget {
   final TprMessage tprMessage;
 
-  WhatsNewDialog({required this.tprMessage});
+  const WhatsNewDialog({super.key, required this.tprMessage});
 
   @override
   _WhatsNewDialogState createState() => _WhatsNewDialogState();

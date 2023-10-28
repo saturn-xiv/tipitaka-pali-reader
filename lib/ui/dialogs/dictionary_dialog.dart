@@ -12,7 +12,7 @@ import '../screens/dictionary/widget/dict_search_field.dart';
 class DictionaryDialog extends StatelessWidget {
   final String? word;
 
-  const DictionaryDialog({Key? key, this.word}) : super(key: key);
+  const DictionaryDialog({super.key, this.word});
 
   @override
   Widget build(BuildContext context) {

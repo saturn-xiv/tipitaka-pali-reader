@@ -16,9 +16,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SuttaListDialog extends StatefulWidget {
   const SuttaListDialog({
-    Key? key,
+    super.key,
     required this.suttaRepository,
-  }) : super(key: key);
+  });
 
   final SuttaRepository suttaRepository;
 
@@ -198,7 +198,7 @@ class _SuttaListDialogState extends State<SuttaListDialog> {
 
 class CloseButton extends StatelessWidget {
   final EdgeInsets? padding;
-  const CloseButton({Key? key, this.padding}) : super(key: key);
+  const CloseButton({super.key, this.padding});
 
   @override
   Widget build(BuildContext context) {

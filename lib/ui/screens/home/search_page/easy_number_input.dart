@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class EasyNumberInput extends StatefulWidget {
   const EasyNumberInput(
-      {Key? key, required this.initial, required this.onChanged})
-      : super(key: key);
+      {super.key, required this.initial, required this.onChanged});
   final int initial;
   final Function(int) onChanged;
 

@@ -9,8 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecentListTile extends StatelessWidget {
   const RecentListTile(
-      {Key? key, required this.recent, this.onTap, this.onDelete})
-      : super(key: key);
+      {super.key, required this.recent, this.onTap, this.onDelete});
   final Recent recent;
   final Function(Recent recent)? onDelete;
   final Function(Recent recent)? onTap;

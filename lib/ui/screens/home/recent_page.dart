@@ -12,7 +12,7 @@ import '../../../services/repositories/recent_repo.dart';
 import '../../dialogs/confirm_dialog.dart';
 
 class RecentPage extends StatelessWidget {
-  const RecentPage({Key? key}) : super(key: key);
+  const RecentPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +75,7 @@ class RecentPage extends StatelessWidget {
 }
 
 class RecentAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const RecentAppBar({Key? key}) : super(key: key);
+  const RecentAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -6,12 +6,11 @@ import 'search_page.dart';
 
 class SearchModeView extends StatefulWidget {
   const SearchModeView(
-      {Key? key,
+      {super.key,
       required this.mode,
       required this.wordDistance,
       required this.onModeChanged,
-      required this.onDistanceChanged})
-      : super(key: key);
+      required this.onDistanceChanged});
   final QueryMode mode;
   final int wordDistance;
   final Function(QueryMode) onModeChanged;

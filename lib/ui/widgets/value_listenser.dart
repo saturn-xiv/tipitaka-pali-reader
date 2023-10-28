@@ -7,11 +7,11 @@ class ValueListenableListener<T> extends StatefulWidget {
   final ValueChanged<T>? onValueChanged;
 
   const ValueListenableListener({
-    Key? key,
+    super.key,
     required this.valueListenable,
     required this.child,
     this.onValueChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<ValueListenableListener<T>> createState() =>

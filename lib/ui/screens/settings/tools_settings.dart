@@ -8,8 +8,7 @@ import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
 class ToolsSettingsView extends StatefulWidget {
   final ScrollController scrollController;
 
-  const ToolsSettingsView({Key? key, required this.scrollController})
-      : super(key: key);
+  const ToolsSettingsView({super.key, required this.scrollController});
 
   @override
   State<ToolsSettingsView> createState() => _ToolsSettingsViewState();

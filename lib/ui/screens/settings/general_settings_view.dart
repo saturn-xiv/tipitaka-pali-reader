@@ -8,7 +8,7 @@ import 'package:tipitaka_pali/ui/screens/settings/panel_size_setting_view.dart';
 enum Startup { quoteOfDay, restoreLastRead }
 
 class GeneralSettingsView extends StatefulWidget {
-  const GeneralSettingsView({Key? key}) : super(key: key);
+  const GeneralSettingsView({super.key});
 
   @override
   State<GeneralSettingsView> createState() => _GeneralSettingsViewState();

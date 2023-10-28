@@ -6,10 +6,10 @@ import 'package:tipitaka_pali/providers/navigation_provider.dart';
 
 class DeskTopNavigationBar extends StatelessWidget {
   const DeskTopNavigationBar({
-    Key? key,
+    super.key,
     // required this.selectedIndex,
     // this.onDestinationSelected,
-  }) : super(key: key);
+  });
 
   // final int selectedIndex;
   // final ValueChanged<int>? onDestinationSelected;

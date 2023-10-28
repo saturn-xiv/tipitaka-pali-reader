@@ -29,7 +29,7 @@ final Logger myLogger = Logger(
     printEmojis: true,
     printTime: false,
   ),
-  level: kDebugMode ? Level.verbose : Level.nothing,
+  level: kDebugMode ? Level.all : Level.off,
 );
 
 class App extends StatelessWidget {
@@ -49,7 +49,7 @@ class App extends StatelessWidget {
 
   final StreamingSharedPreferences rxPref;
 
-  const App({required this.rxPref, Key? key}) : super(key: key);
+  const App({required this.rxPref, super.key});
 
   @override
   @override

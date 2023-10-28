@@ -6,12 +6,11 @@ import '../screens/home/search_page/search_page.dart';
 
 class SearchTypeSegmentedControl extends StatefulWidget {
   const SearchTypeSegmentedControl(
-      {Key? key,
+      {super.key,
       required this.mode,
       required this.wordDistance,
       required this.onModeChanged,
-      required this.onDistanceChanged})
-      : super(key: key);
+      required this.onDistanceChanged});
   final QueryMode mode;
   final int wordDistance;
   final Function(QueryMode) onModeChanged;

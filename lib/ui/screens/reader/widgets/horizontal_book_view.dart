@@ -10,14 +10,13 @@ import 'pali_page_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HorizontalBookView extends StatefulWidget {
-  const HorizontalBookView({
-    Key? key,
-    this.onSearchedSelectedText,
-    this.onSharedSelectedText,
-    this.onClickedWord,
-    this.onSearchedInCurrentBook,
-    this.onSelectionChanged
-  }) : super(key: key);
+  const HorizontalBookView(
+      {super.key,
+      this.onSearchedSelectedText,
+      this.onSharedSelectedText,
+      this.onClickedWord,
+      this.onSearchedInCurrentBook,
+      this.onSelectionChanged});
   final ValueChanged<String>? onSearchedSelectedText;
   final ValueChanged<String>? onSharedSelectedText;
   final ValueChanged<String>? onClickedWord;

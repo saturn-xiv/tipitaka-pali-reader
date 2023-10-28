@@ -14,7 +14,7 @@ import '../controller/dictionary_controller.dart';
 import '../controller/dictionary_state.dart';
 
 class DictionaryContentView extends StatelessWidget {
-  const DictionaryContentView({Key? key}) : super(key: key);
+  const DictionaryContentView({super.key});
 
   @override
   Widget build(BuildContext context) {

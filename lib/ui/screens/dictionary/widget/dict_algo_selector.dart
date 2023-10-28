@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../controller/dictionary_controller.dart';
 
 class DictionaryAlgorithmModeView extends StatelessWidget {
-  const DictionaryAlgorithmModeView({Key? key}) : super(key: key);
+  const DictionaryAlgorithmModeView({super.key});
 
   @override
   Widget build(BuildContext context) {

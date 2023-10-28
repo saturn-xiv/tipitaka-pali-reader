@@ -16,7 +16,7 @@ import 'openning_books_provider.dart';
 //import '../settings/download_view.dart';
 
 class QuickJumpPage extends StatefulWidget {
-  const QuickJumpPage({Key? key}) : super(key: key);
+  const QuickJumpPage({super.key});
 
   @override
   State<QuickJumpPage> createState() => _QuickJumpPageState();

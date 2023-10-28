@@ -11,12 +11,12 @@ class TprSearchBar extends StatefulWidget {
   final void Function(String) onTextChanged;
   final String hint;
   const TprSearchBar({
-    Key? key,
+    super.key,
     required this.controller,
     required this.onSubmitted,
     required this.onTextChanged,
     this.hint = 'search',
-  }) : super(key: key);
+  });
 
   @override
   State<TprSearchBar> createState() => _TprSearchBarState();

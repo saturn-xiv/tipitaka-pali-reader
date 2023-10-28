@@ -6,7 +6,7 @@ import '../../../business_logic/view_models/script_settings_view_model.dart';
 import 'select_script_language.dart';
 
 class ScriptSettingView extends StatelessWidget {
-  const ScriptSettingView({Key? key}) : super(key: key);
+  const ScriptSettingView({super.key});
 
   @override
   Widget build(BuildContext context) {

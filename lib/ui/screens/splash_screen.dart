@@ -5,7 +5,7 @@ import 'home/home_container.dart';
 import 'initial_setup.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +14,10 @@ class SplashScreen extends StatelessWidget {
 
     switch (databaseStatus) {
       case DatabaseStatus.notExist:
-        child = InitialSetup();
+        child = const InitialSetup();
         break;
       case DatabaseStatus.outOfDate:
-        child = InitialSetup(isUpdateMode: true);
+        child = const InitialSetup(isUpdateMode: true);
         break;
       case DatabaseStatus.uptoDate:
         child = const Home();

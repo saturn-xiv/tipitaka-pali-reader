@@ -8,7 +8,7 @@ import 'package:tipitaka_pali/ui/screens/dictionary/controller/dictionary_contro
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FlashCardSetupView extends StatefulWidget {
-  const FlashCardSetupView({Key? key}) : super(key: key);
+  const FlashCardSetupView({super.key});
 
   @override
   _FlashCardSetupViewState createState() => _FlashCardSetupViewState();

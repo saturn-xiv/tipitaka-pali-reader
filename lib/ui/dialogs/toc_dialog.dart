@@ -15,10 +15,10 @@ class TocDialog extends StatefulWidget {
   final int? currentPage;
 
   const TocDialog({
-    Key? key,
+    super.key,
     required this.bookID,
     this.currentPage,
-  }) : super(key: key);
+  });
 
   @override
   State<TocDialog> createState() => _TocDialogState();

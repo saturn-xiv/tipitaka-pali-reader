@@ -9,12 +9,11 @@ class ConfirmDialog extends StatelessWidget {
   final String okLabel;
 
   const ConfirmDialog(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.message,
       required this.cancelLabel,
-      required this.okLabel})
-      : super(key: key);
+      required this.okLabel});
   @override
   Widget build(BuildContext context) {
     return Dialog(

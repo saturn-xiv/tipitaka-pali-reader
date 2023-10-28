@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/ui/screens/reader/controller/reader_view_controller.dart';
 
 class BookSlider extends StatefulWidget {
-  const BookSlider({Key? key}) : super(key: key);
+  const BookSlider({super.key});
 
   @override
   State<BookSlider> createState() => _BookSliderState();

@@ -4,8 +4,8 @@ class TabCountIcon extends StatelessWidget {
   const TabCountIcon({
     required this.count,
     required this.onPressed,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final int count;
   final VoidCallback onPressed;

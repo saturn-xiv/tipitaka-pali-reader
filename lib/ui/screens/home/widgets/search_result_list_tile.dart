@@ -15,8 +15,7 @@ class SearchResultListTile extends StatelessWidget {
   // final String textToHighlight;
   final GestureTapCallback? onTap;
 
-  const SearchResultListTile({Key? key, required this.result, this.onTap})
-      : super(key: key);
+  const SearchResultListTile({super.key, required this.result, this.onTap});
   @override
   Widget build(BuildContext context) {
     // print('text: ${result.description}');
