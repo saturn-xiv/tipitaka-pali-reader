@@ -5,7 +5,7 @@ import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
 
 class SelectLanguageWidget extends StatelessWidget {
-  SelectLanguageWidget({Key? key}) : super(key: key);
+  SelectLanguageWidget({super.key});
   final _languageItmes = <String>[
     'English',
     'မြန်မာ',

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
 class ChangeThemeWidget extends StatelessWidget {
-  const ChangeThemeWidget({Key? key}) : super(key: key);
+  const ChangeThemeWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -138,5 +138,7 @@
   "dictionaryNext":           "Next (Alt + →)",
   "notListed":                "Not Listed",
   "processing":               "Processing",
-  "fixWordlist":              "Fix Search Suggest Word List"
+  "fixWordlist":              "Fix Search Suggest Word List",
+  "material3":               "Material 3",
+  "color":                    "Color"
 }

@@ -4,17 +4,17 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/provider/bookmark_provider.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/ui/screens/settings/sync_settings.dart';
+import 'package:tipitaka_pali/ui/screens/settings/theme_settings_view.dart';
 import 'package:tipitaka_pali/ui/screens/settings/tools_settings.dart';
 import 'package:tipitaka_pali/ui/widgets/select_dictionary_widget.dart';
 import 'package:tipitaka_pali/ui/widgets/select_language_widget.dart';
-import 'package:tipitaka_pali/ui/widgets/select_theme_widget.dart';
 
 import 'general_settings_view.dart';
 import 'help_about.dart';
 import 'script_setting_view.dart';
 
 class SettingPage extends StatelessWidget {
-  const SettingPage({Key? key}) : super(key: key);
+  const SettingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,6 @@ class SettingPage extends StatelessWidget {
               const SizedBox(height: 16),
               const DictionarySettingView(),
               const ThemeSettingView(),
-              const DarkModeSettingView(),
               const LanguageSettingView(),
               const ScriptSettingView(),
               const GeneralSettingsView(),
@@ -50,54 +49,33 @@ class SettingPage extends StatelessWidget {
   }
 }
 
-class ThemeSettingView extends StatelessWidget {
-  const ThemeSettingView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-          leading: const Icon(Icons.palette_outlined),
-          title: Text(
-            AppLocalizations.of(context)!.theme,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          trailing: const SelectThemeWidget()),
-    );
-  }
-}
-
 class DarkModeSettingView extends StatelessWidget {
-  const DarkModeSettingView({Key? key}) : super(key: key);
+  const DarkModeSettingView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.brightness_2_outlined),
-        trailing: ToggleButtons(
-          onPressed: (int index) {
-            Provider.of<ThemeChangeNotifier>(context, listen: false)
-                .toggleTheme(index);
-          },
-          isSelected: context.read<ThemeChangeNotifier>().isSelected,
-          children: const <Widget>[
-            Icon(Icons.wb_sunny),
-            Icon(Icons.phone_iphone),
-            Icon(Icons.bedtime),
-          ],
-        ),
-        title: Text(
-          AppLocalizations.of(context)!.darkMode,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+    return ListTile(
+      trailing: ToggleButtons(
+        onPressed: (int index) {
+          Provider.of<ThemeChangeNotifier>(context, listen: false)
+              .toggleTheme(index);
+        },
+        isSelected: context.read<ThemeChangeNotifier>().isSelected,
+        children: const <Widget>[
+          Icon(Icons.wb_sunny),
+          Icon(Icons.color_lens),
+          Icon(Icons.bedtime),
+        ],
+      ),
+      title: Text(
+        AppLocalizations.of(context)!.darkMode,
       ),
     );
   }
 }
 
 class LanguageSettingView extends StatelessWidget {
-  const LanguageSettingView({Key? key}) : super(key: key);
+  const LanguageSettingView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +93,7 @@ class LanguageSettingView extends StatelessWidget {
 }
 
 class DictionarySettingView extends StatelessWidget {
-  const DictionarySettingView({Key? key}) : super(key: key);
+  const DictionarySettingView({super.key});
 
   @override
   Widget build(BuildContext context) {
