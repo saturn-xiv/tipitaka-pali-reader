@@ -140,5 +140,7 @@
   "processing":               "Processing",
   "fixWordlist":              "Fix Search Suggest Word List",
   "material3":               "Material 3",
-  "color":                    "Color"
+  "color":                    "Color",
+  "importBookmarks":           "Import Bookmarks",
+  "exportBookmarks":           "Export Bookmarks"
 }

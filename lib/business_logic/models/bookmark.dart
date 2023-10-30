@@ -1,8 +1,5 @@
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
-import 'package:tipitaka_pali/business_logic/models/book.dart';
-
 List<Bookmark> definitionFromJson(String str) =>
     List<Bookmark>.from(json.decode(str).map((x) => Bookmark.fromJson(x)));
 
@@ -55,7 +52,7 @@ class Bookmark {
         'page_number': pageNumber,
         'note': note,
         'name': name,
-        'action': action,
+        'action': action.toString().split('.').last,
         'action_date': actionDate,
         'sync_date': syncDate,
         'synced': synced,
@@ -68,7 +65,9 @@ class Bookmark {
       pageNumber: json['page_number'],
       note: json['note'],
       name: json['name'] ?? 'Unknown',
-      action:  BookmarkAction.values.firstWhereOrNull((e) => e.toString() == json['action']) ?? BookmarkAction.insert,
+      action: BookmarkAction.values.firstWhere(
+          (e) => e.toString().split('.').last == json['action'],
+          orElse: () => BookmarkAction.insert),
       actionDate: json['action_date'] ?? 'Unknown',
       syncDate: json['sync_date'] ?? 'Unknown',
       synced: json['synced'] ?? 1,

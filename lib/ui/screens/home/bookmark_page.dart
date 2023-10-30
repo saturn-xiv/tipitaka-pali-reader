@@ -1,9 +1,13 @@
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tipitaka_pali/services/provider/bookmark_provider.dart';
+import 'package:tipitaka_pali/services/repositories/bookmark_repo.dart';
 import 'package:tipitaka_pali/services/repositories/bookmark_sync_repo.dart';
+import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
 
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
@@ -14,7 +18,7 @@ import '../../../services/database/database_helper.dart';
 import '../../dialogs/confirm_dialog.dart';
 
 class BookmarkPage extends StatelessWidget {
-  const BookmarkPage({Key? key}) : super(key: key);
+  const BookmarkPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,7 @@ class BookmarkPage extends StatelessWidget {
         ),
       ],
       child: Scaffold(
-        appBar: const BookmarkAppBar(),
+        appBar: BookmarkAppBar(),
         // Rydmike proposal: Consider converting the Drawer on Home screen
         //    to a Widget and add it also to other top level screens.
         // drawer: Mobile.isPhone(context) ? AppDrawer(context) : null,
@@ -77,14 +81,6 @@ class BookmarkPage extends StatelessWidget {
                   );
           },
         ),
-        floatingActionButton: Builder(
-          builder: (innerContext) => FloatingActionButton(
-            onPressed: () {
-              //innerContext.read<BookmarkNotifier>().fetchBookmarks();
-            },
-            child: const Icon(Icons.refresh),
-          ),
-        ),
       ),
     );
   }
@@ -97,7 +93,8 @@ class BookmarkPage extends StatelessWidget {
 }
 
 class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const BookmarkAppBar({Key? key}) : super(key: key);
+  BookmarkAppBar({super.key});
+  final GlobalKey _globalKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +104,7 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       title: Text(AppLocalizations.of(context)!.bookmark),
       actions: [
+        buildDropdownButton(context),
         IconButton(
             tooltip: AppLocalizations.of(context)!.shareAllNotes,
             icon: const Icon(Icons.share),
@@ -146,5 +144,87 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
             cancelLabel: AppLocalizations.of(context)!.cancel,
           );
         });
+  }
+
+  Widget buildDropdownButton(BuildContext context) {
+    return PopupMenuButton<String>(
+      onSelected: (value) async {
+        if (value == 'import') {
+          doImport();
+        } else if (value == 'export') {
+          doExport();
+        }
+      },
+      itemBuilder: (BuildContext context) => [
+        PopupMenuItem(
+          value: 'import',
+          child: Row(
+            children: [
+              Icon(
+                Icons.upload,
+                color: Theme.of(context).primaryColor,
+              ),
+              const SizedBox(width: 8.0),
+              ColoredText(AppLocalizations.of(context)!.importBookmarks),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'export',
+          child: Row(
+            children: [
+              Icon(
+                Icons.download,
+                color: Theme.of(context).primaryColor,
+              ),
+              const SizedBox(width: 8.0),
+              ColoredText(AppLocalizations.of(context)!.exportBookmarks),
+            ],
+          ),
+        ),
+      ],
+      icon:
+          const Icon(Icons.sd_storage_outlined), // Change to your desired icon
+    );
+  }
+
+  doImport() async {
+    FilePickerResult? filename = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+      lockParentWindow: true,
+    );
+
+    if (filename != null) {
+      final DatabaseHelper databaseHelper = DatabaseHelper();
+      final db = BookmarkDatabaseRepository(databaseHelper);
+
+      File file = File(filename.files.single.path.toString());
+      String content = await file.readAsString();
+      List<Bookmark> importedBookmarks = definitionFromJson(content);
+      for (Bookmark bm in importedBookmarks) {
+        db.insert(bm);
+      }
+      // Refresh the bookmarks
+      _globalKey.currentState!.context
+          .read<BookmarkPageViewModel>()
+          .refreshBookmarks();
+    } else {
+      // User canceled the picker
+    }
+  }
+
+  doExport() async {
+    final List<Bookmark> bookmarks = _globalKey.currentState!.context
+        .read<BookmarkPageViewModel>()
+        .bookmarks;
+    String bookmarksJson = definitionToJson(bookmarks);
+    String? directory = await FilePicker.platform.getDirectoryPath(
+      lockParentWindow: true,
+    );
+    if (directory != null) {
+      File file = File('$directory/bookmarks_export.json');
+      await file.writeAsString(bookmarksJson);
+    }
   }
 }
