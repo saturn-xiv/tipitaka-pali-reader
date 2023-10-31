@@ -87,20 +87,18 @@ class InitialSetup extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
         const SizedBox(height: 10),
-        Consumer<InitialSetupNotifier>(
-          builder: (context, notifier, child) {
+        Selector<InitialSetupNotifier, int>(
+          selector: (_, notifier) => notifier.stepsCompleted,
+          builder: (context, stepsCompleted, child) {
             return NumberStepper(
                 activeStep: notifier.stepsCompleted,
                 activeStepColor: Colors.blue,
                 stepRadius: 20,
-                lineLength: 25.0,
-                stepReachedAnimationEffect: Curves.easeIn,
-                numbers: const [
-                  1,
-                  2,
-                  3,
-                  4,
-                ]);
+                lineLength: 50.0,
+                enableStepTapping: false,
+                enableNextPreviousButtons: false,
+                scrollingDisabled: true,
+                numbers: const [1, 2, 3]);
           },
         ),
         const SizedBox(height: 10),
