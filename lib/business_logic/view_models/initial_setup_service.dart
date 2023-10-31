@@ -141,7 +141,6 @@ class InitialSetupService {
     int partNo = 0;
     _intialSetupNotifier.status =
         AppLocalizations.of(_context)!.aboutToCopy + (count * 50).toString();
-    _intialSetupNotifier.stepsCompleted = 0;
     await Future.delayed(const Duration(milliseconds: 3000));
     for (String part in AssetsFile.partsOfDatabase) {
       // reading from assets
@@ -157,7 +156,7 @@ class InitialSetupService {
           "${AppLocalizations.of(_context)!.finishedCopying} $percent% \\ ~${count * 50} MB";
       await Future.delayed(const Duration(milliseconds: 300));
     }
-    _intialSetupNotifier.stepsCompleted = 1;
+    _intialSetupNotifier.stepsCompleted = 0;
 
     final timeAfterCopied = DateTime.now();
     debugPrint(
@@ -176,7 +175,7 @@ class InitialSetupService {
     //await databaseHelper.buildWordList(updateMessageCallback);
     _intialSetupNotifier.status =
         AppLocalizations.of(_context)!.finishedBuildingWordList;
-    _intialSetupNotifier.stepsCompleted = 2;
+    _intialSetupNotifier.stepsCompleted = 1;
 
     _intialSetupNotifier.status = "building indexes";
     final indexResult = await databaseHelper.buildBothIndexes();
@@ -185,13 +184,12 @@ class InitialSetupService {
     }
     _intialSetupNotifier.status =
         AppLocalizations.of(_context)!.finishedBuildingIndexes;
-    _intialSetupNotifier.stepsCompleted = 3;
+    _intialSetupNotifier.stepsCompleted = 2;
     // creating fts table
     final ftsResult = await DatabaseHelper().buildFts(updateMessageCallback);
     if (ftsResult == false) {
       // handle error
     }
-    // no needed _intialSetupNotifier.stepsCompleted = 4;
 
     final timeAfterIndexing = DateTime.now();
     //_indexStatus =help
