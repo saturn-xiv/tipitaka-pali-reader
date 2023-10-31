@@ -8,6 +8,7 @@ import 'package:tipitaka_pali/services/provider/bookmark_provider.dart';
 import 'package:tipitaka_pali/services/repositories/bookmark_repo.dart';
 import 'package:tipitaka_pali/services/repositories/bookmark_sync_repo.dart';
 import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
+import 'package:path/path.dart' as path;
 
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
@@ -94,7 +95,6 @@ class BookmarkPage extends StatelessWidget {
 
 class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
   BookmarkAppBar({super.key});
-  final GlobalKey _globalKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -150,9 +150,9 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
     return PopupMenuButton<String>(
       onSelected: (value) async {
         if (value == 'import') {
-          doImport();
+          doImport(context);
         } else if (value == 'export') {
-          doExport();
+          doExport(context);
         }
       },
       itemBuilder: (BuildContext context) => [
@@ -188,7 +188,7 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  doImport() async {
+  doImport(BuildContext context) async {
     FilePickerResult? filename = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['json'],
@@ -206,25 +206,28 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
         db.insert(bm);
       }
       // Refresh the bookmarks
-      _globalKey.currentState!.context
-          .read<BookmarkPageViewModel>()
-          .refreshBookmarks();
+      context.read<BookmarkPageViewModel>().refreshBookmarks();
     } else {
       // User canceled the picker
     }
   }
 
-  doExport() async {
-    final List<Bookmark> bookmarks = _globalKey.currentState!.context
-        .read<BookmarkPageViewModel>()
-        .bookmarks;
+  doExport(BuildContext context) async {
+    final List<Bookmark> bookmarks =
+        context.read<BookmarkPageViewModel>().bookmarks;
     String bookmarksJson = definitionToJson(bookmarks);
     String? directory = await FilePicker.platform.getDirectoryPath(
       lockParentWindow: true,
     );
     if (directory != null) {
-      File file = File('$directory/bookmarks_export.json');
-      await file.writeAsString(bookmarksJson);
+      final file = File(path.join(directory, "bookmarks_export.json"));
+
+      // Write CSV to the file
+      try {
+        await file.writeAsString(bookmarksJson);
+      } catch (e) {
+        debugPrint('Error writing file: $e');
+      }
     }
   }
 }
