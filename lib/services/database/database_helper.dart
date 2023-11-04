@@ -8,6 +8,9 @@ import 'package:sqflite/sqflite.dart';
 import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
+final reNewLine = RegExp(r'\n');
+final reTokenSpace = RegExp(r'[^a-zāīūṅñṭḍṇḷṃ ]');
+
 class DatabaseHelper {
   DatabaseHelper._internal();
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -99,7 +102,10 @@ class DatabaseHelper {
         var content = element['content'] as String;
         content = _cleanText(content);
         content = content.toLowerCase();
-        final words = content.split(' ');
+        final words = _cleanText(content)
+          .replaceAll(reNewLine, ' ')
+          .replaceAll(reTokenSpace, '')
+          .split(' ');
         for (var word in words) {
           word = _cleanWord(word);
           if (word.isNotEmpty) {
