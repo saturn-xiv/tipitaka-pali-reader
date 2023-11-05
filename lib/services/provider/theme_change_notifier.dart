@@ -97,7 +97,7 @@ class ThemeChangeNotifier extends ChangeNotifier {
           fabUseShape: true,
           fabAlwaysCircular: true,
           fabSchemeColor: SchemeColor.secondary,
-          alignedDropdown: true,
+          //alignedDropdown: true,
           useInputDecoratorThemeInDialogs: true,
           drawerWidth: 300,
           tabBarIndicatorSize: TabBarIndicatorSize.tab,
@@ -149,7 +149,7 @@ class ThemeChangeNotifier extends ChangeNotifier {
           fabUseShape: true,
           fabAlwaysCircular: true,
           fabSchemeColor: SchemeColor.secondary,
-          alignedDropdown: true,
+          //alignedDropdown: true,
           useInputDecoratorThemeInDialogs: true,
           drawerWidth: 300,
           chipSelectedSchemeColor:
@@ -186,6 +186,8 @@ class ThemeChangeNotifier extends ChangeNotifier {
     // there seemed to be a little bit of a bug with going from lao script back to other scripts
     // if you did, you needed to restart the app.  To remedy this.. you can totally remove the code that
     // has the fontFamily for TextStyle parameter.
+
+    // TODO need to follow up on lao font and test.
     final theFont =
         FontUtils.getfontName(script: ScriptLanguageProvider().currentScript);
 

@@ -172,6 +172,7 @@ class InitialSetupService {
         AppLocalizations.of(_context)!.buildingWordList;
     final DatabaseHelper databaseHelper = DatabaseHelper();
 
+    // This is commented out.. because we ship with the wordllist now.
     //await databaseHelper.buildWordList(updateMessageCallback);
     _intialSetupNotifier.status =
         AppLocalizations.of(_context)!.finishedBuildingWordList;

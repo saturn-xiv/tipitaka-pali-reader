@@ -128,7 +128,7 @@ class DictionaryContentView extends StatelessWidget {
                           color: context.watch<ThemeChangeNotifier>().isDarkMode
                               ? Colors.white
                               : Colors.black,
-                          inherit: false),
+                          inherit: true),
                     ),
                   ),
                 ))),
