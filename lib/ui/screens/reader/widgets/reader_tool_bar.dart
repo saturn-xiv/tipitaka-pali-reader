@@ -590,7 +590,7 @@ class LowerRow extends StatelessWidget {
       closeManually: false,
       renderOverlay: false,
       curve: Curves.bounceIn,
-      overlayColor: Colors.black,
+      overlayColor: const Color.fromARGB(255, 231, 184, 184),
       overlayOpacity: 0.5,
       tooltip: 'Linked Books',
       heroTag: 'speed-dial-hero-tag',
