@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:tipitaka_pali/business_logic/models/bookmark.dart';
 import 'package:tipitaka_pali/services/dao/bookmark_dao.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
+import 'package:sqflite/sqflite.dart';
 
 abstract class BookmarkRepository {
   Future<int> insert(Bookmark bookmark);
@@ -26,14 +27,24 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
     bm.action = BookmarkAction.insert;
     bm.synced = 0;
 
-    String sql = '''
-        insert into bookmark (book_id, name, page_number, note, action, action_date, synced) 
-        values ('${bm.bookID}','${bm.name}', ${bm.pageNumber},'${bm.note}','${bm.action}','${bm.actionDate}',${bm.synced})
-        ''';
-
     final db = await _databaseHelper.database;
-    return await db
-        .rawInsert(sql); // Use ConflictAlgorithm.replace to handle conflicts
+
+    return await db.insert(
+        'bookmark',
+        {
+          'book_id': bm.bookID,
+          'name': bm.name,
+          'page_number': bm.pageNumber,
+          'note': bm.note,
+          'action': bm.action
+              .toString()
+              .split('.')
+              .last, // Assuming this is how you store the enum as text
+          'action_date': bm.actionDate,
+          'synced': bm.synced,
+        },
+        conflictAlgorithm: ConflictAlgorithm
+            .replace); // Use ConflictAlgorithm.replace to handle conflicts
   }
 
   @override
@@ -58,13 +69,10 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
   @override
   Future<List<Bookmark>> getBookmarks() async {
     final db = await _databaseHelper.database;
-    List<Map<String, dynamic>> maps = await db.rawQuery('''
-      SELECT id, book_id, page_number, name, note, action, action_date, synced, sync_date
-      From bookmark
-      ''');
+    List<Map<String, dynamic>> maps =
+        await db.query('bookmark'); // Using the query helper method
 
     List<Bookmark> bookmarks = maps.map((x) => Bookmark.fromJson(x)).toList();
-
     return bookmarks;
   }
 

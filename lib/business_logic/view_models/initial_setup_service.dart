@@ -6,11 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:tipitaka_pali/business_logic/models/bookmark.dart';
 import 'package:tipitaka_pali/data/constants.dart';
 import 'package:tipitaka_pali/providers/initial_setup_notifier.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tipitaka_pali/services/repositories/bookmark_repo.dart';
 
 //singleton model so setup will only get called one time in constructor
 class InitialSetupService {
@@ -47,7 +49,8 @@ class InitialSetupService {
     final dbFilePath = join(databasesDirPath, DatabaseInfo.fileName);
 
     final recents = <Map<String, Object?>>[];
-    final bookmarks = <Map<String, Object?>>[];
+    //final bookmarks = <Map<String, Object?>>[];
+    List<Bookmark> bookmarks = [];
     final dictionaryHistories = <Map<String, Object?>>[];
     final searchHistories = <Map<String, Object?>>[];
     final dictionaries = <Map<String, Object?>>[];
@@ -57,11 +60,16 @@ class InitialSetupService {
 
     if (isUpdateMode) {
       // backuping user data to memory
+      // There is a suscpicion that database migration is causing a bug.
+      // so we only backup the bookmarks.
+      //recents.addAll(await databaseHelper.backup(tableName: 'recent'));
+      //bookmarks.addAll(await databaseHelper.backup(tableName: 'bookmark'));
       final DatabaseHelper databaseHelper = DatabaseHelper();
-      recents.addAll(await databaseHelper.backup(tableName: 'recent'));
-      bookmarks.addAll(await databaseHelper.backup(tableName: 'bookmark'));
+      final bmDbRepo = BookmarkDatabaseRepository(databaseHelper);
+      bookmarks = await bmDbRepo.getBookmarks();
+
       // backup history to memory
-      try {
+      /*try {
         dictionaryHistories.addAll(
             await databaseHelper.backup(tableName: 'dictionary_history'));
         searchHistories
@@ -72,7 +80,7 @@ class InitialSetupService {
       } catch (e) {
         debugPrint('Exception: $e');
       }
-
+*/
       //dictionaries
       //  .addAll(await databaseHelper.backup(tableName: 'dictionary_books'));
 
@@ -97,16 +105,27 @@ class InitialSetupService {
     await _copyFromAssets(dbFilePath);
 
     final DatabaseHelper databaseHelper = DatabaseHelper();
+
     // restoring user data
+    /*
     if (recents.isNotEmpty) {
       await databaseHelper.restore(tableName: 'recent', values: recents);
     }
+    */
+    //recents.addAll(await databaseHelper.backup(tableName: 'recent'));
+    //bookmarks.addAll(await databaseHelper.backup(tableName: 'bookmark'));
+    final bmDbRepo = BookmarkDatabaseRepository(databaseHelper);
 
+    // right now the only thing we restore is bookmarks.
+    // the bookmark class handles default values.
     if (bookmarks.isNotEmpty) {
-      await databaseHelper.restore(tableName: 'bookmark', values: bookmarks);
+      for (Bookmark bm in bookmarks) {
+        bmDbRepo.insert(bm);
+      }
     }
 
 // restore history from memory
+/*
     try {
       await databaseHelper.restore(
           tableName: 'dictionary_history', values: dictionaryHistories);
@@ -126,6 +145,7 @@ class InitialSetupService {
       await databaseHelper.restore(
           tableName: 'dictionary_books', values: dictionaries);
     }
+    */
 
     // save record to shared Preference
     Prefs.isDatabaseSaved = true;
