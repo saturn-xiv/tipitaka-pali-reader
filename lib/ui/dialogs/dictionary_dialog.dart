@@ -11,8 +11,9 @@ import '../screens/dictionary/widget/dict_search_field.dart';
 
 class DictionaryDialog extends StatelessWidget {
   final String? word;
+  final ScrollController? scrollController;
 
-  const DictionaryDialog({super.key, this.word});
+  const DictionaryDialog({super.key, this.word, this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +30,9 @@ class DictionaryDialog extends StatelessWidget {
         builder: (context, dc, __) {
           return Material(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              // mainAxisSize: MainAxisSize.min,
               children: [
+                // topbar
                 Row(
                   children: [
                     IconButton(
@@ -50,6 +52,7 @@ class DictionaryDialog extends StatelessWidget {
                         icon: const Icon(Icons.history)),
                   ],
                 ),
+                // search field
                 const Row(
                   children: [
                     Expanded(child: DictionarySearchField()),
@@ -59,7 +62,12 @@ class DictionaryDialog extends StatelessWidget {
                     ),
                   ],
                 ),
-                const Expanded(child: DictionaryContentView()),
+                // main content view
+                Expanded(
+                  child: DictionaryContentView(
+                    scrollController: scrollController,
+                  ),
+                ),
               ],
             ),
           );

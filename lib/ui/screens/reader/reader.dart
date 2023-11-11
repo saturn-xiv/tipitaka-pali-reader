@@ -292,54 +292,26 @@ class ReaderView extends StatelessWidget implements Searchable {
       );
     } else {
       // displaying dictionary using bottom sheet dialog
-      await showSlidingBottomSheet(
-        context,
-        builder: (context) {
-          //Widget for SlidingSheetDialog's builder method
-          final statusBarHeight = MediaQuery.of(context).padding.top;
-          final screenHeight = MediaQuery.of(context).size.height;
-          const marginTop = 24.0;
-          final slidingSheetDialogContent = SizedBox(
-            height: screenHeight - (statusBarHeight + marginTop),
-            child: DictionaryDialog(word: word),
-          );
-
-          return SlidingSheetDialog(
-            elevation: 8,
-            cornerRadius: 16,
-            duration: Duration(
-              milliseconds: Prefs.animationSpeed.round(),
-            ),
-            // minHeight: 200,
-            snapSpec: const SnapSpec(
-              snap: true,
-              snappings: [0.4, 0.6, 0.8, 1.0],
-              positioning: SnapPositioning.relativeToSheetHeight,
-            ),
-            headerBuilder: (context, _) {
-              // building drag handle view
-              return Center(
-                  heightFactor: 1,
-                  child: Container(
-                    width: 56,
-                    height: 10,
-                    // color: Colors.black45,
-                    decoration: BoxDecoration(
-                      // border: Border.all(color: Colors.red),
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ));
-            },
-            // this builder is called when state change
-            // normaly three states occurs
-            // first state - isLaidOut = false
-            // second state - islaidOut = true , isShown = false
-            // thirs state - islaidOut = true , isShown = ture
-            // to avoid there times rebuilding, return  prebuild content
-            builder: (context, state) => slidingSheetDialogContent,
-          );
-        },
+      await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(16),
+          ),
+        ),
+        builder: (context) => DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.4,
+          minChildSize: 0.3,
+          maxChildSize: 0.95,
+          snap: true,
+          snapSizes: const [0.3, 0.4, 0.6, 0.8, 0.95],
+          builder: (context, scrollController) => DictionaryDialog(
+            scrollController: scrollController,
+            word: word,
+          ),
+        ),
       );
     }
   }

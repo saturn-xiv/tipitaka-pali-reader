@@ -14,7 +14,8 @@ import '../controller/dictionary_controller.dart';
 import '../controller/dictionary_state.dart';
 
 class DictionaryContentView extends StatelessWidget {
-  const DictionaryContentView({super.key});
+  final ScrollController? scrollController;
+  const DictionaryContentView({super.key, this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -32,106 +33,108 @@ class DictionaryContentView extends StatelessWidget {
                     context.read<DictionaryController>().onWordClicked(word),
                 onDelete: (word) =>
                     context.read<DictionaryController>().onDelete(word),
+                scrollController: scrollController,
               );
             }),
         loading: () => const SizedBox(
             height: 100, child: Center(child: CircularProgressIndicator())),
         data: (content) => SingleChildScrollView(
-            child: Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: SelectionArea(
-                  child: GestureDetector(
-                    onTapUp: (details) {
-                      final box = textKey.currentContext?.findRenderObject()!
-                          as RenderBox;
-                      final result = BoxHitTestResult();
-                      final offset = box.globalToLocal(details.globalPosition);
-                      if (!box.hitTest(result, position: offset)) {
-                        return;
+              controller: scrollController,
+              padding: const EdgeInsets.all(8.0),
+              child: SelectionArea(
+                child: GestureDetector(
+                  onTapUp: (details) {
+                    final box = textKey.currentContext?.findRenderObject()!
+                        as RenderBox;
+                    final result = BoxHitTestResult();
+                    final offset = box.globalToLocal(details.globalPosition);
+                    if (!box.hitTest(result, position: offset)) {
+                      return;
+                    }
+
+                    for (final entry in result.path) {
+                      final target = entry.target;
+                      if (entry is! BoxHitTestEntry ||
+                          target is! RenderParagraph) {
+                        continue;
                       }
 
-                      for (final entry in result.path) {
-                        final target = entry.target;
-                        if (entry is! BoxHitTestEntry ||
-                            target is! RenderParagraph) {
-                          continue;
-                        }
-
-                        final p =
-                            target.getPositionForOffset(entry.localPosition);
-                        final text = target.text.toPlainText();
-                        if (text.isNotEmpty && p.offset < text.length) {
-                          final int offset = p.offset;
-                          // print('pargraph: $text');
-                          final charUnderTap = text[offset];
-                          final leftChars = getLeftCharacters(text, offset);
-                          final rightChars = getRightCharacters(text, offset);
-                          final word = leftChars + charUnderTap + rightChars;
-                          debugPrint(word);
-                          writeHistory(
-                              word,
-                              AppLocalizations.of(context)!.dictionary,
-                              1,
-                              "dictionary");
-                          context
-                              .read<DictionaryController>()
-                              .onWordClicked(word);
-                        }
+                      final p =
+                          target.getPositionForOffset(entry.localPosition);
+                      final text = target.text.toPlainText();
+                      if (text.isNotEmpty && p.offset < text.length) {
+                        final int offset = p.offset;
+                        // print('pargraph: $text');
+                        final charUnderTap = text[offset];
+                        final leftChars = getLeftCharacters(text, offset);
+                        final rightChars = getRightCharacters(text, offset);
+                        final word = leftChars + charUnderTap + rightChars;
+                        debugPrint(word);
+                        writeHistory(
+                            word,
+                            AppLocalizations.of(context)!.dictionary,
+                            1,
+                            "dictionary");
+                        context
+                            .read<DictionaryController>()
+                            .onWordClicked(word);
                       }
+                    }
+                  },
+                  child: HtmlWidget(
+                    key: textKey,
+                    content,
+                    customStylesBuilder: (element) {
+                      if (element.classes.contains('dpdheader')) {
+                        return {'font-weight:': 'bold'};
+                      }
+                      return null;
                     },
-                    child: HtmlWidget(
-                      key: textKey,
-                      content,
-                      customStylesBuilder: (element) {
-                        if (element.classes.contains('dpdheader')) {
-                          return {'font-weight:': 'bold'};
+                    customWidgetBuilder: (element) {
+                      /*             if (element.localName == "button") {
+                        final value = element.attributes['value'];
+                        if (value != null) {
+                          debugPrint("found button: $value");
+                          return TextButton(
+                              onPressed: showDeclension(context),
+                              child: const Text("Declension"));
                         }
-                        return null;
-                      },
-                      customWidgetBuilder: (element) {
-                        /*             if (element.localName == "button") {
-                              final value = element.attributes['value'];
-                              if (value != null) {
-                                debugPrint("found button: $value");
-                                return TextButton(
-                                    onPressed: showDeclension(context),
-                                    child: const Text("Declension"));
-                              }
-                            }
-                            */
-                        final href = element.attributes['href'];
-                        if (href != null) {
-                          String linkText = href.contains("wikipedia")
-                              ? "Wikipedia"
-                              : "Submit a correction";
+                      }
+                      */
+                      final href = element.attributes['href'];
+                      if (href != null) {
+                        String linkText = href.contains("wikipedia")
+                            ? "Wikipedia"
+                            : "Submit a correction";
 
-                          return InkWell(
-                            onTap: () {
-                              launchUrl(Uri.parse(href),
-                                  mode: LaunchMode.externalApplication);
+                        return InkWell(
+                          onTap: () {
+                            launchUrl(Uri.parse(href),
+                                mode: LaunchMode.externalApplication);
 
-                              debugPrint('will launch $href.');
-                            },
-                            child: Text(
-                              linkText,
-                              style: const TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: Colors.blue,
-                                  fontSize: 10),
-                            ),
-                          );
-                        }
-                        return null;
-                      },
-                      textStyle: TextStyle(
-                          fontSize: Prefs.dictionaryFontSize.toDouble(),
-                          color: context.watch<ThemeChangeNotifier>().isDarkMode
-                              ? Colors.white
-                              : Colors.black,
-                          inherit: true),
-                    ),
+                            debugPrint('will launch $href.');
+                          },
+                          child: Text(
+                            linkText,
+                            style: const TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: Colors.blue,
+                                fontSize: 10),
+                          ),
+                        );
+                      }
+                      return null;
+                    },
+                    textStyle: TextStyle(
+                        fontSize: Prefs.dictionaryFontSize.toDouble(),
+                        color: context.watch<ThemeChangeNotifier>().isDarkMode
+                            ? Colors.white
+                            : Colors.black,
+                        inherit: true),
                   ),
-                ))),
+                ),
+              ),
+            ),
         noData: () => const SizedBox(
               height: 100,
               child: Center(child: Text('Not found')),

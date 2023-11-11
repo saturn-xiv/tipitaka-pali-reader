@@ -12,12 +12,14 @@ class DictionaryHistoryView extends StatefulWidget {
   final List<DictionaryHistory> histories;
   final ValueChanged<String>? onClick;
   final ValueChanged<String>? onDelete;
+  final ScrollController? scrollController;
 
   const DictionaryHistoryView({
     super.key,
     required this.histories,
     this.onClick,
     this.onDelete,
+    this.scrollController,
   });
 
   @override
@@ -66,6 +68,7 @@ class _DictionaryHistoryViewState extends State<DictionaryHistoryView> {
             label: const Text("Delete All")),
         Expanded(
           child: ListView.separated(
+            controller: widget.scrollController,
             itemCount: histories.length,
             itemBuilder: (context, index) {
               return ListTile(
