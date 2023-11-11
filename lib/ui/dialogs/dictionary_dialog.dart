@@ -68,6 +68,7 @@ class DictionaryDialog extends StatelessWidget {
                     scrollController: scrollController,
                   ),
                 ),
+                const SizedBox(height: 60),
               ],
             ),
           );

@@ -302,11 +302,11 @@ class ReaderView extends StatelessWidget implements Searchable {
         ),
         builder: (context) => DraggableScrollableSheet(
           expand: false,
-          initialChildSize: 0.4,
+          initialChildSize: 0.6,
           minChildSize: 0.3,
           maxChildSize: 0.95,
           snap: true,
-          snapSizes: const [0.3, 0.4, 0.6, 0.8, 0.95],
+          snapSizes: const [0.6, 0.8, 0.95],
           builder: (context, scrollController) => DictionaryDialog(
             scrollController: scrollController,
             word: word,
