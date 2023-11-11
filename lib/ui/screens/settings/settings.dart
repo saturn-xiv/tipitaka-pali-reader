@@ -55,7 +55,8 @@ class DarkModeSettingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      trailing: ToggleButtons(
+      trailing: Consumer<ThemeChangeNotifier>(
+        builder: ((context, themeChangeNotifier, child) => ToggleButtons(
         onPressed: (int index) {
           Provider.of<ThemeChangeNotifier>(context, listen: false)
               .toggleTheme(index);
@@ -66,7 +67,7 @@ class DarkModeSettingView extends StatelessWidget {
           Icon(Icons.color_lens),
           Icon(Icons.bedtime),
         ],
-      ),
+      ))),
       title: Text(
         AppLocalizations.of(context)!.darkMode,
       ),
