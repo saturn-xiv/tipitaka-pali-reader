@@ -26,7 +26,7 @@ class RouteGenerator {
     late Widget screen;
     switch (settings.name) {
       case splashRoute:
-        screen = const SplashScreen();
+        screen = SplashScreen();
         break;
       case homeRoute:
         screen = const Home();

@@ -5,8 +5,6 @@ import 'home/home_container.dart';
 import 'initial_setup.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final databaseStatus = getDatabaseStatus();

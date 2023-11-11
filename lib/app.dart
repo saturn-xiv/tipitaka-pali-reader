@@ -117,7 +117,7 @@ class App extends StatelessWidget {
                     });
                   }
                 }
-                return const SplashScreen();
+                return SplashScreen();
               },
             ),
           );
