@@ -24,9 +24,6 @@ class ThemeChangeNotifier extends ChangeNotifier {
   }
 
   List<bool> get isSelected {
-    Prefs.selectedPageColor;
-
-    //make sure the list returned is the same as prefs given.
     for (int x = 0; x < _isSelected.length; x++) {
       _isSelected[x] = x == Prefs.selectedPageColor;
     }
@@ -35,37 +32,18 @@ class ThemeChangeNotifier extends ChangeNotifier {
 
   bool get isDarkMode => themeMode == ThemeMode.dark;
 
-  toggleTheme(int index) {
-    themeMode = ThemeMode.light;
-    for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
-      if (buttonIndex == index) {
-        _isSelected[buttonIndex] = true;
-      } else {
-        _isSelected[buttonIndex] = false;
-      }
-    }
+  void toggleTheme(int index) async {
+    Prefs.selectedPageColor = index;
 
-    switch (index) {
-      case 0:
-        Prefs.selectedPageColor = 0;
-        themeMode = ThemeMode.light;
-        Prefs.darkThemeOn = false;
-        break;
-      case 1:
-        Prefs.selectedPageColor = 1;
-        themeMode = ThemeMode.light;
-        Prefs.darkThemeOn = false;
-        break;
-      case 2:
-        Prefs.selectedPageColor = 2;
-        themeMode = ThemeMode.dark;
-        Prefs.darkThemeOn = true;
-        break;
-      default:
-        Prefs.selectedPageColor = 0;
-        themeMode = ThemeMode.light;
-        Prefs.darkThemeOn = false;
-        break;
+    if (index == 2) {
+      themeMode = ThemeMode.dark;
+      Prefs.darkThemeOn = true;
+    } else {
+      themeMode = ThemeMode.light;
+      Prefs.darkThemeOn = false;
+    }
+    for (int i = 0; i < _isSelected.length; i++) {
+      _isSelected[i] = i == index;
     }
 
     notifyListeners();
