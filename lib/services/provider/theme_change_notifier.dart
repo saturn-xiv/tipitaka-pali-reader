@@ -75,7 +75,7 @@ class ThemeChangeNotifier extends ChangeNotifier {
           fabUseShape: true,
           fabAlwaysCircular: true,
           fabSchemeColor: SchemeColor.secondary,
-          //alignedDropdown: true,
+          alignedDropdown: true,
           useInputDecoratorThemeInDialogs: true,
           drawerWidth: 300,
           tabBarIndicatorSize: TabBarIndicatorSize.tab,
@@ -127,7 +127,7 @@ class ThemeChangeNotifier extends ChangeNotifier {
           fabUseShape: true,
           fabAlwaysCircular: true,
           fabSchemeColor: SchemeColor.secondary,
-          //alignedDropdown: true,
+          alignedDropdown: true,
           useInputDecoratorThemeInDialogs: true,
           drawerWidth: 300,
           chipSelectedSchemeColor:

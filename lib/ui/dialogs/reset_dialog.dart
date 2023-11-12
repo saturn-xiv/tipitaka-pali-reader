@@ -1,13 +1,42 @@
 //do reset stuff
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite_common/sqflite.dart';
+import 'package:tipitaka_pali/data/constants.dart';
+import 'package:tipitaka_pali/services/database/database_helper.dart';
 import '../../services/prefs.dart';
 import 'confirm_dialog.dart';
+import 'package:path/path.dart';
 
 doResetDialog(BuildContext context) async {
   final result = await _getConfirmataion(context);
   if (result == OkCancelAction.ok) {
     Prefs.instance.clear();
+
+    // more than clearning the prefs is needed.
+    // if the db is still present, it will think it is updatemode.
+    // if the db is corrupted, then it can fail when it does a migration.
+
+    final DatabaseHelper databaseHelper = DatabaseHelper();
+    late String databasesDirPath;
+
+    if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS) {
+      databasesDirPath = await getDatabasesPath();
+    }
+    if (Platform.isLinux || Platform.isWindows) {
+      final docDirPath = await getApplicationSupportDirectory();
+      databasesDirPath = docDirPath.path;
+    }
+    // final databasesDirPath = await getApplicationDocumentsDirectory();
+    final dbFilePath = join(databasesDirPath, DatabaseInfo.fileName);
+
+    await databaseHelper.close();
+    // deleting database file
+    await deleteDatabase(dbFilePath);
+
     await _showMyDialog(context);
   }
 }

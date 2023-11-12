@@ -66,6 +66,13 @@ class InitialSetup extends StatelessWidget {
           },
         ),
         const SizedBox(height: 20),
+        Ink.image(
+          height: 100,
+          width: 100,
+          image: const AssetImage('assets/icon/icon.png'),
+          fit: BoxFit.scaleDown,
+        ),
+        const SizedBox(height: 20),
 /*        const Text(
           "Set Language \nသင်၏ဘာသာစကားကိုရွေးပါ\nඔබේ භාෂාව තෝරන්න\n选择你的语言\nChọn ngôn ngữ\nभाषा चयन करें\n",
           textAlign: TextAlign.center,
