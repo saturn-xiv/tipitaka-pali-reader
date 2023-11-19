@@ -199,6 +199,7 @@ class _VerticalBookViewState extends State<VerticalBookView>
                         itemPositionsListener: itemPositionsListener,
                         scrollOffsetController: scrollOffsetController,
                         scrollOffsetListener: scrollOffsetListener,
+                        addAutomaticKeepAlives: false,
                         itemCount: readerViewController.pages.length,
                         itemBuilder: (_, index) {
                           final PageContent pageContent =
