@@ -41,7 +41,7 @@ class FireUserRepository {
       Prefs.email = email;
       Prefs.password = password;
       notifier.setSignedIn(true);
-      notifier.message = "SUccessfully Signed in";
+      notifier.message = "Successfully Signed in";
       return Prefs.isSignedIn;
     } catch (e) {
       notifier.setSignedIn(false);
@@ -55,10 +55,7 @@ class FireUserRepository {
   Future<void> register(String email, String password) async {
     try {
       var auth = FirebaseAuth.instance;
-      Random random = Random();
-      //generate a password that is different from the one they want to use
-      // so they can use it again when they reset
-      await auth.signUp(email, "$password${random.nextInt(1000)}");
+      await auth.signUp(email, password);
 
       debugPrint('Successfully registered!');
       Prefs.email = "";
@@ -67,5 +64,10 @@ class FireUserRepository {
       debugPrint('Error during registration: $e');
       rethrow; // Optionally rethrow to handle the error on the UI side.
     }
+  }
+
+  resetPassword(String userEmail) async {
+    var auth = FirebaseAuth.instance;
+    await auth.resetPassword(userEmail);
   }
 }

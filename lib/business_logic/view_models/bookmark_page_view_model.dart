@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/services/repositories/book_repo.dart';
+import 'package:tipitaka_pali/services/repositories/bookmark_repo.dart';
 import 'package:tipitaka_pali/services/repositories/bookmark_sync_repo.dart';
 
 import '../../ui/screens/home/openning_books_provider.dart';
@@ -10,7 +12,7 @@ import '../models/bookmark.dart';
 
 class BookmarkPageViewModel extends ChangeNotifier {
   BookmarkPageViewModel(this.repository);
-  final BookmarkSyncRepo repository;
+  final BookmarkDatabaseRepository repository;
 
   List<Bookmark> _bookmarks = [];
   List<Bookmark> get bookmarks => _bookmarks;

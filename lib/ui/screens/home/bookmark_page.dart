@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/bookmark_provider.dart';
 import 'package:tipitaka_pali/services/repositories/bookmark_repo.dart';
-import 'package:tipitaka_pali/services/repositories/bookmark_sync_repo.dart';
+import 'package:tipitaka_pali/ui/dialogs/bookmark_cloud_transfer_dialog.dart';
 import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
 import 'package:path/path.dart' as path;
 
@@ -14,7 +15,6 @@ import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
 import '../../../business_logic/models/bookmark.dart';
 import '../../../business_logic/view_models/bookmark_page_view_model.dart';
-import '../../../services/dao/bookmark_dao.dart';
 import '../../../services/database/database_helper.dart';
 import '../../dialogs/confirm_dialog.dart';
 
@@ -27,7 +27,7 @@ class BookmarkPage extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<BookmarkPageViewModel>(
           create: (_) => BookmarkPageViewModel(
-              BookmarkSyncRepo(DatabaseHelper(), BookmarkDao()))
+              BookmarkDatabaseRepository(DatabaseHelper()))
             ..fetchBookmarks(),
         ),
         ChangeNotifierProvider<BookmarkNotifier>(
@@ -105,6 +105,7 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(AppLocalizations.of(context)!.bookmark),
       actions: [
         buildDropdownButton(context),
+        getCloudButton(context),
         IconButton(
             tooltip: AppLocalizations.of(context)!.shareAllNotes,
             icon: const Icon(Icons.share),
@@ -229,5 +230,20 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
         debugPrint('Error writing file: $e');
       }
     }
+  }
+
+  Widget getCloudButton(BuildContext context) {
+    return (Prefs.isSignedIn)
+        ? IconButton(
+            icon: const Icon(Icons.cloud),
+            onPressed: () async {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return BookmarkCloudTransferDialog();
+                },
+              );
+            })
+        : const SizedBox.shrink();
   }
 }

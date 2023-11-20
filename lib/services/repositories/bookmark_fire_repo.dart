@@ -72,6 +72,7 @@ class BookmarkFireRepository {
 
   Future<int> insert(Bookmark bookmark) async {
     try {
+      ensureSignedIn();
       var auth = FirebaseAuth.instance;
       User user = await auth.getUser();
       debugPrint('User: $user');
@@ -87,12 +88,9 @@ class BookmarkFireRepository {
           .collection('bookmarks');
 
       await userBookmarksCollection.add({
-        'bookID': bookmark.bookID,
+        'book_id': bookmark.bookID,
         'note': bookmark.note,
-        'page': bookmark.pageNumber,
-        'action': bookmark.action,
-        'actionDate': bookmark.actionDate,
-        'syncDate': bookmark.syncDate,
+        'page_number': bookmark.pageNumber,
       });
       return 1;
     } catch (e) {

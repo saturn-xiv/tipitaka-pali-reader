@@ -26,7 +26,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Prefs.init();
 
-/*   // remove firestore stuff for release 58
   const projectId = "tipitaka-pali-reader-firestore";
   await dotenv.load();
   final apiKey = dotenv.env['FIREBASE_API_KEY'];
@@ -48,7 +47,6 @@ void main() async {
       }
     }
   } // Initialize SharedPrefs instance.
-*/
   // This view is only called one time.
   // before the select language and before the select script are created
   // set the prefs to the current local if any OS but Win (not supported.)

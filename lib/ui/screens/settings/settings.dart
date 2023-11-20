@@ -38,10 +38,10 @@ class SettingPage extends StatelessWidget {
               const ScriptSettingView(),
               const GeneralSettingsView(),
               const HelpAboutView(),
-/*              ChangeNotifierProvider<BookmarkNotifier>(
+              ChangeNotifierProvider<BookmarkNotifier>(
                 create: (context) => BookmarkNotifier(),
                 child: const SyncSettingsView(),
-              ),*/
+              ),
               ToolsSettingsView(scrollController: sc),
             ],
           ),
@@ -56,18 +56,18 @@ class DarkModeSettingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       trailing: Consumer<ThemeChangeNotifier>(
-        builder: ((context, themeChangeNotifier, child) => ToggleButtons(
-        onPressed: (int index) {
-          Provider.of<ThemeChangeNotifier>(context, listen: false)
-              .toggleTheme(index);
-        },
-        isSelected: context.read<ThemeChangeNotifier>().isSelected,
-        children: const <Widget>[
-          Icon(Icons.wb_sunny),
-          Icon(Icons.color_lens),
-          Icon(Icons.bedtime),
-        ],
-      ))),
+          builder: ((context, themeChangeNotifier, child) => ToggleButtons(
+                onPressed: (int index) {
+                  Provider.of<ThemeChangeNotifier>(context, listen: false)
+                      .toggleTheme(index);
+                },
+                isSelected: context.read<ThemeChangeNotifier>().isSelected,
+                children: const <Widget>[
+                  Icon(Icons.wb_sunny),
+                  Icon(Icons.color_lens),
+                  Icon(Icons.bedtime),
+                ],
+              ))),
       title: Text(
         AppLocalizations.of(context)!.darkMode,
       ),

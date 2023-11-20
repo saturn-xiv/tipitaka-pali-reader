@@ -18,22 +18,13 @@ class Bookmark {
   final int pageNumber;
   final String note;
   String name;
-  BookmarkAction action;
-  String actionDate;
-  String syncDate;
-  int synced;
 
-  // Constructor with named parameters
   Bookmark({
     this.id = "n/a",
     this.bookID = "n/a",
     this.pageNumber = 0,
     this.note = "n/a",
     this.name = 'Unknown', // Setting default value for bookName
-    this.action = BookmarkAction.insert,
-    this.actionDate = 'n/a',
-    this.syncDate = 'n/a',
-    this.synced = 0,
   });
 
   @override
@@ -52,10 +43,6 @@ class Bookmark {
         'page_number': pageNumber,
         'note': note,
         'name': name,
-        'action': action.toString().split('.').last,
-        'action_date': actionDate,
-        'sync_date': syncDate,
-        'synced': synced,
       };
 
   factory Bookmark.fromJson(Map<dynamic, dynamic> json) {
@@ -65,12 +52,6 @@ class Bookmark {
       pageNumber: json['page_number'],
       note: json['note'],
       name: json['name'] ?? 'Unknown',
-      action: BookmarkAction.values.firstWhere(
-          (e) => e.toString().split('.').last == json['action'],
-          orElse: () => BookmarkAction.insert),
-      actionDate: json['action_date'] ?? 'Unknown',
-      syncDate: json['sync_date'] ?? 'Unknown',
-      synced: json['synced'] ?? 1,
     );
   }
 }

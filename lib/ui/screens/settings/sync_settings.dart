@@ -126,7 +126,18 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                         _emailController.text, _passwordController.text);
                   },
                   child: const Text('Register'),
-                )
+                ),
+          const SizedBox(height: 16.0),
+          (Prefs.isSignedIn)
+              ? const SizedBox.shrink()
+              : ElevatedButton(
+                  onPressed: () async {
+                    FireUserRepository userRepository =
+                        FireUserRepository(notifier: notifier);
+                    await userRepository.resetPassword(_emailController.text);
+                  },
+                  child: const Text('Request Password Reset'),
+                ),
         ],
       ),
     );

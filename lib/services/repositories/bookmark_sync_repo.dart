@@ -1,4 +1,3 @@
-import 'package:tipitaka_pali/business_logic/models/book.dart';
 import 'package:tipitaka_pali/business_logic/models/bookmark.dart';
 import 'package:tipitaka_pali/services/dao/bookmark_dao.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
@@ -21,7 +20,6 @@ class BookmarkSyncRepo {
     // we do not write directly to the firestore
     // when we sync it will be written
     int result = await _sqlRepo.insert(bookmark);
-    syncBookmarks(); // will this be a never ending loop?
     return result;
   }
 
@@ -31,7 +29,6 @@ class BookmarkSyncRepo {
       result = await _fireRepo.delete(bookmark);
     }
     result = await _sqlRepo.delete(bookmark);
-    syncBookmarks();
     return result;
   }
 
@@ -41,7 +38,6 @@ class BookmarkSyncRepo {
       result = await _fireRepo.deleteAll();
     }
     result = await _sqlRepo.deleteAll();
-    syncBookmarks();
     return result;
   }
 
@@ -52,6 +48,7 @@ class BookmarkSyncRepo {
     return _sqlRepo.getBookmarks();
   }
 
+/*
   Future<void> syncBookmarks() async {
     if (Prefs.isSignedIn) {
       // Get last sync from Prefs
@@ -87,4 +84,5 @@ class BookmarkSyncRepo {
       Prefs.lastSyncDate = currentDateTime.toString();
     }
   }
+  */
 }

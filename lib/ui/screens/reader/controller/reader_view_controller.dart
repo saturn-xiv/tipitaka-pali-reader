@@ -3,14 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/app.dart';
-import 'package:tipitaka_pali/services/repositories/bookmark_sync_repo.dart';
+import 'package:tipitaka_pali/services/repositories/bookmark_repo.dart';
 
 import '../../../../business_logic/models/book.dart';
 import '../../../../business_logic/models/bookmark.dart';
 import '../../../../business_logic/models/page_content.dart';
 import '../../../../business_logic/models/paragraph_mapping.dart';
 import '../../../../business_logic/models/recent.dart';
-import '../../../../services/dao/bookmark_dao.dart';
 import '../../../../services/dao/recent_dao.dart';
 import '../../../../services/database/database_helper.dart';
 import '../../../../services/repositories/book_repo.dart';
@@ -279,8 +278,8 @@ class ReaderViewController extends ChangeNotifier {
   // }
 
   void saveToBookmark(String note, String? name) {
-    BookmarkSyncRepo repository =
-        BookmarkSyncRepo(DatabaseHelper(), BookmarkDao());
+    BookmarkDatabaseRepository repository =
+        BookmarkDatabaseRepository(DatabaseHelper());
     repository.insert(Bookmark(
         bookID: book.id,
         pageNumber: _currentPage.value,

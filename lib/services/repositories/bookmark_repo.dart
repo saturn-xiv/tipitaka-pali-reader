@@ -1,6 +1,5 @@
 import 'package:intl/intl.dart';
 import 'package:tipitaka_pali/business_logic/models/bookmark.dart';
-import 'package:tipitaka_pali/services/dao/bookmark_dao.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -23,9 +22,6 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
   @override
   Future<int> insert(Bookmark bm) async {
     String formattedDate = DateFormat('yyyyMMddHHmmss').format(DateTime.now());
-    bm.actionDate = formattedDate;
-    bm.action = BookmarkAction.insert;
-    bm.synced = 0;
 
     final db = await _databaseHelper.database;
 
@@ -36,12 +32,6 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
           'name': bm.name,
           'page_number': bm.pageNumber,
           'note': bm.note,
-          'action': bm.action
-              .toString()
-              .split('.')
-              .last, // Assuming this is how you store the enum as text
-          'action_date': bm.actionDate,
-          'synced': bm.synced,
         },
         conflictAlgorithm: ConflictAlgorithm
             .replace); // Use ConflictAlgorithm.replace to handle conflicts
