@@ -92,10 +92,10 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
               value: Prefs.animationSpeed,
               max: 800,
               divisions: 20,
-              label: _currentUiFontSizeValue.round().toString(),
+              label: Prefs.animationSpeed.round().toString(),
               onChanged: (double value) {
                 setState(() {
-                  Prefs.animationSpeed = _currentSliderValue = value;
+                  Prefs.animationSpeed = value;
                 });
               },
             ),
