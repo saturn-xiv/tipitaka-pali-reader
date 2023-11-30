@@ -1,43 +1,43 @@
 {
   "general": {
-    "message": "Build 57 is available for MSWin, Android, & Appimage.  \nFlashcards, CTRL+F, right click, arrow keys, search persistence\n See video for release details on youtube.  \n\nDpd and PEU has a July 31 (same as Aug 1)",
-    "messageDate": "20230819",
-    "peuDate": "July 31, 2023",
+    "message": "TPR Build 62 is available for MSWin, Android, Appimage and Flathub.  Please update DPD by the extensions menu which was released afterwards and now available.  \n\nWhat's New?  New Themes, TOC fuzzy search, script converter, bookmarks export, plus many bug fixes\nLatest PEU from November, 2023 71% edited.  \nSee video for release details on YouTube.  Accepss the youtube channel via the menu on the settings",
+    "messageDate": "20231130",
+    "peuDate": "November 2023",
     "dpdDate": "July 31, 2023"
   },
   "android": {
-    "currentVersion": "2.3.6+57",
-    "message": "whats new improvements",
-    "messageDate": "20230819",
-    "peuDate": "July 31, 2023",
+    "currentVersion": "2.5.9+62",
+    "message": "Download in Play Store",
+    "messageDate": "20231130",
+    "peuDate": "November 2023",
     "dpdDate": "July 31, 2023"
   },
   "windows": {
-    "currentVersion": "2.3.6+57",
-    "message": "whats new improvements",
-    "messageDate": "20230819",
-    "peuDate": "July 31, 2023",
+    "currentVersion": "2.5.9+62",
+    "message": "Download in MS App Store",
+    "messageDate": "20231130",
+    "peuDate": "November 2023",
     "dpdDate": "July 31, 2023"
   },
   "linux": {
-    "currentVersion": "2.3.6+57",
-    "message": "whats new improvements",
-    "messageDate": "20230819",
-    "peuDate": "July 31, 2023",
+    "currentVersion": "2.5.9+62",
+    "message": "Now in Flathub and Appimage",
+    "messageDate": "20231130",
+    "peuDate": "November 2023",
     "dpdDate": "July 31, 2023"
   },
   "ios": {
-    "currentVersion": "2.3.6+57",
-    "message": "New Update Available! Added new exciting features.",
-    "messageDate": "20230819",
-    "peuDate": "July 31, 2023",
+    "currentVersion": "2.5.9+63",
+    "message": "Update in iOS App Store",
+    "messageDate": "20231130",
+    "peuDate": "November 2023",
     "dpdDate": "July 31, 2023"
   },
   "macos": {
-    "currentVersion": "2.3.6+57",
-    "message": "Welcome Mac users! Download our new MacOS app.",
-    "messageDate": "20230819",
-    "peuDate": "July 31, 2023",
+    "currentVersion": "2.5.9+62",
+    "message": "Update in MacOS App Store",
+    "messageDate": "20231130",
+    "peuDate": "November 2023",
     "dpdDate": "July 31, 2023"
   }
 }
