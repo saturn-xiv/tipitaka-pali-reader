@@ -105,13 +105,14 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       child: Container(
         color: Colors.transparent,
         child: GestureDetector(
-          onSecondaryTapUp: (details) {
+          onSecondaryTapDown: (details) {
             final SelectionRegistrar? registrar =
                 SelectionContainer.maybeOf(context);
             if (registrar is! MultiSelectableSelectionContainerDelegate) {
               // registrar should be this class if a `SelectionArea` is in the widget tree
               return;
             }
+            registrar.dispatchSelectionEvent(const ClearSelectionEvent());
             registrar.dispatchSelectionEvent(SelectWordSelectionEvent(
                 globalPosition: details.globalPosition));
             final tapped = registrar.getSelectedContent();
