@@ -13,6 +13,8 @@ class ThemeChangeNotifier extends ChangeNotifier {
   bool _useM3 = true;
   final List<bool> _isSelected = [true, false, false];
 
+  int get themeIndex => _themeIndex;
+
   set useM3(bool val) {
     _useM3 = val;
     notifyListeners();
