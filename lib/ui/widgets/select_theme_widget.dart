@@ -27,7 +27,7 @@ class SelectThemeWidget extends StatelessWidget {
       children: [
         // Display current theme name and color icons
         ColoredText(
-          myFlexSchemes[themeChangeNotifier.themeIndex].name,
+          myFlexSchemes[Prefs.themeIndex].name,
         ),
         const SizedBox(width: 8),
         Icon(Icons.lens, color: currentPrimaryColor, size: 26),

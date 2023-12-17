@@ -78,7 +78,7 @@ class _ToolsSettingsViewState extends State<ToolsSettingsView> {
       padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
         leading: const Icon(Icons.speaker_notes_outlined),
-        title: ColoredText(AppLocalizations.of(context)!.flashcards),
+        title: ColoredText(AppLocalizations.of(context)!.flashcards,style: Theme.of(context).textTheme.titleLarge,),
         focusColor: Theme.of(context).focusColor,
         hoverColor: Theme.of(context).hoverColor,
         trailing: const Icon(Icons.navigate_next),
