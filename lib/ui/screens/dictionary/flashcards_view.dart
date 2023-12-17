@@ -161,18 +161,19 @@ class FlashCardsView extends StatelessWidget {
             content: Text('MD Files exported'),
           ),
         );
-      } else {
-        await Clipboard.setData(
-            ClipboardData(text: sb.toString().replaceAll("•", "")));
-        // File is saved. You can show a success message if you want.
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            duration: Duration(seconds: 2),
-            content: Text('Remnotes copied to paste buffer'),
-          ),
-        );
       }
+    } else {
+      await Clipboard.setData(
+          ClipboardData(text: sb.toString().replaceAll("•", "")));
+      // File is saved. You can show a success message if you want.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          duration: Duration(seconds: 2),
+          content: Text('Remnotes copied to paste buffer'),
+        ),
+      );
     }
+
     isExporting.value = false;
   }
 

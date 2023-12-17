@@ -16,11 +16,11 @@ class SelectThemeWidget extends StatelessWidget {
 
     // Extracting the current theme's primary and secondary colors
     final currentPrimaryColor = isLight
-        ? myFlexSchemes[themeChangeNotifier.themeIndex].light.primary
-        : myFlexSchemes[themeChangeNotifier.themeIndex].dark.primary;
+        ? myFlexSchemes[Prefs.themeIndex].light.primary
+        : myFlexSchemes[Prefs.themeIndex].dark.primary;
     final currentSecondaryColor = isLight
-        ? myFlexSchemes[themeChangeNotifier.themeIndex].light.secondary
-        : myFlexSchemes[themeChangeNotifier.themeIndex].dark.secondary;
+        ? myFlexSchemes[Prefs.themeIndex].light.secondary
+        : myFlexSchemes[Prefs.themeIndex].dark.secondary;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
