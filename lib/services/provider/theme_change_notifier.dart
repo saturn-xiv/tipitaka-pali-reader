@@ -2,6 +2,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/data/flex_theme_data.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:tipitaka_pali/services/provider/locale_change_notifier.dart';
 import 'package:tipitaka_pali/services/provider/script_language_provider.dart';
 
 import '../../utils/font_utils.dart';
@@ -12,8 +13,6 @@ class ThemeChangeNotifier extends ChangeNotifier {
   int _themeIndex = 1;
   bool _useM3 = true;
   final List<bool> _isSelected = [true, false, false];
-
-  int get themeIndex => _themeIndex;
 
   set useM3(bool val) {
     _useM3 = val;
@@ -168,8 +167,8 @@ class ThemeChangeNotifier extends ChangeNotifier {
     // has the fontFamily for TextStyle parameter.
 
     // TODO need to follow up on lao font and test.
-    final theFont =
-        FontUtils.getfontName(script: ScriptLanguageProvider().currentScript);
+    final theFont = FontUtils.getfontNameByLocale(
+        locale: LocaleChangeNotifier().localeString);
 
     return TextTheme(
       bodyLarge: TextStyle(

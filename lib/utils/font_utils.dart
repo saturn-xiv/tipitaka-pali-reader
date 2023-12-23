@@ -26,4 +26,15 @@ class FontUtils {
         return null;
     }
   }
+
+  static String? getfontNameByLocale({required String locale}) {
+    return switch (locale) {
+      'en' => 'DejaVuSans',
+      'my' => 'PyidaungSu',
+      'si' => 'NotoSansSinhala',
+      'hi' => 'NotoSansDevanagari',
+      'lo' => 'Lao Pali Regular',
+      _ => null,
+    };
+  }
 }
