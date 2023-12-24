@@ -38,10 +38,11 @@ class SettingPage extends StatelessWidget {
               const ScriptSettingView(),
               const GeneralSettingsView(),
               const HelpAboutView(),
+              /*
               ChangeNotifierProvider<BookmarkNotifier>(
                 create: (context) => BookmarkNotifier(),
                 child: const SyncSettingsView(),
-              ),
+              ),*/
               ToolsSettingsView(scrollController: sc),
             ],
           ),
