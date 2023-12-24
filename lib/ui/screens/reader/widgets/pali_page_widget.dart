@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/rendering.dart';
 import 'package:html/dom.dart' as dom;
 
@@ -105,7 +106,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
       child: Container(
         color: Colors.transparent,
         child: GestureDetector(
-          onSecondaryTapDown: (details) {
+          /*onSecondaryTapUp: (details) {
             final SelectionRegistrar? registrar =
                 SelectionContainer.maybeOf(context);
             if (registrar is! MultiSelectableSelectionContainerDelegate) {
@@ -118,7 +119,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
             final tapped = registrar.getSelectedContent();
             // selecting word this way won't trigger the `onSelectionChanged` callback
             debugPrint('word under right-click: ${tapped?.plainText}');
-          },
+          },*/
           onTapUp: (details) {
             final box =
                 _textKey.currentContext?.findRenderObject()! as RenderBox;
@@ -225,9 +226,17 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
               if (element.className == 'highlighted') {
                 String styleColor = (Prefs.darkThemeOn) ? "white" : "black";
                 Color c = Theme.of(context).primaryColorLight;
+
+                // Converting the Flutter Color object to a CSS hex string for the text color
+                String colorHex =
+                    '#${c.value.toRadixString(16).padLeft(8, '0').substring(2)}';
+
                 return {
-                  'background': 'rgb(${c.red},${c.green},${c.blue})',
-                  'color': styleColor,
+                  'color': colorHex,
+                  'font-weight': 'bold', // Makes text bold
+                  'text-decoration': 'underline', // Underlines the text
+                  'text-decoration-color':
+                      colorHex, // Sets underline color to match the text
                 };
               }
               // no style
@@ -595,7 +604,9 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
   String getLeftCharacters(String text, int offset) {
     StringBuffer chars = StringBuffer();
     for (int i = offset - 1; i >= 0; i--) {
-      if (nonPali.hasMatch(text[i])) break;
+      if (nonPali.hasMatch(text[i]) && text[i] != '"' && text[i] != "'") {
+        break;
+      }
       chars.write(text[i]);
     }
     return chars.toString().split('').reversed.join();
@@ -605,7 +616,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     StringBuffer chars = StringBuffer();
 
     for (int i = offset + 1; i < text.length; i++) {
-      if (nonPali.hasMatch(text[i])) break;
+      if (nonPali.hasMatch(text[i]) && text[i] != '"' && text[i] != "'") break;
       chars.write(text[i]);
     }
     return chars.toString();

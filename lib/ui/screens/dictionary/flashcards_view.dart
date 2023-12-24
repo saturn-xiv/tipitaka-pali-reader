@@ -292,6 +292,20 @@ class FlashCardsView extends StatelessWidget {
         ),
         SpeedDialChild(
           child: Image.asset(
+            'assets/images/remnote.jpg',
+            width: 34.0,
+            height: 34.0,
+            fit: BoxFit.cover,
+          ),
+          backgroundColor: Colors.white,
+          label: 'Remnote Simple',
+          labelStyle: const TextStyle(fontSize: 18.0),
+          onTap: () => _exportToRemNoteSimple(
+            context,
+          ),
+        ),
+        SpeedDialChild(
+          child: Image.asset(
             'assets/images/vecteezy_md.jpg',
             width: 34.0,
             height: 34.0,
@@ -304,5 +318,46 @@ class FlashCardsView extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  _exportToRemNoteSimple(
+    BuildContext context,
+  ) async {
+    isExporting.value = true;
+    StringBuffer sb = StringBuffer();
+
+    // Add flashcards data
+    for (var card in cards) {
+      String def = await dictionaryController.loadDefinition(card.word);
+      debugPrint(def);
+      BeautifulSoup bs = BeautifulSoup(def);
+      String defCard = "\n";
+
+      // Find all summary tags for definitions
+      List<Bs4Element> summaries = bs.findAll('summary');
+      if (summaries.isNotEmpty) {
+        defCard += "\t\t- Basic Definitions:\n";
+        for (Bs4Element summary in summaries) {
+          defCard += "\t\t\t- ${summary.getText()}\n";
+        }
+      }
+
+      String front =
+          "**${card.word}** \n\t-${_highlightMDOccurrences(card.context, card.word)}";
+      sb.write(front);
+      sb.write(defCard);
+    }
+
+    // Logic to write to file or copy to clipboard
+    await Clipboard.setData(
+        ClipboardData(text: sb.toString().replaceAll("•", "")));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text('Remnotes copied to paste buffer'),
+      ),
+    );
+
+    isExporting.value = false;
   }
 }
