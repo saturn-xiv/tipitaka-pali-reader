@@ -17,11 +17,8 @@ class FontUtils {
       case Script.taitham:
         return 'NotoSansTaiTham';
       case Script.roman:
-        if (Platform.isLinux) {
-          return 'DejaVuSans';
-        } else {
-          return null;
-        }
+        //  return 'DejaVu Sans';
+        return 'Langar';
       default:
         return null;
     }
@@ -29,7 +26,8 @@ class FontUtils {
 
   static String? getfontNameByLocale({required String locale}) {
     return switch (locale) {
-      'en' => 'DejaVuSans',
+      //'en' => 'DejaVu Sans',
+      'en' => 'Langar',
       'my' => 'PyidaungSu',
       'si' => 'NotoSansSinhala',
       'hi' => 'NotoSansDevanagari',
