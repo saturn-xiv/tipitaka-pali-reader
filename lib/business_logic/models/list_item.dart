@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
+import 'package:tipitaka_pali/ui/widgets/pali_text_view.dart';
+import 'package:tipitaka_pali/utils/font_utils.dart';
 
 import '../../services/prefs.dart';
 import '../../services/provider/script_language_provider.dart';
@@ -20,7 +22,7 @@ class CategoryItem implements ListItem {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
+    return PaliTextView(
         PaliScript.getScriptOf(
             script: context.read<ScriptLanguageProvider>().currentScript,
             romanText: category.name),
@@ -46,6 +48,10 @@ class BookItem implements ListItem {
             PaliScript.getScriptOf(
                 script: context.read<ScriptLanguageProvider>().currentScript,
                 romanText: book.name),
+            style: TextStyle(
+              fontFamily: FontUtils.getfontName(
+                  script: context.read<ScriptLanguageProvider>().currentScript),
+            ),
           ),
         ),
       );

@@ -14,6 +14,7 @@ import '../../../routes.dart';
 import '../../../services/database/database_helper.dart';
 import '../../../services/provider/script_language_provider.dart';
 import '../../../services/repositories/sutta_repository.dart';
+import '../../../utils/font_utils.dart';
 import '../../../utils/pali_script.dart';
 import '../../../utils/platform_info.dart';
 import '../../dialogs/about_tpr_dialog.dart';
@@ -108,6 +109,14 @@ class BookListPage extends StatelessWidget {
   TabBar _buildTabBar(BuildContext context) {
     final theme = Theme.of(context);
     return TabBar(
+      labelStyle: TextStyle(
+        fontFamily: FontUtils.getfontName(
+            script: context.read<ScriptLanguageProvider>().currentScript),
+      ),
+      unselectedLabelStyle: TextStyle(
+        fontFamily: FontUtils.getfontName(
+            script: context.read<ScriptLanguageProvider>().currentScript),
+      ),
       tabs: _mainCategories.entries
           .map((mainCategory) => Tab(
               text: PaliScript.getScriptOf(
