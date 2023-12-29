@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
-import 'package:tipitaka_pali/ui/widgets/pali_text_view.dart';
 import 'package:tipitaka_pali/utils/font_utils.dart';
 
 import '../../services/prefs.dart';
@@ -22,14 +21,17 @@ class CategoryItem implements ListItem {
 
   @override
   Widget build(BuildContext context) {
-    return PaliTextView(
-        PaliScript.getScriptOf(
-            script: context.read<ScriptLanguageProvider>().currentScript,
-            romanText: category.name),
-        style: TextStyle(
-            fontSize: Prefs.uiFontSize + 4,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).primaryColor));
+    return ColoredText(
+      PaliScript.getScriptOf(
+          script: context.read<ScriptLanguageProvider>().currentScript,
+          romanText: category.name),
+      style: TextStyle(
+          fontSize: Prefs.uiFontSize + 4,
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).primaryColor,
+          fontFamily: FontUtils.getfontName(
+              script: context.read<ScriptLanguageProvider>().currentScript)),
+    );
   }
 }
 
@@ -45,14 +47,17 @@ class BookItem implements ListItem {
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: ColoredText(
-            PaliScript.getScriptOf(
-                script: context.read<ScriptLanguageProvider>().currentScript,
-                romanText: book.name),
-            style: TextStyle(
-              fontFamily: FontUtils.getfontName(
-                  script: context.read<ScriptLanguageProvider>().currentScript),
-            ),
-          ),
+              PaliScript.getScriptOf(
+                  script: context.read<ScriptLanguageProvider>().currentScript,
+                  romanText: book.name),
+              style: TextStyle(
+                  fontSize: Prefs.uiFontSize + 4,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                  fontFamily: FontUtils.getfontName(
+                      script: context
+                          .read<ScriptLanguageProvider>()
+                          .currentScript))),
         ),
       );
 }

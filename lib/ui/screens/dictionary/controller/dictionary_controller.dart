@@ -3,6 +3,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/services/provider/script_language_provider.dart';
+import 'package:tipitaka_pali/utils/font_utils.dart';
 import 'package:tipitaka_pali/utils/pali_script.dart';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 import 'package:tipitaka_pali/utils/script_detector.dart';
@@ -298,20 +301,33 @@ class DictionaryController with ChangeNotifier {
   String _formatDefinitions(List<Definition> definitions) {
     String formattedDefinition = '';
     for (Definition definition in definitions) {
-      formattedDefinition += _addStyleToBook(definition.bookName);
-      formattedDefinition += definition.definition;
+      // Get the font for the current dictionary book name
+      String? fontName = getDictionaryFont(definition.bookName);
+
+      // If a specific font is returned, use it in the styling
+      String fontStyling = fontName != null ? 'font-family: $fontName;' : '';
+
+      // Apply font styling to the book name and definition content
+      formattedDefinition += _addStyleToBook(definition.bookName, fontStyling);
+      formattedDefinition +=
+          '<div style="$fontStyling">${definition.definition}</div>';
     }
     return formattedDefinition;
   }
 
-  String _addStyleToBook(String book) {
-    // made variables for easy reading.. otherwise long
+  String _addStyleToBook(String book, String? additionalStyling) {
     String bkColor =
         Theme.of(context).primaryColor.value.toRadixString(16).substring(2);
     String foreColor =
         Theme.of(context).canvasColor.value.toRadixString(16).substring(2);
 
-    return '<h3 style="background-color: #$bkColor; color: #$foreColor; text-align:center;  padding-bottom:5px; padding-top: 5px;">$book</h3>\n<br>\n';
+    String combinedStyles =
+        'background-color: #$bkColor; color: #$foreColor; text-align:center; padding-bottom:5px; padding-top: 5px;';
+    if (additionalStyling != null && additionalStyling.isNotEmpty) {
+      combinedStyles += ' $additionalStyling';
+    }
+
+    return '<h3 style="$combinedStyles">$book</h3>\n<br>\n';
   }
 
   List<String> getWordsFrom({required String breakup}) {
@@ -456,19 +472,79 @@ class DictionaryController with ChangeNotifier {
     if (breakupText.isEmpty) return '';
 
     final List<String> words = getWordsFrom(breakup: breakupText);
-    // formating header
 
-    //TODO make defnition heading called Splitter Like if
-    // it were a dictionary header
-    String formattedDefinition = _addStyleToBook(
-      AppLocalizations.of(context)!.wordSplit,
-    );
+    // Get the current script from the ScriptLanguageProvider
+    final currentScript = context.read<ScriptLanguageProvider>().currentScript;
 
-    formattedDefinition += '<p class="definition"> <b>$word</b> <br> ';
+    // Get the font name for the current script
+    String? fontName = FontUtils.getfontName(script: currentScript);
+    String fontStyling = 'font-family: $fontName;';
+
+    // Formating header with the appropriate font
+    String formattedDefinition =
+        _addStyleToBook(AppLocalizations.of(context)!.wordSplit, fontStyling);
+
+    formattedDefinition +=
+        '<p class="definition" style="$fontStyling"> <b>${PaliScript.getScriptOf(
+      romanText: word,
+      script: currentScript,
+    )}</b> <br>';
     for (String breakup in words) {
+      if (currentScript == Script.roman) {
+        breakup;
+      } else {
+        breakup = PaliScript.getScriptOf(
+          romanText: breakup,
+          script: currentScript,
+        );
+      }
+
       formattedDefinition += "<br>" + breakup + '<br>';
     }
     formattedDefinition += '</p>';
     return formattedDefinition;
+  }
+
+  String? getDictionaryFont(String dictionaryBookName) {
+    switch (dictionaryBookName) {
+      case "ဦးဟုတ်စိန် ပါဠိ-မြန်မာအဘိဓာန်":
+        return FontUtils.getfontName(
+            script: Script.myanmar); // Replace with actual font name
+      case "ပါဠိဓာတ်အဘိဓာန်":
+        return FontUtils.getfontName(
+            script: Script.myanmar); // Replace with actual font name
+      case "ဓာတွတ္ထပန်းကုံး":
+        return FontUtils.getfontName(
+            script: Script.myanmar); // Replace with actual font name
+      case "တိပိဋက ပါဠိ-မြန်မာ အဘိဓာန်":
+        return FontUtils.getfontName(
+            script: Script.myanmar); // Replace with actual font name
+      case "Sinhala 2":
+        return FontUtils.getfontName(
+            script: Script.sinhala); // Replace with actual font name
+      case "Sinhala 1":
+        return FontUtils.getfontName(
+            script: Script.sinhala); // Replace with actual font name
+      case "Pali Proper Names (DPPN)":
+        return FontUtils.getfontName(
+            script: Script.roman); // Replace with actual font name
+      case "Pali English Ultimate (PEU)":
+        return FontUtils.getfontName(
+            script: Script.roman); // Replace with actual font name
+      case "PEU Algo Used":
+        return FontUtils.getfontName(
+            script: Script.roman); // Replace with actual font name
+      case "PTS Pali-English Dictionary":
+        return FontUtils.getfontName(
+            script: Script.roman); // Replace with actual font name
+      case "Digital Pāḷi Dictionary":
+        return FontUtils.getfontName(
+            script: Script.roman); // Replace with actual font name
+      case "Concise Pali-English Dictionary":
+        return FontUtils.getfontName(
+            script: Script.roman); // Replace with actual font name
+      default:
+        return null; // Default font if none of the cases match
+    }
   }
 }

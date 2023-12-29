@@ -5,6 +5,8 @@ import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/repositories/book_repo.dart';
 import 'package:tipitaka_pali/services/repositories/category_repo.dart';
 import 'package:tipitaka_pali/ui/screens/reader/mobile_reader_container.dart';
+import 'package:tipitaka_pali/ui/widgets/pali_text_view.dart';
+import 'package:tipitaka_pali/utils/font_utils.dart';
 
 import '../../../business_logic/models/book.dart';
 import '../../../business_logic/models/list_item.dart';
@@ -14,7 +16,6 @@ import '../../../routes.dart';
 import '../../../services/database/database_helper.dart';
 import '../../../services/provider/script_language_provider.dart';
 import '../../../services/repositories/sutta_repository.dart';
-import '../../../utils/font_utils.dart';
 import '../../../utils/pali_script.dart';
 import '../../../utils/platform_info.dart';
 import '../../dialogs/about_tpr_dialog.dart';
@@ -109,20 +110,13 @@ class BookListPage extends StatelessWidget {
   TabBar _buildTabBar(BuildContext context) {
     final theme = Theme.of(context);
     return TabBar(
-      labelStyle: TextStyle(
-        fontFamily: FontUtils.getfontName(
-            script: context.read<ScriptLanguageProvider>().currentScript),
-      ),
-      unselectedLabelStyle: TextStyle(
-        fontFamily: FontUtils.getfontName(
-            script: context.read<ScriptLanguageProvider>().currentScript),
-      ),
-      tabs: _mainCategories.entries
-          .map((mainCategory) => Tab(
-              text: PaliScript.getScriptOf(
-                  script: context.watch<ScriptLanguageProvider>().currentScript,
-                  romanText: mainCategory.value)))
-          .toList(),
+      tabs: _mainCategories.entries.map((mainCategory) {
+        String text = mainCategory.value;
+        // Truncate the text to 5 characters and add '...' if it's longer
+        String truncatedText =
+            (text.length > 5) ? '${text.substring(0, 5)}..' : text;
+        return Tab(child: PaliTextView(truncatedText));
+      }).toList(),
       indicator: BoxDecoration(
         color: theme.useMaterial3
             ? theme.focusColor
@@ -137,6 +131,12 @@ class BookListPage extends StatelessWidget {
         topLeft: Radius.circular(15),
         topRight: Radius.circular(15),
       ),
+      labelStyle: TextStyle(
+          fontFamily: FontUtils.getfontName(
+              script: context.read<ScriptLanguageProvider>().currentScript)),
+      unselectedLabelStyle: TextStyle(
+          fontFamily: FontUtils.getfontName(
+              script: context.read<ScriptLanguageProvider>().currentScript)),
     );
   }
 

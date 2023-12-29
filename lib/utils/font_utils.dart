@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 
 class FontUtils {
@@ -17,8 +16,8 @@ class FontUtils {
       case Script.taitham:
         return 'NotoSansTaiTham';
       case Script.roman:
-        //  return 'DejaVu Sans';
-        return 'Langar';
+        return 'DejaVu Sans';
+      //return 'Langar';
       default:
         return null;
     }
@@ -26,8 +25,8 @@ class FontUtils {
 
   static String? getfontNameByLocale({required String locale}) {
     return switch (locale) {
-      //'en' => 'DejaVu Sans',
-      'en' => 'Langar',
+      'en' => 'DejaVu Sans',
+      //'en' => 'Langar',
       'my' => 'PyidaungSu',
       'si' => 'NotoSansSinhala',
       'hi' => 'NotoSansDevanagari',

@@ -48,7 +48,6 @@ class _TransferDialogState extends State<BookmarkCloudTransferDialog> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Transfer Bookmarks'),
