@@ -15,7 +15,7 @@ import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
 import '../../../business_logic/models/bookmark.dart';
 import '../../../business_logic/view_models/bookmark_page_view_model.dart';
-import '../../../services/database/database_helper.dart';
+import 'package:tipitaka_pali/services/database/database_helper.dart';
 import '../../dialogs/confirm_dialog.dart';
 
 class BookmarkPage extends StatelessWidget {
@@ -236,13 +236,16 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
     return (Prefs.isSignedIn)
         ? IconButton(
             icon: const Icon(Icons.cloud),
-            onPressed: () async {
+            onPressed: () {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return BookmarkCloudTransferDialog();
                 },
-              );
+              ).then((_) {
+                // Refresh bookmarks after the dialog is closed
+                context.read<BookmarkPageViewModel>().refreshBookmarks();
+              });
             })
         : const SizedBox.shrink();
   }
