@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -62,10 +63,12 @@ class BookmarkPage extends StatelessWidget {
                             IconButton(
                               tooltip:
                                   AppLocalizations.of(context)!.shareThisNote,
-                              onPressed: () {
-                                Share.share(bookmark.toString(),
-                                    subject: AppLocalizations.of(context)!
-                                        .shareTitle);
+                              onPressed: () async {
+                                List<Bookmark> bm = [];
+                                bm.add(bookmark);
+                                String bookmarkJson =
+                                    definitionToJson(bookmarks);
+                                shareBookmarksAsFile(bm);
                               },
                               icon: const Icon(Icons.share),
                             ),
@@ -90,6 +93,15 @@ class BookmarkPage extends StatelessWidget {
     return PaliScript.getScriptOf(
         script: context.read<ScriptLanguageProvider>().currentScript,
         romanText: s);
+  }
+
+  Future<void> shareBookmarksAsFile(List<Bookmark> bookmarks) async {
+    final String bookmarkJson = definitionToJson(bookmarks);
+    final Directory tempDir = await getTemporaryDirectory();
+    final File file = File('${tempDir.path}/bookmarks.tprbookmark');
+
+    await file.writeAsString(bookmarkJson);
+    Share.shareFiles([file.path], text: 'Here are my bookmarks!');
   }
 }
 
