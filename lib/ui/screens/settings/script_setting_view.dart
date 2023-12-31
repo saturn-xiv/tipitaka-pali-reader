@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 
 import '../../../business_logic/view_models/script_settings_view_model.dart';
 import 'select_script_language.dart';
@@ -87,10 +88,39 @@ class ScriptSettingView extends StatelessWidget {
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32.0),
+                    child: _buildFontSelector(context, controller),
+                  ),
                 ],
               ),
             );
           },
         ));
+  }
+
+  Widget _buildFontSelector(
+      BuildContext context, ScriptSettingController controller) {
+    return ListTile(
+      title: Text('Select Roman Font'),
+      trailing: DropdownButton<String>(
+        value: controller.selectedFont,
+        onChanged: (String? newValue) {
+          controller.setSelectedFont(newValue);
+          _saveFontPreference(newValue);
+        },
+        items: <String>['DejaVu Sans', 'Langar']
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Future<void> _saveFontPreference(String? fontName) async {
+    Prefs.romanFontName = fontName ?? "";
   }
 }

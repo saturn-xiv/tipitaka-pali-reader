@@ -1,3 +1,4 @@
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 
 class FontUtils {
@@ -16,7 +17,7 @@ class FontUtils {
       case Script.taitham:
         return 'NotoSansTaiTham';
       case Script.roman:
-        return 'DejaVu Sans';
+        return Prefs.romanFontName;
       //return 'Langar';
       default:
         return null;

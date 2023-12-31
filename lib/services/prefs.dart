@@ -58,6 +58,7 @@ const String lastSyncDatePref = 'lastSyncDate';
 const String disableVelthuisPref = 'disableVelthuis';
 const String persitentSearchFilterPref = 'persistentSearchFilter';
 const String useM3Pref = 'useM3';
+const String romanFontNamePref = "romanFontName";
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -109,6 +110,7 @@ const String defaltLastSyncDate = '197001010000';
 const bool defaultDisableVelthuis = false;
 const bool defaultPersitentSearchFilter = false;
 const bool defaultUseM3 = true;
+const String defaultRomanFontName = "DejaVu Sans";
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -365,6 +367,11 @@ class Prefs {
 
   static bool get useM3 => instance.getBool(useM3Pref) ?? defaultUseM3;
   static set useM3(bool value) => instance.setBool(useM3Pref, value);
+
+  static String get romanFontName =>
+      instance.getString(romanFontNamePref) ?? defaultRomanFontName;
+  static set romanFontName(String value) =>
+      instance.setString(romanFontNamePref, value);
 
   // ===========================================================================
   // Helpers
