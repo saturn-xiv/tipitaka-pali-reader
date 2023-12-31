@@ -27,9 +27,7 @@ class BookmarkPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<BookmarkPageViewModel>(
-          create: (_) => BookmarkPageViewModel(
-              BookmarkDatabaseRepository(DatabaseHelper()))
-            ..fetchBookmarks(),
+          create: (_) => BookmarkPageViewModel()..fetchBookmarks(),
         ),
         ChangeNotifierProvider<BookmarkNotifier>(
           create: (_) => BookmarkNotifier(),
@@ -98,7 +96,7 @@ class BookmarkPage extends StatelessWidget {
   Future<void> shareBookmarksAsFile(List<Bookmark> bookmarks) async {
     final String bookmarkJson = definitionToJson(bookmarks);
     final Directory tempDir = await getTemporaryDirectory();
-    final File file = File('${tempDir.path}/bookmarks.tprbookmark');
+    final File file = File('${tempDir.path}/bookmarks.tprbmk');
 
     await file.writeAsString(bookmarkJson);
     Share.shareFiles([file.path], text: 'Here are my bookmarks!');
