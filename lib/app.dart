@@ -124,7 +124,7 @@ class _AppState extends State<App> {
             builder:
                 (BuildContext context, AsyncSnapshot<TprMessage> snapshot) {
               //initUniLinks(context);
-              simulateFileOpen();
+              simulateFileOpen(context);
 
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasData &&
@@ -171,7 +171,7 @@ class _AppState extends State<App> {
     });
   }
 
-  Future<void> simulateFileOpen() async {
+  Future<void> simulateFileOpen(BuildContext context) async {
     try {
       // Simulate the URI of the file
 /*      String basePath = await getDownloadFolderPath();
@@ -209,7 +209,8 @@ class _AppState extends State<App> {
         Bookmark bookmark = importedBookmarks.first;
 
         // Access the BookmarkViewModel from the context
-        final vm = Provider.of<BookmarkPageViewModel>(context, listen: false);
+        if (!context.mounted) return;
+        final vm = context.read<BookmarkPageViewModel>();
         vm.openBook(bookmark, context);
       } else {
         debugPrint("json empty");
