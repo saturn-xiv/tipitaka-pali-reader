@@ -6,6 +6,9 @@ import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/services/repositories/dictionary_history_repo.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/widget/dictionary_history_view.dart';
+import 'package:tipitaka_pali/utils/pali_script.dart';
+import 'package:tipitaka_pali/utils/pali_script_converter.dart';
+import 'package:tipitaka_pali/utils/script_detector.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -75,9 +78,19 @@ class DictionaryContentView extends StatelessWidget {
                             AppLocalizations.of(context)!.dictionary,
                             1,
                             "dictionary");
+
+                        // loading definitions
+                        String romanWord = word;
+                        Script inputScript =
+                            ScriptDetector.getLanguage(romanWord);
+                        if (inputScript != Script.roman) {
+                          romanWord = PaliScript.getRomanScriptFrom(
+                              script: inputScript, text: romanWord);
+                        }
+
                         context
                             .read<DictionaryController>()
-                            .onWordClicked(word);
+                            .onWordClicked(romanWord);
                       }
                     }
                   },

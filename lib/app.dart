@@ -124,7 +124,7 @@ class _AppState extends State<App> {
             builder:
                 (BuildContext context, AsyncSnapshot<TprMessage> snapshot) {
               //initUniLinks(context);
-              simulateFileOpen(context);
+              //simulateFileOpen(context);
 
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.hasData &&
