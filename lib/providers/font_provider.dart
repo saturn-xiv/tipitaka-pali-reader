@@ -5,6 +5,8 @@ import '../services/prefs.dart';
 class ReaderFontProvider extends ChangeNotifier {
   late int _fontSize;
   int get fontSize => _fontSize;
+  String? selectedFont =
+      Prefs.romanFontName.isNotEmpty ? Prefs.romanFontName : 'DejaVu Sans';
 
   ReaderFontProvider() {
     _init();
@@ -25,5 +27,9 @@ class ReaderFontProvider extends ChangeNotifier {
     Prefs.readerFontSize = _fontSize;
     notifyListeners();
   }
-}
 
+  void setSelectedFont(String? newValue) {
+    selectedFont = newValue;
+    notifyListeners();
+  }
+}

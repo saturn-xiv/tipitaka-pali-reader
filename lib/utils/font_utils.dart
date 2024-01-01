@@ -17,7 +17,9 @@ class FontUtils {
       case Script.taitham:
         return 'NotoSansTaiTham';
       case Script.roman:
-        return Prefs.romanFontName;
+        return (Prefs.romanFontName == 'System Font')
+            ? null
+            : Prefs.romanFontName;
       //return 'Langar';
       default:
         return null;
@@ -26,7 +28,7 @@ class FontUtils {
 
   static String? getfontNameByLocale({required String locale}) {
     return switch (locale) {
-      'en' => 'DejaVu Sans',
+      'en' => Prefs.romanFontName,
       //'en' => 'Langar',
       'my' => 'PyidaungSu',
       'si' => 'NotoSansSinhala',

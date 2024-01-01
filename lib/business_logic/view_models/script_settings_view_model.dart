@@ -12,8 +12,6 @@ class ScriptSettingController extends ChangeNotifier {
   bool get isShowPtsNumber => _isShowPtsNumber;
   bool get isShowThaiNumber => _isShowThaiNumber;
   bool get isShowVriNumber => _isShowVriNumber;
-  String selectedFont = Prefs.romanFontName;
-
   void onToggleShowAlternatePali(bool value) {
     // save and change ui
     _isShowAlternatePali = value;
@@ -44,10 +42,5 @@ class ScriptSettingController extends ChangeNotifier {
     notifyListeners();
     // save to shared preference
     Prefs.isShowVriNumber = value;
-  }
-
-  void setSelectedFont(String newValue) {
-    Prefs.romanFontName = selectedFont;
-    notifyListeners();
   }
 }
