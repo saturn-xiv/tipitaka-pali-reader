@@ -1,4 +1,4 @@
-import 'package:tipitaka_pali/utils/pali_script_converter.dart'; 
+import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 
 class ScriptDetector {
   ScriptDetector._();
@@ -9,7 +9,7 @@ class ScriptDetector {
   static final _regexDevanagari = RegExp('[\u0900-\u097F]');
   static final _regexThai = RegExp('[\u0E00-\u0E7F\uF700-\uF70F]');
   static final _regexLaos = RegExp('[\u0E80-\u0EFF]');
-  static final _regexKhmer = RegExp('\u1780-\u17FF]');
+  static final _regexKhmer = RegExp('[\u1780-\u17FF]');
   static final _regexBengali = RegExp('[\u0980-\u09FF]');
   static final _regexGurmukhi = RegExp('[\u0A00-\u0A7F]');
   static final _regexTaiTham = RegExp('[\u1A20-\u1AAF]');
@@ -24,7 +24,6 @@ class ScriptDetector {
   // actual code block [0x11000, 0x1107F]
   //need check
   static final _regexCyrillic = RegExp('[\u0400-\u04FF\u0300-\u036F]');
-
 
   static Script getLanguage(String scriptText) {
     if (scriptText.contains(_regexMM)) return Script.myanmar;

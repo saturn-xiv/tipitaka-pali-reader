@@ -81,8 +81,7 @@ class DictionaryContentView extends StatelessWidget {
 
                         // loading definitions
                         String romanWord = word;
-                        Script inputScript =
-                            ScriptDetector.getLanguage(romanWord);
+                        Script inputScript = ScriptDetector.getLanguage(word);
                         if (inputScript != Script.roman) {
                           romanWord = PaliScript.getRomanScriptFrom(
                               script: inputScript, text: romanWord);

@@ -16,6 +16,8 @@ class FontUtils {
         return 'Lao Pali Regular';
       case Script.taitham:
         return 'NotoSansTaiTham';
+      case Script.brahmi:
+        return "Noto Sans Brahmi";
       case Script.roman:
         return (Prefs.romanFontName == 'System Font')
             ? null

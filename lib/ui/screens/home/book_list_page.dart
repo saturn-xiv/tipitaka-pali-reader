@@ -98,10 +98,9 @@ class BookListPage extends StatelessWidget {
               }
             }
           },
-          child: Text(PaliScript.getScriptOf(
-            script: context.watch<ScriptLanguageProvider>().currentScript,
-            romanText: ("Sutta"),
-          )),
+          child: const PaliTextView(
+            "Sutta",
+          ),
         ),
       ),
     );
