@@ -99,7 +99,10 @@ class BookListPage extends StatelessWidget {
             }
           },
           child: Text(
-            "Sutta",
+            PaliScript.getScriptOf(
+              romanText: "Sutta",
+              script: context.read<ScriptLanguageProvider>().currentScript,
+            ),
             style: TextStyle(
               fontFamily: FontUtils.getfontName(
                   script: context.read<ScriptLanguageProvider>().currentScript),
