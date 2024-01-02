@@ -14,7 +14,6 @@ class PaliTextView extends StatelessWidget {
   final String text;
   final TextStyle? style;
 
-
   @override
   Widget build(BuildContext context) {
     final script = context.read<ScriptLanguageProvider>().currentScript;
@@ -26,7 +25,9 @@ class PaliTextView extends StatelessWidget {
               romanText: text,
               script: script,
             ),
-      style: style?.copyWith(fontFamily: fontName),
+      style: style == null
+          ? TextStyle(fontFamily: fontName)
+          : style?.copyWith(fontFamily: fontName),
     );
   }
 }
