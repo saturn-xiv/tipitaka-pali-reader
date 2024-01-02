@@ -98,8 +98,12 @@ class BookListPage extends StatelessWidget {
               }
             }
           },
-          child: const PaliTextView(
+          child: Text(
             "Sutta",
+            style: TextStyle(
+              fontFamily: FontUtils.getfontName(
+                  script: context.read<ScriptLanguageProvider>().currentScript),
+            ),
           ),
         ),
       ),
