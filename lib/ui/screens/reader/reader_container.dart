@@ -5,6 +5,7 @@ import 'package:ms_material_color/ms_material_color.dart';
 import 'package:provider/provider.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 import 'package:tipitaka_pali/ui/screens/reader/mobile_reader_container.dart';
+import 'package:tipitaka_pali/utils/font_utils.dart';
 
 import '../../../business_logic/models/book.dart';
 import '../../../data/flex_theme_data.dart';
@@ -113,6 +114,9 @@ class _ReaderContainerState extends State<ReaderContainer> {
     }).toList();
 
     if (books.isEmpty) {
+      final script = context.watch<ScriptLanguageProvider>().currentScript;
+      final fontName = FontUtils.getfontName(script: script);
+
       return Container(
         color: const Color(0xfffbf0da),
         child: Center(
@@ -127,8 +131,9 @@ Etaṃ buddhānasāsanaṃ
 '''),
             ),
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
+              fontFamily: fontName,
               color: Colors.brown,
               fontWeight: FontWeight.bold,
             ),

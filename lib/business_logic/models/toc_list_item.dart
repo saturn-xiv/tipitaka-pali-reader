@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:tipitaka_pali/ui/widgets/pali_text_view.dart';
+import 'package:tipitaka_pali/utils/font_utils.dart';
+import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 import 'toc.dart';
 import '../../services/provider/script_language_provider.dart';
 import '../../utils/pali_script.dart';
@@ -30,7 +34,7 @@ class TocHeadingOne implements TocListItem {
         script: context.read<ScriptLanguageProvider>().currentScript,
         romanText: toc.name);
 
-    return Text(tocName, style: Theme.of(context).textTheme.titleLarge);
+    return PaliTextView(tocName, style: Theme.of(context).textTheme.titleLarge);
   }
 }
 
@@ -49,15 +53,17 @@ class TocHeadingTwo implements TocListItem {
   @override
   Widget build(BuildContext context, String filterText) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final tocName = PaliScript.getScriptOf(
-        script: context.read<ScriptLanguageProvider>().currentScript,
-        romanText: toc.name);
+    Script script = context.read<ScriptLanguageProvider>().currentScript;
+    final tocName = PaliScript.getScriptOf(script: script, romanText: toc.name);
     return Padding(
       padding: const EdgeInsets.only(left: 16.0),
       child: SubstringHighlight(
         text: tocName,
         term: filterText,
-        textStyle: TextStyle(color: colorScheme.onSurface),
+        textStyle: TextStyle(
+            color: colorScheme.onSurface,
+            fontSize: Prefs.uiFontSize + 2,
+            fontFamily: FontUtils.getfontName(script: script)),
         textStyleHighlight: TextStyle(color: colorScheme.primary),
       ),
     );
@@ -78,17 +84,22 @@ class TocHeadingThree implements TocListItem {
 
   @override
   Widget build(BuildContext context, String filterText) {
+    Script script = context.read<ScriptLanguageProvider>().currentScript;
+
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final tocName = PaliScript.getScriptOf(
-        script: context.read<ScriptLanguageProvider>().currentScript,
-        romanText: toc.name);
+    final tocName = PaliScript.getScriptOf(script: script, romanText: toc.name);
     return Padding(
       padding: const EdgeInsets.only(left: 32.0),
       child: SubstringHighlight(
         text: tocName,
         term: filterText,
-        textStyle: TextStyle(color: colorScheme.onSurface),
-        textStyleHighlight: TextStyle(color: colorScheme.primary),
+        textStyle: TextStyle(
+            color: colorScheme.onSurface,
+            fontSize: Prefs.uiFontSize - 1,
+            fontFamily: FontUtils.getfontName(script: script)),
+        textStyleHighlight: TextStyle(
+            color: colorScheme.primary,
+            fontFamily: FontUtils.getfontName(script: script)),
       ),
     );
   }
@@ -109,15 +120,18 @@ class TocHeadingFour implements TocListItem {
   @override
   Widget build(BuildContext context, String filterText) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final tocName = PaliScript.getScriptOf(
-        script: context.read<ScriptLanguageProvider>().currentScript,
-        romanText: toc.name);
+    Script script = context.read<ScriptLanguageProvider>().currentScript;
+
+    final tocName = PaliScript.getScriptOf(script: script, romanText: toc.name);
     return Padding(
       padding: const EdgeInsets.only(left: 48.0),
       child: SubstringHighlight(
         text: tocName,
         term: filterText,
-        textStyle: TextStyle(color: colorScheme.onSurface),
+        textStyle: TextStyle(
+            color: colorScheme.onSurface,
+            fontSize: Prefs.uiFontSize + 3,
+            fontFamily: FontUtils.getfontName(script: script)),
         textStyleHighlight: TextStyle(color: colorScheme.primary),
       ),
     );
@@ -139,15 +153,18 @@ class TocHeadingFive implements TocListItem {
   @override
   Widget build(BuildContext context, String filterText) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final tocName = PaliScript.getScriptOf(
-        script: context.read<ScriptLanguageProvider>().currentScript,
-        romanText: toc.name);
+    Script script = context.read<ScriptLanguageProvider>().currentScript;
+
+    final tocName = PaliScript.getScriptOf(script: script, romanText: toc.name);
     return Padding(
       padding: const EdgeInsets.only(left: 64.0),
       child: SubstringHighlight(
         text: tocName,
         term: filterText,
-        textStyle: TextStyle(color: colorScheme.onSurface),
+        textStyle: TextStyle(
+            color: colorScheme.onSurface,
+            fontSize: Prefs.uiFontSize + 3,
+            fontFamily: FontUtils.getfontName(script: script)),
         textStyleHighlight: TextStyle(color: colorScheme.primary),
       ),
     );

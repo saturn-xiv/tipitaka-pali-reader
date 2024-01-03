@@ -160,6 +160,16 @@ flutter:
       fonts:
         - asset: assets/fonts/NotoSerif-VariableFont_wdth,wght.ttf
         - asset: assets/fonts/NotoSerif-Italic-VariableFont_wdth,wght.ttf
+    - family: Noto Sans Brahmi
+      fonts:
+        - asset: assets/fonts/NotoSansBrahmi-Regular.ttf
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Bold.ttf
+        - asset: assets/fonts/Roboto-Italic.ttf
+        - asset: assets/fonts/Roboto-BoldItalic.ttf
+
 
 # fonts are licenced by bhikkhu Jayasaro.  He says it is okay to distribute and knows the copyrights.
   # For details regarding fonts from package dependencies,

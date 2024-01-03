@@ -111,7 +111,7 @@ class ScriptSettingView extends StatelessWidget {
           readerFontProvider.setSelectedFont(newValue);
           _saveFontPreference(newValue);
         },
-        items: <String>['DejaVu Sans', 'Noto Serif', 'System Font']
+        items: <String>['DejaVu Sans', 'Noto Serif', 'Roboto', 'System Font']
             .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
