@@ -617,330 +617,274 @@ class CcpMaterialLocalizations extends GlobalMaterialLocalizations
   String get unspecifiedDateRange => 'Date Range';
 
   @override
-  String get keyboardKeyAlt => throw UnimplementedError();
+  String get keyboardKeyAlt => 'Alt';
 
   @override
-  String get keyboardKeyAltGraph => throw UnimplementedError();
+  String get keyboardKeyAltGraph => 'AltGraph';
 
   @override
-  String get keyboardKeyBackspace => throw UnimplementedError();
+  String get keyboardKeyBackspace => 'Backspace';
 
   @override
-  String get keyboardKeyCapsLock => throw UnimplementedError();
+  String get keyboardKeyCapsLock => 'Caps Lock';
 
   @override
-  String get keyboardKeyChannelDown => throw UnimplementedError();
+  String get keyboardKeyChannelDown => 'Channel Down';
 
   @override
-  String get keyboardKeyChannelUp => throw UnimplementedError();
+  String get keyboardKeyChannelUp => 'Channel Up';
 
   @override
-  String get keyboardKeyControl => throw UnimplementedError();
+  String get keyboardKeyControl => 'Control';
 
   @override
-  String get keyboardKeyDelete => throw UnimplementedError();
+  String get keyboardKeyDelete => 'Delete';
 
-  String get keyboardKeyEisu => throw UnimplementedError();
-
-  @override
-  String get keyboardKeyEject => throw UnimplementedError();
+  String get keyboardKeyEisu => 'Eisu';
 
   @override
-  String get keyboardKeyEnd => throw UnimplementedError();
+  String get keyboardKeyEject => 'Eject';
 
   @override
-  String get keyboardKeyEscape => throw UnimplementedError();
+  String get keyboardKeyEnd => 'End';
 
   @override
-  String get keyboardKeyFn => throw UnimplementedError();
+  String get keyboardKeyEscape => 'Escape';
 
   @override
-  String get keyboardKeyHome => throw UnimplementedError();
+  String get keyboardKeyFn => 'Fn';
 
   @override
-  String get keyboardKeyInsert => throw UnimplementedError();
+  String get keyboardKeyHome => 'Home';
 
   @override
-  String get keyboardKeyMeta => throw UnimplementedError();
+  String get keyboardKeyInsert => 'Insert';
 
   @override
-  String get keyboardKeyMetaMacOs => throw UnimplementedError();
+  String get keyboardKeyMeta => 'Meta';
 
   @override
-  String get keyboardKeyMetaWindows => throw UnimplementedError();
+  String get keyboardKeyMetaMacOs => 'Command';
 
   @override
-  String get keyboardKeyNumLock => throw UnimplementedError();
+  String get keyboardKeyMetaWindows => 'Windows';
 
   @override
-  String get keyboardKeyNumpad0 => throw UnimplementedError();
+  String get keyboardKeyNumLock => 'Num Lock';
 
   @override
-  String get keyboardKeyNumpad1 => throw UnimplementedError();
+  String get keyboardKeyNumpad0 => 'Numpad 0';
 
   @override
-  String get keyboardKeyNumpad2 => throw UnimplementedError();
+  String get keyboardKeyNumpad1 => 'Numpad 1';
 
   @override
-  String get keyboardKeyNumpad3 => throw UnimplementedError();
+  String get keyboardKeyNumpad2 => 'Numpad 2';
 
   @override
-  String get keyboardKeyNumpad4 => throw UnimplementedError();
+  String get keyboardKeyNumpad3 => 'Numpad 3';
 
   @override
-  String get keyboardKeyNumpad5 => throw UnimplementedError();
+  String get keyboardKeyNumpad4 => 'Numpad 4';
 
   @override
-  String get keyboardKeyNumpad6 => throw UnimplementedError();
+  String get keyboardKeyNumpad5 => 'Numpad 5';
 
   @override
-  String get keyboardKeyNumpad7 => throw UnimplementedError();
+  String get keyboardKeyNumpad6 => 'Numpad 6';
 
   @override
-  String get keyboardKeyNumpad8 => throw UnimplementedError();
+  String get keyboardKeyNumpad7 => 'Numpad 7';
 
   @override
-  String get keyboardKeyNumpad9 => throw UnimplementedError();
+  String get keyboardKeyNumpad8 => 'Numpad 8';
 
   @override
-  String get keyboardKeyNumpadAdd => throw UnimplementedError();
+  String get keyboardKeyNumpad9 => 'Numpad 9';
 
   @override
-  String get keyboardKeyNumpadComma => throw UnimplementedError();
+  String get keyboardKeyNumpadAdd => 'Numpad Add';
 
   @override
-  String get keyboardKeyNumpadDecimal => throw UnimplementedError();
+  String get keyboardKeyNumpadComma => 'Numpad Comma';
 
   @override
-  String get keyboardKeyNumpadDivide => throw UnimplementedError();
+  String get keyboardKeyNumpadDecimal => 'Numpad Decimal';
 
   @override
-  String get keyboardKeyNumpadEnter => throw UnimplementedError();
+  String get keyboardKeyNumpadDivide => 'Numpad Divide';
 
   @override
-  String get keyboardKeyNumpadEqual => throw UnimplementedError();
+  String get keyboardKeyNumpadEnter => 'Numpad Enter';
 
   @override
-  String get keyboardKeyNumpadMultiply => throw UnimplementedError();
+  String get keyboardKeyNumpadEqual => 'Numpad Equal';
 
   @override
-  String get keyboardKeyNumpadParenLeft => throw UnimplementedError();
+  String get keyboardKeyNumpadMultiply => 'Numpad Multiply';
 
   @override
-  String get keyboardKeyNumpadParenRight => throw UnimplementedError();
+  String get keyboardKeyNumpadParenLeft => 'Numpad (';
 
   @override
-  String get keyboardKeyNumpadSubtract => throw UnimplementedError();
+  String get keyboardKeyNumpadParenRight => 'Numpad )';
 
   @override
-  String get keyboardKeyPageDown => throw UnimplementedError();
+  String get keyboardKeyNumpadSubtract => 'Numpad Subtract';
 
   @override
-  String get keyboardKeyPageUp => throw UnimplementedError();
+  String get keyboardKeyPageDown => 'Page Down';
 
   @override
-  String get keyboardKeyPower => throw UnimplementedError();
+  String get keyboardKeyPageUp => 'Page Up';
 
   @override
-  String get keyboardKeyPowerOff => throw UnimplementedError();
+  String get keyboardKeyPower => 'Power';
 
   @override
-  String get keyboardKeyPrintScreen => throw UnimplementedError();
+  String get keyboardKeyPowerOff => 'Power Off';
 
   @override
-  String get keyboardKeyScrollLock => throw UnimplementedError();
+  String get keyboardKeyPrintScreen => 'Print Screen';
 
   @override
-  String get keyboardKeySelect => throw UnimplementedError();
+  String get keyboardKeyScrollLock => 'Scroll Lock';
 
   @override
-  String get keyboardKeySpace => throw UnimplementedError();
+  String get keyboardKeySelect => 'Select';
 
   @override
-  get scrimOnTapHintRaw => throw UnimplementedError();
+  String get keyboardKeySpace => 'Space';
+
+// For the following methods, if you don't need specific functionality,
+// simply return a placeholder string or null.
 
   @override
-  get bottomSheetLabel => throw UnimplementedError();
+  String get scrimOnTapHintRaw => 'Tap to dismiss';
 
   @override
-  get currentDateLabel => throw UnimplementedError();
+  String get bottomSheetLabel => 'Bottom sheet';
 
   @override
-  get keyboardKeyShift => throw UnimplementedError();
+  String get currentDateLabel => 'Current date';
 
   @override
-  get scrimLabel => throw UnimplementedError();
+  String get keyboardKeyShift => 'Shift';
 
   @override
-  // TODO: implement datePickerDateOrder
-  DatePickerDateOrder get datePickerDateOrder => throw UnimplementedError();
+  String get scrimLabel => 'Dismiss modal barrier';
 
   @override
-  // TODO: implement datePickerDateTimeOrder
+  DatePickerDateOrder get datePickerDateOrder => DatePickerDateOrder.mdy;
+
+  @override
   DatePickerDateTimeOrder get datePickerDateTimeOrder =>
-      throw UnimplementedError();
+      DatePickerDateTimeOrder.date_time_dayPeriod;
 
   @override
-  String datePickerDayOfMonth(int dayIndex, [int? weekDay]) {
-    // TODO: implement datePickerDayOfMonth
-    throw UnimplementedError();
-  }
+  String datePickerDayOfMonth(int dayIndex, [int? weekDay]) =>
+      dayIndex.toString();
 
   @override
-  String datePickerHour(int hour) {
-    // TODO: implement datePickerHour
-    throw UnimplementedError();
-  }
+  String datePickerHour(int hour) => hour.toString();
 
   @override
-  String? datePickerHourSemanticsLabel(int hour) {
-    // TODO: implement datePickerHourSemanticsLabel
-    throw UnimplementedError();
-  }
+  String? datePickerHourSemanticsLabel(int hour) => '$hour o\'clock';
 
   @override
-  String datePickerMediumDate(DateTime date) {
-    // TODO: implement datePickerMediumDate
-    throw UnimplementedError();
-  }
+  String datePickerMediumDate(DateTime date) =>
+      intl.DateFormat.yMd().format(date); // Using intl package for formatting
 
   @override
-  String datePickerMinute(int minute) {
-    // TODO: implement datePickerMinute
-    throw UnimplementedError();
-  }
+  String datePickerMinute(int minute) => minute.toString();
 
   @override
-  String? datePickerMinuteSemanticsLabel(int minute) {
-    // TODO: implement datePickerMinuteSemanticsLabel
-    throw UnimplementedError();
-  }
+  String? datePickerMinuteSemanticsLabel(int minute) => '$minute minutes';
 
   @override
-  String datePickerMonth(int monthIndex) {
-    // TODO: implement datePickerMonth
-    throw UnimplementedError();
-  }
+  String datePickerMonth(int monthIndex) =>
+      intl.DateFormat.MMMM().format(DateTime(0, monthIndex));
 
   @override
-  String datePickerYear(int yearIndex) {
-    // TODO: implement datePickerYear
-    throw UnimplementedError();
-  }
+  String datePickerYear(int yearIndex) => yearIndex.toString();
 
   @override
-  // TODO: implement noSpellCheckReplacementsLabel
-  String get noSpellCheckReplacementsLabel => throw UnimplementedError();
+  String get noSpellCheckReplacementsLabel => 'No replacements';
 
   @override
-  // TODO: implement searchTextFieldPlaceholderLabel
-  String get searchTextFieldPlaceholderLabel => throw UnimplementedError();
+  String get searchTextFieldPlaceholderLabel => 'Search';
 
   @override
-  String tabSemanticsLabel({required int tabIndex, required int tabCount}) {
-    // TODO: implement tabSemanticsLabel
-    throw UnimplementedError();
-  }
+  String tabSemanticsLabel({required int tabIndex, required int tabCount}) =>
+      'Tab $tabIndex of $tabCount';
 
   @override
-  String timerPickerHour(int hour) {
-    // TODO: implement timerPickerHour
-    throw UnimplementedError();
-  }
+  String timerPickerHour(int hour) => hour.toString();
 
   @override
-  String? timerPickerHourLabel(int hour) {
-    // TODO: implement timerPickerHourLabel
-    throw UnimplementedError();
-  }
+  String? timerPickerHourLabel(int hour) => '$hour hours';
 
   @override
-  // TODO: implement timerPickerHourLabels
-  List<String> get timerPickerHourLabels => throw UnimplementedError();
+  List<String> get timerPickerHourLabels =>
+      List.generate(24, (index) => index.toString());
 
   @override
-  String timerPickerMinute(int minute) {
-    // TODO: implement timerPickerMinute
-    throw UnimplementedError();
-  }
+  String timerPickerMinute(int minute) => minute.toString();
 
   @override
-  String? timerPickerMinuteLabel(int minute) {
-    // TODO: implement timerPickerMinuteLabel
-    throw UnimplementedError();
-  }
+  String? timerPickerMinuteLabel(int minute) => '$minute minutes';
 
   @override
-  // TODO: implement timerPickerMinuteLabels
-  List<String> get timerPickerMinuteLabels => throw UnimplementedError();
+  List<String> get timerPickerMinuteLabels =>
+      List.generate(60, (index) => index.toString());
 
   @override
-  String timerPickerSecond(int second) {
-    // TODO: implement timerPickerSecond
-    throw UnimplementedError();
-  }
+  String timerPickerSecond(int second) => second.toString();
 
   @override
-  String? timerPickerSecondLabel(int second) {
-    // TODO: implement timerPickerSecondLabel
-    throw UnimplementedError();
-  }
+  String? timerPickerSecondLabel(int second) => '$second seconds';
 
   @override
-  // TODO: implement timerPickerSecondLabels
-  List<String> get timerPickerSecondLabels => throw UnimplementedError();
+  List<String> get timerPickerSecondLabels =>
+      List.generate(60, (index) => index.toString());
 
   @override
-  // TODO: implement todayLabel
-  String get todayLabel => throw UnimplementedError();
+  String get todayLabel => 'Today';
 
   @override
-  // TODO: implement collapsedHint
-  String get collapsedHint => throw UnimplementedError();
+  String get collapsedHint => 'Collapsed';
 
   @override
-  // TODO: implement expandedHint
-  String get expandedHint => throw UnimplementedError();
+  String get expandedHint => 'Expanded';
 
   @override
-  // TODO: implement expansionTileCollapsedHint
-  String get expansionTileCollapsedHint => throw UnimplementedError();
+  String get expansionTileCollapsedHint => 'Tap to expand';
 
   @override
-  // TODO: implement expansionTileCollapsedTapHint
-  String get expansionTileCollapsedTapHint => throw UnimplementedError();
+  String get expansionTileCollapsedTapHint => 'Collapsed, tap to expand';
 
   @override
-  // TODO: implement expansionTileExpandedHint
-  String get expansionTileExpandedHint => throw UnimplementedError();
+  String get expansionTileExpandedHint => 'Tap to collapse';
 
   @override
-  // TODO: implement expansionTileExpandedTapHint
-  String get expansionTileExpandedTapHint => throw UnimplementedError();
+  String get expansionTileExpandedTapHint => 'Expanded, tap to collapse';
 
   @override
-  // TODO: implement scanTextButtonLabel
-  String get scanTextButtonLabel => throw UnimplementedError();
+  String get scanTextButtonLabel => 'Scan text';
 
   @override
-  String datePickerStandaloneMonth(int monthIndex) {
-    // TODO: implement datePickerStandaloneMonth
-    throw UnimplementedError();
-  }
+  String datePickerStandaloneMonth(int monthIndex) =>
+      intl.DateFormat.MMMM().format(DateTime(0, monthIndex));
 
   @override
-  // TODO: implement lookUpButtonLabel
-  String get lookUpButtonLabel => throw UnimplementedError();
+  String get lookUpButtonLabel => 'Look up';
 
   @override
-  // TODO: implement menuDismissLabel
-  String get menuDismissLabel => throw UnimplementedError();
+  String get menuDismissLabel => 'Dismiss menu';
 
   @override
-  // TODO: implement searchWebButtonLabel
-  String get searchWebButtonLabel => throw UnimplementedError();
+  String get searchWebButtonLabel => 'Search web';
 
   @override
-  // TODO: implement shareButtonLabel
-  String get shareButtonLabel => throw UnimplementedError();
+  String get shareButtonLabel => 'Share';
 }

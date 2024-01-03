@@ -36,6 +36,7 @@ class FontUtils {
       'si' => 'NotoSansSinhala',
       'hi' => 'NotoSansDevanagari',
       'lo' => 'Lao Pali Regular',
+      'ccp' => 'NotoSans Chakma',
       _ => null,
     };
   }

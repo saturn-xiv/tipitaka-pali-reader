@@ -169,6 +169,9 @@ flutter:
         - asset: assets/fonts/Roboto-Bold.ttf
         - asset: assets/fonts/Roboto-Italic.ttf
         - asset: assets/fonts/Roboto-BoldItalic.ttf
+    - family: NotoSans Chakma
+      fonts:
+        - asset: assets/fonts/NotoSansChakma-Regular.ttf      
 
 
 # fonts are licenced by bhikkhu Jayasaro.  He says it is okay to distribute and knows the copyrights.
