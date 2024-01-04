@@ -237,7 +237,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
                 return {
                   'color': colorHex,
-                  'font-weight': 'bold', // Makes text bold
+                  'font-weight': '500', // Makes text bold
                   'text-decoration': 'underline', // Underlines the text
                   'text-decoration-color':
                       colorHex, // Sets underline color to match the text

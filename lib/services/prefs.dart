@@ -110,7 +110,7 @@ const String defaltLastSyncDate = '197001010000';
 const bool defaultDisableVelthuis = false;
 const bool defaultPersitentSearchFilter = false;
 const bool defaultUseM3 = true;
-const String defaultRomanFontName = "DejaVu Sans";
+const String defaultRomanFontName = "Roboto";
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
