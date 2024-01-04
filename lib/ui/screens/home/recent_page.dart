@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/utils/font_utils.dart';
+import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
@@ -27,6 +29,8 @@ class RecentPage extends StatelessWidget {
         // drawer: Mobile.isPhone(context) ? AppDrawer(context) : null,
         body: Consumer<RecentPageViewModel>(builder: (context, vm, child) {
           final recents = vm.recents;
+          Script script = context.read<ScriptLanguageProvider>().currentScript;
+
           return recents.isEmpty
               ? Center(child: Text(AppLocalizations.of(context)!.recent))
               : ListView.separated(
@@ -45,13 +49,17 @@ class RecentPage extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: Prefs.uiFontSize - 1,
+                                    fontFamily:
+                                        FontUtils.getfontName(script: script),
                                   ))),
                       subtitle: Padding(
                           padding: const EdgeInsets.only(left: 5),
                           child: Text(
                               "${AppLocalizations.of(context)!.page}: ${localScript(context, recent.pageNumber.toString())}",
-                              style:
-                                  TextStyle(fontSize: Prefs.uiFontSize - 3))),
+                              style: TextStyle(
+                                  fontSize: Prefs.uiFontSize - 3,
+                                  fontFamily:
+                                      FontUtils.getfontName(script: script)))),
                       onTap: () => vm.openBook(recent, context),
                       trailing: IconButton(
                         onPressed: () => vm.delete(recent),

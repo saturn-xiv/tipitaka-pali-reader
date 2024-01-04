@@ -11,6 +11,7 @@ import 'package:tipitaka_pali/services/repositories/bookmark_repo.dart';
 import 'package:tipitaka_pali/ui/dialogs/bookmark_cloud_transfer_dialog.dart';
 import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
 import 'package:path/path.dart' as path;
+import 'package:tipitaka_pali/ui/widgets/pali_text_view.dart';
 
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
@@ -52,8 +53,8 @@ class BookmarkPage extends StatelessWidget {
                       return ListTile(
                         dense: true,
                         title: Text(bookmark.note),
-                        subtitle: Text(localScript(context,
-                            "${bookmark.name}  --  ${bookmark.pageNumber.toString()}")),
+                        subtitle: PaliTextView(
+                            "${bookmark.name}  --  ${bookmark.pageNumber.toString()}"),
                         onTap: () => vm.openBook(bookmark, context),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
