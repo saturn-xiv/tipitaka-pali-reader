@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/business_logic/models/bookmark.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/repositories/bookmark_fire_repo.dart';
 import 'package:tipitaka_pali/services/repositories/bookmark_repo.dart';
+import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BookmarkCloudTransferDialog extends StatefulWidget {
+  const BookmarkCloudTransferDialog({super.key});
+
   @override
-  _TransferDialogState createState() => _TransferDialogState();
+  TransferDialogState createState() => TransferDialogState();
 }
 
-class _TransferDialogState extends State<BookmarkCloudTransferDialog> {
+class TransferDialogState extends State<BookmarkCloudTransferDialog> {
   List<Bookmark> localBookmarks = [];
   List<Bookmark> cloudBookmarks = [];
+  ScrollController localListController = ScrollController();
 
   @override
   void initState() {
@@ -20,109 +26,120 @@ class _TransferDialogState extends State<BookmarkCloudTransferDialog> {
   }
 
   void fetchBookmarks() async {
-    // Fetch local bookmarks
     localBookmarks =
         await BookmarkDatabaseRepository(DatabaseHelper()).getBookmarks();
-    // Fetch cloud bookmarks
     cloudBookmarks = await BookmarkFireRepository().getBookmarks();
     setState(() {});
   }
 
   void downloadBookmark(Bookmark bookmark) async {
-    // Add logic to write the bookmark to the local database
     await BookmarkDatabaseRepository(DatabaseHelper()).insert(bookmark);
     fetchBookmarks();
+    scrollToBottom();
+  }
+
+  void scrollToBottom() {
+    if (localListController.hasClients) {
+      localListController.animateTo(
+        localListController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   void deleteFromCloud(Bookmark bookmark) async {
-    // Add logic to delete the bookmark from Firestore
     await BookmarkFireRepository().delete(bookmark);
     fetchBookmarks();
   }
 
   void transferToCloud(Bookmark bookmark) async {
     await BookmarkFireRepository().insert(bookmark);
-    // Optionally, remove the bookmark from local after transfer
-    // await BookmarkDatabaseRepository(DatabaseHelper()).delete(bookmark);
     fetchBookmarks();
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Transfer Bookmarks'),
-      content: Container(
-        width: double.maxFinite, // Ensures the dialog takes full width
+      title: Text(AppLocalizations.of(context)!.transferBookmarks),
+      content: SizedBox(
+        width: double.maxFinite,
         child: Column(
           children: [
-            Icon(Icons.sd_card),
-            Flexible(
-              child: Card(
-                child: SingleChildScrollView(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    //                  physics: NeverScrollableScrollPhysics(),
-                    itemCount: localBookmarks.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(localBookmarks[index].note),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.cloud_upload),
-                          onPressed: () =>
-                              transferToCloud(localBookmarks[index]),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
+            ColoredText(
+              AppLocalizations.of(context)!.localBookmarks,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              fontSize: Prefs.uiFontSize + 3,
+            ),
+            Expanded(
+              child: buildLocalBookmarksList(),
             ),
             const SizedBox(
-              height: 30,
+              height: 20,
             ),
-            Icon(Icons.cloud),
-            Flexible(
-              child: Card(
-                child: SingleChildScrollView(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    //                  physics: NeverScrollableScrollPhysics(),
-                    itemCount: cloudBookmarks.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(cloudBookmarks[index].note),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.cloud_download),
-                              onPressed: () =>
-                                  downloadBookmark(cloudBookmarks[index]),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () =>
-                                  deleteFromCloud(cloudBookmarks[index]),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
+            ColoredText(
+              AppLocalizations.of(context)!.cloudBookmarks,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              fontSize: Prefs.uiFontSize + 3,
+            ),
+            Expanded(
+              child: buildCloudBookmarksList(),
             ),
           ],
         ),
       ),
       actions: <Widget>[
         TextButton(
-          child: Text('Close'),
+          child: Text(AppLocalizations.of(context)!.close),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
       ],
+    );
+  }
+
+  Widget buildLocalBookmarksList() {
+    return Card(
+      child: ListView.builder(
+        itemCount: localBookmarks.length,
+        controller: localListController,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(localBookmarks[index].note),
+            trailing: IconButton(
+              icon: const Icon(Icons.cloud_upload),
+              onPressed: () => transferToCloud(localBookmarks[index]),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildCloudBookmarksList() {
+    return Card(
+      child: ListView.builder(
+        itemCount: cloudBookmarks.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(cloudBookmarks[index].note),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.cloud_download),
+                  onPressed: () => downloadBookmark(cloudBookmarks[index]),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () => deleteFromCloud(cloudBookmarks[index]),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
