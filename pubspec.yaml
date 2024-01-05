@@ -164,7 +164,10 @@ flutter:
         - asset: assets/fonts/NotoSansBrahmi-Regular.ttf
     - family: Roboto
       fonts:
-        - asset: assets/fonts/Roboto[ital,wdth,wght].ttf
+        - asset: assets/fonts/Roboto-Bold.ttf
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-BoldItalic.ttf
+        - asset: assets/fonts/Roboto-Italic.ttf
     - family: NotoSans Chakma
       fonts:
         - asset: assets/fonts/NotoSansChakma-Regular.ttf      
