@@ -52,6 +52,7 @@ class PaliWidgetFactory extends WidgetFactory {}
 class _PaliPageWidgetState extends State<PaliPageWidget> {
   final _myFactory = PaliWidgetFactory();
   String? highlightedWord;
+  String? lookupWord;
   int? highlightedWordIndex;
 
   final GlobalKey _textKey = GlobalKey();
@@ -170,14 +171,16 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
                 if (word == highlightedWord &&
                     highlightedWordIndex == wordIndex) {
                   setState(() {
-                    highlightedWord = null;
+                    // highlightedWord = null;
+                    lookupWord = null;
                     highlightedWordIndex = null;
                     _pageToHighlight = null;
                   });
                 } else {
                   setState(() {
                     widget.onClick?.call(word);
-                    highlightedWord = word;
+                    // highlightedWord = word;
+                    lookupWord = word;
                     highlightedWordIndex = wordIndex;
 
                     _pageToHighlight = widget.pageNumber;
@@ -267,6 +270,10 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
   String _formatContent(String content, Script script, BuildContext context) {
     content = _removeHiddenTags(content);
 
+    if (lookupWord != null) {
+      content = _addUnderline(content, lookupWord!);
+    }
+
     if (highlightedWord != null &&
         _pageToHighlight != null &&
         _pageToHighlight == widget.pageNumber) {
@@ -297,6 +304,18 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     // format of alternate pali
     // <span class="note">[bhagavāti (syā.), dī. ni. 1.157, abbhuggatākārena pana sameti]</span>
     return content.replaceAll(RegExp(r'<span class="note">\[.+?\]</span>'), '');
+  }
+
+  String _addUnderline(String content, String lookupWord) {
+    final hwi = highlightedWordIndex;
+    final underlinedHighlight =
+        '<span class = "underlined_highlight">$lookupWord</span>';
+    final matches = lookupWord.allMatches(content);
+    if (hwi != null && matches.length > hwi) {
+      final match = matches.elementAt(hwi);
+      return content.replaceRange(match.start, match.end, underlinedHighlight);
+    }
+    return content;
   }
 
   String _addHighlight2(
@@ -437,6 +456,8 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
           r'style="background: #FFE959; color: #000;"',
       // r'class="highlighted"':
       //     r'style="background: rgb(255, 114, 20); color: white;"',
+      r'class = "underlined_highlight"':
+          r'style="font-weight: bold; text-decoration: underline;"',
     };
 
     styleMaps.forEach((key, value) {
