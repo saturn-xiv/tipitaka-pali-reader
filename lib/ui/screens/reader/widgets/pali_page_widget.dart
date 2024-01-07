@@ -239,11 +239,13 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
                     '#${c.value.toRadixString(16).padLeft(8, '0').substring(2)}';
 
                 return {
-                  'color': colorHex,
-                  'font-weight': '500', // Makes text bold
+                  'color': 'inherit', // Uses the default text color
+                  'background-color':
+                      colorHex, // Highlights the text with colorHex
+                  'font-weight': '500', // Sets the font weight to 500
                   'text-decoration': 'underline', // Underlines the text
                   'text-decoration-color':
-                      colorHex, // Sets underline color to match the text
+                      colorHex, // Sets underline color to match colorHex
                 };
               }
               // no style
@@ -416,6 +418,11 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
   }
 
   String _changeToInlineStyle(String content) {
+    Color c = Theme.of(context).primaryColorLight;
+
+    String colorHex =
+        '#${c.value.toRadixString(16).padLeft(8, '0').substring(2)}';
+
     String styleColor = (Prefs.darkThemeOn) ? "white" : "black";
     final styleMaps = <String, String>{
       r'class="bld"': 'style="font-weight:bold; color: $styleColor;"',
@@ -456,8 +463,11 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
           r'style="background: #FFE959; color: #000;"',
       // r'class="highlighted"':
       //     r'style="background: rgb(255, 114, 20); color: white;"',
-      r'class = "underlined_highlight"':
-          r'style="font-weight: bold; text-decoration: underline;"',
+      r'class = "underlined_highlight"': r'style="font-weight: 500; color: ' +
+          colorHex +
+          '; text-decoration: underline; text-decoration-color: ' +
+          colorHex +
+          ';"'
     };
 
     styleMaps.forEach((key, value) {
