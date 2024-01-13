@@ -87,7 +87,7 @@ class _VerticalBookViewState extends State<VerticalBookView>
         target = start + page.index;
       }
 
-      readerViewController.onGoto(pageNumber: target);
+      readerViewController.gotoPage(pageNumber: target);
     });
 
     itemPositionsListener.itemPositions.addListener(_listenItemPosition);

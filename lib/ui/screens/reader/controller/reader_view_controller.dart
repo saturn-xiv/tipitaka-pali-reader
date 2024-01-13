@@ -227,21 +227,37 @@ class ReaderViewController extends ChangeNotifier {
     return await repository.getPageNumber(book.id, paragraphNumber);
   }
 
+  String getCaller(StackTrace currentStack) {
+    // Use like so *in* the function you want to find the caller of
+    // String caller = getCaller(StackTrace.current);
+    // debugPrint("Caller: $caller");
+    var stack = currentStack.toString();
+    var newLineNum = stack.indexOf("\n", 0);
+    var secondLine = stack.substring(newLineNum + 9, newLineNum + 100);
+    var endIndex = secondLine.indexOf(" ", 0);
+    return secondLine.substring(0, endIndex);
+  }
+
+  void gotoPage({required int pageNumber}) {
+    _currentPage.value = pageNumber;
+    final openedBookController = context.read<OpenningBooksProvider>();
+    openedBookController.update(
+        newPageNumber: _currentPage.value, bookUuid: bookUuid);
+  }
+
   Future<void> onGoto(
       {required int pageNumber,
       String? word,
       bool saveToRecent = true,
       String? bookUuid}) async {
     myLogger.i('current page number: $pageNumber');
-    // update current page
-    _currentPage.value = pageNumber;
+    String caller = getCaller(StackTrace.current);
+    debugPrint("Caller: $caller, pageNumber: $pageNumber, word: $word");
     _pageToHighlight = pageNumber;
+    // update current page
+    gotoPage(pageNumber: pageNumber);
     textToHighlight = word;
-    // update opened book list
-    final openedBookController = context.read<OpenningBooksProvider>();
-    openedBookController.update(
-        newPageNumber: _currentPage.value, bookUuid: bookUuid);
-    // persit
+     // persit
     if (saveToRecent) {
       await _saveToRecent();
     }
