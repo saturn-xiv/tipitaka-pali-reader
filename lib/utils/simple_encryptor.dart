@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:flutter/material.dart';
 
 class SimpleEncryptor {
   final encrypt.Key key;
@@ -30,10 +31,15 @@ class SimpleEncryptor {
   }
 
   String decryptText(String encryptedText) {
-    final encrypter = encrypt.Encrypter(encrypt.AES(key));
-    final decryptedText =
-        encrypter.decrypt(encrypt.Encrypted.from64(encryptedText), iv: iv);
-    return _removePadding(decryptedText); // Remove padding after decryption
+    try {
+      final encrypter = encrypt.Encrypter(encrypt.AES(key));
+      final decryptedText =
+          encrypter.decrypt(encrypt.Encrypted.from64(encryptedText), iv: iv);
+      return _removePadding(decryptedText); // Remove padding after decryption
+    } catch (e) {
+      debugPrint('Decryption failed: $e');
+      return encryptedText; // Return encrypted text if decryption fails
+    }
   }
 
   String _padText(String text, int divisor) {
