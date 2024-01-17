@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:firedart/firedart.dart';
 import 'package:tipitaka_pali/business_logic/models/bookmark.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
+import 'package:tipitaka_pali/utils/simple_encryptor.dart';
 
 class BookmarkFireRepository {
+  // Assuming AES-256, key should be 32 characters long
+  final SimpleEncryptor cryptoHelper = SimpleEncryptor(Prefs.password);
+
   BookmarkFireRepository();
 
   // Ensure user is signed in before any operation
@@ -27,7 +31,13 @@ class BookmarkFireRepository {
 
       for (var doc in documents) {
         Map<String, dynamic> data = doc.map;
-        data['id'] = doc.id; // Adding the document ID to the data map.
+        data['id'] = doc.id;
+        data['book_id'] = cryptoHelper.decryptText(data['book_id']);
+        data['name'] = cryptoHelper.decryptText(data['name']);
+        data['page_number'] =
+            int.parse(cryptoHelper.decryptText(data['page_number']));
+        data['note'] = cryptoHelper.decryptText(data['note']);
+        data['selected_text'] = cryptoHelper.decryptText(data['selected_text']);
         bookmarks.add(Bookmark.fromJson(data));
       }
       return bookmarks;
@@ -88,9 +98,11 @@ class BookmarkFireRepository {
           .collection('bookmarks');
 
       await userBookmarksCollection.add({
-        'book_id': bookmark.bookID,
-        'note': bookmark.note,
-        'page_number': bookmark.pageNumber,
+        'book_id': cryptoHelper.encryptText(bookmark.bookID),
+        'note': cryptoHelper.encryptText(bookmark.note),
+        'page_number': cryptoHelper.encryptText(bookmark.pageNumber.toString()),
+        'selected_text': cryptoHelper.encryptText(bookmark.selectedText),
+        'name': cryptoHelper.encryptText(bookmark.name),
       });
       return 1;
     } catch (e) {

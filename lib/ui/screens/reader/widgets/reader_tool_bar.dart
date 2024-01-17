@@ -155,7 +155,7 @@ class LowerRow extends StatelessWidget {
 
     //print(note);
     if (note != null) {
-      vm.saveToBookmark(note, selectedText);
+      vm.saveToBookmark(note, selectedText ?? '');
     }
   }
 

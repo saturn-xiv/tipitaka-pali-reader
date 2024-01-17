@@ -257,7 +257,7 @@ class ReaderViewController extends ChangeNotifier {
     // update current page
     gotoPage(pageNumber: pageNumber);
     textToHighlight = word;
-     // persit
+    // persit
     if (saveToRecent) {
       await _saveToRecent();
     }
@@ -293,14 +293,20 @@ class ReaderViewController extends ChangeNotifier {
   //   //await _saveToRecent();
   // }
 
-  void saveToBookmark(String note, String? name) {
+  void saveToBookmark(String note, String selectedText) async {
     BookmarkDatabaseRepository repository =
         BookmarkDatabaseRepository(DatabaseHelper());
+    BookDatabaseRepository bookRepository =
+        BookDatabaseRepository(DatabaseHelper());
+    String name = await bookRepository.getName(book.id);
+
     repository.insert(Bookmark(
-        bookID: book.id,
-        pageNumber: _currentPage.value,
-        note: note,
-        name: name ?? ''));
+      bookID: book.id,
+      pageNumber: _currentPage.value,
+      note: note,
+      name: name,
+      selectedText: selectedText,
+    ));
   }
 
   Future _saveToRecent() async {

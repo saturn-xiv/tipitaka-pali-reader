@@ -43,7 +43,7 @@ class BookmarkPageViewModel extends ChangeNotifier {
     // BUG FIX AND HACK  issue 217 https://github.com/bksubhuti/tipitaka-pali-reader/issues/217
     // highlighting words with numbers and small words interferes withthe
     // html code.  So this is a hack until we can do system based highlights
-    String textToHighlight = bookmark.name
+    String textToHighlight = bookmark.selectedText
         .split(' ') // Split the name into words
         .where((word) =>
             word.length >= 4 &&

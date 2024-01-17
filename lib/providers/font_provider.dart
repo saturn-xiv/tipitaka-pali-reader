@@ -6,7 +6,7 @@ class ReaderFontProvider extends ChangeNotifier {
   late int _fontSize;
   int get fontSize => _fontSize;
   String? selectedFont =
-      Prefs.romanFontName.isNotEmpty ? Prefs.romanFontName : 'Roboto';
+      Prefs.romanFontName.isNotEmpty ? Prefs.romanFontName : 'Open Sans';
 
   ReaderFontProvider() {
     _init();

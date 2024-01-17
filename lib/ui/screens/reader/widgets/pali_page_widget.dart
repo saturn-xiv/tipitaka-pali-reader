@@ -242,7 +242,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
                   'color': 'inherit', // Uses the default text color
                   'background-color':
                       colorHex, // Highlights the text with colorHex
-                  'font-weight': '500', // Sets the font weight to 500
+                  //'font-weight': '500', // Sets the font weight to 500
                   'text-decoration': 'underline', // Underlines the text
                   'text-decoration-color':
                       colorHex, // Sets underline color to match colorHex

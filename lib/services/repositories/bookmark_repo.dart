@@ -32,6 +32,7 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
           'name': bm.name,
           'page_number': bm.pageNumber,
           'note': bm.note,
+          'selected_text': bm.selectedText,
         },
         conflictAlgorithm: ConflictAlgorithm
             .replace); // Use ConflictAlgorithm.replace to handle conflicts

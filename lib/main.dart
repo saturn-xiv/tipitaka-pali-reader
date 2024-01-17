@@ -6,7 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
-import 'app.dart';
+import 'package:tipitaka_pali/app.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:devicelocale/devicelocale.dart';

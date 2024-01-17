@@ -18,6 +18,7 @@ class Bookmark {
   final int pageNumber;
   final String note;
   String name;
+  String selectedText;
 
   Bookmark({
     this.id = "n/a",
@@ -25,6 +26,7 @@ class Bookmark {
     this.pageNumber = 0,
     this.note = "n/a",
     this.name = 'Unknown', // Setting default value for bookName
+    this.selectedText = '',
   });
 
   @override
@@ -33,6 +35,7 @@ class Bookmark {
               name: $name
               pageNumber: $pageNumber
               note: $note
+              selected_text: $selectedText
     ''';
     //removed bookname for now.
   }
@@ -43,6 +46,7 @@ class Bookmark {
         'page_number': pageNumber,
         'note': note,
         'name': name,
+        'selected_text': selectedText,
       };
 
   factory Bookmark.fromJson(Map<dynamic, dynamic> json) {
@@ -52,6 +56,7 @@ class Bookmark {
       pageNumber: json['page_number'],
       note: json['note'],
       name: json['name'] ?? 'Unknown',
+      selectedText: json['selected_text'] ?? '',
     );
   }
 }
