@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/data/flex_theme_data.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/locale_change_notifier.dart';
-import 'package:tipitaka_pali/services/provider/script_language_provider.dart';
 
 import '../../utils/font_utils.dart';
 

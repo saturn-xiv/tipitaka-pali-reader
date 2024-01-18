@@ -15,12 +15,12 @@ class SimpleEncryptor {
   static encrypt.Key _deriveKey(String password) {
     // Use a cryptographic hash function like SHA-256
     var keyHash =
-        crypto.sha256.convert(utf8.encode(password + 'key_salt')).bytes;
+        crypto.sha256.convert(utf8.encode('${password}key_salt')).bytes;
     return encrypt.Key(Uint8List.fromList(keyHash.sublist(0, 32)));
   }
 
   static encrypt.IV _deriveIV(String password) {
-    var ivHash = crypto.sha256.convert(utf8.encode(password + 'iv_salt')).bytes;
+    var ivHash = crypto.sha256.convert(utf8.encode('${password}iv_salt')).bytes;
     return encrypt.IV(Uint8List.fromList(ivHash.sublist(0, 16)));
   }
 

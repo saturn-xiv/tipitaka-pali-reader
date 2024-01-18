@@ -20,7 +20,6 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
   int _tabsVisible = Prefs.tabsVisible;
   bool _disableVelthuis = Prefs.disableVelthuis;
   bool _persitentSearchFilter = Prefs.persitentSearchFilter;
-  double _currentSliderValue = 1;
   double _currentPanelFontSizeValue = 11;
   late double _currentUiFontSizeValue;
 

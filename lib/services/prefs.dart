@@ -59,6 +59,8 @@ const String disableVelthuisPref = 'disableVelthuis';
 const String persitentSearchFilterPref = 'persistentSearchFilter';
 const String useM3Pref = 'useM3';
 const String romanFontNamePref = "romanFontName";
+const String oldPasswordPref = 'oldPassword';
+const String oldUsernamePref = 'oldUsername';
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -111,6 +113,8 @@ const bool defaultDisableVelthuis = false;
 const bool defaultPersitentSearchFilter = false;
 const bool defaultUseM3 = true;
 const String defaultRomanFontName = "Open Sans";
+const String defaultOldPassword = '';
+const String defaultOldUsername = '';
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -372,6 +376,16 @@ class Prefs {
       instance.getString(romanFontNamePref) ?? defaultRomanFontName;
   static set romanFontName(String value) =>
       instance.setString(romanFontNamePref, value);
+
+  static String get oldPassword =>
+      instance.getString(oldPasswordPref) ?? defaultOldPassword;
+  static set oldPassword(String value) =>
+      instance.setString(oldPasswordPref, value);
+
+  static String get oldUsername =>
+      instance.getString(oldUsernamePref) ?? defaultOldUsername;
+  static set oldUsername(String value) =>
+      instance.setString(oldUsernamePref, value);
 
   // ===========================================================================
   // Helpers

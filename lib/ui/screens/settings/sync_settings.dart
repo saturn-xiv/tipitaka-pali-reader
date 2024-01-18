@@ -20,13 +20,20 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
   @override
   void initState() {
     super.initState();
-    _loadPreferences();
+    _emailController.text = Prefs.email; // Set initial value
+    // Check if the old password is available and the email matches
+    if (Prefs.oldPassword.isNotEmpty && Prefs.email == Prefs.oldUsername) {
+      _passwordController.text = Prefs.oldPassword;
+    }
   }
 
-  _loadPreferences() async {
+  _loadPreferences() {
     setState(() {
       _emailController.text = Prefs.email;
-      _passwordController.text = Prefs.password;
+      // Check if the old password is available and the email matches
+      if (Prefs.oldPassword.isNotEmpty && Prefs.email == Prefs.oldUsername) {
+        _passwordController.text = Prefs.oldPassword;
+      }
     });
   }
 
@@ -79,8 +86,14 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
               labelText: 'Email',
               icon: Icon(Icons.person),
             ),
-            onChanged: (value) async {
+            onChanged: (value) {
+              // Save the email to prefs and check for oldUsername match
               Prefs.email = value;
+              if (value == Prefs.oldUsername && Prefs.oldPassword.isNotEmpty) {
+                _passwordController.text = Prefs.oldPassword;
+              } else {
+                _passwordController.clear(); // Clear if it does not match
+              }
             },
           ),
           const SizedBox(height: 16.0),
@@ -108,10 +121,18 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                     // Create a FireUserRepository instance
                     FireUserRepository userRepository =
                         FireUserRepository(notifier: notifier);
-                    await userRepository.signIn(
+                    bool loginSuccess = await userRepository.signIn(
                       _emailController.text,
                       _passwordController.text,
                     );
+
+                    if (loginSuccess) {
+                      // Prompt user to save password
+                      // check to see if the old password and new one are the same
+                      if (Prefs.oldPassword != _passwordController.text) {
+                        await _showSavePasswordDialog();
+                      }
+                    }
                   },
             child: Text(Prefs.isSignedIn ? 'Sign Out' : 'Sign In'),
           ),
@@ -140,6 +161,43 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                 ),
         ],
       ),
+    );
+  }
+
+  Future<void> _showSavePasswordDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap a button to close the dialog.
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Save Password'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Would you like to save this password for future logins?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                Prefs.oldUsername =
+                    _emailController.text; // Save the current username
+                Prefs.oldPassword =
+                    _passwordController.text; // Save the current password
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

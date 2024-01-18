@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/rendering.dart';
 import 'package:html/dom.dart' as dom;
 

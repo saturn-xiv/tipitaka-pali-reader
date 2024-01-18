@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'package:tipitaka_pali/business_logic/models/bookmark.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
@@ -20,19 +19,17 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
   //final BookmarkDao dao;
 
   @override
-  Future<int> insert(Bookmark bm) async {
-    String formattedDate = DateFormat('yyyyMMddHHmmss').format(DateTime.now());
-
+  Future<int> insert(Bookmark bookmark) async {
     final db = await _databaseHelper.database;
 
     return await db.insert(
         'bookmark',
         {
-          'book_id': bm.bookID,
-          'name': bm.name,
-          'page_number': bm.pageNumber,
-          'note': bm.note,
-          'selected_text': bm.selectedText,
+          'book_id': bookmark.bookID,
+          'name': bookmark.name,
+          'page_number': bookmark.pageNumber,
+          'note': bookmark.note,
+          'selected_text': bookmark.selectedText,
         },
         conflictAlgorithm: ConflictAlgorithm
             .replace); // Use ConflictAlgorithm.replace to handle conflicts
@@ -76,7 +73,6 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
       WHERE sync_date < "$lastSyncDate" 
       ''';
     List<Map<String, dynamic>> maps = await db.rawQuery(sql);
-    List<Bookmark> defs = maps.map((x) => Bookmark.fromJson(x)).toList();
     return maps.map((entry) => Bookmark.fromJson(entry)).toList();
   }
 }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
-import 'package:tipitaka_pali/services/repositories/book_repo.dart';
 import 'package:tipitaka_pali/services/repositories/bookmark_repo.dart';
-import 'package:tipitaka_pali/services/repositories/bookmark_sync_repo.dart';
 
 import '../../ui/screens/home/openning_books_provider.dart';
 import '../../ui/screens/reader/mobile_reader_container.dart';
@@ -40,7 +38,7 @@ class BookmarkPageViewModel extends ChangeNotifier {
     final book = Book(id: bookmark.bookID, name: bookmark.name);
     final openningBookProvider = context.read<OpenningBooksProvider>();
 
-    // BUG FIX AND HACK  issue 217 https://github.com/bksubhuti/tipitaka-pali-reader/issues/217
+    // BUG FIX HACK  issue 217 https://github.com/bksubhuti/tipitaka-pali-reader/issues/217AND
     // highlighting words with numbers and small words interferes withthe
     // html code.  So this is a hack until we can do system based highlights
     String textToHighlight = bookmark.selectedText

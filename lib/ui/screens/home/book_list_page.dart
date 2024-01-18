@@ -16,7 +16,6 @@ import '../../../routes.dart';
 import '../../../services/database/database_helper.dart';
 import '../../../services/provider/script_language_provider.dart';
 import '../../../services/repositories/sutta_repository.dart';
-import '../../../utils/pali_script.dart';
 import '../../../utils/platform_info.dart';
 import '../../dialogs/about_tpr_dialog.dart';
 import '../../dialogs/sutta_list_dialog.dart';
