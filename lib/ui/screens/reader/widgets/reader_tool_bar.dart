@@ -594,8 +594,12 @@ class LowerRow extends StatelessWidget {
       overlayOpacity: 0.5,
       tooltip: 'Linked Books',
       heroTag: 'speed-dial-hero-tag',
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.black,
+      backgroundColor: Prefs.darkThemeOn
+          ? Colors.black
+          : Colors.white, // use system and theme colors
+      foregroundColor: Prefs.darkThemeOn
+          ? Colors.white
+          : Colors.black, // use system and theme colors
       //elevation: 8.0,
       //shape: const CircleBorder(),
       children: [
