@@ -169,7 +169,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
                 if (word == lookupWord && highlightedWordIndex == wordIndex) {
                   setState(() {
-                    // highlightedWord = null;
+                    highlightedWord = null;
                     lookupWord = null;
                     highlightedWordIndex = null;
                     _pageToHighlight = null;
@@ -177,7 +177,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
                 } else {
                   setState(() {
                     widget.onClick?.call(word);
-                    // highlightedWord = word;
+                    highlightedWord = null;
                     lookupWord = word;
                     highlightedWordIndex = wordIndex;
 
