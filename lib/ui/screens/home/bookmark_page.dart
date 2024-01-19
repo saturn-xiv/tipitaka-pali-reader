@@ -63,11 +63,9 @@ class BookmarkPage extends StatelessWidget {
                               tooltip:
                                   AppLocalizations.of(context)!.shareThisNote,
                               onPressed: () async {
-                                List<Bookmark> bm = [];
-                                bm.add(bookmark);
-                                String bookmarkJson =
-                                    definitionToJson(bookmarks);
-                                shareBookmarksAsFile(bm);
+                                Share.share(bookmark.toString(),
+                                    subject: AppLocalizations.of(context)!
+                                        .shareTitle);
                               },
                               icon: const Icon(Icons.share),
                             ),
