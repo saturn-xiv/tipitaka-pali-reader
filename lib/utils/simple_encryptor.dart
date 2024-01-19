@@ -38,7 +38,7 @@ class SimpleEncryptor {
       return _removePadding(decryptedText); // Remove padding after decryption
     } catch (e) {
       debugPrint('Decryption failed: $e');
-      return encryptedText; // Return encrypted text if decryption fails
+      return "404"; // Return 404 This will work with ints and strings passed in
     }
   }
 
