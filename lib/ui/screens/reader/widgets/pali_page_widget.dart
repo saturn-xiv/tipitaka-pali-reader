@@ -167,8 +167,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
                 final wordIndex = findOccurrencesBefore(word, target) +
                     occurrencesInTextBefore;
 
-                if (word == highlightedWord &&
-                    highlightedWordIndex == wordIndex) {
+                if (word == lookupWord && highlightedWordIndex == wordIndex) {
                   setState(() {
                     // highlightedWord = null;
                     lookupWord = null;
