@@ -16,12 +16,12 @@ class SyncSettingsView extends StatefulWidget {
 class _SyncSettingsViewState extends State<SyncSettingsView> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String selectedEmail = ''; // To store the selected email
 
   @override
   void initState() {
     super.initState();
-    _emailController.text = Prefs.email; // Set initial value
-    // Check if the old password is available and the email matches
+    _emailController.text = Prefs.email;
     if (Prefs.oldPassword.isNotEmpty && Prefs.email == Prefs.oldUsername) {
       _passwordController.text = Prefs.oldPassword;
     }
@@ -80,20 +80,64 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
         children: [
-          TextField(
-            controller: _emailController,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              icon: Icon(Icons.person),
-            ),
-            onChanged: (value) {
-              // Save the email to prefs and check for oldUsername match
-              Prefs.email = value;
-              if (value == Prefs.oldUsername && Prefs.oldPassword.isNotEmpty) {
-                _passwordController.text = Prefs.oldPassword;
-              } else {
-                _passwordController.clear(); // Clear if it does not match
+          Autocomplete<String>(
+            optionsBuilder: (TextEditingValue textEditingValue) {
+              if (textEditingValue.text.isEmpty) {
+                return const Iterable<String>.empty();
               }
+              return [Prefs.oldUsername].where((String option) {
+                return option.contains(textEditingValue.text.toLowerCase());
+              });
+            },
+            optionsViewBuilder: (BuildContext context,
+                AutocompleteOnSelected<String> onSelected,
+                Iterable<String> options) {
+              return Align(
+                alignment: Alignment.topLeft,
+                child: Material(
+                  elevation: 4.0,
+                  child: Container(
+                    width: 350, // Set the width of the suggestions box
+                    height:
+                        100, // Set the height of the suggestions box, optional
+                    child: ListView.builder(
+                      padding: EdgeInsets.all(10.0),
+                      itemCount: options.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final String option = options.elementAt(index);
+                        return GestureDetector(
+                          onTap: () {
+                            onSelected(option);
+                          },
+                          child: ListTile(
+                            title: Text(option),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              );
+            },
+            fieldViewBuilder: (
+              BuildContext context,
+              TextEditingController textEditingController,
+              FocusNode focusNode,
+              VoidCallback onFieldSubmitted,
+            ) {
+              return TextFormField(
+                controller: textEditingController,
+                focusNode: focusNode,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  icon: Icon(Icons.email),
+                ),
+              );
+            },
+            onSelected: (String selection) {
+              selectedEmail = selection;
+              _emailController.text = selectedEmail;
+              _passwordController.text = Prefs.oldPassword;
             },
           ),
           const SizedBox(height: 16.0),
@@ -199,5 +243,11 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
         );
       },
     );
+  }
+
+  List<String>? _getAutoFillEmailHint() {
+    List<String> hints = [];
+    hints.add(Prefs.oldPassword);
+    return hints;
   }
 }
