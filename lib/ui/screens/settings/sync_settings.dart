@@ -106,9 +106,9 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                 onChanged: (value) {
                   Prefs.email = value;
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  icon: Icon(Icons.email),
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.email,
+                  icon: const Icon(Icons.email),
                 ),
               );
             },
