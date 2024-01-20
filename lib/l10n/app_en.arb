@@ -146,5 +146,16 @@
   "selectRomanFont": "Select Roman Font",
   "transferBookmarks": "Transfer Bookmarks",
   "cloudBookmarks": "Cloud Bookmarks",
-  "localBookmarks": "Local Bookmarks"
+  "localBookmarks": "Local Bookmarks",
+  "cloudSettings": "Cloud Settings",
+  "resetPassword": "Request Password Reset",
+  "register": "Register",
+  "signIn": "Sign In",
+  "signOut": "Sign Out",
+  "email": "Email",
+  "password": "Password",
+  "submit": "Submit",
+  "savePassword": "Save Password",
+  "savePasswordMessage": "Would you like to save this password for future logins?",
+  "resetPasswordMessage": "Enter your email address to recieve a password reset email"
 }

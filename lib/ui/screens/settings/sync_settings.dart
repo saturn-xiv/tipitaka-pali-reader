@@ -3,8 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/user_notifier.dart';
 import 'package:tipitaka_pali/services/repositories/fire_user_repository.dart';
-
-import '../../widgets/colored_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SyncSettingsView extends StatefulWidget {
   const SyncSettingsView({super.key});
@@ -14,7 +13,7 @@ class SyncSettingsView extends StatefulWidget {
 }
 
 class _SyncSettingsViewState extends State<SyncSettingsView> {
-  final TextEditingController _emailController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String selectedEmail = ''; // To store the selected email
 
@@ -25,16 +24,6 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
     if (Prefs.oldPassword.isNotEmpty && Prefs.email == Prefs.oldUsername) {
       _passwordController.text = Prefs.oldPassword;
     }
-  }
-
-  _loadPreferences() {
-    setState(() {
-      _emailController.text = Prefs.email;
-      // Check if the old password is available and the email matches
-      if (Prefs.oldPassword.isNotEmpty && Prefs.email == Prefs.oldUsername) {
-        _passwordController.text = Prefs.oldPassword;
-      }
-    });
   }
 
   @override
@@ -48,7 +37,7 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
         child: ExpansionTile(
           leading: const Icon(Icons.sync),
           title: Text(
-            "Sync Settings",
+            AppLocalizations.of(context)!.cloudSettings,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           children: [
@@ -58,21 +47,6 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
         ),
       );
     });
-  }
-
-  Widget _getSignUpTile(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 32.0),
-      child: ListTile(
-        leading: const Icon(Icons.refresh),
-        title: const ColoredText("Sign In"), // Changed "Sign Up" to "Sign In"
-        focusColor: Theme.of(context).focusColor,
-        hoverColor: Theme.of(context).hoverColor,
-        onTap: () {
-          setState(() {});
-        },
-      ),
-    );
   }
 
   Widget _inputFields(UserNotifier notifier) {
@@ -96,12 +70,12 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                 alignment: Alignment.topLeft,
                 child: Material(
                   elevation: 4.0,
-                  child: Container(
+                  child: SizedBox(
                     width: 350, // Set the width of the suggestions box
                     height:
                         100, // Set the height of the suggestions box, optional
                     child: ListView.builder(
-                      padding: EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(10.0),
                       itemCount: options.length,
                       itemBuilder: (BuildContext context, int index) {
                         final String option = options.elementAt(index);
@@ -121,13 +95,17 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
             },
             fieldViewBuilder: (
               BuildContext context,
-              TextEditingController textEditingController,
+              TextEditingController controller,
               FocusNode focusNode,
               VoidCallback onFieldSubmitted,
             ) {
+              _emailController = controller; // Syncing with _emailController
               return TextFormField(
-                controller: textEditingController,
+                controller: _emailController,
                 focusNode: focusNode,
+                onChanged: (value) {
+                  Prefs.email = value;
+                },
                 decoration: const InputDecoration(
                   labelText: 'Email',
                   icon: Icon(Icons.email),
@@ -143,9 +121,9 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
           const SizedBox(height: 16.0),
           TextField(
             controller: _passwordController,
-            decoration: const InputDecoration(
-              labelText: 'Password',
-              icon: Icon(Icons.lock),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.password,
+              icon: const Icon(Icons.lock),
             ),
             obscureText: true,
             onChanged: (value) async {
@@ -178,7 +156,9 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                       }
                     }
                   },
-            child: Text(Prefs.isSignedIn ? 'Sign Out' : 'Sign In'),
+            child: Text(Prefs.isSignedIn
+                ? AppLocalizations.of(context)!.signOut
+                : AppLocalizations.of(context)!.signIn),
           ),
           const SizedBox(height: 16.0),
           (Prefs.isSignedIn)
@@ -190,18 +170,16 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                     await userRepository.register(
                         _emailController.text, _passwordController.text);
                   },
-                  child: const Text('Register'),
+                  child: Text(AppLocalizations.of(context)!.register),
                 ),
           const SizedBox(height: 16.0),
           (Prefs.isSignedIn)
               ? const SizedBox.shrink()
               : ElevatedButton(
                   onPressed: () async {
-                    FireUserRepository userRepository =
-                        FireUserRepository(notifier: notifier);
-                    await userRepository.resetPassword(_emailController.text);
+                    await _showResetPasswordDialog(notifier);
                   },
-                  child: const Text('Request Password Reset'),
+                  child: Text(AppLocalizations.of(context)!.resetPassword),
                 ),
         ],
       ),
@@ -214,23 +192,23 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
       barrierDismissible: false, // User must tap a button to close the dialog.
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Save Password'),
+          title: Text(AppLocalizations.of(context)!.savePassword),
           content: SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
-                Text('Would you like to save this password for future logins?'),
+              children: <Widget>[
+                Text(AppLocalizations.of(context)!.savePasswordMessage),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('No'),
+              child: Text(AppLocalizations.of(context)!.no),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('Yes'),
+              child: Text(AppLocalizations.of(context)!.yes),
               onPressed: () {
                 Prefs.oldUsername =
                     _emailController.text; // Save the current username
@@ -245,9 +223,52 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
     );
   }
 
-  List<String>? _getAutoFillEmailHint() {
-    List<String> hints = [];
-    hints.add(Prefs.oldPassword);
-    return hints;
+  Future<void> _showResetPasswordDialog(UserNotifier notifier) async {
+    TextEditingController resetEmailController = TextEditingController();
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // User must tap a button to close the dialog.
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context)!.resetPassword),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(AppLocalizations.of(context)!.resetPasswordMessage),
+                TextFormField(
+                  controller: resetEmailController,
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.email,
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(AppLocalizations.of(context)!.cancel),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(AppLocalizations.of(context)!.submit),
+              onPressed: () async {
+                if (resetEmailController.text.isNotEmpty) {
+                  // Perform password reset
+                  FireUserRepository userRepository =
+                      FireUserRepository(notifier: notifier);
+                  await userRepository.resetPassword(resetEmailController.text);
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
