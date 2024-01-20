@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
@@ -13,6 +14,7 @@ class SyncSettingsView extends StatefulWidget {
 }
 
 class _SyncSettingsViewState extends State<SyncSettingsView> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String selectedEmail = ''; // To store the selected email
@@ -50,150 +52,175 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
   }
 
   Widget _inputFields(UserNotifier notifier) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Column(
-        children: [
-          Autocomplete<String>(
-            initialValue: TextEditingValue(text: _emailController.text),
-            optionsBuilder: (TextEditingValue textEditingValue) {
-              if (textEditingValue.text.isEmpty) {
-                return const Iterable<String>.empty();
-              }
-              return [Prefs.oldUsername].where((String option) {
-                return option.contains(textEditingValue.text.toLowerCase());
-              });
-            },
-            optionsViewBuilder: (BuildContext context,
-                AutocompleteOnSelected<String> onSelected,
-                Iterable<String> options) {
-              return Align(
-                alignment: Alignment.topLeft,
-                child: Material(
-                  elevation: 4.0,
-                  child: SizedBox(
-                    width: 350, // Set the width of the suggestions box
-                    height:
-                        100, // Set the height of the suggestions box, optional
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(10.0),
-                      itemCount: options.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final String option = options.elementAt(index);
-                        return GestureDetector(
-                          onTap: () {
-                            onSelected(option);
-                          },
-                          child: ListTile(
-                            title: Text(option),
-                          ),
-                        );
-                      },
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Column(
+          children: [
+            Autocomplete<String>(
+              initialValue: TextEditingValue(text: _emailController.text),
+              optionsBuilder: (TextEditingValue textEditingValue) {
+                if (textEditingValue.text.isEmpty) {
+                  return const Iterable<String>.empty();
+                }
+                return [Prefs.oldUsername].where((String option) {
+                  return option.contains(textEditingValue.text.toLowerCase());
+                });
+              },
+              optionsViewBuilder: (BuildContext context,
+                  AutocompleteOnSelected<String> onSelected,
+                  Iterable<String> options) {
+                return Align(
+                  alignment: Alignment.topLeft,
+                  child: Material(
+                    elevation: 4.0,
+                    child: SizedBox(
+                      width: 350, // Set the width of the suggestions box
+                      height:
+                          100, // Set the height of the suggestions box, optional
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(10.0),
+                        itemCount: options.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final String option = options.elementAt(index);
+                          return GestureDetector(
+                            onTap: () {
+                              onSelected(option);
+                            },
+                            child: ListTile(
+                              title: Text(option),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-            fieldViewBuilder: (
-              BuildContext context,
-              TextEditingController controller,
-              FocusNode focusNode,
-              VoidCallback onFieldSubmitted,
-            ) {
-              _emailController = controller; // Syncing with _emailController
-              return TextFormField(
-                controller: _emailController,
-                focusNode: focusNode,
-                onChanged: (value) {
-                  Prefs.email = value;
-                },
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.email,
-                  icon: const Icon(Icons.email),
-                ),
-              );
-            },
-            onSelected: (String selection) {
-              selectedEmail = selection;
-              _emailController.text = selectedEmail;
-              _passwordController.text = Prefs.oldPassword;
-            },
-          ),
-          const SizedBox(height: 16.0),
-          TextField(
-            controller: _passwordController,
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.password,
-              icon: const Icon(Icons.lock),
-            ),
-            obscureText: true,
-            onChanged: (value) async {
-              Prefs.password = value;
-            },
-          ),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: Prefs.isSignedIn
-                ? () async {
-                    // Sign out logic
-                    FireUserRepository userRepository =
-                        FireUserRepository(notifier: notifier);
-                    await userRepository.signOut();
-                  }
-                : () async {
-                    // Sign in logic
-                    FireUserRepository userRepository =
-                        FireUserRepository(notifier: notifier);
-                    try {
-                      await userRepository.signIn(
-                          _emailController.text, _passwordController.text);
-                      _showSnackBar(AppLocalizations.of(context)!.loginSuccess);
+                );
+              },
+              fieldViewBuilder: (
+                BuildContext context,
+                TextEditingController controller,
+                FocusNode focusNode,
+                VoidCallback onFieldSubmitted,
+              ) {
+                _emailController = controller; // Syncing with _emailController
+                return TextFormField(
+                  controller: _emailController,
+                  focusNode: focusNode,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    if (!EmailValidator.validate(value)) {
+                      return 'Please enter a valid email';
+                    }
 
-                      // Additional logic for successful login
-                      if (Prefs.oldPassword != _passwordController.text) {
-                        await _showSavePasswordDialog();
+                    return null;
+                  },
+                  onChanged: (value) {
+                    Prefs.email = value;
+                  },
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.email,
+                    icon: const Icon(Icons.email),
+                  ),
+                );
+              },
+              onSelected: (String selection) {
+                selectedEmail = selection;
+                _emailController.text = selectedEmail;
+                _passwordController.text = Prefs.oldPassword;
+              },
+            ),
+            const SizedBox(height: 16.0),
+            TextFormField(
+              controller: _passwordController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password';
+                }
+                if (value.length < 8) {
+                  return 'Password must be at least 8 characters';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.password,
+                icon: const Icon(Icons.lock),
+              ),
+              obscureText: true,
+              onChanged: (value) async {
+                Prefs.password = value;
+              },
+            ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: Prefs.isSignedIn
+                  ? () async {
+                      // Sign out logic
+                      FireUserRepository userRepository =
+                          FireUserRepository(notifier: notifier);
+                      await userRepository.signOut();
+                    }
+                  : () async {
+                      // Sign in logic
+                      FireUserRepository userRepository =
+                          FireUserRepository(notifier: notifier);
+                      try {
+                        await userRepository.signIn(
+                            _emailController.text, _passwordController.text);
+                        _showSnackBar(
+                            AppLocalizations.of(context)!.loginSuccess);
+
+                        // Additional logic for successful login
+                        if (Prefs.oldPassword != _passwordController.text) {
+                          await _showSavePasswordDialog();
+                        }
+                      } catch (e) {
+                        // Handle login failure
+                        _showSnackBar(
+                            "${AppLocalizations.of(context)!.loginFailed} $e");
                       }
-                    } catch (e) {
-                      // Handle login failure
-                      _showSnackBar(
-                          "${AppLocalizations.of(context)!.loginFailed} $e");
-                    }
-                  },
-            child: Text(Prefs.isSignedIn
-                ? AppLocalizations.of(context)!.signOut
-                : AppLocalizations.of(context)!.signIn),
-          ),
-          const SizedBox(height: 16.0),
-          (Prefs.isSignedIn)
-              ? const SizedBox.shrink()
-              : ElevatedButton(
-                  onPressed: () async {
-                    FireUserRepository userRepository =
-                        FireUserRepository(notifier: notifier);
-                    try {
-                      await userRepository.register(
-                          _emailController.text, _passwordController.text);
-                      // Handle successful registration
-                      _showSnackBar(
-                          AppLocalizations.of(context)!.registrationSuccessful);
-                    } catch (e) {
-                      // Handle registration failure
-                      _showSnackBar(
-                          "${AppLocalizations.of(context)!.registrationFailed} $e");
-                    }
-                  },
-                  child: Text(AppLocalizations.of(context)!.register),
-                ),
-          const SizedBox(height: 16.0),
-          (Prefs.isSignedIn)
-              ? const SizedBox.shrink()
-              : ElevatedButton(
-                  onPressed: () async {
-                    await _showResetPasswordDialog(notifier);
-                  },
-                  child: Text(AppLocalizations.of(context)!.resetPassword),
-                ),
-        ],
+                    },
+              child: Text(Prefs.isSignedIn
+                  ? AppLocalizations.of(context)!.signOut
+                  : AppLocalizations.of(context)!.signIn),
+            ),
+            const SizedBox(height: 16.0),
+            (Prefs.isSignedIn)
+                ? const SizedBox.shrink()
+                : ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        FireUserRepository userRepository =
+                            FireUserRepository(notifier: notifier);
+                        try {
+                          await userRepository.register(
+                              _emailController.text, _passwordController.text);
+                          // Handle successful registration
+                          _showSnackBar(AppLocalizations.of(context)!
+                              .registrationSuccessful);
+                        } catch (e) {
+                          // Handle registration failure
+                          _showSnackBar(
+                              "${AppLocalizations.of(context)!.registrationFailed} $e");
+                        }
+                      }
+                    },
+                    child: Text(AppLocalizations.of(context)!.register),
+                  ),
+            const SizedBox(height: 16.0),
+            (Prefs.isSignedIn)
+                ? const SizedBox.shrink()
+                : ElevatedButton(
+                    onPressed: () async {
+                      await _showResetPasswordDialog(notifier);
+                    },
+                    child: Text(AppLocalizations.of(context)!.resetPassword),
+                  ),
+          ],
+        ),
       ),
     );
   }
