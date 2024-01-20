@@ -55,6 +55,7 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
       child: Column(
         children: [
           Autocomplete<String>(
+            initialValue: TextEditingValue(text: _emailController.text),
             optionsBuilder: (TextEditingValue textEditingValue) {
               if (textEditingValue.text.isEmpty) {
                 return const Iterable<String>.empty();
