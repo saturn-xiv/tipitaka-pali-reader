@@ -150,11 +150,15 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                     );
 
                     if (loginSuccess) {
+                      _showSnackBar(AppLocalizations.of(context)!.loginSuccess);
+
                       // Prompt user to save password
                       // check to see if the old password and new one are the same
                       if (Prefs.oldPassword != _passwordController.text) {
                         await _showSavePasswordDialog();
                       }
+                    } else {
+                      _showSnackBar(AppLocalizations.of(context)!.loginFailed);
                     }
                   },
             child: Text(Prefs.isSignedIn
@@ -168,8 +172,17 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                   onPressed: () async {
                     FireUserRepository userRepository =
                         FireUserRepository(notifier: notifier);
-                    await userRepository.register(
-                        _emailController.text, _passwordController.text);
+                    try {
+                      await userRepository.register(
+                          _emailController.text, _passwordController.text);
+                      // Handle successful registration
+                      _showSnackBar(
+                          AppLocalizations.of(context)!.registrationSuccessful);
+                    } catch (e) {
+                      // Handle registration failure
+                      _showSnackBar(
+                          "${AppLocalizations.of(context)!.registrationFailed} $e");
+                    }
                   },
                   child: Text(AppLocalizations.of(context)!.register),
                 ),
@@ -185,6 +198,11 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
         ],
       ),
     );
+  }
+
+  void _showSnackBar(String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Future<void> _showSavePasswordDialog() async {

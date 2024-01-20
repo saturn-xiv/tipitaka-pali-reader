@@ -104,7 +104,7 @@ class _AppState extends State<App> {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: [
+          supportedLocales: const [
             Locale('en', ''), // English, no country code
             Locale('my', ''), // Myanmar, no country code
             Locale('si', ''), // Sinahala, no country code
