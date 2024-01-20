@@ -34,7 +34,7 @@ void main() async {
   if (await InternetConnection().hasInternetAccess) {
     FirebaseAuth.initialize(apiKey!, VolatileStore());
     Firestore.initialize(projectId);
-    if (Prefs.email.isNotEmpty) {
+    if (Prefs.isSignedIn) {
       try {
         await FirebaseAuth.instance.signIn(Prefs.email, Prefs.password);
         Prefs.isSignedIn = true;

@@ -18,6 +18,7 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
   TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String selectedEmail = ''; // To store the selected email
+  String? _emailVerificationError; // Add this line
 
   @override
   void initState() {
@@ -110,10 +111,10 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                   focusNode: focusNode,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return AppLocalizations.of(context)!.enterEmail;
                     }
                     if (!EmailValidator.validate(value)) {
-                      return 'Please enter a valid email';
+                      return AppLocalizations.of(context)!.enterValidEmail;
                     }
 
                     return null;
@@ -124,6 +125,7 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                   decoration: InputDecoration(
                     labelText: AppLocalizations.of(context)!.email,
                     icon: const Icon(Icons.email),
+                    errorText: _emailVerificationError, // Add this line
                   ),
                 );
               },
@@ -138,10 +140,10 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
               controller: _passwordController,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter your password';
+                  return AppLocalizations.of(context)!.enterPassword;
                 }
                 if (value.length < 8) {
-                  return 'Password must be at least 8 characters';
+                  return AppLocalizations.of(context)!.passwordTooShort;
                 }
                 return null;
               },
@@ -170,17 +172,23 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                       try {
                         await userRepository.signIn(
                             _emailController.text, _passwordController.text);
+                        _emailVerificationError = "";
+
                         _showSnackBar(
                             AppLocalizations.of(context)!.loginSuccess);
-
                         // Additional logic for successful login
-                        if (Prefs.oldPassword != _passwordController.text) {
-                          await _showSavePasswordDialog();
-                        }
                       } catch (e) {
                         // Handle login failure
-                        _showSnackBar(
-                            "${AppLocalizations.of(context)!.loginFailed} $e");
+                        if (e.toString().contains("Email_not_verified")) {
+                          setState(() {
+                            _emailVerificationError =
+                                AppLocalizations.of(context)!
+                                    .verificationNeeded;
+                          });
+                        } else {
+                          _showSnackBar(
+                              "${AppLocalizations.of(context)!.loginFailed} $e");
+                        }
                       }
                     },
               child: Text(Prefs.isSignedIn

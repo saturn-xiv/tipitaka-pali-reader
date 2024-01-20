@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firedart/auth/user_gateway.dart';
 import 'package:flutter/material.dart';
 import 'package:firedart/firedart.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
@@ -38,17 +39,24 @@ class FireUserRepository {
       var auth = FirebaseAuth.instance;
       await auth.signIn(email, password);
       debugPrint('Successfully signed in!');
+
+      // Check if user's email is verified
+      User user = await auth.getUser();
+      if (!(user.emailVerified ?? false)) {
+        await sendUserVerificationRequest(); // Resend verification email
+        throw Exception('Email_not_verified');
+      }
+
       Prefs.email = email;
       Prefs.password = password;
       notifier.setSignedIn(true);
       notifier.message = "Successfully Signed in";
-      return Prefs.isSignedIn;
+      return true;
     } catch (e) {
       notifier.setSignedIn(false);
       notifier.message = e.toString();
-
       debugPrint('Error during sign-in: $e');
-      rethrow; // Optionally rethrow to handle the error on the UI side.
+      rethrow;
     }
   }
 
@@ -69,5 +77,34 @@ class FireUserRepository {
   resetPassword(String userEmail) async {
     var auth = FirebaseAuth.instance;
     await auth.resetPassword(userEmail);
+  }
+
+  // Function to send a verification email
+  Future<void> sendUserVerificationRequest() async {
+    try {
+      var auth = FirebaseAuth.instance;
+      if (auth.isSignedIn) {
+        await auth.requestEmailVerification();
+        debugPrint('Verification email sent!');
+      }
+    } catch (e) {
+      debugPrint('Error during email verification request: $e');
+      rethrow;
+    }
+  }
+
+  // Function to check if the user's email is verified
+  Future<bool> isVerified() async {
+    try {
+      var auth = FirebaseAuth.instance;
+      if (auth.isSignedIn) {
+        User user = await auth.getUser();
+        return user.emailVerified ?? false;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Error during email verification check: $e');
+      rethrow;
+    }
   }
 }

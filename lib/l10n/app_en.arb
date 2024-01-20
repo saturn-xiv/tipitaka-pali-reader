@@ -158,9 +158,13 @@
   "savePassword": "Save Password",
   "savePasswordMessage": "Would you like to save this password for future logins?",
   "resetPasswordMessage": "Enter your email address to recieve a password reset email",
-  "passwordTooShort": "Password is too short",
+  "passwordTooShort": "Password must be at least 8 characters",
   "loginFailed": "loginFailed",
   "registrationSuccessful": "Regisetration was successful.  Please sign in.",
   "registrationFailed": "Registration failed",
-  "loginSuccess": "Login Successful"
+  "loginSuccess": "Login Successful",
+  "verificationNeeded": "Email verification needed.\nCheck email or spam folder",
+  "enterPassword": "Please enter your password",
+  "enterEmail": "Please enter your email",
+  "enterValidEmail": "Please enter a valid email"
 }
