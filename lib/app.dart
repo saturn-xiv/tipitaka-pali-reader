@@ -18,7 +18,6 @@ import 'package:tipitaka_pali/services/provider/user_notifier.dart';
 import 'package:tipitaka_pali/ui/dialogs/show_tpr_message_dlg.dart';
 import 'package:tipitaka_pali/ui/screens/home/openning_books_provider.dart';
 import 'package:tipitaka_pali/unsupported_language_classes/ccp_intl.dart';
-import 'package:uni_links/uni_links.dart';
 
 import 'providers/font_provider.dart';
 import 'routes.dart';
@@ -122,7 +121,6 @@ class _AppState extends State<App> {
             future: fetchMessageIfNeeded(),
             builder:
                 (BuildContext context, AsyncSnapshot<TprMessage> snapshot) {
-              //initUniLinks(context);
               //simulateFileOpen(context);
 
               if (snapshot.connectionState == ConnectionState.done) {
@@ -140,34 +138,6 @@ class _AppState extends State<App> {
         );
       },
     );
-  }
-
-  Future<void> initUniLinks(BuildContext context) async {
-    _sub = uriLinkStream.listen((Uri? uri) async {
-      if (uri != null && uri.path.endsWith('.json')) {
-        try {
-          String filePath = uri.toFilePath();
-          File file = File(filePath);
-          String content = await file.readAsString();
-          List<Bookmark> importedBookmarks = definitionFromJson(content);
-
-          if (importedBookmarks.isNotEmpty) {
-            Bookmark bookmark = importedBookmarks.first;
-
-            // Access the BookmarkViewModel from the context
-            final vm =
-                Provider.of<BookmarkPageViewModel>(context, listen: false);
-            vm.openBook(bookmark, context);
-          } else {
-            debugPrint("json empty");
-          }
-        } catch (e) {
-          print("Error processing the file: $e");
-        }
-      }
-    }, onError: (err) {
-      print("Error in initUniLinks: $err");
-    });
   }
 
   Future<void> simulateFileOpen(BuildContext context) async {

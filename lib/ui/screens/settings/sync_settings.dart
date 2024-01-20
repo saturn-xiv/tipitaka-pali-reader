@@ -135,30 +135,28 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
           ElevatedButton(
             onPressed: Prefs.isSignedIn
                 ? () async {
-                    // Create a FireUserRepository instance
+                    // Sign out logic
                     FireUserRepository userRepository =
                         FireUserRepository(notifier: notifier);
                     await userRepository.signOut();
                   }
                 : () async {
-                    // Create a FireUserRepository instance
+                    // Sign in logic
                     FireUserRepository userRepository =
                         FireUserRepository(notifier: notifier);
-                    bool loginSuccess = await userRepository.signIn(
-                      _emailController.text,
-                      _passwordController.text,
-                    );
-
-                    if (loginSuccess) {
+                    try {
+                      await userRepository.signIn(
+                          _emailController.text, _passwordController.text);
                       _showSnackBar(AppLocalizations.of(context)!.loginSuccess);
 
-                      // Prompt user to save password
-                      // check to see if the old password and new one are the same
+                      // Additional logic for successful login
                       if (Prefs.oldPassword != _passwordController.text) {
                         await _showSavePasswordDialog();
                       }
-                    } else {
-                      _showSnackBar(AppLocalizations.of(context)!.loginFailed);
+                    } catch (e) {
+                      // Handle login failure
+                      _showSnackBar(
+                          "${AppLocalizations.of(context)!.loginFailed} $e");
                     }
                   },
             child: Text(Prefs.isSignedIn
