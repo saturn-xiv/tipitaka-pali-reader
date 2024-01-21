@@ -156,5 +156,14 @@
   "submit": "Submit",
   "savePassword": "Lưu mật khẩu",
   "savePasswordMessage": "Bạn có muốn lưu đăng nhập cho lần sau?",
-  "resetPasswordMessage": "Nhập email để nhận đặt lại mật khẩu."
+  "resetPasswordMessage": "Nhập email để nhận đặt lại mật khẩu.",
+  "passwordTooShort": "Mật khẩu phải có ít nhất 8 ký tự",
+  "loginFailed": "Đăng nhập thất bại",
+  "registrationSuccessful": "Đăng ký thành công.\nKiểm tra email hoặc thư mục spam của bạn để xác minh.\nSau đó vui lòng đăng nhập.",
+  "registrationFailed": "Đăng ký thất bại",
+  "loginSuccess": "Đăng nhập thành công",
+  "verificationNeeded": "Cần xác minh email.\nKiểm tra email hoặc thư mục spam\nĐăng nhập lại để gửi lại",
+  "enterPassword": "Vui lòng nhập mật khẩu của bạn",
+  "enterEmail": "Vui lòng nhập email của bạn",
+  "enterValidEmail": "Vui lòng nhập email hợp lệ"
 }

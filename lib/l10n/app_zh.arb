@@ -157,5 +157,14 @@
   "submit": "提交",
   "savePassword": "保存密码",
   "savePasswordMessage": "您希望为将来登录保存此密码吗？",
-  "resetPasswordMessage": "输入您的电子邮件地址以接收密码重置邮件"
+  "resetPasswordMessage": "Enter your email address to recieve a password reset email",
+  "passwordTooShort": "Password must be at least 8 characters",
+  "loginFailed": "loginFailed",
+  "registrationSuccessful": "Regisetration was successful.  Please sign in.",
+  "registrationFailed": "Registration failed",
+  "loginSuccess": "Login Successful",
+  "verificationNeeded": "Email verification needed.\nCheck email or spam folder",
+  "enterPassword": "Please enter your password",
+  "enterEmail": "Please enter your email",
+  "enterValidEmail": "Please enter a valid email"
 }
