@@ -30,17 +30,28 @@ class BookmarkPage extends StatefulWidget {
 
 class _BookmarkPageState extends State<BookmarkPage>
     with WidgetsBindingObserver {
+  bool _isCurrentlyMounted = true; // New variable to track mounted state
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _checkInternetConnectivity();
+    _isCurrentlyMounted = true;
   }
 
   @override
   void dispose() {
+    _isCurrentlyMounted = false; // Update mounted state
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _handleDialogClose() {
+    if (mounted) {
+      // Check if BookmarkPage is still mounted
+      context.read<BookmarkPageViewModel>().refreshBookmarks();
+    }
   }
 
   @override
@@ -71,7 +82,7 @@ class _BookmarkPageState extends State<BookmarkPage>
         ),
       ],
       child: Scaffold(
-        appBar: BookmarkAppBar(),
+        appBar: BookmarkAppBar(onDialogClose: _handleDialogClose),
         // Rydmike proposal: Consider converting the Drawer on Home screen
         //    to a Widget and add it also to other top level screens.
         // drawer: Mobile.isPhone(context) ? AppDrawer(context) : null,
@@ -139,7 +150,9 @@ class _BookmarkPageState extends State<BookmarkPage>
 }
 
 class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
-  BookmarkAppBar({super.key});
+  final VoidCallback onDialogClose;
+
+  const BookmarkAppBar({super.key, required this.onDialogClose});
 
   @override
   Widget build(BuildContext context) {
@@ -296,10 +309,7 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
                 builder: (BuildContext context) {
                   return BookmarkCloudTransferDialog();
                 },
-              ).then((_) {
-                // Refresh bookmarks after the dialog is closed
-                context.read<BookmarkPageViewModel>().refreshBookmarks();
-              });
+              ).then((_) => onDialogClose()); // Use the callback here
             })
         : const SizedBox.shrink();
   }
