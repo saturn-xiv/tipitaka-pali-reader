@@ -30,7 +30,10 @@ class FireUserRepository {
       notifier.setSignedIn(false);
     } catch (e) {
       debugPrint('Error during sign-out: $e');
-      rethrow; // Optionally rethrow to handle the error on the UI side.
+      Prefs.isSignedIn = false;
+      Prefs.email = "";
+      Prefs.password = "";
+      //rethrow; // Optionally rethrow to handle the error on the UI side.
     }
   }
 

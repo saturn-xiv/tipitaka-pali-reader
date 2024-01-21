@@ -160,10 +160,10 @@
   "resetPasswordMessage": "Enter your email address to recieve a password reset email",
   "passwordTooShort": "Password must be at least 8 characters",
   "loginFailed": "loginFailed",
-  "registrationSuccessful": "Regisetration was successful.  Please sign in.",
+  "registrationSuccessful": "Regisetration was successful.\nCheck your email or spam folder to verify.\nThen please sign in.",
   "registrationFailed": "Registration failed",
   "loginSuccess": "Login Successful",
-  "verificationNeeded": "Email verification needed.\nCheck email or spam folder",
+  "verificationNeeded": "Email verification needed.\nCheck email or spam folder\nSign in again to resend",
   "enterPassword": "Please enter your password",
   "enterEmail": "Please enter your email",
   "enterValidEmail": "Please enter a valid email"
