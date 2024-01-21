@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,8 +21,43 @@ import '../../../business_logic/view_models/bookmark_page_view_model.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import '../../dialogs/confirm_dialog.dart';
 
-class BookmarkPage extends StatelessWidget {
+class BookmarkPage extends StatefulWidget {
   const BookmarkPage({super.key});
+
+  @override
+  State<BookmarkPage> createState() => _BookmarkPageState();
+}
+
+class _BookmarkPageState extends State<BookmarkPage>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkInternetConnectivity();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkInternetConnectivity();
+    }
+  }
+
+  void _checkInternetConnectivity() async {
+    bool hasInternet = await InternetConnection().hasInternetAccess;
+    if (!hasInternet) {
+      setState(() {
+        Prefs.isSignedIn = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -242,6 +278,15 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget getCloudButton(BuildContext context) {
+    InternetConnection().hasInternetAccess.then((bInternet) {
+      if (!bInternet) {
+        Prefs.isSignedIn = false;
+        // You can also add more code here to handle the scenario when there is no internet.
+      } else {
+        // Handle the scenario when there is internet.
+      }
+    });
+
     return (Prefs.isSignedIn)
         ? IconButton(
             icon: const Icon(Icons.cloud),

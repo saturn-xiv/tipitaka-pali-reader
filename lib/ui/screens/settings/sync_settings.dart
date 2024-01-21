@@ -177,6 +177,9 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                         _showSnackBar(
                             AppLocalizations.of(context)!.loginSuccess);
                         // Additional logic for successful login
+                        if (Prefs.password != Prefs.oldPassword) {
+                          _showSavePasswordDialog();
+                        }
                       } catch (e) {
                         // Handle login failure
                         if (e.toString().contains("Email_not_verified")) {

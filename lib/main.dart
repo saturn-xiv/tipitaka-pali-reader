@@ -41,12 +41,13 @@ void main() async {
         debugPrint('login success');
       } catch (e) {
         Prefs.isSignedIn = false;
-        Prefs.email = '';
-        Prefs.password = '';
         debugPrint(e.toString());
       }
     }
-  } // Initialize SharedPrefs instance.
+  } else {
+    Prefs.isSignedIn = false;
+  }
+// Initialize SharedPrefs instance.
   // This view is only called one time.
   // before the select language and before the select script are created
   // set the prefs to the current local if any OS but Win (not supported.)
