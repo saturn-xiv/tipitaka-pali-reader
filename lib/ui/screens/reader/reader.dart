@@ -19,6 +19,7 @@ import '../../../providers/navigation_provider.dart';
 import '../../../services/database/database_helper.dart';
 import '../../../services/provider/script_language_provider.dart';
 import '../../../services/repositories/book_repo.dart';
+import '../../../services/repositories/bookmark_repo.dart';
 import '../../../services/repositories/page_content_repo.dart';
 import '../../../utils/pali_script.dart';
 import '../../../utils/platform_info.dart';
@@ -69,6 +70,7 @@ class Reader extends StatelessWidget {
       create: (context) => ReaderViewController(
           context: context,
           bookRepository: BookDatabaseRepository(DatabaseHelper()),
+          bookmarkRepository: BookmarkDatabaseRepository(DatabaseHelper()),
           pageContentRepository:
               PageContentDatabaseRepository(DatabaseHelper()),
           book: book,

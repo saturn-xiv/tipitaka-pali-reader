@@ -27,7 +27,7 @@ class TransferDialogState extends State<BookmarkCloudTransferDialog> {
 
   void fetchBookmarks() async {
     localBookmarks =
-        await BookmarkDatabaseRepository(DatabaseHelper()).getBookmarks();
+        await BookmarkDatabaseRepository(DatabaseHelper()).getAllBookmark();
     cloudBookmarks = await BookmarkFireRepository().getBookmarks();
     setState(() {});
   }

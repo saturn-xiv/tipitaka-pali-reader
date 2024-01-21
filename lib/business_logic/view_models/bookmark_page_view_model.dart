@@ -18,7 +18,7 @@ class BookmarkPageViewModel extends ChangeNotifier {
   List<Bookmark> get bookmarks => _bookmarks;
 
   Future<void> fetchBookmarks() async {
-    _bookmarks = await repository.getBookmarks();
+    _bookmarks = await repository.getAllBookmark();
     notifyListeners();
   }
 
@@ -62,7 +62,7 @@ class BookmarkPageViewModel extends ChangeNotifier {
           MaterialPageRoute(builder: (_) => const MobileReaderContainer()));
     }
     // update bookmarks
-    _bookmarks = await repository.getBookmarks();
+    _bookmarks = await repository.getAllBookmark();
     notifyListeners();
   }
 

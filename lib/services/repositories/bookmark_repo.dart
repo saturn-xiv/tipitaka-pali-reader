@@ -9,7 +9,8 @@ abstract class BookmarkRepository {
 
   Future<int> deleteAll();
 
-  Future<List<Bookmark>> getBookmarks();
+  Future<List<Bookmark>> getAllBookmark();
+  Future<List<Bookmark>> getBookmarks({required String bookID});
   Future<List<Bookmark>> getBookmarksAfter(String lastSyncDate);
 }
 
@@ -38,7 +39,8 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
   @override
   Future<int> delete(Bookmark bookmark) async {
     final db = await _databaseHelper.database;
-    String sql = '''
+    String sql =
+        '''
          Delete from bookmark 
          Where book_id = '${bookmark.bookID}' and page_number = ${bookmark.pageNumber} and note = '${bookmark.note}' and name = '${bookmark.name}'
          ''';
@@ -55,7 +57,7 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
   }
 
   @override
-  Future<List<Bookmark>> getBookmarks() async {
+  Future<List<Bookmark>> getAllBookmark() async {
     final db = await _databaseHelper.database;
     List<Map<String, dynamic>> maps =
         await db.query('bookmark'); // Using the query helper method
@@ -63,11 +65,20 @@ class BookmarkDatabaseRepository extends BookmarkRepository {
     List<Bookmark> bookmarks = maps.map((x) => Bookmark.fromJson(x)).toList();
     return bookmarks;
   }
+  @override
+  Future<List<Bookmark>> getBookmarks({required String bookID}) async {
+    final db = await _databaseHelper.database;
+    List<Map<String, dynamic>> maps =
+        await db.query('bookmark', where: 'book_id = ?', whereArgs: [bookID]);
+    List<Bookmark> bookmarks = maps.map((x) => Bookmark.fromJson(x)).toList();
+    return bookmarks;
+  }
 
   @override
   Future<List<Bookmark>> getBookmarksAfter(String lastSyncDate) async {
     final db = await _databaseHelper.database;
-    String sql = '''
+    String sql =
+        '''
       SELECT * 
       FROM bookmark
       WHERE sync_date < "$lastSyncDate" 

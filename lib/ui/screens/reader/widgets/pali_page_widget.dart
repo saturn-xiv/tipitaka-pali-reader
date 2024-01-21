@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:html/dom.dart' as dom;
 
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/business_logic/models/book.dart';
+import 'package:tipitaka_pali/business_logic/models/bookmark.dart';
 import 'package:tipitaka_pali/providers/font_provider.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
@@ -46,13 +48,51 @@ class PaliPageWidget extends StatefulWidget {
 
 final nonPali = RegExp(r'[.,:;\"{}\[\]<>\/\(\) ]+', caseSensitive: false);
 
-class PaliWidgetFactory extends WidgetFactory {}
+class PaliWidgetFactory extends WidgetFactory {
+  @override
+  InlineSpan? buildTextSpan({
+    List<InlineSpan>? children,
+    GestureRecognizer? recognizer,
+    TextStyle? style,
+    String? text,
+  }) {
+    if (text?.isEmpty == true) {
+      if (children == null) {
+        return null;
+      }
+      if (children.length == 1) {
+        return children.first;
+      }
+    }
+
+    if (text != null &&
+        text.startsWith('note_icon') == true &&
+        children == null) {
+      String bookmark = text.replaceFirst('note_icon', '');
+      return WidgetSpan(
+          child: Tooltip(
+        message: bookmark,
+        child: const Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: Icon(Icons.note, color: Colors.red)),
+      ));
+    }
+    return TextSpan(
+      children: children,
+      mouseCursor: recognizer != null ? SystemMouseCursors.click : null,
+      recognizer: recognizer,
+      style: style,
+      text: text,
+    );
+  }
+}
 
 class _PaliPageWidgetState extends State<PaliPageWidget> {
   final _myFactory = PaliWidgetFactory();
   String? highlightedWord;
   String? lookupWord;
   int? highlightedWordIndex;
+  late List<Bookmark> bookmarks;
 
   final GlobalKey _textKey = GlobalKey();
   int? _pageToHighlight;
@@ -63,6 +103,11 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     highlightedWord = widget.highlightedWord;
     highlightedWordIndex = null;
     _pageToHighlight = widget.pageToHighlight;
+
+    bookmarks = Provider.of<ReaderViewController>(context, listen: false)
+        .bookmarks
+        .where((bm) => bm.pageNumber == widget.pageNumber)
+        .toList();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _myFactory.onTapUrl('#goto');
@@ -552,8 +597,15 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     pageContent = pageContent.replaceAll(
         RegExp('<a name="[MPTV](\\d+)\\.(\\d+)"></a>'), '');
 
+    final bookmarkTags = bookmarks.foldIndexed(
+        '',
+        (index, previousValue, element) =>
+            '$previousValue<a id="bookmark_${index + 1}">note_icon${element.note}</a>');
+
+    print('bookmark: $bookmarkTags');
+
     return '''
-            <p style="color:brown;text-align:right;">${_getScriptPageNumber(widget.pageNumber)}</p>
+            <p style="color:brown;text-align:right;">$bookmarkTags ${_getScriptPageNumber(widget.pageNumber)}</p>
             <div id="page_content">
               $pageContent
             </div>

@@ -32,6 +32,7 @@ class ReaderViewController extends ChangeNotifier {
   final BuildContext context;
   final PageContentRepository pageContentRepository;
   final BookRepository bookRepository;
+  final BookmarkRepository bookmarkRepository;
   final Book book;
   int? initialPage;
   String? textToHighlight;
@@ -60,6 +61,7 @@ class ReaderViewController extends ChangeNotifier {
   // will be use this for scroll to this
   String? tocHeader;
   late List<PageContent> pages;
+  late List<Bookmark> bookmarks;
   late int numberOfPage;
 
   bool _showSearch = false;
@@ -77,6 +79,7 @@ class ReaderViewController extends ChangeNotifier {
     required this.context,
     required this.pageContentRepository,
     required this.bookRepository,
+    required this.bookmarkRepository,
     required this.book,
     this.initialPage,
     this.textToHighlight,
@@ -159,6 +162,7 @@ class ReaderViewController extends ChangeNotifier {
 
   Future<void> loadDocument() async {
     pages = List.unmodifiable(await _loadPages(book.id));
+    await _loadBookmarks(book.id);
     numberOfPage = pages.length;
     await _loadBookInfo(book.id);
     isloadingFinished = true;
@@ -188,6 +192,17 @@ class ReaderViewController extends ChangeNotifier {
     book.lastPage = await bookRepository.getLastPage(bookID);
     _currentPage = ValueNotifier(initialPage ?? book.firstPage);
     _pageToHighlight = initialPage;
+  }
+
+  Future<void> _loadBookmarks(String bookID) async {
+    bookmarks = await bookmarkRepository.getBookmarks(bookID: bookID);
+    print('bookmark count: ${bookmarks.length}');
+  }
+
+  List<Bookmark> getBookmarks(int pageNumber) {
+    return bookmarks
+        .where((element) => element.pageNumber == pageNumber)
+        .toList();
   }
 
   Future<int> getFirstParagraph() async {

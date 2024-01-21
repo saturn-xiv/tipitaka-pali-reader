@@ -45,7 +45,7 @@ class BookmarkSyncRepo {
     if (Prefs.isSignedIn) {
       return _fireRepo.getBookmarks();
     }
-    return _sqlRepo.getBookmarks();
+    return _sqlRepo.getAllBookmark();
   }
 
 /*
