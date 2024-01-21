@@ -67,6 +67,8 @@ class FireUserRepository {
     try {
       var auth = FirebaseAuth.instance;
       await auth.signUp(email, password);
+      // need to send automatic verification
+      await sendUserVerificationRequest();
 
       debugPrint('Successfully registered!');
       Prefs.email = "";

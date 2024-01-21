@@ -234,7 +234,10 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
   }
 
   void _showSnackBar(String message) {
-    final snackBar = SnackBar(content: Text(message));
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 6),
+    );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
