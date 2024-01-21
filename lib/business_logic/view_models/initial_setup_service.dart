@@ -66,7 +66,7 @@ class InitialSetupService {
       //bookmarks.addAll(await databaseHelper.backup(tableName: 'bookmark'));
       final DatabaseHelper databaseHelper = DatabaseHelper();
       final bmDbRepo = BookmarkDatabaseRepository(databaseHelper);
-      bookmarks = await bmDbRepo.getBookmarks();
+      bookmarks = await bmDbRepo.getAllBookmark();
 
       // backup history to memory
       /*try {
