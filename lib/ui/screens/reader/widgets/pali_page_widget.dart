@@ -21,6 +21,7 @@ import '../../../../services/provider/theme_change_notifier.dart';
 import '../../../../utils/pali_script.dart';
 import '../../../../utils/pali_script_converter.dart';
 import '../controller/reader_view_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PaliPageWidget extends StatefulWidget {
   final int pageNumber;
@@ -49,6 +50,7 @@ class PaliPageWidget extends StatefulWidget {
 final nonPali = RegExp(r'[.,:;\"{}\[\]<>\/\(\) ]+', caseSensitive: false);
 
 class PaliWidgetFactory extends WidgetFactory {
+  Function(String)? showDialogCallback;
   @override
   InlineSpan? buildTextSpan({
     List<InlineSpan>? children,
@@ -65,17 +67,19 @@ class PaliWidgetFactory extends WidgetFactory {
       }
     }
 
-    if (text != null &&
-        text.startsWith('note_icon') == true &&
-        children == null) {
+    if (text != null && text.startsWith('note_icon') && children == null) {
       String bookmark = text.replaceFirst('note_icon', '');
       return WidgetSpan(
-          child: Tooltip(
-        message: bookmark,
-        child: const Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: Icon(Icons.note, color: Colors.red)),
-      ));
+        child: IconButton(
+          icon: Icon(Icons.note, color: Colors.red),
+          tooltip: _insertBookmarkNewlines(bookmark),
+          onPressed: () {
+            if (showDialogCallback != null) {
+              showDialogCallback!(bookmark);
+            }
+          },
+        ),
+      );
     }
     return TextSpan(
       children: children,
@@ -149,6 +153,28 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
     final fontName = FontUtils.getfontName(
         script: context.read<ScriptLanguageProvider>().currentScript);
+// callback for showdlg
+    _myFactory.showDialogCallback = (String bookmark) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.bookmark),
+            content: SingleChildScrollView(
+              child: Text(_insertBookmarkNewlines(bookmark)),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(AppLocalizations.of(context)!.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    };
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -600,10 +626,9 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     final bookmarkTags = bookmarks.foldIndexed(
         '',
         (index, previousValue, element) =>
-            '$previousValue<a id="bookmark_${index + 1}">note_icon${element.note}</a>');
+            '$previousValue<a id="bookmark_${index + 1}">note_icon${element.toString()}</a>');
 
     print('bookmark: $bookmarkTags');
-
     return '''
             <p style="color:brown;text-align:right;">$bookmarkTags ${_getScriptPageNumber(widget.pageNumber)}</p>
             <div id="page_content">
@@ -731,6 +756,14 @@ writeHistory(String word, String context, int page, String bookId) async {
       DictionaryHistoryDatabaseRepository(dbh: DatabaseHelper());
 
   await dictionaryHistoryRepository.insert(word, context, page, bookId);
+}
+
+String _insertBookmarkNewlines(String bookmark) {
+  return bookmark
+      .replaceAll("name:", "\nname:")
+      .replaceAll("pageNumber:", "\npageNumber:")
+      .replaceAll("note:", "\nnote:")
+      .replaceAll("selected_text:", "\nselected_text:");
 }
 
 class ReplaceResult {
