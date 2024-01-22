@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/user_notifier.dart';
@@ -166,32 +167,40 @@ class _SyncSettingsViewState extends State<SyncSettingsView> {
                       await userRepository.signOut();
                     }
                   : () async {
-                      // Sign in logic
-                      FireUserRepository userRepository =
-                          FireUserRepository(notifier: notifier);
-                      try {
-                        await userRepository.signIn(
-                            _emailController.text, _passwordController.text);
-                        _emailVerificationError = "";
+                      // check to see if there is internet.
+                      // if not give snack bar.
+                      if (await InternetConnection().hasInternetAccess) {
+                        // Sign in logic
+                        FireUserRepository userRepository =
+                            FireUserRepository(notifier: notifier);
+                        try {
+                          await userRepository.signIn(
+                              _emailController.text, _passwordController.text);
+                          _emailVerificationError = "";
 
-                        _showSnackBar(
-                            AppLocalizations.of(context)!.loginSuccess);
-                        // Additional logic for successful login
-                        if (Prefs.password != Prefs.oldPassword) {
-                          _showSavePasswordDialog();
-                        }
-                      } catch (e) {
-                        // Handle login failure
-                        if (e.toString().contains("Email_not_verified")) {
-                          setState(() {
-                            _emailVerificationError =
-                                AppLocalizations.of(context)!
-                                    .verificationNeeded;
-                          });
-                        } else {
                           _showSnackBar(
-                              "${AppLocalizations.of(context)!.loginFailed} $e");
+                              AppLocalizations.of(context)!.loginSuccess);
+                          // Additional logic for successful login
+                          if (Prefs.password != Prefs.oldPassword) {
+                            _showSavePasswordDialog();
+                          }
+                        } catch (e) {
+                          // Handle login failure
+                          if (e.toString().contains("Email_not_verified")) {
+                            setState(() {
+                              _emailVerificationError =
+                                  AppLocalizations.of(context)!
+                                      .verificationNeeded;
+                            });
+                          } else {
+                            _showSnackBar(
+                                "${AppLocalizations.of(context)!.loginFailed} $e");
+                          }
                         }
+                      } // if internet connection
+                      else {
+                        _showSnackBar(
+                            AppLocalizations.of(context)!.turnOnInternet);
                       }
                     },
               child: Text(Prefs.isSignedIn
