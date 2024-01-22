@@ -107,7 +107,7 @@
   "wouldYouLikeToInstall": "Would you like to install extesnsions?",
   "multiHighlight": "Multiple Highlight",
   "velthuisHelp": "Velthuis System:\naa=ā, ii=ī uu=ū\n \n.t = ṭ, .d = ḍ\n.n = ṇ, .l = ḷ .m = ṃ\n\"n = ṅ, ~n = ñ",
-  "turnOnInternet": "Please turn on the internet to download files",
+  "turnOnInternet": "Please turn on the internet",
   "updateComplete": "Update is complete",
   "addingWordlist": "Adding English wordlist",
   "englishWordListComplete": "English wordlist is complete",
