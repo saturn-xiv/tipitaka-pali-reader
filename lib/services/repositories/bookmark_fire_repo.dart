@@ -86,12 +86,7 @@ class BookmarkFireRepository {
       var auth = FirebaseAuth.instance;
       User user = await auth.getUser();
       debugPrint('User: $user');
-/*
-      if (user.emailVerified == false) {
-        debugPrint('Email not verified!');
-        throw Exception('Email not verified!');
-      }
-*/
+
       var userBookmarksCollection = Firestore.instance
           .collection('users')
           .document(Prefs.email)

@@ -25,12 +25,23 @@ class SimpleEncryptor {
   }
 
   String encryptText(String text) {
-    final paddedText = _padText(text, 4); // Pad before encryption
-    final encrypter = encrypt.Encrypter(encrypt.AES(key));
-    return encrypter.encrypt(paddedText, iv: iv).base64;
+    if (text.isEmpty) {
+      return ''; // Return empty string if text is empty
+    }
+    try {
+      final paddedText = _padText(text, 4); // Pad before encryption
+      final encrypter = encrypt.Encrypter(encrypt.AES(key));
+      return encrypter.encrypt(paddedText, iv: iv).base64;
+    } catch (e) {
+      debugPrint('Encryption failed: $e');
+      return "404"; // Indicate failure, adjust according to your needs
+    }
   }
 
   String decryptText(String encryptedText) {
+    if (encryptedText.isEmpty) {
+      return ''; // Return empty string if encryptedText is empty
+    }
     try {
       final encrypter = encrypt.Encrypter(encrypt.AES(key));
       final decryptedText =
