@@ -22,6 +22,10 @@ const searchResultRoute = '/search_result_view';
 const settingRoute = '/setting';
 const dictionaryRoute = '/dictionary';
 
+final GlobalKey<NavigatorState> searchNavigationKey = GlobalKey();
+final GlobalKey<NavigatorState> settingNavigationKey = GlobalKey();
+
+// Not supporting of web version of this app, using named route is not essentail.
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final arguments = settings.arguments;
@@ -77,5 +81,34 @@ class RouteGenerator {
         break;
     }
     return MaterialPageRoute(builder: (BuildContext context) => screen);
+  }
+}
+
+class NestedNavigationHelper {
+  NestedNavigationHelper._();
+  static void goto(
+      {required BuildContext context,
+      required MaterialPageRoute route,
+      required GlobalKey<NavigatorState> navkey}) {
+    if (Mobile.isPhone(context)) {
+      Navigator.push(context, route);
+      return;
+    }
+
+    navkey.currentState!.push(route);
+  }
+
+  static Widget buildPage(
+      {required BuildContext context,
+      required Widget screen,
+      required GlobalKey<NavigatorState> key}) {
+    if (Mobile.isPhone(context)) return screen;
+
+    return Navigator(
+      key: key,
+      onGenerateRoute: (setting) {
+        return MaterialPageRoute(builder: (_) => screen);
+      },
+    );
   }
 }

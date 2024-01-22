@@ -62,18 +62,30 @@ class _DetailNavigationPaneState extends State<DetailNavigationPane> {
       case 2:
         return const BookmarkPage();
       case 3:
-        if (PlatformInfo.isDesktop || Mobile.isTablet(context)) {
-          return const Navigator(
-              initialRoute: '/search',
-              onGenerateRoute: RouteGenerator.generateRoute);
-        } else {
-          return const SearchPage();
-        }
+        return NestedNavigationHelper.buildPage(
+          context: context,
+          screen: const SearchPage(),
+          key: searchNavigationKey,
+        );
+      // if (PlatformInfo.isDesktop || Mobile.isTablet(context)) {
+      //   return Navigator(
+      //     key: searchNavigationKey,
+      //     onGenerateRoute: (setting) {
+      //       return MaterialPageRoute(builder: (_) => const SearchPage());
+      //     },
+      //   );
+      // } else {
+      //   return const SearchPage();
+      // }
       case 4:
         return const DictionaryPage();
       // only in desktop
       case 5:
-        return const SettingPage();
+        return NestedNavigationHelper.buildPage(
+          context: context,
+          screen: const SettingPage(),
+          key: settingNavigationKey,
+        );
       default:
         throw Error();
     }

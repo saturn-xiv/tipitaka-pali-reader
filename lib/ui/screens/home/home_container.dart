@@ -20,43 +20,42 @@ class Home extends StatelessWidget {
   const Home({super.key});
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => NavigationProvider()),
-      ],
-      child: CallbackShortcuts(
-        bindings: {
-          SingleActivator(LogicalKeyboardKey.keyW,
-              meta: Platform.isMacOS ? true : false,
-              control:
-                  Platform.isWindows || Platform.isLinux ? true : false): () =>
-              context.read<OpenningBooksProvider>().remove(),
-        },
-        child: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: FlexColorScheme.themedSystemNavigationBar(
-            context,
-            systemNavBarStyle: FlexSystemNavBarStyle.transparent,
-            useDivider: false,
-          ),
-          child: Focus(
-            autofocus: true,
-            child: SafeArea(
-              top: PlatformInfo.isDesktop || Mobile.isTablet(context),
-              bottom: PlatformInfo.isDesktop || Mobile.isTablet(context),
-              child: WillPopScope(
-                onWillPop: () async {
-                  return await _onWillPop(context);
-                },
-                child: Scaffold(
-                    body: PlatformInfo.isDesktop || Mobile.isTablet(context)
-                        ? const DesktopHomeView()
-                        : const DetailNavigationPane(
-                            navigationCount: 5,
-                          ),
-                    bottomNavigationBar:
-                        !(PlatformInfo.isDesktop || Mobile.isTablet(context))
-                            ? const MobileNavigationBar()
-                            : null),
+    return CallbackShortcuts(
+      bindings: {
+        SingleActivator(LogicalKeyboardKey.keyW,
+            meta: Platform.isMacOS ? true : false,
+            control:
+                Platform.isWindows || Platform.isLinux ? true : false): () =>
+            context.read<OpenningBooksProvider>().remove(),
+      },
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: FlexColorScheme.themedSystemNavigationBar(
+          context,
+          systemNavBarStyle: FlexSystemNavBarStyle.transparent,
+          useDivider: false,
+        ),
+        child: Focus(
+          autofocus: true,
+          child: SafeArea(
+            top: PlatformInfo.isDesktop || Mobile.isTablet(context),
+            bottom: PlatformInfo.isDesktop || Mobile.isTablet(context),
+            child: WillPopScope(
+              onWillPop: () async {
+                return await _onWillPop(context);
+              },
+              child: Builder(
+                builder: (context) {
+                  return Scaffold(
+                      body: PlatformInfo.isDesktop || Mobile.isTablet(context)
+                          ? const DesktopHomeView()
+                          : const DetailNavigationPane(
+                              navigationCount: 5,
+                            ),
+                      bottomNavigationBar:
+                          !(PlatformInfo.isDesktop || Mobile.isTablet(context))
+                              ? const MobileNavigationBar()
+                              : null);
+                }
               ),
             ),
           ),
