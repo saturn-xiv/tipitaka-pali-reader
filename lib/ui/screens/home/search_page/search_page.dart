@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/routes.dart';
+import 'package:tipitaka_pali/ui/screens/search_result/search_result_page.dart';
 import 'package:tipitaka_pali/ui/widgets/value_listenser.dart';
 
 import '../../../../business_logic/view_models/search_page_view_model.dart';
-import '../../../../inner_routes.dart';
 import '../../../../services/database/database_helper.dart';
 import '../../../../services/prefs.dart';
 import '../../../../services/repositories/search_history_repo.dart';
 import '../../../../utils/pali_script.dart';
 import '../../../../utils/pali_script_converter.dart';
+import '../../../../utils/platform_info.dart';
 import '../../../../utils/script_detector.dart';
 import '../../../widgets/search_type_segmented_widget.dart';
 import '../widgets/search_bar.dart';
@@ -248,12 +250,28 @@ class _SearchPageState extends State<SearchPage>
           script: inputScriptLanguage, text: searchWord);
     }
     vm.onSubmmited(searchWord);
-    // open search results
-    Navigator.pushNamed(context, searchResultRoute, arguments: {
-      'searchWord': searchWord,
-      'queryMode': vm.queryMode,
-      'wordDistance': vm.wordDistance,
-    });
+
+    var route = MaterialPageRoute(
+        builder: (_) => SearchResultPage(
+            searchWord: searchWord,
+            queryMode: vm.queryMode,
+            wordDistance: vm.wordDistance));
+
+    NestedNavigationHelper.goto(
+        context: context, route: route, navkey: searchNavigationKey);
+
+    // if (PlatformInfo.isDesktop || Mobile.isTablet(context)) {
+    //   searchNavigationKey.currentState?.push(route);
+    // } else {
+    //   Navigator.push(context, route);
+    // }
+
+    // // open search results
+    // Navigator.pushNamed(context, searchResultRoute, arguments: {
+    //   'searchWord': searchWord,
+    //   'queryMode': vm.queryMode,
+    //   'wordDistance': vm.wordDistance,
+    // });
   }
 
   @override

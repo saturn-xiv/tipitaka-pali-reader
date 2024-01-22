@@ -20,6 +20,7 @@ import 'package:tipitaka_pali/ui/screens/home/openning_books_provider.dart';
 import 'package:tipitaka_pali/unsupported_language_classes/ccp_intl.dart';
 
 import 'providers/font_provider.dart';
+import 'providers/navigation_provider.dart';
 import 'routes.dart';
 import 'services/provider/locale_change_notifier.dart';
 import 'services/provider/script_language_provider.dart';
@@ -66,6 +67,8 @@ class _AppState extends State<App> {
     return MultiProvider(
       providers: [
         Provider<StreamingSharedPreferences>.value(value: widget.rxPref),
+        ChangeNotifierProvider<NavigationProvider>(
+            create: (_) => NavigationProvider()),
         ChangeNotifierProvider<InitialSetupNotifier>(
             create: (_) => InitialSetupNotifier()),
         ChangeNotifierProvider<ThemeChangeNotifier>(

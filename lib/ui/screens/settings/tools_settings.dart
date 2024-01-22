@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tipitaka_pali/routes.dart';
+import 'package:tipitaka_pali/ui/screens/dictionary/dictionary_page.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/flashcard_setup_view.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/text_converter_view.dart';
 import 'package:tipitaka_pali/ui/screens/settings/download_view.dart';
@@ -56,10 +58,10 @@ class _ToolsSettingsViewState extends State<ToolsSettingsView> {
       padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const DownloadView()),
-          );
+          final route =
+              MaterialPageRoute(builder: (context) => const DownloadView());
+          NestedNavigationHelper.goto(
+              context: context, route: route, navkey: settingNavigationKey);
         },
         leading: const Icon(Icons.extension),
         title: ColoredText(
@@ -78,15 +80,18 @@ class _ToolsSettingsViewState extends State<ToolsSettingsView> {
       padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
         leading: const Icon(Icons.speaker_notes_outlined),
-        title: ColoredText(AppLocalizations.of(context)!.flashcards,style: Theme.of(context).textTheme.titleLarge,),
+        title: ColoredText(
+          AppLocalizations.of(context)!.flashcards,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         focusColor: Theme.of(context).focusColor,
         hoverColor: Theme.of(context).hoverColor,
         trailing: const Icon(Icons.navigate_next),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const FlashCardSetupView()),
-          );
+          final route = MaterialPageRoute(
+              builder: (context) => const FlashCardSetupView());
+          NestedNavigationHelper.goto(
+              context: context, route: route, navkey: settingNavigationKey);
         },
       ),
     );
@@ -97,10 +102,10 @@ class _ToolsSettingsViewState extends State<ToolsSettingsView> {
       padding: const EdgeInsets.only(left: 32.0),
       child: ListTile(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const TextConverterView()),
-          );
+          final route = MaterialPageRoute(
+              builder: (context) => const TextConverterView());
+          NestedNavigationHelper.goto(
+              context: context, route: route, navkey: settingNavigationKey);
         },
         leading: const Icon(Icons.translate),
         title: ColoredText(
