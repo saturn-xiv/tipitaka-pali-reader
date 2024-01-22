@@ -3,6 +3,7 @@ import 'package:flutter/services.dart'; // For clipboard copy
 import 'package:tipitaka_pali/utils/pali_script.dart';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tipitaka_pali/utils/script_detector.dart';
 
 class TextConverterView extends StatefulWidget {
   const TextConverterView({super.key});
@@ -28,11 +29,12 @@ class TextConverterViewState extends State<TextConverterView> {
 
   void updateOutputText() {
     String? inputText = inputController.text;
+    Script inputScript = ScriptDetector.getLanguage(inputText);
 
     if (inputText.isNotEmpty && inputText.isNotEmpty) {
       // Convert the input text to Roman script first
       String romanScript = PaliScript.getRomanScriptFrom(
-        script: selectedInputScript!.script,
+        script: inputScript,
         text: inputText,
       );
 
@@ -64,29 +66,6 @@ class TextConverterViewState extends State<TextConverterView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(AppLocalizations.of(context)!.inputScript),
-                  const SizedBox(width: 16.0),
-                  DropdownButton<ScriptInfo>(
-                    value: selectedInputScript,
-                    onChanged: (ScriptInfo? newValue) {
-                      setState(() {
-                        selectedInputScript = newValue;
-                      });
-                      updateOutputText();
-                    },
-                    items: listOfScripts.map<DropdownMenuItem<ScriptInfo>>(
-                        (ScriptInfo scriptInfo) {
-                      return DropdownMenuItem<ScriptInfo>(
-                        value: scriptInfo,
-                        child: Text(scriptInfo.nameInLocale),
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ),
               const SizedBox(height: 16.0),
               TextField(
                 controller: inputController,
@@ -134,10 +113,10 @@ class TextConverterViewState extends State<TextConverterView> {
                 controller: outputController,
                 maxLines: 5,
                 readOnly: true,
-                decoration: InputDecoration(
+/*                decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.outputScript,
                   alignLabelWithHint: true,
-                ),
+                ),*/
               ),
             ],
           ),
