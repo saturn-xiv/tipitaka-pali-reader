@@ -61,7 +61,6 @@ class _DetailNavigationPaneState extends State<DetailNavigationPane> {
   }
 
   Widget _getPage(BuildContext context, int index) {
-    cleanSettingNavigationStack();
     switch (index) {
       case 0:
         return BookListPage();
