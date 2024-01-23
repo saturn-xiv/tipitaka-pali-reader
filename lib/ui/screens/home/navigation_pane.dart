@@ -22,6 +22,7 @@ class DetailNavigationPane extends StatefulWidget {
 class _DetailNavigationPaneState extends State<DetailNavigationPane> {
   late final NavigationProvider navigationProvider;
   late final PageController pageController;
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +40,12 @@ class _DetailNavigationPaneState extends State<DetailNavigationPane> {
 
   void _pageChangeListener() {
     int index = context.read<NavigationProvider>().currentNavigation;
+    int settingIndex =
+        context.read<NavigationProvider>().indexOfSettingNavigation;
+    if (index == settingIndex) {
+      // debugPrint('clicked setting icon');
+      cleanSettingNavigationStack();
+    }
     pageController.jumpToPage(index);
   }
 
@@ -54,6 +61,7 @@ class _DetailNavigationPaneState extends State<DetailNavigationPane> {
   }
 
   Widget _getPage(BuildContext context, int index) {
+    cleanSettingNavigationStack();
     switch (index) {
       case 0:
         return BookListPage();
@@ -81,6 +89,7 @@ class _DetailNavigationPaneState extends State<DetailNavigationPane> {
         return const DictionaryPage();
       // only in desktop
       case 5:
+        // clean navigation stacks
         return NestedNavigationHelper.buildPage(
           context: context,
           screen: const SettingPage(),
@@ -88,6 +97,13 @@ class _DetailNavigationPaneState extends State<DetailNavigationPane> {
         );
       default:
         throw Error();
+    }
+  }
+
+  void cleanSettingNavigationStack() {
+    while (settingNavigationKey.currentState?.canPop() == true) {
+      settingNavigationKey.currentState?.pop();
+      debugPrint('clean setting navigation stack');
     }
   }
 }
