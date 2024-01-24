@@ -152,9 +152,6 @@ class _VerticalBookViewState extends State<VerticalBookView>
             children: [
               Expanded(
                 child: SelectionArea(
-                  focusNode: FocusNode(
-                    canRequestFocus: true,
-                  ),
                   contextMenuBuilder: (context, selectableRegionState) {
                     return AdaptiveTextSelectionToolbar.buttonItems(
                       anchors: selectableRegionState.contextMenuAnchors,
