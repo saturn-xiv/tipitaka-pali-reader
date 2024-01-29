@@ -66,8 +66,8 @@ class BookmarkPageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void refreshBookmarks() {
-    fetchBookmarks();
+  void refreshBookmarks() async{
+    await fetchBookmarks();
     notifyListeners();
   }
 }

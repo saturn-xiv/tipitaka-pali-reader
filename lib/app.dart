@@ -82,7 +82,7 @@ class _AppState extends State<App> {
         ChangeNotifierProvider<OpenningBooksProvider>(
             create: (_) => OpenningBooksProvider()),
         ChangeNotifierProvider<BookmarkPageViewModel>(
-          create: (_) => BookmarkPageViewModel(),
+          create: (_) => BookmarkPageViewModel()..fetchBookmarks(),
           lazy: false,
         ),
         ChangeNotifierProvider<UserNotifier>(create: (_) => UserNotifier()),

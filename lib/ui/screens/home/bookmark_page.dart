@@ -74,9 +74,10 @@ class _BookmarkPageState extends State<BookmarkPage>
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<BookmarkPageViewModel>(
-          create: (_) => BookmarkPageViewModel()..fetchBookmarks(),
-        ),
+        // duplicate: already provided at app.dart
+        // ChangeNotifierProvider<BookmarkPageViewModel>(
+        //   create: (_) => BookmarkPageViewModel()..fetchBookmarks(),
+        // ),
         ChangeNotifierProvider<BookmarkNotifier>(
           create: (_) => BookmarkNotifier(),
         ),
