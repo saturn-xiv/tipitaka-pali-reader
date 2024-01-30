@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/app.dart';
+import 'package:tipitaka_pali/business_logic/view_models/bookmark_page_view_model.dart';
 import 'package:tipitaka_pali/services/repositories/bookmark_repo.dart';
 
 import '../../../../business_logic/models/book.dart';
@@ -322,6 +323,9 @@ class ReaderViewController extends ChangeNotifier {
       name: name,
       selectedText: selectedText,
     ));
+    if (context.mounted) {
+      context.read<BookmarkPageViewModel>().refreshBookmarks();
+    }
   }
 
   Future _saveToRecent() async {
