@@ -35,6 +35,7 @@ class _BookmarkPageState extends State<BookmarkPage>
   @override
   void initState() {
     super.initState();
+    Provider.of<BookmarkPageViewModel>(context, listen: false).fetchBookmarks();
     WidgetsBinding.instance.addObserver(this);
     _checkInternetConnectivity();
     _isCurrentlyMounted = true;
