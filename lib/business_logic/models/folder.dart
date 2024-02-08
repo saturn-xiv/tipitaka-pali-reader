@@ -13,11 +13,16 @@ class Folder {
 
   // Factory method to create a Folder object from a Map (e.g., database query result)
   factory Folder.fromJson(Map<String, dynamic> json) {
-    return Folder(
-      id: json['id'],
-      name: json['name'],
-      parentFolderId: json['parent_folder_id'],
-    );
+    if (json['id'] == -1) {
+      return Folder(id: json['id'], name: json['name']);
+    } else {
+      return Folder(
+        id: json['id'],
+        name: json['name'],
+        // If parent_folder_id is -1, treat it as null, otherwise use the actual value
+        parentFolderId: json['parent_folder_id'],
+      );
+    }
   }
 
   // Method to convert Folder object to Map
