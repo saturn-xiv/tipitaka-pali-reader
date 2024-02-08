@@ -1,25 +1,23 @@
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:tipitaka_pali/business_logic/models/folder.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/bookmark_provider.dart';
 import 'package:tipitaka_pali/services/repositories/bookmark_repo.dart';
-import 'package:tipitaka_pali/ui/dialogs/bookmark_cloud_transfer_dialog.dart';
-import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
-import 'package:path/path.dart' as path;
-import 'package:tipitaka_pali/ui/widgets/pali_text_view.dart';
+import 'package:tipitaka_pali/services/repositories/folder_epository%20%7B.dart';
+import 'package:tipitaka_pali/ui/screens/home/bookmark_app_bar.dart';
+import 'package:tipitaka_pali/ui/screens/home/widgets/folder_path_navigator.dart';
 
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
 import '../../../business_logic/models/bookmark.dart';
 import '../../../business_logic/view_models/bookmark_page_view_model.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
-import '../../dialogs/confirm_dialog.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({super.key});
@@ -31,14 +29,16 @@ class BookmarkPage extends StatefulWidget {
 class _BookmarkPageState extends State<BookmarkPage>
     with WidgetsBindingObserver {
   bool _isCurrentlyMounted = true; // New variable to track mounted state
+  List<dynamic> items = []; // This will hold both Bookmarks and Folders
 
   @override
   void initState() {
     super.initState();
-    Provider.of<BookmarkPageViewModel>(context, listen: false).fetchBookmarks();
     WidgetsBinding.instance.addObserver(this);
     _checkInternetConnectivity();
     _isCurrentlyMounted = true;
+    Provider.of<BookmarkPageViewModel>(context, listen: false)
+        .fetchItemsInCurrentFolder(); // Fetch root items
   }
 
   @override
@@ -73,66 +73,220 @@ class _BookmarkPageState extends State<BookmarkPage>
 
   @override
   Widget build(BuildContext context) {
+    // Note: Assuming _createNewFolder and _buildItem are defined in this class.
     return MultiProvider(
       providers: [
-        // duplicate: already provided at app.dart
-        // ChangeNotifierProvider<BookmarkPageViewModel>(
-        //   create: (_) => BookmarkPageViewModel()..fetchBookmarks(),
-        // ),
-        ChangeNotifierProvider<BookmarkNotifier>(
+        ChangeNotifierProvider(
+          create: (_) => BookmarkPageViewModel()..fetchItemsInCurrentFolder(),
+        ),
+        // Include other providers as needed
+        ChangeNotifierProvider(
           create: (_) => BookmarkNotifier(),
         ),
       ],
       child: Scaffold(
-        appBar: BookmarkAppBar(onDialogClose: _handleDialogClose),
-        // Rydmike proposal: Consider converting the Drawer on Home screen
-        //    to a Widget and add it also to other top level screens.
-        // drawer: Mobile.isPhone(context) ? AppDrawer(context) : null,
-        body: Consumer2<BookmarkPageViewModel, BookmarkNotifier>(
-          builder: (context, vm, bn, child) {
-            // Assuming BookmarkNotifier has a similar bookmarks list
-            final bookmarks =
-                vm.bookmarks; // You can also utilize 'bn.bookmarks' if needed
-            return bookmarks.isEmpty
-                ? Center(child: Text(AppLocalizations.of(context)!.bookmark))
-                : ListView.separated(
-                    itemCount: bookmarks.length,
-                    itemBuilder: (context, index) {
-                      final bookmark = bookmarks[index];
-                      return ListTile(
-                        dense: true,
-                        title: Text(bookmark.note),
-                        subtitle: PaliTextView(
-                            "${bookmark.name}  --  ${bookmark.pageNumber.toString()}"),
-                        onTap: () => vm.openBook(bookmark, context),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              tooltip:
-                                  AppLocalizations.of(context)!.shareThisNote,
-                              onPressed: () async {
-                                Share.share(bookmark.toString(),
-                                    subject: AppLocalizations.of(context)!
-                                        .shareTitle);
-                              },
-                              icon: const Icon(Icons.share),
-                            ),
-                            IconButton(
-                              onPressed: () => vm.delete(bookmark),
-                              icon: const Icon(Icons.delete),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 1),
-                  );
+        appBar: BookmarkAppBar(onDialogClose: () {
+          // Assuming this is correctly defined to handle dialog closure
+        }),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _createNewFolder(context),
+          tooltip: 'Create New Folder',
+          child: const Icon(Icons.create_new_folder),
+        ),
+        body: Consumer<BookmarkPageViewModel>(
+          builder: (context, viewModel, child) {
+            final items =
+                viewModel.items; // This includes both bookmarks and folders
+
+            return Column(
+              children: [
+                // Navigation path widget
+                FolderPathNavigator(
+                  path: viewModel.navigationPath,
+                  onFolderTap: (Folder folder) {
+                    if (folder.id == -1) {
+                      // Assuming -1 is your ID for "Root"
+                      viewModel.setCurrentFolderAndFetchItems(-1);
+                    } else {
+                      viewModel.goToFolderInPath(folder);
+                    }
+                  },
+                ),
+                Expanded(
+                  child: ListView.separated(
+                    itemCount: viewModel.items.length,
+                    itemBuilder: (context, index) => _buildItem(
+                        context, viewModel.items[index], viewModel, index),
+                    separatorBuilder: (context, index) => const Divider(),
+                  ),
+                ),
+              ],
+            );
           },
         ),
       ),
     );
+  }
+
+  Widget _buildItem(BuildContext context, dynamic item,
+      BookmarkPageViewModel viewModel, index) {
+    bool isFolder = item is Folder;
+    IconData icon = isFolder ? Icons.folder : Icons.bookmark;
+    Color folderColor = Theme.of(context).primaryColor; // Example color coding
+    String titlePrefix = isFolder ? '[Folder]\n' : '';
+    String title = titlePrefix + (isFolder ? item.name : item.name + item.note);
+    String subtitle = isFolder ? "" : "Page ${item.pageNumber}";
+
+    return ListTile(
+        dense: true,
+        leading: Icon(icon,
+            color:
+                isFolder ? folderColor : null), // Apply color to icon as well
+        title:
+            Text(title, style: TextStyle(color: isFolder ? folderColor : null)),
+        subtitle: Text(subtitle),
+        onTap: () {
+          if (isFolder) {
+            viewModel.setCurrentFolderAndFetchItems(item.id,
+                folderName: item.name);
+            // Handle folder tap, e.g., navigate to a folder detail view or expand
+          } else {
+            // Handle bookmark tap, e.g., open the bookmarked content
+            viewModel.openBook(item, context);
+          }
+        },
+        trailing: _buildSpeedDial(context, item, viewModel, index));
+  }
+
+  void _deleteItem(BuildContext context, dynamic item,
+      BookmarkPageViewModel viewModel) async {
+    bool confirm = await _showDeleteConfirmationDialog(context);
+    if (confirm) {
+      if (item is Bookmark) {
+        viewModel.deleteBookmark(item.id);
+      } else if (item is Folder) {
+        viewModel.deleteFolderAndSubfolders(item.id);
+      }
+      // Refresh your ViewModel data
+      viewModel.fetchItemsInCurrentFolder();
+    }
+  }
+
+  void _edit(context, item, viewModel) {
+    if (item is Folder) {
+      _editFolder(context, item, viewModel);
+    } else {
+      _editBookmark(context, item, viewModel);
+    }
+  }
+
+  Future<bool> _showDeleteConfirmationDialog(BuildContext context) async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Confirm Delete'),
+            content: const Text('Are you sure you want to delete this item?'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () => Navigator.of(context).pop(false),
+              ),
+              TextButton(
+                child: const Text('Delete'),
+                onPressed: () => Navigator.of(context).pop(true),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
+  void _createNewFolder(BuildContext context) async {
+    String? folderName = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController folderNameController = TextEditingController();
+        return AlertDialog(
+          title: const Text('New Folder'),
+          content: TextField(
+            controller: folderNameController,
+            autofocus: true,
+            decoration: const InputDecoration(hintText: 'Folder Name'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: const Text('Create'),
+              onPressed: () {
+                Navigator.pop(context, folderNameController.text);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (folderName != null && folderName.isNotEmpty) {
+      var viewModel =
+          Provider.of<BookmarkPageViewModel>(context, listen: false);
+      viewModel.addAndNavigateToFolder(folderName,
+          viewModel.currentFolderId); // or any other method as required
+    }
+  }
+
+  void _moveToFolderDialog(
+      BuildContext context, BookmarkPageViewModel viewModel, item) async {
+    // Fetch list of folders from the database
+    final FolderDatabaseRepository folderRepository =
+        FolderDatabaseRepository(DatabaseHelper());
+    int? exclusionId = item is Folder ? item.id : null;
+
+    List<Folder> folders =
+        await folderRepository.fetchAllFolders(exclusionId: exclusionId);
+
+    String? selectedFolderIdStr = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Move to Folder'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: folders
+                  .map((folder) => ListTile(
+                        title: Text(folder.name),
+                        onTap: () => Navigator.pop(context,
+                            folder.id.toString()), // Convert id to String
+                      ))
+                  .toList(),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selectedFolderIdStr != null) {
+      int? selectedFolderId =
+          int.tryParse(selectedFolderIdStr); // Convert back to int
+      if (selectedFolderId != null) {
+        // Assuming both Bookmark and Folder have a 'folderId' field
+        if (item is Bookmark) {
+          // Update the bookmark with the new folderId
+          final BookmarkDatabaseRepository bookmarkDatabaseRepository =
+              BookmarkDatabaseRepository(DatabaseHelper());
+          await bookmarkDatabaseRepository.updateBookmarkFolder(
+              item.id, selectedFolderId);
+        } else if (item is Folder) {
+          // Update the folder with the new parent folderId
+          await folderRepository.updateFolderParentId(
+              item.id, selectedFolderId);
+        }
+        viewModel.fetchItemsInCurrentFolder();
+        // Refresh the UI accordingly, possibly by calling setState or using a state management solution
+      }
+    }
   }
 
   String localScript(BuildContext context, String s) {
@@ -141,178 +295,132 @@ class _BookmarkPageState extends State<BookmarkPage>
         romanText: s);
   }
 
+  Future<void> _editFolder(BuildContext context, Folder folder,
+      BookmarkPageViewModel viewModel) async {
+    String? newName = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController _controller =
+            TextEditingController(text: folder.name);
+        return AlertDialog(
+          title: const Text('Edit Folder Name'),
+          content: TextField(
+            controller: _controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter new folder name',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(_controller.text),
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (newName != null && newName.isNotEmpty && newName != folder.name) {
+      folder.name = newName;
+      await viewModel.updateFolderName(folder);
+    }
+  }
+
+// Function to show an edit dialog and update the bookmark note
+  Future<void> _editBookmark(BuildContext context, Bookmark bookmark,
+      BookmarkPageViewModel viewModel) async {
+    String? newNote = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController _controller =
+            TextEditingController(text: bookmark.note);
+        return AlertDialog(
+          title: const Text('Edit Bookmark Note'),
+          content: TextField(
+            controller: _controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter new note',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(_controller.text),
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (newNote != null && newNote.isNotEmpty && newNote != bookmark.note) {
+      bookmark.note = newNote;
+      await viewModel.updateBookmarkNote(bookmark);
+    }
+  }
+
   Future<void> shareBookmarksAsFile(List<Bookmark> bookmarks) async {
-    final String bookmarkJson = definitionToJson(bookmarks);
+    final String bookmarkJson = bookmarkToJson(bookmarks);
     final Directory tempDir = await getTemporaryDirectory();
     final File file = File('${tempDir.path}/bookmarks.tprbmk');
 
     await file.writeAsString(bookmarkJson);
-    Share.shareFiles([file.path], text: 'Here are my bookmarks!');
-  }
-}
 
-class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final VoidCallback onDialogClose;
+    // Create an XFile object from the saved file
+    final XFile xfile = XFile(file.path);
 
-  const BookmarkAppBar({super.key, required this.onDialogClose});
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      // Rydmike: Consider not having implicit back, as it will give idea that
-      //  user can go back, but back leads out of app in this case.
-      automaticallyImplyLeading: false,
-      title: Text(AppLocalizations.of(context)!.bookmark),
-      actions: [
-        buildDropdownButton(context),
-        getCloudButton(context),
-        IconButton(
-            tooltip: AppLocalizations.of(context)!.shareAllNotes,
-            icon: const Icon(Icons.share),
-            onPressed: () async {
-              String bookMarkText = "";
-              final List<Bookmark> bookmarks =
-                  context.read<BookmarkPageViewModel>().bookmarks;
-              for (var book in bookmarks) {
-                bookMarkText += book.toString();
-              }
-              Share.share(bookMarkText,
-                  subject: AppLocalizations.of(context)!.shareAllNotes);
-            }),
-        IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () async {
-              final result = await _getConfirmataion(context);
-              if (result == OkCancelAction.ok) {
-                context.read<BookmarkPageViewModel>().deleteAll();
-              }
-            }),
-      ],
-    );
+    // Use shareXFiles to share the XFile
+    await Share.shareXFiles([xfile], text: 'Here are my bookmarks!');
   }
 
-  @override
-  Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);
+  Widget _buildSpeedDial(BuildContext context, dynamic item,
+      BookmarkPageViewModel viewModel, int index) {
+    // Set the direction of the speed dial
+    SpeedDialDirection direction =
+        (index <= 1) ? SpeedDialDirection.down : SpeedDialDirection.up;
 
-  Future<OkCancelAction?> _getConfirmataion(BuildContext context) async {
-    return await showDialog<OkCancelAction>(
-        context: context,
-        builder: (context) {
-          return ConfirmDialog(
-            title: AppLocalizations.of(context)!.confirmation,
-            message: AppLocalizations.of(context)!.areSureDelete,
-            okLabel: AppLocalizations.of(context)!.delete,
-            cancelLabel: AppLocalizations.of(context)!.cancel,
-          );
-        });
-  }
-
-  Widget buildDropdownButton(BuildContext context) {
-    return PopupMenuButton<String>(
-      onSelected: (value) async {
-        if (value == 'import') {
-          doImport(context);
-        } else if (value == 'export') {
-          doExport(context);
-        }
-      },
-      itemBuilder: (BuildContext context) => [
-        PopupMenuItem(
-          value: 'import',
-          child: Row(
-            children: [
-              Icon(
-                Icons.upload,
-                color: Theme.of(context).primaryColor,
-              ),
-              const SizedBox(width: 8.0),
-              ColoredText(AppLocalizations.of(context)!.importBookmarks),
-            ],
+    return SpeedDial(
+      direction: direction,
+      animatedIcon: AnimatedIcons
+          .menu_close, // This icon will animate when the speed dial is opened or closed
+      spaceBetweenChildren: 4, // Adjust the spacing as needed
+      children: [
+        // Only add this SpeedDialChild if item is a Bookmark
+        if (item is Bookmark)
+          SpeedDialChild(
+            child: const Icon(Icons.share),
+            label: 'Share',
+            onTap: () => Share.share(
+              item.toString(),
+              subject:
+                  'Share Bookmark', // Replace with your localization or custom text
+            ),
           ),
+        SpeedDialChild(
+          child: const Icon(Icons.edit),
+          label: 'Edit',
+          onTap: () => _edit(context, item, viewModel), // Your edit logic
         ),
-        PopupMenuItem(
-          value: 'export',
-          child: Row(
-            children: [
-              Icon(
-                Icons.download,
-                color: Theme.of(context).primaryColor,
-              ),
-              const SizedBox(width: 8.0),
-              ColoredText(AppLocalizations.of(context)!.exportBookmarks),
-            ],
-          ),
+        SpeedDialChild(
+          child: const Icon(Icons.drive_file_move),
+          label: 'Move To Folder',
+          onTap: () =>
+              _moveToFolderDialog(context, viewModel, item), // Your move logic
+        ),
+        SpeedDialChild(
+          child: const Icon(Icons.delete),
+          label: 'Delete',
+          onTap: () =>
+              _deleteItem(context, item, viewModel), // Your delete logic
         ),
       ],
-      icon:
-          const Icon(Icons.sd_storage_outlined), // Change to your desired icon
     );
-  }
-
-  doImport(BuildContext context) async {
-    FilePickerResult? filename = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['json'],
-      lockParentWindow: true,
-    );
-
-    if (filename != null) {
-      final DatabaseHelper databaseHelper = DatabaseHelper();
-      final db = BookmarkDatabaseRepository(databaseHelper);
-
-      File file = File(filename.files.single.path.toString());
-      String content = await file.readAsString();
-      List<Bookmark> importedBookmarks = definitionFromJson(content);
-      for (Bookmark bm in importedBookmarks) {
-        db.insert(bm);
-      }
-      // Refresh the bookmarks
-      context.read<BookmarkPageViewModel>().refreshBookmarks();
-    } else {
-      // User canceled the picker
-    }
-  }
-
-  doExport(BuildContext context) async {
-    final List<Bookmark> bookmarks =
-        context.read<BookmarkPageViewModel>().bookmarks;
-    String bookmarksJson = definitionToJson(bookmarks);
-    String? directory = await FilePicker.platform.getDirectoryPath(
-      lockParentWindow: true,
-    );
-    if (directory != null) {
-      final file = File(path.join(directory, "bookmarks_export.json"));
-
-      // Write CSV to the file
-      try {
-        await file.writeAsString(bookmarksJson);
-      } catch (e) {
-        debugPrint('Error writing file: $e');
-      }
-    }
-  }
-
-  Widget getCloudButton(BuildContext context) {
-    InternetConnection().hasInternetAccess.then((bInternet) {
-      if (!bInternet) {
-        Prefs.isSignedIn = false;
-        // You can also add more code here to handle the scenario when there is no internet.
-      } else {
-        // Handle the scenario when there is internet.
-      }
-    });
-
-    return (Prefs.isSignedIn)
-        ? IconButton(
-            icon: const Icon(Icons.cloud),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return BookmarkCloudTransferDialog();
-                },
-              ).then((_) => onDialogClose()); // Use the callback here
-            })
-        : const SizedBox.shrink();
   }
 }

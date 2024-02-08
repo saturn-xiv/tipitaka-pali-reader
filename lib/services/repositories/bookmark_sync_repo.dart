@@ -28,7 +28,7 @@ class BookmarkSyncRepo {
     if (Prefs.isSignedIn) {
       result = await _fireRepo.delete(bookmark);
     }
-    result = await _sqlRepo.delete(bookmark);
+    result = await _sqlRepo.deleteBookmark(bookmark.id);
     return result;
   }
 

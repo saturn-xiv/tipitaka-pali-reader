@@ -1,62 +1,77 @@
 import 'dart:convert';
 
-List<Bookmark> definitionFromJson(String str) =>
-    List<Bookmark>.from(json.decode(str).map((x) => Bookmark.fromJson(x)));
+List<Bookmark> bookmarkFromJson(String content) =>
+    List<Bookmark>.from(json.decode(content).map((x) => Bookmark.fromJson(x)));
 
-String definitionToJson(List<Bookmark> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
-enum BookmarkAction {
-  insert,
-  delete,
-  // Add more actions if needed
-}
+String bookmarkToJson(List<Bookmark> bookmarks) =>
+    json.encode(List<dynamic>.from(bookmarks.map((x) => x.toJson())));
 
 class Bookmark {
-  final String id;
+  final int id;
   final String bookID;
   final int pageNumber;
-  final String note;
+  String note;
   String name;
   String selectedText;
+  int folderId; // Identifies the folder assignment
+  int bmkSort; // Used for sorting bookmarks within a folder
 
   Bookmark({
-    this.id = "n/a",
+    this.id = 0,
     this.bookID = "n/a",
     this.pageNumber = 0,
     this.note = "n/a",
-    this.name = 'Unknown', // Setting default value for bookName
+    this.name = 'Unknown',
     this.selectedText = '',
+    this.folderId =
+        -1, // Default value indicating no specific folder, ensuring backwards compatibility
+    this.bmkSort =
+        -1, // Default sorting value indicating no specific order, -1 can signify unsorted or default order
   });
 
   @override
   String toString() {
-    return '''bookID: $bookID
-              name: $name
-              pageNumber: $pageNumber
-              note: $note
-              selected_text: $selectedText
+    return '''ID: $id
+              Book ID: $bookID
+              Page Number: $pageNumber
+              Note: $note
+              Name: $name
+              Selected Text: $selectedText
+              Folder ID: $folderId
+              Bookmark Sort: $bmkSort
     ''';
-    //removed bookname for now.
   }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'book_id': bookID,
-        'page_number': pageNumber,
-        'note': note,
-        'name': name,
-        'selected_text': selectedText,
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'book_id': bookID,
+      'page_number': pageNumber,
+      'note': note,
+      'name': name,
+      'selected_text': selectedText,
+      'folder_id': folderId,
+      'bmk_sort': bmkSort,
+    };
 
-  factory Bookmark.fromJson(Map<dynamic, dynamic> json) {
+    // Include 'id' only if it's not the default value (0), indicating an existing record
+    if (id != 0) {
+      data['id'] = id;
+    }
+
+    return data;
+  }
+
+  factory Bookmark.fromJson(Map<String, dynamic> json) {
     return Bookmark(
-      id: json['id'] ?? 'n/a', // id is the primary key
-      bookID: json['book_id'],
-      pageNumber: json['page_number'],
-      note: json['note'],
+      id: json['id'] ?? 0,
+      bookID: json['book_id'] ?? 'n/a',
+      pageNumber: json['page_number'] ?? 0,
+      note: json['note'] ?? 'n/a',
       name: json['name'] ?? 'Unknown',
       selectedText: json['selected_text'] ?? '',
+      folderId: json['folder_id'] ??
+          -1, // Ensure string type; default to '-1' if null
+      bmkSort: json['bmk_sort'] ?? -1, // Default to -1 if null or missing
     );
   }
 }

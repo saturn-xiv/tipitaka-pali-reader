@@ -175,7 +175,7 @@ class _AppState extends State<App> {
 
       // Use this file to read content
       String content = await file.readAsString();
-      List<Bookmark> importedBookmarks = definitionFromJson(content);
+      List<Bookmark> importedBookmarks = bookmarkFromJson(content);
 
       if (importedBookmarks.isNotEmpty) {
         Bookmark bookmark = importedBookmarks.first;

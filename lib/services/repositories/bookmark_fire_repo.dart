@@ -125,7 +125,7 @@ class BookmarkFireRepository {
           .collection('users')
           .document(Prefs.email)
           .collection('bookmarks')
-          .document(bookmark.id);
+          .document(bookmark.id.toString());
 
       // Delete the bookmark
       await bookmarkRef.delete();

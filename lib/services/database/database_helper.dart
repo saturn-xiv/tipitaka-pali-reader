@@ -40,7 +40,9 @@ class DatabaseHelper {
     Prefs.databaseDirPath = dbPath;
 
     // myLogger.i('opening Database ...');
-    return await openDatabase(path);
+    return await openDatabase(path, onOpen: (db) async {
+      await db.execute('PRAGMA foreign_keys = ON;');
+    });
   }
 
   Future close() async {
@@ -103,9 +105,9 @@ class DatabaseHelper {
         content = _cleanText(content);
         content = content.toLowerCase();
         final words = _cleanText(content)
-          .replaceAll(reNewLine, ' ')
-          .replaceAll(reTokenSpace, '')
-          .split(' ');
+            .replaceAll(reNewLine, ' ')
+            .replaceAll(reTokenSpace, '')
+            .split(' ');
         for (var word in words) {
           word = _cleanWord(word);
           if (word.isNotEmpty) {
