@@ -8,6 +8,7 @@ String bookmarkToJson(List<Bookmark> bookmarks) =>
 
 class Bookmark {
   final int id;
+  final String firestoreId;
   final String bookID;
   final int pageNumber;
   String note;
@@ -18,6 +19,7 @@ class Bookmark {
 
   Bookmark({
     this.id = 0,
+    this.firestoreId = "n/a",
     this.bookID = "n/a",
     this.pageNumber = 0,
     this.note = "n/a",
@@ -45,6 +47,7 @@ class Bookmark {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {
       'book_id': bookID,
+      'firestoreId': firestoreId,
       'page_number': pageNumber,
       'note': note,
       'name': name,
@@ -64,6 +67,7 @@ class Bookmark {
   factory Bookmark.fromJson(Map<String, dynamic> json) {
     return Bookmark(
       id: json['id'] ?? 0,
+      firestoreId: json['firestoreId'] ?? 'n/a',
       bookID: json['book_id'] ?? 'n/a',
       pageNumber: json['page_number'] ?? 0,
       note: json['note'] ?? 'n/a',

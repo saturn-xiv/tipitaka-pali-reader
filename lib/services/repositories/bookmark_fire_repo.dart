@@ -31,22 +31,29 @@ class BookmarkFireRepository {
       debugPrint("ok got records ${documents.length}");
 
       for (var doc in documents) {
-        Map<String, dynamic> data = doc.map;
-        data['id'] = doc.id;
-        data['book_id'] = cryptoHelper.decryptText(data['book_id']);
-        data['name'] = cryptoHelper.decryptText(data['name']);
-        data['page_number'] =
-            int.parse(cryptoHelper.decryptText(data['page_number']));
-        data['note'] = cryptoHelper.decryptText(data['note']);
-        data['selected_text'] = cryptoHelper.decryptText(data['selected_text']);
-        bookmarks.add(Bookmark.fromJson(data));
+        // Decrypt your fields as before
+        String bookId = cryptoHelper.decryptText(doc['book_id']);
+        String name = cryptoHelper.decryptText(doc['name']);
+        int pageNumber =
+            int.parse(cryptoHelper.decryptText(doc['page_number'].toString()));
+        String note = cryptoHelper.decryptText(doc['note']);
+        String selectedText = cryptoHelper.decryptText(doc['selected_text']);
+
+        // Create a new Bookmark object with the firestoreId
+        bookmarks.add(Bookmark(
+          firestoreId:
+              doc.id, // Use the document ID from Firestore as firestoreId
+          bookID: bookId,
+          pageNumber: pageNumber,
+          note: note,
+          name: name,
+          selectedText: selectedText,
+          // Other fields as necessary
+        ));
       }
       return bookmarks;
-      //    notifier.bookmarks = bookmarks;
     } catch (e) {
       debugPrint('Error fetching bookmarks: $e');
-      // Optionally, you could provide a way to communicate this error to the user
-      // For instance, using a state for `errorMessage` or similar.
       return bookmarks;
     }
   }
@@ -125,7 +132,7 @@ class BookmarkFireRepository {
           .collection('users')
           .document(Prefs.email)
           .collection('bookmarks')
-          .document(bookmark.id.toString());
+          .document(bookmark.firestoreId);
 
       // Delete the bookmark
       await bookmarkRef.delete();
