@@ -196,6 +196,7 @@ class BookmarkPageViewModel extends ChangeNotifier {
     // After all subfolders are deleted, delete the folder itself
     // This will also cascade delete all bookmarks in this folder due to the foreign key constraint
     await deleteFolder(folderId);
+    await fetchItemsInCurrentFolder();
     notifyListeners();
   }
 }

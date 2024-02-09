@@ -76,9 +76,9 @@ class _BookmarkPageState extends State<BookmarkPage>
     // Note: Assuming _createNewFolder and _buildItem are defined in this class.
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => BookmarkPageViewModel()..fetchItemsInCurrentFolder(),
-        ),
+        // ChangeNotifierProvider(
+        //   create: (_) => BookmarkPageViewModel()..fetchItemsInCurrentFolder(),
+        // ),
         // Include other providers as needed
         ChangeNotifierProvider(
           create: (_) => BookmarkNotifier(),
