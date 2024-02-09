@@ -36,6 +36,8 @@ class BookmarkPageViewModel extends ChangeNotifier {
 
   // Fetch bookmarks and folders by current folder ID
   Future<void> fetchItemsInCurrentFolder() async {
+    _folders.clear();
+    _bookmarks.clear();
     // Fetch folders and bookmarks within the specific folder
     _folders = await _folderRepository.fetchFoldersByParentId(_currentFolderId);
     _bookmarks =
@@ -45,8 +47,8 @@ class BookmarkPageViewModel extends ChangeNotifier {
   }
 
   // Method to update current folder and fetch its contents
-  void setCurrentFolderAndFetchItems(int folderId,
-      {String folderName = 'Root'}) {
+  Future<void> setCurrentFolderAndFetchItems(int folderId,
+      {String folderName = 'Root'}) async {
     _currentFolderId = folderId;
 
     // Clear the navigation path and start fresh if navigating to root
@@ -72,17 +74,17 @@ class BookmarkPageViewModel extends ChangeNotifier {
       }
     }
 
-    fetchItemsInCurrentFolder();
+    await fetchItemsInCurrentFolder();
   }
 
-  void goToFolderInPath(Folder folder) {
+  void goToFolderInPath(Folder folder) async {
     _currentFolderId = folder.id;
     // Find the index of the folder in the path to truncate the path correctly
     int index = _navigationPath.indexOf(folder);
     if (index != -1) {
       _navigationPath = _navigationPath.sublist(0, index + 1);
     }
-    fetchItemsInCurrentFolder();
+    await fetchItemsInCurrentFolder();
   }
 
   Future<void> fetchBookmarksAndFolders() async {
@@ -164,7 +166,7 @@ class BookmarkPageViewModel extends ChangeNotifier {
         await _folderRepository.insertFolder(folderName, parentId);
 
     // Optionally, navigate to the new folder
-    setCurrentFolderAndFetchItems(newFolderId, folderName: folderName);
+    await setCurrentFolderAndFetchItems(newFolderId, folderName: folderName);
   }
 
   Future<void> updateFolderName(Folder folder) async {

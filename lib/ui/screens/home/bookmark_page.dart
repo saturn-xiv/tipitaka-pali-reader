@@ -232,7 +232,7 @@ class _BookmarkPageState extends State<BookmarkPage>
     if (folderName != null && folderName.isNotEmpty) {
       var viewModel =
           Provider.of<BookmarkPageViewModel>(context, listen: false);
-      viewModel.addAndNavigateToFolder(folderName,
+      await viewModel.addAndNavigateToFolder(folderName,
           viewModel.currentFolderId); // or any other method as required
     }
   }
