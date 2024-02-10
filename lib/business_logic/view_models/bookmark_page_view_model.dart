@@ -88,9 +88,10 @@ class BookmarkPageViewModel extends ChangeNotifier {
   }
 
   Future<void> fetchBookmarksAndFolders() async {
+    _items.clear();
     _bookmarks =
         await _bookmarkRepository.fetchBookmarksByFolderId(currentFolderId);
-    _folders = await _folderRepository.fetchFolders();
+    _folders = await _folderRepository.fetchFoldersByParentId(currentFolderId);
     _items = [..._folders, ..._bookmarks];
     notifyListeners();
   }
@@ -164,9 +165,7 @@ class BookmarkPageViewModel extends ChangeNotifier {
   Future<void> addAndNavigateToFolder(String folderName, int parentId) async {
     int newFolderId =
         await _folderRepository.insertFolder(folderName, parentId);
-
-    // Optionally, navigate to the new folder
-    await setCurrentFolderAndFetchItems(newFolderId, folderName: folderName);
+    fetchBookmarksAndFolders();
   }
 
   Future<void> updateFolderName(Folder folder) async {

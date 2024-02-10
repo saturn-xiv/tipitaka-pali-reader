@@ -134,7 +134,8 @@ class _BookmarkPageState extends State<BookmarkPage>
     IconData icon = isFolder ? Icons.folder : Icons.bookmark;
     Color folderColor = Theme.of(context).primaryColor; // Example color coding
     String titlePrefix = isFolder ? '[Folder]\n' : '';
-    String title = titlePrefix + (isFolder ? item.name : item.name + item.note);
+    String title =
+        titlePrefix + (isFolder ? item.name : "${item.name}\n${item.note}");
     String subtitle = isFolder ? "" : "Page ${item.pageNumber}";
 
     return ListTile(
