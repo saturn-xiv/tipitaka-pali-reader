@@ -165,5 +165,18 @@
   "verificationNeeded": "Cần xác minh email.\nKiểm tra email hoặc thư mục spam\nĐăng nhập lại để gửi lại",
   "enterPassword": "Vui lòng nhập mật khẩu của bạn",
   "enterEmail": "Vui lòng nhập email của bạn",
-  "enterValidEmail": "Vui lòng nhập email hợp lệ"
+  "enterValidEmail": "Vui lòng nhập email hợp lệ",
+  "folder": "Thư mục",
+  "edit": "Chỉnh sửa",
+  "moveToFolder": "Chuyển đến Thư mục",
+  "enterNewNote": "Nhập ghi chú mới",
+  "editBookmarkNote": "Chỉnh sửa Ghi chú Đánh dấu",
+  "editFolderName": "Chỉnh sửa Tên thư mục",
+  "enterNewFolderName": "Nhập tên thư mục mới",
+  "newFolder": "Thư mục mới",
+  "folderName": "Tên thư mục",
+  "create": "Tạo mới",
+  "createNewFolder": "Tạo Thư mục mới",
+  "confirmDelete": "Xác nhận xóa",
+  "areYouSureDelete": "Bạn có chắc chắn muốn xóa mục này không?"
 }

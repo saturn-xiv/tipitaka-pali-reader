@@ -166,5 +166,18 @@
   "verificationNeeded": "ຕ້ອງການກວດສອບອີເມວ.\nກວດສອບອີເມວຂອງທ່ານຫຼືໂຟນເດີສ່ວນຕົວ\nເຂົ້າລະບົບອີກຄັ້ງເພື່ອສົ່ງຄືນ",
   "enterPassword": "ກະລຸນາໃສ່ລະຫັດຜ່ານຂອງທ່ານ",
   "enterEmail": "ກະລຸນາໃສ່ທີ່ຢູ່ອີເມວຂອງທ່ານ",
-  "enterValidEmail": "ກະລຸນາໃສ່ທີ່ຢູ່ອີເມວທີ່ຖືກຕ້ອງ"
+  "enterValidEmail": "ກະລຸນາໃສ່ທີ່ຢູ່ອີເມວທີ່ຖືກຕ້ອງ",
+  "folder": "ໂຟນເດີ",
+  "edit": "ແກ້ໄຂ",
+  "moveToFolder": "ຍ້າຍໄປຫາໂຟນເດີ",
+  "enterNewNote": "ເພີ່ມບັນທຶກໃຫມ່",
+  "editBookmarkNote": "ແກ້ໄຂບັນທຶກທີ່ບຸກມາກ",
+  "editFolderName": "ແກ້ໄຂຊື່ໂຟນເດີ",
+  "enterNewFolderName": "ປ້ອນຊື່ໂຟນເດີໃຫມ່",
+  "newFolder": "ໂຟນເດີໃຫມ່",
+  "folderName": "ຊື່ໂຟນເດີ",
+  "create": "ສ້າງ",
+  "createNewFolder": "ສ້າງໂຟນເດີໃຫມ່",
+  "confirmDelete": "ຢືນຢັນການລຶບ",
+  "areYouSureDelete": "ທ່ານແນ່ໃຈວ່າຕ້ອງການລຶບລາຍການນີ້ບໍ?"
 }

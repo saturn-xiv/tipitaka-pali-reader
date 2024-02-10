@@ -20,7 +20,7 @@
   "enter_note": "Enter note here",
   "save": "Save",
   "cancel": "Cancel",
-  "page": "page",
+  "page": "Page",
   "select_paragraph": "Select paragraph",
   "close": "Close",
   "paragraph_number": "Commentaries of Paragraph",
@@ -166,5 +166,18 @@
   "verificationNeeded": "Email verification needed.\nCheck email or spam folder\nSign in again to resend",
   "enterPassword": "Please enter your password",
   "enterEmail": "Please enter your email",
-  "enterValidEmail": "Please enter a valid email"
+  "enterValidEmail": "Please enter a valid email",
+  "folder": "Folder",
+  "edit": "Edit",
+  "moveToFolder": "Move To Folder",
+  "enterNewNote": "Enter new note",
+  "editBookmarkNote": "Edit Bookmark Note",
+  "editFolderName": "Edit Folder Name",
+  "enterNewFolderName": "Enter new folder name",
+  "newFolder": "New Folder",
+  "folderName": "Folder Name",
+  "create": "Create",
+  "createNewFolder": "Create New Folder",
+  "confirmDelete": "Confirm Delete",
+  "areYouSureDelete": "Are you sure you want to delete this item?"
 }

@@ -31,7 +31,8 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         buildDropdownButton(context),
         getCloudButton(context),
-        IconButton(
+/*       //TODO need to make this work with folders and bookmarks
+            IconButton(
             tooltip: AppLocalizations.of(context)!.shareAllNotes,
             icon: const Icon(Icons.share),
             onPressed: () async {
@@ -44,14 +45,15 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
               Share.share(bookMarkText,
                   subject: AppLocalizations.of(context)!.shareAllNotes);
             }),
-        IconButton(
+            */
+/*        IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
               final result = await _getConfirmataion(context);
               if (result == OkCancelAction.ok) {
                 context.read<BookmarkPageViewModel>().deleteAll();
               }
-            }),
+            }),*/
       ],
     );
   }

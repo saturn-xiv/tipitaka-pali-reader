@@ -166,5 +166,18 @@
   "verificationNeeded": "ईमेल सत्यापन की आवश्यकता है।\nईमेल या स्पैम फ़ोल्डर की जाँच करें\nपुनः भेजने के लिए फिर से साइन इन करें",
   "enterPassword": "कृपया अपना पासवर्ड दर्ज करें",
   "enterEmail": "कृपया अपना ईमेल दर्ज करें",
-  "enterValidEmail": "कृपया मान्य ईमेल दर्ज करें"
+  "enterValidEmail": "कृपया मान्य ईमेल दर्ज करें",
+  "folder": "फ़ोल्डर",
+  "edit": "संपादित करें",
+  "moveToFolder": "फ़ोल्डर में ले जाएँ",
+  "enterNewNote": "नया नोट दर्ज करें",
+  "editBookmarkNote": "बुकमार्क नोट संपादित करें",
+  "editFolderName": "फ़ोल्डर का नाम संपादित करें",
+  "enterNewFolderName": "नया फ़ोल्डर नाम दर्ज करें",
+  "newFolder": "नया फ़ोल्डर",
+  "folderName": "फ़ोल्डर का नाम",
+  "create": "सृजन करें",
+  "createNewFolder": "नया फ़ोल्डर बनाएँ",
+  "confirmDelete": "हटाने की पुष्टि करें",
+  "areYouSureDelete": "क्या आप वाकई इस आइटम को हटाना चाहते हैं?"
 }

@@ -12,6 +12,7 @@ import 'package:tipitaka_pali/services/repositories/bookmark_repo.dart';
 import 'package:tipitaka_pali/services/repositories/folder_epository%20%7B.dart';
 import 'package:tipitaka_pali/ui/screens/home/bookmark_app_bar.dart';
 import 'package:tipitaka_pali/ui/screens/home/widgets/folder_path_navigator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../services/provider/script_language_provider.dart';
 import '../../../../utils/pali_script.dart';
@@ -90,14 +91,11 @@ class _BookmarkPageState extends State<BookmarkPage>
         }),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _createNewFolder(context),
-          tooltip: 'Create New Folder',
+          tooltip: AppLocalizations.of(context)!.createNewFolder,
           child: const Icon(Icons.create_new_folder),
         ),
         body: Consumer<BookmarkPageViewModel>(
           builder: (context, viewModel, child) {
-            final items =
-                viewModel.items; // This includes both bookmarks and folders
-
             return Column(
               children: [
                 // Navigation path widget
@@ -133,10 +131,13 @@ class _BookmarkPageState extends State<BookmarkPage>
     bool isFolder = item is Folder;
     IconData icon = isFolder ? Icons.folder : Icons.bookmark;
     Color folderColor = Theme.of(context).primaryColor; // Example color coding
-    String titlePrefix = isFolder ? '[Folder]\n' : '';
+    String titlePrefix =
+        isFolder ? '[${AppLocalizations.of(context)!.folder}]\n' : '';
     String title =
         titlePrefix + (isFolder ? item.name : "${item.name}\n${item.note}");
-    String subtitle = isFolder ? "" : "Page ${item.pageNumber}";
+    String subtitle = isFolder
+        ? ""
+        : "${AppLocalizations.of(context)!.page} ${item.pageNumber}";
 
     return ListTile(
         dense: true,
@@ -185,15 +186,15 @@ class _BookmarkPageState extends State<BookmarkPage>
     return (await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Confirm Delete'),
-            content: const Text('Are you sure you want to delete this item?'),
+            title: Text(AppLocalizations.of(context)!.confirmDelete),
+            content: Text(AppLocalizations.of(context)!.areYouSureDelete),
             actions: <Widget>[
               TextButton(
-                child: const Text('Cancel'),
+                child: Text(AppLocalizations.of(context)!.cancel),
                 onPressed: () => Navigator.of(context).pop(false),
               ),
               TextButton(
-                child: const Text('Delete'),
+                child: Text(AppLocalizations.of(context)!.delete),
                 onPressed: () => Navigator.of(context).pop(true),
               ),
             ],
@@ -208,19 +209,20 @@ class _BookmarkPageState extends State<BookmarkPage>
       builder: (BuildContext context) {
         TextEditingController folderNameController = TextEditingController();
         return AlertDialog(
-          title: const Text('New Folder'),
+          title: Text(AppLocalizations.of(context)!.enterNewFolderName),
           content: TextField(
             controller: folderNameController,
             autofocus: true,
-            decoration: const InputDecoration(hintText: 'Folder Name'),
+            decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.folderName),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
               onPressed: () => Navigator.pop(context),
             ),
             TextButton(
-              child: const Text('Create'),
+              child: Text(AppLocalizations.of(context)!.create),
               onPressed: () {
                 Navigator.pop(context, folderNameController.text);
               },
@@ -252,7 +254,7 @@ class _BookmarkPageState extends State<BookmarkPage>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Move to Folder'),
+          title: Text(AppLocalizations.of(context)!.moveToFolder),
           content: SingleChildScrollView(
             child: ListBody(
               children: folders
@@ -301,24 +303,24 @@ class _BookmarkPageState extends State<BookmarkPage>
     String? newName = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        TextEditingController _controller =
+        TextEditingController controller =
             TextEditingController(text: folder.name);
         return AlertDialog(
-          title: const Text('Edit Folder Name'),
+          title: Text(AppLocalizations.of(context)!.editFolderName),
           content: TextField(
-            controller: _controller,
-            decoration: const InputDecoration(
-              hintText: 'Enter new folder name',
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.enterNewFolderName,
             ),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(_controller.text),
-              child: const Text('Save'),
+              onPressed: () => Navigator.of(context).pop(controller.text),
+              child: Text(AppLocalizations.of(context)!.save),
             ),
           ],
         );
@@ -337,24 +339,24 @@ class _BookmarkPageState extends State<BookmarkPage>
     String? newNote = await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        TextEditingController _controller =
+        TextEditingController controller =
             TextEditingController(text: bookmark.note);
         return AlertDialog(
-          title: const Text('Edit Bookmark Note'),
+          title: Text(AppLocalizations.of(context)!.editBookmarkNote),
           content: TextField(
-            controller: _controller,
-            decoration: const InputDecoration(
-              hintText: 'Enter new note',
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.enterNewNote,
             ),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(_controller.text),
-              child: const Text('Save'),
+              onPressed: () => Navigator.of(context).pop(controller.text),
+              child: Text(AppLocalizations.of(context)!.save),
             ),
           ],
         );
@@ -378,7 +380,10 @@ class _BookmarkPageState extends State<BookmarkPage>
     final XFile xfile = XFile(file.path);
 
     // Use shareXFiles to share the XFile
-    await Share.shareXFiles([xfile], text: 'Here are my bookmarks!');
+    await Share.shareXFiles([xfile],
+        text: (context.mounted)
+            ? AppLocalizations.of(context)!.bookmark
+            : "bookmark");
   }
 
   Widget _buildSpeedDial(BuildContext context, dynamic item,
@@ -397,29 +402,26 @@ class _BookmarkPageState extends State<BookmarkPage>
         if (item is Bookmark)
           SpeedDialChild(
             child: const Icon(Icons.share),
-            label: 'Share',
+            label: AppLocalizations.of(context)!.share,
             onTap: () => Share.share(
               item.toString(),
-              subject:
-                  'Share Bookmark', // Replace with your localization or custom text
+              subject: AppLocalizations.of(context)!.share,
             ),
           ),
         SpeedDialChild(
           child: const Icon(Icons.edit),
-          label: 'Edit',
+          label: AppLocalizations.of(context)!.edit,
           onTap: () => _edit(context, item, viewModel), // Your edit logic
         ),
         SpeedDialChild(
           child: const Icon(Icons.drive_file_move),
-          label: 'Move To Folder',
-          onTap: () =>
-              _moveToFolderDialog(context, viewModel, item), // Your move logic
+          label: AppLocalizations.of(context)!.moveToFolder,
+          onTap: () => _moveToFolderDialog(context, viewModel, item),
         ),
         SpeedDialChild(
           child: const Icon(Icons.delete),
-          label: 'Delete',
-          onTap: () =>
-              _deleteItem(context, item, viewModel), // Your delete logic
+          label: AppLocalizations.of(context)!.delete,
+          onTap: () => _deleteItem(context, item, viewModel),
         ),
       ],
     );
