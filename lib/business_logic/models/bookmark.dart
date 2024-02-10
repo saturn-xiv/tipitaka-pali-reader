@@ -32,7 +32,8 @@ class Bookmark {
   });
 
   @override
-  String toString() {
+
+  /*String toString() {
     return '''ID: $id
               Book ID: $bookID
               Page Number: $pageNumber
@@ -42,6 +43,17 @@ class Bookmark {
               Folder ID: $folderId
               Bookmark Sort: $bmkSort
     ''';
+  }
+  */
+
+  String toString() {
+    return '''bookID: $bookID
+              name: $name
+              pageNumber: $pageNumber
+              note: $note
+              selected_text: $selectedText
+    ''';
+    //removed bookname for now.
   }
 
   Map<String, dynamic> toJson() {
