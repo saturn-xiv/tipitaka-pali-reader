@@ -77,8 +77,13 @@ class Bookmark {
   }
 
   factory Bookmark.fromJson(Map<String, dynamic> json) {
+    int parsedId = 0;
+    if (json.containsKey('id')) {
+      // Attempt to parse 'id' as int, regardless of its original type in JSON
+      parsedId = int.tryParse(json['id'].toString()) ?? 0;
+    }
     return Bookmark(
-      id: json['id'] ?? 0,
+      id: parsedId,
       firestoreId: json['firestoreId'] ?? 'n/a',
       bookID: json['book_id'] ?? 'n/a',
       pageNumber: json['page_number'] ?? 0,

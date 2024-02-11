@@ -168,6 +168,11 @@ class BookmarkPageViewModel extends ChangeNotifier {
     fetchBookmarksAndFolders();
   }
 
+  Future<void> insertBookmark(Bookmark bookmark) async {
+    await _bookmarkRepository.insert(bookmark);
+    fetchBookmarksAndFolders();
+  }
+
   Future<void> updateFolderName(Folder folder) async {
     // Update the folder name in the database
     // Refresh the UI or navigation path as needed
@@ -197,5 +202,9 @@ class BookmarkPageViewModel extends ChangeNotifier {
     await deleteFolder(folderId);
     await fetchItemsInCurrentFolder();
     notifyListeners();
+  }
+
+  Future<List<Bookmark>> fetchAllBookmarks() async {
+    return await _bookmarkRepository.getAllBookmark();
   }
 }

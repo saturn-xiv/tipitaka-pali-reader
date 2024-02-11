@@ -125,15 +125,23 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     if (filename != null) {
       final DatabaseHelper databaseHelper = DatabaseHelper();
-      final db = BookmarkDatabaseRepository(databaseHelper);
+      final BookmarkDatabaseRepository db =
+          BookmarkDatabaseRepository(databaseHelper);
 
       File file = File(filename.files.single.path.toString());
       String content = await file.readAsString();
       List<Bookmark> importedBookmarks = bookmarkFromJson(content);
+
+      // Optionally, determine the default folderId or retrieve it based on your app's logic
+      // For example, int defaultFolderId = await getDefaultFolderId();
+
       for (Bookmark bm in importedBookmarks) {
+        // If you need to assign all imported bookmarks to a specific folder, set folderId here
+        bm.folderId = -1; // root folder is always -1
+
         db.insert(bm);
       }
-      // Refresh the bookmarks
+      // Refresh the bookmarks to reflect the imported bookmarks
       context.read<BookmarkPageViewModel>().refreshBookmarks();
     } else {
       // User canceled the picker
@@ -142,15 +150,33 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   doExport(BuildContext context) async {
     final List<Bookmark> bookmarks =
-        context.read<BookmarkPageViewModel>().bookmarks;
-    String bookmarksJson = bookmarkToJson(bookmarks);
+        await BookmarkDatabaseRepository(DatabaseHelper()).getAllBookmark();
+
+    // Clone each bookmark and set folderId to -1
+    final modifiedBookmarks = bookmarks.map((bookmark) {
+      return Bookmark(
+        id: bookmark.id,
+        bookID: bookmark.bookID,
+        pageNumber: bookmark.pageNumber,
+        note: bookmark.note,
+        name: bookmark.name,
+        selectedText: bookmark.selectedText,
+        folderId: -1, // Set folderId to -1 for compatibility
+        bmkSort: bookmark.bmkSort,
+      );
+    }).toList();
+
+    // Convert the modified bookmarks list to JSON
+    String bookmarksJson = bookmarkToJson(modifiedBookmarks);
+
+    // File picking and saving logic remains the same
     String? directory = await FilePicker.platform.getDirectoryPath(
       lockParentWindow: true,
     );
     if (directory != null) {
       final file = File(path.join(directory, "bookmarks_export.json"));
 
-      // Write CSV to the file
+      // Write JSON to the file
       try {
         await file.writeAsString(bookmarksJson);
       } catch (e) {

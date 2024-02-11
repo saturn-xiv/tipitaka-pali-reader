@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/business_logic/models/bookmark.dart';
+import 'package:tipitaka_pali/business_logic/view_models/bookmark_page_view_model.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/repositories/bookmark_fire_repo.dart';
@@ -33,7 +35,9 @@ class TransferDialogState extends State<BookmarkCloudTransferDialog> {
   }
 
   void downloadBookmark(Bookmark bookmark) async {
-    await BookmarkDatabaseRepository(DatabaseHelper()).insert(bookmark);
+    final bookmarkViewModel =
+        Provider.of<BookmarkPageViewModel>(context, listen: false);
+    bookmarkViewModel.insertBookmark(bookmark);
     fetchBookmarks();
     scrollToBottom();
   }
