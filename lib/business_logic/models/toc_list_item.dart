@@ -30,11 +30,19 @@ class TocHeadingOne implements TocListItem {
 
   @override
   Widget build(BuildContext context, String filterText) {
-    final tocName = PaliScript.getScriptOf(
-        script: context.read<ScriptLanguageProvider>().currentScript,
-        romanText: toc.name);
-
-    return PaliTextView(tocName, style: Theme.of(context).textTheme.titleLarge);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    Script script = context.read<ScriptLanguageProvider>().currentScript;
+    final tocName = PaliScript.getScriptOf(script: script, romanText: toc.name);
+    return SubstringHighlight(
+      text: tocName,
+      term: filterText,
+      textStyle: TextStyle(
+          color: colorScheme.onSurface,
+          fontSize: Prefs.uiFontSize + 2,
+          fontWeight: FontWeight.bold,
+          fontFamily: FontUtils.getfontName(script: script)),
+      textStyleHighlight: TextStyle(color: colorScheme.primary),
+    );
   }
 }
 
