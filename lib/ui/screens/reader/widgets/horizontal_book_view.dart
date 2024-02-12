@@ -92,9 +92,6 @@ class _HorizontalBookViewState extends State<HorizontalBookView> {
             padding: const EdgeInsets.only(
                 bottom: 100.0), // estimated toolbar height
             child: SelectionArea(
-              focusNode: FocusNode(
-                canRequestFocus: true,
-              ),
               contextMenuBuilder: (context, selectableRegionState) {
                 return AdaptiveTextSelectionToolbar.buttonItems(
                   anchors: selectableRegionState.contextMenuAnchors,
