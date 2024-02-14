@@ -1,30 +1,30 @@
 {
   "general": {
-    "message": "TPR Build 62 is available for Android, iOS, MSWin, MacOS Appimage and Flathub.  Please update DPD by the extensions menu which was released afterwards and now available.  \n\nWhat's New?  New Themes, TOC fuzzy search, script converter, bookmarks export, plus many bug fixes\nLatest PEU from November, 2023 71% edited.  \nSee video for release details on YouTube.  Accepss the youtube channel via the menu on the settings",
-    "messageDate": "20231130",
-    "peuDate": "November 2023",
-    "dpdDate": "July 31, 2023"
+    "message": "TPR Build 72 is available for Android, MSWin, Appimage.\n\nWhat's New?  Cloud Bookmarks, and Bookmark Folders.  Plus many bug fixes\nLatest PEU from November, 2023 71% edited.  \nSee video for release details on YouTube.  Access the youtube channel via the menu on the settings\n\nMay this dhammadāna be a cause for Nibbāna for the programmers and volunteers of this app and also for all beings and past relatives.",
+    "messageDate": "20240214",
+    "peuDate": "Jan, 2024",
+    "dpdDate": "Jan, 2024"
   },
   "android": {
-    "currentVersion": "2.5.9+62",
+    "currentVersion": "2.6.1+72",
     "message": "Download in Play Store",
-    "messageDate": "20231130",
-    "peuDate": "November 2023",
-    "dpdDate": "July 31, 2023"
+    "messageDate": "20240214",
+    "peuDate": "Jan, 2024",
+    "dpdDate": "Jan, 2024"
   },
   "windows": {
-    "currentVersion": "2.5.9+62",
+    "currentVersion": "2.6.1+72",
     "message": "Download in MS App Store",
-    "messageDate": "20231130",
-    "peuDate": "November 2023",
-    "dpdDate": "July 31, 2023"
+    "messageDate": "20240214",
+    "peuDate": "Jan, 2024",
+    "dpdDate": "Jan, 2024"
   },
   "linux": {
-    "currentVersion": "2.5.9+62",
-    "message": "Now in Flathub and Appimage",
-    "messageDate": "20231130",
-    "peuDate": "November 2023",
-    "dpdDate": "July 31, 2023"
+    "currentVersion": "2.6.1+72",
+    "message": "Appimage build 72  flathub is older",
+    "messageDate": "20240214",
+    "peuDate": "Jan, 2024",
+    "dpdDate": "Jan, 2024"
   },
   "ios": {
     "currentVersion": "2.5.9+63",
