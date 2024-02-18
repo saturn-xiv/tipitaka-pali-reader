@@ -1,9 +1,10 @@
 cd TipitakaPaliReader.AppDir
 
-cp -r ~/git/tipitaka-pali-reader/build/linux/x64/release/bundle/* .
+cp -r ~/tipitaka-pali-reader/build/linux/x64/release/bundle/* .
 
 # Navigate back to the project root
 cd ..
+
 
 # Download the AppImage tool
 #wget https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
