@@ -177,11 +177,14 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
       final file = File('${tempDir.path}/bookmarks_export.json');
 
       await file.writeAsString(bookmarksJson);
-
+      final box = context.findRenderObject() as RenderBox?;
       // Share the file
       try {
-        await Share.shareXFiles([XFile(file.path)],
-            subject: 'Exported Bookmarks');
+        await Share.shareXFiles(
+          [XFile(file.path)],
+          subject: 'Exported Bookmarks',
+          sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size, // required for ipad
+        );
       } catch (e) {
         debugPrint('Error sharing file: $e');
       }
