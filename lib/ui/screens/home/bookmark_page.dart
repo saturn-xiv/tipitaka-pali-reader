@@ -89,26 +89,38 @@ class _BookmarkPageState extends State<BookmarkPage>
         appBar: BookmarkAppBar(onDialogClose: () {
           // Assuming this is correctly defined to handle dialog closure
         }),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _createNewFolder(context),
-          tooltip: AppLocalizations.of(context)!.createNewFolder,
-          child: const Icon(Icons.create_new_folder),
-        ),
         body: Consumer<BookmarkPageViewModel>(
           builder: (context, viewModel, child) {
             return Column(
               children: [
                 // Navigation path widget
-                FolderPathNavigator(
-                  path: viewModel.navigationPath,
-                  onFolderTap: (Folder folder) {
-                    if (folder.id == -1) {
-                      // Assuming -1 is your ID for "Root"
-                      viewModel.setCurrentFolderAndFetchItems(-1);
-                    } else {
-                      viewModel.goToFolderInPath(folder);
-                    }
-                  },
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: 16.0),
+                  child: Row(
+                    children: [
+                      FolderPathNavigator(
+                        path: viewModel.navigationPath,
+                        onFolderTap: (Folder folder) {
+                          if (folder.id == -1) {
+                            // Assuming -1 is your ID for "Root"
+                            viewModel.setCurrentFolderAndFetchItems(-1);
+                          } else {
+                            viewModel.goToFolderInPath(folder);
+                          }
+                        },
+                      ),
+                      const SizedBox(
+                          width: 8), // Space between button and breadcrumb
+                      IconButton(
+                        icon: const Icon(Icons.create_new_folder_outlined),
+                        color: Colors.blue, //Theme.of(context).primaryColor,
+                        iconSize: 25,
+                        tooltip: "Create New Folder",
+                        onPressed: () => _createNewFolder(context),
+                      )
+                    ],
+                  ),
                 ),
                 Expanded(
                   child: ListView.separated(
