@@ -20,6 +20,7 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
   int _tabsVisible = Prefs.tabsVisible;
   bool _disableVelthuis = Prefs.disableVelthuis;
   bool _persitentSearchFilter = Prefs.persitentSearchFilter;
+  bool _hideScrollbar = Prefs.hideScrollbar;
   double _currentPanelFontSizeValue = 11;
   late double _currentUiFontSizeValue;
 
@@ -63,6 +64,8 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           _getDictionaryToClipboardSwitch(),
           const Divider(),
           _getVelthuisOnSwitch(),
+          const Divider(),
+          _getHideScrollbarSwitch(),
           const Divider(),
           _getPersitentSearchFilterSwitch(),
           const Divider(),
@@ -339,6 +342,23 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
             });
           },
           value: _disableVelthuis,
+        ),
+      ),
+    );
+  }
+
+  Widget _getHideScrollbarSwitch() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 32.0),
+      child: ListTile(
+        title: const Text("Hide Scrollbars"),
+        trailing: Switch(
+          onChanged: (value) {
+            setState(() {
+              _hideScrollbar = Prefs.hideScrollbar = value;
+            });
+          },
+          value: _hideScrollbar,
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:tipitaka_pali/providers/font_provider.dart';
+import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/ui/screens/reader/intents.dart';
 
 import '../../../../app.dart';
@@ -234,10 +235,11 @@ class _VerticalBookViewState extends State<VerticalBookView>
                       )),
                 ),
               ),
-              SizedBox(
-                  width: 32,
-                  height: constraints.maxHeight,
-                  child: const VerticalBookSlider()),
+              if (!Prefs.hideScrollbar)
+                SizedBox(
+                    width: 32,
+                    height: constraints.maxHeight,
+                    child: const VerticalBookSlider()),
             ],
           ),
         ),

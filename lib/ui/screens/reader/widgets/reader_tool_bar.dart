@@ -49,13 +49,18 @@ class UpperRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        SizedBox(
+        const SizedBox(
           width: 45,
         ),
-        Expanded(child: BookSlider()),
-        SizedBox(
+        // Only show BookSlider if Prefs.showScrollbar is true, otherwise show an Expanded blank widget
+        if (!Prefs.hideScrollbar)
+          const Expanded(child: BookSlider())
+        else
+          const Expanded(
+              child: SizedBox(height: 30)), // An Expanded blank widget
+        const SizedBox(
           width: 45,
         ),
       ],
