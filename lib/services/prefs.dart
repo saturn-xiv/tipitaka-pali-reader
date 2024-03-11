@@ -388,12 +388,6 @@ class Prefs {
       instance.getString(oldUsernamePref) ?? defaultOldUsername;
   static set oldUsername(String value) =>
       instance.setString(oldUsernamePref, value);
-
-  static bool get hideScrollbar =>
-      instance.getBool(hideScrollbarPref) ?? defaultHideScrollbar;
-  static set hideScrollbar(bool value) =>
-      instance.setBool(hideScrollbarPref, value);
-
   // ===========================================================================
   // Helpers
 

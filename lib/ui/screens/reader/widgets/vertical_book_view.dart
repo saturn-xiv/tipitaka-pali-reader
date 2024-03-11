@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/providers/font_provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/ui/screens/reader/intents.dart';
@@ -235,11 +236,23 @@ class _VerticalBookViewState extends State<VerticalBookView>
                       )),
                 ),
               ),
-              if (!Prefs.hideScrollbar)
-                SizedBox(
-                    width: 32,
-                    height: constraints.maxHeight,
-                    child: const VerticalBookSlider()),
+              PreferenceBuilder<bool>(
+                preference: context
+                    .read<StreamingSharedPreferences>()
+                    .getBool(hideScrollbarPref, defaultValue: false),
+                builder: (context, hideScrollbar) {
+                  if (!hideScrollbar) {
+                    return SizedBox(
+                      width: 32,
+                      height: constraints.maxHeight,
+                      child: const VerticalBookSlider(),
+                    );
+                  } else {
+                    return SizedBox
+                        .shrink(); // Return an empty widget when hideScrollbar is true.
+                  }
+                },
+              ),
             ],
           ),
         ),

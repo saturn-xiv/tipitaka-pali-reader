@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/ui/screens/settings/panel_size_setting_view.dart';
@@ -20,7 +21,9 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
   int _tabsVisible = Prefs.tabsVisible;
   bool _disableVelthuis = Prefs.disableVelthuis;
   bool _persitentSearchFilter = Prefs.persitentSearchFilter;
-  bool _hideScrollbar = Prefs.hideScrollbar;
+  late bool _hideScrollbar;
+  late final StreamingSharedPreferences rxPrefs;
+
   double _currentPanelFontSizeValue = 11;
   late double _currentUiFontSizeValue;
 
@@ -29,6 +32,11 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
     super.initState();
     _clipboard = Prefs.saveClickToClipboard;
     _currentUiFontSizeValue = Prefs.uiFontSize;
+
+    rxPrefs = Provider.of<StreamingSharedPreferences>(context, listen: false);
+    _hideScrollbar = rxPrefs
+        .getBool(hideScrollbarPref, defaultValue: defaultHideScrollbar)
+        .getValue();
   }
 
   @override
@@ -353,10 +361,12 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
       child: ListTile(
         title: const Text("Hide Scrollbars"),
         trailing: Switch(
-          onChanged: (value) {
+          onChanged: (value) async {
             setState(() {
-              _hideScrollbar = Prefs.hideScrollbar = value;
+              _hideScrollbar = value;
+              // set the streaming prefs.
             });
+            await rxPrefs.setBool(hideScrollbarPref, _hideScrollbar);
           },
           value: _hideScrollbar,
         ),

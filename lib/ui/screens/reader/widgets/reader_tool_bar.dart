@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tipitaka_pali/providers/font_provider.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/controller/dictionary_controller.dart';
@@ -51,18 +52,25 @@ class UpperRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const SizedBox(
-          width: 45,
+        const SizedBox(width: 45),
+        // Dynamically show BookSlider or an Expanded blank widget based on the hideScrollbarPref
+        Expanded(
+          child: PreferenceBuilder<bool>(
+            preference: context
+                .read<StreamingSharedPreferences>()
+                .getBool(hideScrollbarPref, defaultValue: false),
+            builder: (context, hideScrollbar) {
+              // If hideScrollbar is false, show the BookSlider
+              if (!hideScrollbar) {
+                return const BookSlider();
+              } else {
+                // Otherwise, show an empty SizedBox to take up the space
+                return const SizedBox(height: 30);
+              }
+            },
+          ),
         ),
-        // Only show BookSlider if Prefs.showScrollbar is true, otherwise show an Expanded blank widget
-        if (!Prefs.hideScrollbar)
-          const Expanded(child: BookSlider())
-        else
-          const Expanded(
-              child: SizedBox(height: 30)), // An Expanded blank widget
-        const SizedBox(
-          width: 45,
-        ),
+        const SizedBox(width: 45),
       ],
     );
   }
