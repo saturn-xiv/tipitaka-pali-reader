@@ -248,7 +248,7 @@ class _VerticalBookViewState extends State<VerticalBookView>
                       child: const VerticalBookSlider(),
                     );
                   } else {
-                    return SizedBox
+                    return const SizedBox
                         .shrink(); // Return an empty widget when hideScrollbar is true.
                   }
                 },
