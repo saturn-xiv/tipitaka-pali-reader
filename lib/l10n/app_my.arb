@@ -177,5 +177,6 @@
   "create": "ဖန်တီးပါ",
   "createNewFolder": "ဖိုင်တွဲအသစ်ဖန်တီးပါ",
   "confirmDelete": "ဖျက်မည်ကို အတည်ပြုပါ",
-  "areYouSureDelete": "ဤအရာကို ဖျက်ဖို့သေချာပါသလား။"
+  "areYouSureDelete": "ဤအရာကို ဖျက်ဖို့သေချာပါသလား။",
+  "hidescrollbars": "စကောလ်ဘားကိုဝှက်ရန်"
 }
