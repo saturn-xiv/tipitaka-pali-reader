@@ -17,7 +17,11 @@ class PaliTools {
         .replaceAll('.d', 'ḍ')
         .replaceAll('"n', 'ṅ') // double quote
         .replaceAll('\u201Dn', 'ṅ') // \u201D = Right Double Quotation Mark
+        .replaceAll('“n', 'ṅ') // apple curly quote
+        .replaceAll('”n', 'ṅ') // apple curlyquote
+        .replaceAll(';n', 'ṅ') // my easier vel ṅ
         .replaceAll('~n', 'ñ')
+        .replaceAll(';y', 'ñ') // my easier vel ñ
         .replaceAll('.n', 'ṇ')
         .replaceAll('.m', nigahita)
         .replaceAll('\u1E41', nigahita) // ṁ

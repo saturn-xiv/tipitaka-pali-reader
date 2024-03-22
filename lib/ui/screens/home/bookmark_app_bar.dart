@@ -14,7 +14,8 @@ import 'package:tipitaka_pali/ui/dialogs/bookmark_cloud_transfer_dialog.dart';
 import 'package:tipitaka_pali/ui/dialogs/confirm_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
-import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart';
 
 class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onDialogClose;
@@ -169,18 +170,23 @@ class BookmarkAppBar extends StatelessWidget implements PreferredSizeWidget {
     // Convert the modified bookmarks list to JSON
     String bookmarksJson = bookmarkToJson(modifiedBookmarks);
 
-    // File picking and saving logic remains the same
-    String? directory = await FilePicker.platform.getDirectoryPath(
-      lockParentWindow: true,
-    );
-    if (directory != null) {
-      final file = File(path.join(directory, "bookmarks_export.json"));
+    // If on a mobile platform, share it
+    if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
+      // Create a temporary file to write the JSON data
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/bookmarks_export.json');
 
-      // Write JSON to the file
+      await file.writeAsString(bookmarksJson);
+      final box = context.findRenderObject() as RenderBox?;
+      // Share the file
       try {
-        await file.writeAsString(bookmarksJson);
+        await Share.shareXFiles(
+          [XFile(file.path)],
+          subject: 'Exported Bookmarks',
+          sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size, // required for ipad
+        );
       } catch (e) {
-        debugPrint('Error writing file: $e');
+        debugPrint('Error sharing file: $e');
       }
     }
   }

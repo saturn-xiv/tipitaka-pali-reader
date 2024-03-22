@@ -181,5 +181,6 @@
   "create": "සාදන්න",
   "createNewFolder": "අලුත් ෆඉල් එකක් සාදන්න",
   "confirmDelete": "මකා දැමීම තහවුරු කරන්න",
-  "areYouSureDelete": "ඔබට මෙම  මකා දැමීමට සහතිකද?"
+  "areYouSureDelete": "ඔබට මෙම  මකා දැමීමට සහතිකද?",
+  "hidescrollbars": "ස්ක්‍රොල් තීරු සඟවන්න"
 }

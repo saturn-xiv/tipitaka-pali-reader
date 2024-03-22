@@ -61,6 +61,7 @@ const String useM3Pref = 'useM3';
 const String romanFontNamePref = "romanFontName";
 const String oldPasswordPref = 'oldPassword';
 const String oldUsernamePref = 'oldUsername';
+const String hideScrollbarPref = 'hideScrollbar';
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -115,6 +116,7 @@ const bool defaultUseM3 = true;
 const String defaultRomanFontName = "Open Sans";
 const String defaultOldPassword = '';
 const String defaultOldUsername = '';
+const bool defaultHideScrollbar = false;
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -386,7 +388,6 @@ class Prefs {
       instance.getString(oldUsernamePref) ?? defaultOldUsername;
   static set oldUsername(String value) =>
       instance.setString(oldUsernamePref, value);
-
   // ===========================================================================
   // Helpers
 

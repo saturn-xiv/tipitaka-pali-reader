@@ -45,9 +45,11 @@ class _BookSliderState extends State<BookSlider> {
       label: currentPage.toString(),
       divisions: divisions,
       onChanged: (value) {
-        setState(() {
-          currentPage = value.toInt();
-        });
+        if (mounted) {
+          setState(() {
+            currentPage = value.toInt();
+          });
+        }
       },
       // onChangeStart: null,
       onChangeEnd: (value) {
