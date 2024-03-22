@@ -431,7 +431,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 2.6.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.paauk.tipitakapalireader;
+				PRODUCT_BUNDLE_IDENTIFIER = org.americanmonk.tpp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
@@ -564,7 +564,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 2.6.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.paauk.tipitakapalireader;
+				PRODUCT_BUNDLE_IDENTIFIER = org.americanmonk.tpp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -591,7 +591,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 2.6.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.paauk.tipitakapalireader;
+				PRODUCT_BUNDLE_IDENTIFIER = org.americanmonk.tpp;
 				PROVISIONING_PROFILE_SPECIFIER = "TPR Mac AppStore Profile";
 				SWIFT_VERSION = 5.0;
 			};
