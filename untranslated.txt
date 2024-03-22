@@ -95,7 +95,8 @@
     "create",
     "createNewFolder",
     "confirmDelete",
-    "areYouSureDelete"
+    "areYouSureDelete",
+    "hidescrollbars"
   ],
 
   "ccp": [
@@ -194,7 +195,12 @@
     "create",
     "createNewFolder",
     "confirmDelete",
-    "areYouSureDelete"
+    "areYouSureDelete",
+    "hidescrollbars"
+  ],
+
+  "hi": [
+    "hidescrollbars"
   ],
 
   "it": [
@@ -249,7 +255,16 @@
     "create",
     "createNewFolder",
     "confirmDelete",
-    "areYouSureDelete"
+    "areYouSureDelete",
+    "hidescrollbars"
+  ],
+
+  "km": [
+    "hidescrollbars"
+  ],
+
+  "lo": [
+    "hidescrollbars"
   ],
 
   "my": [
@@ -261,11 +276,17 @@
   "ru": [
     "time",
     "alphabetically",
-    "material3"
+    "material3",
+    "hidescrollbars"
   ],
 
   "vi": [
     "anywhere",
-    "selectNone"
+    "selectNone",
+    "hidescrollbars"
+  ],
+
+  "zh": [
+    "hidescrollbars"
   ]
 }
