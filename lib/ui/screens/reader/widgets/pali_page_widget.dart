@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:html/dom.dart' as dom;
 
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
@@ -67,20 +68,6 @@ class PaliWidgetFactory extends WidgetFactory {
       }
     }
 
-    if (text != null && text.startsWith('note_icon') && children == null) {
-      String bookmark = text.replaceFirst('note_icon', '');
-      return WidgetSpan(
-        child: IconButton(
-          icon: Icon(Icons.note, color: Colors.red),
-          tooltip: _insertBookmarkNewlines(bookmark),
-          onPressed: () {
-            if (showDialogCallback != null) {
-              showDialogCallback!(bookmark);
-            }
-          },
-        ),
-      );
-    }
     return TextSpan(
       children: children,
       mouseCursor: recognizer != null ? SystemMouseCursors.click : null,
@@ -320,6 +307,17 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
               // no style
               return {'text-decoration': 'none'};
             },
+            customWidgetBuilder: (element) {
+              if (element.localName == 'span' &&
+                  element.className == 'linebreak') {
+                return const InlineCustomWidget(
+                    child: SizedBox(
+                  height: 0.0,
+                  child: Text('\n '),
+                ));
+              }
+              return null;
+            },
             onTapUrl: (word) {
               if (widget.onClick != null) {
                 // #goto is used for scrolling to selected text
@@ -340,6 +338,7 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
 
   String _formatContent(String content, Script script, BuildContext context) {
     content = _removeHiddenTags(content);
+    content = _addLineBreak(content);
 
     if (lookupWord != null) {
       content = _addUnderline(content, lookupWord!);
@@ -375,6 +374,10 @@ class _PaliPageWidgetState extends State<PaliPageWidget> {
     // format of alternate pali
     // <span class="note">[bhagavāti (syā.), dī. ni. 1.157, abbhuggatākārena pana sameti]</span>
     return content.replaceAll(RegExp(r'<span class="note">\[.+?\]</span>'), '');
+  }
+
+  String _addLineBreak(String content) {
+    return content.replaceAll('</p>', '<span class="linebreak"></span><p>');
   }
 
   String _addUnderline(String content, String lookupWord) {
