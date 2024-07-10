@@ -27,6 +27,8 @@ class _SearchWidgetState extends State<SearchWidget> {
   late final TextEditingController _controller =
       TextEditingController(text: widget.word);
 
+  final FocusNode _focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -86,6 +88,11 @@ class _SearchWidgetState extends State<SearchWidget> {
     final textColor = _controller.value.text.length > 2
         ? baseColor
         : baseColor.withAlpha(100);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      //
+      Focus.maybeOf(context)?.unfocus();
+      _focusNode.requestFocus();
+    });
 
     return LayoutBuilder(
       builder: (_, BoxConstraints boxConstraints) {
@@ -106,6 +113,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                       Flexible(
                         flex: 2,
                         child: TextField(
+                          focusNode: _focusNode,
                           controller: _controller,
                           autofocus: true,
                           style: TextStyle(color: textColor),
