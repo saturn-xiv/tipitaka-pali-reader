@@ -1,31 +1,29 @@
 buildscript {
-    ext.kotlin_version = '1.8.10'
+    ext.kotlin_version = '1.8.22'  // Defining Kotlin version here for the entire project
     repositories {
-        google()
-        mavenCentral()
+        google()  // Google's Maven repository
+        mavenCentral()  // Maven Central repository
     }
-
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"  // Kotlin Gradle plugin
+        // You can add other classpath dependencies as necessary
     }
 }
 
 allprojects {
     repositories {
-        google()
-        mavenCentral()
+        google()  // Google's Maven repository
+        mavenCentral()  // Maven Central repository for accessing project dependencies
     }
 }
 
-rootProject.buildDir = '../build'
+rootProject.buildDir = '../build'  // Custom build directory for the root project
+
 subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
-    project.evaluationDependsOn(':app')
+    project.buildDir = "${rootProject.buildDir}/${project.name}"  // Setting build directory for each subproject
+    project.evaluationDependsOn(':app')  // Ensures subprojects evaluate after the app project
 }
 
-tasks.register("clean", Delete) {
+tasks.register("clean", Delete) {  // Custom clean task to delete the build directory
     delete rootProject.buildDir
 }

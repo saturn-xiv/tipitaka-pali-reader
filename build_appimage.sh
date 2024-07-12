@@ -1,6 +1,6 @@
 cd TipitakaPaliReader.AppDir
 
-cp -r ~/tipitaka-pali-reader/build/linux/x64/release/bundle/* .
+cp -r ~/git/tipitaka-pali-reader/build/linux/x64/release/bundle/* .
 
 # Navigate back to the project root
 cd ..
