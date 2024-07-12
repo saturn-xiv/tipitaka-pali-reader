@@ -187,22 +187,28 @@ class FlashCardsView extends StatelessWidget {
           itemCount: cards.length,
           itemBuilder: (context, index) {
             return FlashCard(
-              backWidget: SizedBox(
-                height: 100,
-                width: 100,
-                child: Column(
-                  children: [
-                    Text(
-                      cards[index].word, // Display the word
-                      style: const TextStyle(fontSize: 30),
-                    ),
-                    HtmlWidget(
-                      _highlightOccurrences(
-                          cards[index].context,
-                          cards[index]
-                              .word), // Highlight the word in the context
-                    ),
-                  ],
+              backWidget: Container(
+                padding: EdgeInsets.all(10), // Add padding for better spacing
+                constraints: BoxConstraints(
+                  maxHeight: 400, // Set a maximum height
+                ),
+                child: SingleChildScrollView(
+                  // Allows scrolling within the card
+                  child: Column(
+                    children: [
+                      Text(
+                        cards[index].word, // Display the word
+                        style: const TextStyle(fontSize: 30),
+                        overflow: TextOverflow.ellipsis, // Prevents overflow
+                      ),
+                      HtmlWidget(
+                        _highlightOccurrences(
+                            cards[index].context,
+                            cards[index]
+                                .word), // Highlight the word in the context
+                      ),
+                    ],
+                  ),
                 ),
               ),
               frontWidget: FutureBuilder<String>(

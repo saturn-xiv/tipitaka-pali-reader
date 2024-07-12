@@ -32,10 +32,14 @@ class DictionaryHistoryDatabaseRepository
     await db
         .delete(_historyTable, where: '$_columnWord = ?', whereArgs: [word]);
 
+    // Remove numbers and punctuation, retaining only specified characters and whitespace
+    String sanitizedWord =
+        word.replaceAll(RegExp(r'[^\sa-zA-ZāīūṅñṭḍṇḷṃĀĪŪṄÑṬḌṆḶṂ]+'), '');
+
     return await db.insert(
       _historyTable,
       DictionaryHistory(
-              word: word,
+              word: sanitizedWord,
               context: context,
               bookId: bookId,
               page: page,
