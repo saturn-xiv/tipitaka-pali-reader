@@ -272,30 +272,57 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
       if (!hasPeu && word.length >= 9) {
         // reduce one by one up to 4 times to see if the word exists
         // add those words to the list.
-        for (int reduce = 1; reduce < 5; reduce++) {
-          String sql = '''
-      SELECT word, definition, "PEU Algo Used" as "name" from dictionary 
-             WHERE
-                dictionary.book_id = 8
-                AND dictionary.word LIKE '${word.substring(0, word.length - reduce)}%' 
-                AND  length(dictionary.word) <= ${word.length}
-                  ''';
+//         for (int reduce = 1; reduce < 5; reduce++) {
+//           String sql = '''
+//       SELECT word, definition, "PEU Algo Used" as "name" from dictionary
+//              WHERE
+//                 dictionary.book_id = 8
+//                 AND dictionary.word LIKE '${word.substring(0, word.length - reduce)}%'
+//                 AND  length(dictionary.word) <= ${word.length}
+//                   ''';
+//
+// // TODO manually remove the word if bigger than original.
+//
+//           List<Map> list = await db.rawQuery(sql);
+//           if (list.isNotEmpty) {
+//             // we found the word.. now need to add it.
+//             debugPrint("found word in peu ${list[0].toString()}");
+//
+//             var peuDefs = list.map((x) => Definition.fromJson(x)).toList();
+//
+//             Definition def = peuDefs[0];
+//             def.definition = formatePeuAlgoDef(word, def.word, def.definition);
+//             debugPrint(def.definition);
+//             defs.add(def);
+//             return defs;
+//           }
+//         }
+        String sql = '''
+            SELECT *
+            FROM dictionary
+            WHERE dictionary.book_id = 8
+            AND length(word) BETWEEN ${word.length - 4} and ${word.length}
+            AND word LIKE '${word.substring(0, word.length - 4)}%'
+            ORDER BY CASE 
+              WHEN word LIKE '${word.substring(0, word.length - 1)}%' THEN 1
+              WHEN word LIKE '${word.substring(0, word.length - 2)}%' THEN 2
+              WHEN word LIKE '${word.substring(0, word.length - 3)}%' THEN 3
+              ELSE 4                             
+            END
+            LIMIT 1;
+            ''';
+        List<Map> list = await db.rawQuery(sql);
+        if (list.isNotEmpty) {
+          // we found the word.. now need to add it.
+          debugPrint("found word in peu ${list[0].toString()}");
 
-// TODO manually remove the word if bigger than original.
+          var peuDefs = list.map((x) => Definition.fromJson(x)).toList();
 
-          List<Map> list = await db.rawQuery(sql);
-          if (list.isNotEmpty) {
-            // we found the word.. now need to add it.
-            debugPrint("found word in peu ${list[0].toString()}");
-
-            var peuDefs = list.map((x) => Definition.fromJson(x)).toList();
-
-            Definition def = peuDefs[0];
-            def.definition = formatePeuAlgoDef(word, def.word, def.definition);
-            debugPrint(def.definition);
-            defs.add(def);
-            return defs;
-          }
+          Definition def = peuDefs[0];
+          def.definition = formatePeuAlgoDef(word, def.word, def.definition);
+          debugPrint(def.definition);
+          defs.add(def);
+          return defs;
         }
       }
     } // peu is selected
