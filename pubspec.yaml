@@ -68,14 +68,14 @@ dependencies:
   url_launcher: ^6.1.5
   devicelocale: ^0.7.0
   dio: ^5.1.2
-  share_plus: ^9.0.0
+  share_plus: ^8.0.2
   streaming_shared_preferences: ^2.0.0
   ms_material_color: ^1.0.0
   uuid: ^4.1.0
-  vm_service: ^14.2.1
+  vm_service: ^14.0.0
   el_tooltip: ^2.0.0
   package_info_plus: ^8.0.0
-  in_app_review: ^2.0.6
+  in_app_review: ^2.0.9
   internet_connection_checker_plus: ^2.0.0
   msix: ^3.15.0
   flash_card: ^0.0.7
