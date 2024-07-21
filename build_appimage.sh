@@ -13,6 +13,7 @@ cd ..
 
 #change the permissions of the app run file
 chmod +x TipitakaPaliReader.AppDir/AppRun
+chmod +x TipitakaPaliReader.AppDir/tipitaka_pali_reader
 
 # Build the AppImage
 #ARCH=x86_64 ./appimagetool-x86_64.AppImage TipitakaPaliReader.AppDir/ tipitaka_pali_reader.AppImage
