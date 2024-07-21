@@ -319,6 +319,7 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
           var peuDefs = list.map((x) => Definition.fromJson(x)).toList();
 
           Definition def = peuDefs[0];
+          def.bookName = "PEU Algo Used";
           def.definition = formatePeuAlgoDef(word, def.word, def.definition);
           debugPrint(def.definition);
           defs.add(def);
