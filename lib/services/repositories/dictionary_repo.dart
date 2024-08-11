@@ -33,8 +33,10 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
   Future<List<Definition>> getDefinition(String word) async {
     final db = await databaseHelper.database;
     String sql = '''
-      SELECT word, definition, dictionary_books.name,user_order from dictionary, dictionary_books 
-      WHERE word = '$word' AND dictionary.book_id = dictionary_books.id
+      SELECT word, definition, dictionary_books.name,user_order 
+      FROM dictionary, dictionary_books 
+      WHERE (word = '$word' or word GLOB '$word [0-9]*') 
+      AND dictionary.book_id = dictionary_books.id
       AND dictionary_books.user_choice = 1
       ORDER BY dictionary_books.user_order
     ''';
