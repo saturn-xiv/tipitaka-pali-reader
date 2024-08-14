@@ -62,6 +62,8 @@ const String romanFontNamePref = "romanFontName";
 const String oldPasswordPref = 'oldPassword';
 const String oldUsernamePref = 'oldUsername';
 const String hideScrollbarPref = 'hideScrollbar';
+const String hideIPAPref = 'hideIPA';
+const String hideSanskritPref = 'hideSanskrit';
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -117,6 +119,8 @@ const String defaultRomanFontName = "Open Sans";
 const String defaultOldPassword = '';
 const String defaultOldUsername = '';
 const bool defaultHideScrollbar = false;
+const bool defaultHideIPA = true;
+const bool defaultHideSanskrit = true;
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -388,6 +392,15 @@ class Prefs {
       instance.getString(oldUsernamePref) ?? defaultOldUsername;
   static set oldUsername(String value) =>
       instance.setString(oldUsernamePref, value);
+
+  static bool get hideIPA => instance.getBool(hideIPAPref) ?? defaultHideIPA;
+  static set hideIPA(bool value) => instance.setBool(hideIPAPref, value);
+
+  static bool get hideSanskrit =>
+      instance.getBool(hideSanskritPref) ?? defaultHideSanskrit;
+  static set hideSanskrit(bool value) =>
+      instance.setBool(hideSanskritPref, value);
+
   // ===========================================================================
   // Helpers
 

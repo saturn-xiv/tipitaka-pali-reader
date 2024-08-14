@@ -180,5 +180,8 @@
   "createNewFolder": "Create New Folder",
   "confirmDelete": "Confirm Delete",
   "areYouSureDelete": "Are you sure you want to delete this item?",
-  "hidescrollbars": "Hide Scrollbars"
+  "hidescrollbars": "Hide Scrollbars",
+  "dpdSettings": "DPD Settings",
+  "hideIPA": "Hide IPA",
+  "hideSanskrit":"Hide Sanskrit"
 }

@@ -8,6 +8,7 @@ import 'package:tipitaka_pali/ui/screens/settings/theme_settings_view.dart';
 import 'package:tipitaka_pali/ui/screens/settings/tools_settings.dart';
 import 'package:tipitaka_pali/ui/widgets/select_dictionary_widget.dart';
 import 'package:tipitaka_pali/ui/widgets/select_language_widget.dart';
+import 'package:tipitaka_pali/ui/screens/settings/dpd_settings_view.dart';
 
 import 'general_settings_view.dart';
 import 'help_about.dart';
@@ -33,6 +34,7 @@ class SettingPage extends StatelessWidget {
             children: <Widget>[
               const SizedBox(height: 16),
               const DictionarySettingView(),
+              const DPDSettingsView(),
               const ThemeSettingView(),
               const LanguageSettingView(),
               const ScriptSettingView(),

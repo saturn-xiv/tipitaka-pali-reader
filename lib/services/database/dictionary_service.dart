@@ -1,3 +1,5 @@
+import 'package:tipitaka_pali/services/prefs.dart';
+
 import '../../business_logic/models/definition.dart';
 import '../../utils/pali_stemmer.dart';
 import '../repositories/dictionary_repo.dart';
@@ -10,8 +12,16 @@ class DictionarySerice {
   final DictionaryRepository dictionaryRepository;
 
   Future<Definition> getDpdDefinition(String headword) async {
-    final definitions = await dictionaryRepository.getDpdDefinition(headword);
-    return definitions;
+    Definition definition =
+        await dictionaryRepository.getDpdDefinition(headword);
+    if (Prefs.hideIPA) {
+      definition.definition = removeIPA(definition.definition);
+    }
+    if (Prefs.hideSanskrit) {
+      definition.definition = removeSanskritItems(definition.definition);
+    }
+
+    return definition;
   }
 
   Future<Definition> getDpdGrammarDefinition(String word) async {
@@ -55,5 +65,26 @@ class DictionarySerice {
 
   Future<String> getDpdLikeHeadwords(String word) async {
     return dictionaryRepository.getDpdLikeHeadwords(word);
+  }
+
+  String removeIPA(String content) {
+    final regexPattern = RegExp(
+        r'<tr>\s*<th[^>]*>\s*IPA\s*</th>\s*<td[^>]*>.*?</td>\s*</tr>',
+        caseSensitive: false,
+        multiLine: true,
+        dotAll: true // Allows '.' to match newline characters as well
+        );
+
+    return content.replaceAll(regexPattern, ''); // Replace with empty string
+  }
+
+  String removeSanskritItems(String content) {
+    final regexPattern = RegExp(
+        r'<tr>\s*<th[^>]*>\s*(Sanskrit|Sanskrit Root)\s*</th>\s*<td[^>]*>.*?</td>\s*</tr>',
+        caseSensitive: false,
+        multiLine: true,
+        dotAll: true);
+
+    return content.replaceAll(regexPattern, '');
   }
 }
