@@ -32,15 +32,35 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
   @override
   Future<List<Definition>> getDefinition(String word) async {
     final db = await databaseHelper.database;
+    String wordplus = "$word 2";
+    String sqlCheckWord = '''
+      SELECT word from dictionary, dictionary_books
+      WHERE word = '$wordplus' AND dictionary.book_id = 8
+      AND dictionary_books.user_choice = 1
+      ORDER BY dictionary_books.user_order
+    ''';
+
+    List<Map<String, dynamic>> mapsNeedGlob = await db.rawQuery(sqlCheckWord);
+
     String sql = '''
-      SELECT word, definition, dictionary_books.name,user_order 
-      FROM dictionary, dictionary_books 
-      WHERE (word = '$word' or word GLOB '$word [0-9]*') 
+      SELECT word, definition, dictionary_books.name,user_order from dictionary, dictionary_books
+      WHERE word = '$word' AND dictionary.book_id = dictionary_books.id
       AND dictionary.book_id = dictionary_books.id
       AND dictionary_books.user_choice = 1
       ORDER BY dictionary_books.user_order
     ''';
-    List<Map<String, dynamic>> maps = await db.rawQuery(sql);
+
+    String sqlGLOB = '''
+      SELECT word, definition, dictionary_books.name,user_order
+      FROM dictionary, dictionary_books
+      WHERE (word = '$word' or word GLOB '$word [0-9]*')
+      AND dictionary.book_id = dictionary_books.id
+      AND dictionary_books.user_choice = 1
+      ORDER BY dictionary_books.user_order
+    ''';
+
+    List<Map<String, dynamic>> maps =
+        await db.rawQuery(mapsNeedGlob.isNotEmpty ? sqlGLOB : sql);
     List<Definition> defs = maps.map((x) => Definition.fromJson(x)).toList();
 
     return _adjustPEU(word, defs);
