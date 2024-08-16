@@ -219,17 +219,23 @@ class _VerticalBookViewState extends State<VerticalBookView>
                             isHtmlText: true,
                           );
 
-                          return PaliPageWidget(
-                            pageNumber: pageContent.pageNumber!,
-                            htmlContent: htmlContent,
-                            script: script,
-                            highlightedWord:
-                                readerViewController.textToHighlight,
-                            searchText: searchText,
-                            pageToHighlight:
-                                readerViewController.pageToHighlight,
-                            onClick: widget.onClickedWord,
-                            book: readerViewController.book,
+                          return Padding(
+                            padding:
+                                index == readerViewController.pages.length - 1
+                                    ? const EdgeInsets.only(bottom: 100.0)
+                                    : EdgeInsets.zero,
+                            child: PaliPageWidget(
+                              pageNumber: pageContent.pageNumber!,
+                              htmlContent: htmlContent,
+                              script: script,
+                              highlightedWord:
+                                  readerViewController.textToHighlight,
+                              searchText: searchText,
+                              pageToHighlight:
+                                  readerViewController.pageToHighlight,
+                              onClick: widget.onClickedWord,
+                              book: readerViewController.book,
+                            ),
                           );
                           // bookmarks: readerViewController.bookmarks,);
                         },
