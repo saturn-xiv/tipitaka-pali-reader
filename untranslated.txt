@@ -96,7 +96,10 @@
     "createNewFolder",
     "confirmDelete",
     "areYouSureDelete",
-    "hidescrollbars"
+    "hidescrollbars",
+    "dpdSettings",
+    "hideIPA",
+    "hideSanskrit"
   ],
 
   "ccp": [
@@ -196,11 +199,17 @@
     "createNewFolder",
     "confirmDelete",
     "areYouSureDelete",
-    "hidescrollbars"
+    "hidescrollbars",
+    "dpdSettings",
+    "hideIPA",
+    "hideSanskrit"
   ],
 
   "hi": [
-    "hidescrollbars"
+    "hidescrollbars",
+    "dpdSettings",
+    "hideIPA",
+    "hideSanskrit"
   ],
 
   "it": [
@@ -256,37 +265,64 @@
     "createNewFolder",
     "confirmDelete",
     "areYouSureDelete",
-    "hidescrollbars"
+    "hidescrollbars",
+    "dpdSettings",
+    "hideIPA",
+    "hideSanskrit"
   ],
 
   "km": [
-    "hidescrollbars"
+    "hidescrollbars",
+    "dpdSettings",
+    "hideIPA",
+    "hideSanskrit"
   ],
 
   "lo": [
-    "hidescrollbars"
+    "hidescrollbars",
+    "dpdSettings",
+    "hideIPA",
+    "hideSanskrit"
   ],
 
   "my": [
     "home",
     "gotoPageParagraph",
-    "velthuisHelp"
+    "velthuisHelp",
+    "dpdSettings",
+    "hideIPA",
+    "hideSanskrit"
   ],
 
   "ru": [
     "time",
     "alphabetically",
     "material3",
-    "hidescrollbars"
+    "hidescrollbars",
+    "dpdSettings",
+    "hideIPA",
+    "hideSanskrit"
+  ],
+
+  "si": [
+    "dpdSettings",
+    "hideIPA",
+    "hideSanskrit"
   ],
 
   "vi": [
     "anywhere",
     "selectNone",
-    "hidescrollbars"
+    "hidescrollbars",
+    "dpdSettings",
+    "hideIPA",
+    "hideSanskrit"
   ],
 
   "zh": [
-    "hidescrollbars"
+    "hidescrollbars",
+    "dpdSettings",
+    "hideIPA",
+    "hideSanskrit"
   ]
 }

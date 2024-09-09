@@ -45,5 +45,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Tipitaka Pali Reader would like to access your files for flashcards.</string>
 </dict>
 </plist>
