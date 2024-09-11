@@ -118,7 +118,8 @@ class _AppState extends State<App> {
             Locale('km', ''), // khmer, no country code
             Locale('lo', ''), // Lao country code
             Locale('ccp'), // Chakma, no country code
-            Locale('it', ""), // Italian, it
+            Locale('it', ''), // Italian, it
+            Locale('th', ''), // Italian, it
           ],
           home: FutureBuilder(
             future: fetchMessageIfNeeded(),

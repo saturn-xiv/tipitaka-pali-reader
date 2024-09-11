@@ -19,6 +19,7 @@ class SelectLanguageWidget extends StatelessWidget {
     'ລາວ',
     'chakma',
     'Italiano',
+    'ไทย',
   ];
 
   @override

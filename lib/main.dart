@@ -131,6 +131,10 @@ setScriptAndLanguageByLocal() async {
             Prefs.localeVal = 11;
             Prefs.currentScriptLanguage = "ro";
             break;
+          case "th":
+            Prefs.localeVal = 12;
+            Prefs.currentScriptLanguage = shortLocale;
+            break;
         } // switch current local
       } // not null
     } // platform not windows
