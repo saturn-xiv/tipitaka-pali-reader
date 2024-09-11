@@ -64,6 +64,7 @@ const String oldUsernamePref = 'oldUsername';
 const String hideScrollbarPref = 'hideScrollbar';
 const String hideIPAPref = 'hideIPA';
 const String hideSanskritPref = 'hideSanskrit';
+const String panelWidthKey = 'panelWidth';
 
 // default pref values
 const int defaultLocaleVal = 0;
@@ -121,6 +122,7 @@ const String defaultOldUsername = '';
 const bool defaultHideScrollbar = false;
 const bool defaultHideIPA = true;
 const bool defaultHideSanskrit = true;
+const double defaultPanelWidth = 350;
 
 List<String> defaultSelectedMainCategoryFilters = [
   "mula",
@@ -430,4 +432,7 @@ class Prefs {
 
   static set bookViewModeIndex(int value) =>
       instance.setInt(keyBookViewModeIndex, value);
+
+      static double get panelWidth => instance.getDouble(panelWidthKey) ?? defaultPanelWidth;
+  static set panelWidth(double value) => instance.setDouble(panelWidthKey, value);
 }

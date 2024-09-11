@@ -21,7 +21,7 @@ class DesktopHomeView extends StatefulWidget {
 
 class _DesktopHomeViewState extends State<DesktopHomeView>
     with SingleTickerProviderStateMixin {
-  // late  double width;
+  late double panelWidth;
 
   late final AnimationController _animationController;
   late final Tween<double> _tween;
@@ -33,6 +33,7 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
   void initState() {
     super.initState();
     // width = Prefs.panelSize.toDouble();
+    panelWidth = Prefs.panelWidth;
     navigationProvider = context.read<NavigationProvider>();
 
     _animationController = AnimationController(
@@ -57,6 +58,10 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
 
   void _openCloseChangedListener() {
     final isOpened = navigationProvider.isNavigationPaneOpened;
+    debugPrint('isOpened: $isOpened');
+    debugPrint('is animation complete: ${_animationController.isCompleted}');
+    debugPrint('animation value: ${_animationController.value}');
+    debugPrint('tween value: ${_tween.evaluate(_animation)}');
     if (isOpened) {
       _animationController.reverse();
     } else {
@@ -70,61 +75,66 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
     // RydMike: Avoid things like this, prefer using themes correctly!
     //   But OK sometimes needed, but rarely. Not sure why this is used in
     //   conditional build below. Looks like some temp experiment. :)
-    final isOrange2 = Prefs.themeName == MyThemes.orange2Name;
-    return PreferenceBuilder<double>(
-        preference: context
-            .read<StreamingSharedPreferences>()
-            .getDouble(panelSizeKey, defaultValue: defaultPanelSize),
-        builder: (context, width) {
-          return Stack(
-            children: [
-              Row(
-                children: [
-                  if (isOrange2)
-                    Container(
-                      decoration: const BoxDecoration(
-                          border:
-                              Border(right: BorderSide(color: Colors.grey))),
-                      child: const DeskTopNavigationBar(),
-                    ),
-                  if (!isOrange2) ...[
-                    const DeskTopNavigationBar(),
-                    const MyVerticalDivider(width: 2),
-                  ],
-                  // Navigation Pane
-                  SizeTransition(
-                    sizeFactor: _tween.animate(_animation),
-                    axis: Axis.horizontal,
-                    axisAlignment: 1,
-                    child: SizedBox(
-                      width: width,
-                      child: const DetailNavigationPane(navigationCount: 7),
-                    ),
-                  ),
-                  // reader view
-                  const Expanded(child: ReaderContainer()),
-                ],
+    return Stack(
+      children: [
+        Row(
+          children: [
+            // Navigation Rail
+            Container(
+              decoration: const BoxDecoration(
+                  border: Border(right: BorderSide(color: Colors.grey))),
+              child: const DeskTopNavigationBar(),
+            ),
+            // Navigation Pane
+            SizeTransition(
+              sizeFactor: _tween.animate(_animation),
+              axis: Axis.horizontal,
+              axisAlignment: 1,
+              child: SizedBox(
+                width: panelWidth,
+                child: const DetailNavigationPane(navigationCount: 7),
               ),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: SizedBox(
-                  width: navigationBarWidth,
-                  height: 64,
-                  child: Center(
-                    child: IconButton(
-                        onPressed: () => context
-                            .read<NavigationProvider>()
-                            .toggleNavigationPane(),
-                        icon: AnimatedIcon(
-                          icon: AnimatedIcons.arrow_menu,
-                          // progress: _animatedIconController,
-                          progress: _animationController.view,
-                        )),
-                  ),
+            ),
+// drag bar
+            MouseRegion(
+              cursor: SystemMouseCursors.resizeLeftRight,
+              child: GestureDetector(
+                onHorizontalDragUpdate: (DragUpdateDetails details) {
+                  setState(() {
+                    panelWidth += details.primaryDelta ?? 0;
+                    panelWidth =
+                        panelWidth.clamp(200.0, 600); // min, max of panel width
+                    Prefs.panelWidth = panelWidth;
+                  });
+                },
+                child: Container(
+                  color: Colors.grey,
+                  width: 3,
                 ),
-              )
-            ],
-          );
-        });
+              ),
+            ),
+            // reader view
+            const Expanded(child: ReaderContainer()),
+          ],
+        ),
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: SizedBox(
+            width: navigationBarWidth,
+            height: 64,
+            child: Center(
+              child: IconButton(
+                  onPressed: () =>
+                      context.read<NavigationProvider>().toggleNavigationPane(),
+                  icon: AnimatedIcon(
+                    icon: AnimatedIcons.arrow_menu,
+                    // progress: _animatedIconController,
+                    progress: _animationController.view,
+                  )),
+            ),
+          ),
+        )
+      ],
+    );
   }
 }
