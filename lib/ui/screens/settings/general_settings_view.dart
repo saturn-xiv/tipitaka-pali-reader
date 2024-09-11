@@ -57,11 +57,9 @@ class _GeneralSettingsViewState extends State<GeneralSettingsView> {
           const SizedBox(
             height: 10,
           ),
-          const Divider(),
           const SizedBox(
             height: 10,
           ),
-          const PanelSizeControlView(),
           const Divider(),
           _getUiFontSizeSlider(),
           const SizedBox(height: 10),

@@ -101,10 +101,20 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
               child: GestureDetector(
                 onHorizontalDragUpdate: (DragUpdateDetails details) {
                   setState(() {
+                    final screenWidth = MediaQuery.of(context)
+                        .size
+                        .width; // Get the current window width
+                    final maxWidth =
+                        screenWidth - 300; // small amount for some content..
+                    final minWidth =
+                        300.0; // Minimum width you want to allow for the panel
+
                     panelWidth += details.primaryDelta ?? 0;
-                    panelWidth =
-                        panelWidth.clamp(200.0, 600); // min, max of panel width
-                    Prefs.panelWidth = panelWidth;
+                    panelWidth = panelWidth.clamp(minWidth,
+                        maxWidth); // Apply dynamic constraints based on the window size
+
+                    Prefs.panelWidth =
+                        panelWidth; // Optionally save the new width to preferences
                   });
                 },
                 child: Container(
