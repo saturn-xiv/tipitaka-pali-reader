@@ -104,25 +104,29 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
                     final screenWidth = MediaQuery.of(context)
                         .size
                         .width; // Get the current window width
-                    final maxWidth =
-                        screenWidth - 300; // small amount for some content..
-                    final minWidth =
-                        300.0; // Minimum width you want to allow for the panel
+                    final maxWidth = screenWidth -
+                        300; // Assuming you want to leave at least 300px for the rest of the content
+                    final minWidth = 300.0;
 
                     panelWidth += details.primaryDelta ?? 0;
-                    panelWidth = panelWidth.clamp(minWidth,
-                        maxWidth); // Apply dynamic constraints based on the window size
-
+                    panelWidth = panelWidth.clamp(
+                        minWidth, maxWidth); // Apply dynamic constraints
                     Prefs.panelWidth =
                         panelWidth; // Optionally save the new width to preferences
                   });
                 },
                 child: Container(
-                  color: Colors.grey,
-                  width: 3,
+                  alignment: Alignment.centerRight,
+                  color: Colors.transparent, // Transparent outer container
+                  width: 20, // Larger area for easier mouse interaction
+                  child: Container(
+                    width: 3,
+                    color: Colors.grey, // Visible drag handle
+                  ),
                 ),
               ),
             ),
+
             // reader view
             const Expanded(child: ReaderContainer()),
           ],
