@@ -106,7 +106,7 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
                         .width; // Get the current window width
                     final maxWidth = screenWidth -
                         300; // Assuming you want to leave at least 300px for the rest of the content
-                    final minWidth = 300.0;
+                    const minWidth = 250.0;
 
                     panelWidth += details.primaryDelta ?? 0;
                     panelWidth = panelWidth.clamp(
@@ -118,7 +118,7 @@ class _DesktopHomeViewState extends State<DesktopHomeView>
                 child: Container(
                   alignment: Alignment.centerRight,
                   color: Colors.transparent, // Transparent outer container
-                  width: 20, // Larger area for easier mouse interaction
+                  width: 15, // Larger area for easier mouse interaction
                   child: Container(
                     width: 3,
                     color: Colors.grey, // Visible drag handle

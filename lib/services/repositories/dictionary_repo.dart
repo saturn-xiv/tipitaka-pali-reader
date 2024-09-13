@@ -272,104 +272,44 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
 
   Future<List<Definition>> _adjustPEU(
       String word, List<Definition> defs) async {
-    // before giving the list of definitions.. check to see if peu was selected.
-    // if selected, reduce the search item up to 5 char.
-    // result should not be bigger than original and not less than 5 chars (assuming we have all of these)
-    //if (defs.contains(element.)
     final db = await databaseHelper.database;
+    bool hasPeu = defs.any((def) => def.bookName.contains("PEU"));
 
     if (Prefs.isPeuOn) {
-      bool hasPeu = false;
-      for (int x = 0; x < defs.length; x++) {
-        if (defs[x].bookName.contains("PEU")) {
-          hasPeu = true;
-          return defs; // there is a definition found with normal query
-        }
-      }
-
-      // the peu is selected
-      // the PEU does not have a definition
-      // We now need to adjust this.
-      // see if we can get a hit.
-      if (!hasPeu && word.length >= 9) {
-        // reduce one by one up to 4 times to see if the word exists
-        // add those words to the list.
-//         for (int reduce = 1; reduce < 5; reduce++) {
-//           String sql = '''
-//       SELECT word, definition, "PEU Algo Used" as "name" from dictionary
-//              WHERE
-//                 dictionary.book_id = 8
-//                 AND dictionary.word LIKE '${word.substring(0, word.length - reduce)}%'
-//                 AND  length(dictionary.word) <= ${word.length}
-//                   ''';
-//
-// // TODO manually remove the word if bigger than original.
-//
-//           List<Map> list = await db.rawQuery(sql);
-//           if (list.isNotEmpty) {
-//             // we found the word.. now need to add it.
-//             debugPrint("found word in peu ${list[0].toString()}");
-//
-//             var peuDefs = list.map((x) => Definition.fromJson(x)).toList();
-//
-//             Definition def = peuDefs[0];
-//             def.definition = formatePeuAlgoDef(word, def.word, def.definition);
-//             debugPrint(def.definition);
-//             defs.add(def);
-//             return defs;
-//           }
-//         }
+      if (hasPeu) {
+        // Format all PEU definitions
+        defs.where((def) => def.bookName.contains("PEU")).forEach((def) {
+          def.definition = formatPeuTable(def.word, def.definition);
+        });
+      } else if (word.length >= 9) {
+        // Attempt to find and adjust definitions from the PEU dictionary
         String sql = '''
-            SELECT *
-            FROM dictionary
-            WHERE dictionary.book_id = 8
-            AND length(word) BETWEEN ${word.length - 4} and ${word.length}
-            AND word LIKE '${word.substring(0, word.length - 4)}%'
-            ORDER BY CASE 
-              WHEN word LIKE '${word.substring(0, word.length - 1)}%' THEN 1
-              WHEN word LIKE '${word.substring(0, word.length - 2)}%' THEN 2
-              WHEN word LIKE '${word.substring(0, word.length - 3)}%' THEN 3
-              ELSE 4                             
-            END
-            LIMIT 1;
-            ''';
+        SELECT *
+        FROM dictionary
+        WHERE dictionary.book_id = 8
+        AND length(word) BETWEEN ${word.length - 4} and ${word.length}
+        AND word LIKE '${word.substring(0, word.length - 4)}%'
+        ORDER BY CASE 
+          WHEN word LIKE '${word.substring(0, word.length - 1)}%' THEN 1
+          WHEN word LIKE '${word.substring(0, word.length - 2)}%' THEN 2
+          WHEN word LIKE '${word.substring(0, word.length - 3)}%' THEN 3
+          ELSE 4                             
+        END
+        LIMIT 1;
+      ''';
+
         List<Map> list = await db.rawQuery(sql);
         if (list.isNotEmpty) {
-          // we found the word.. now need to add it.
-          debugPrint("found word in peu ${list[0].toString()}");
-
+          debugPrint("found word in PEU: ${list[0].toString()}");
           var peuDefs = list.map((x) => Definition.fromJson(x)).toList();
-
           Definition def = peuDefs[0];
           def.bookName = "PEU Algo Used";
-          def.definition = formatePeuAlgoDef(word, def.word, def.definition);
+          def.definition = formatPeuTable(def.word, def.definition);
           debugPrint(def.definition);
           defs.add(def);
-          return defs;
         }
       }
-    } // peu is selected
-
-/*
-  Future<List<InterviewDetails>> getAllInterviewDetails() async {
-    //await initDatabase();
-    final _db = await _dbHelper.database;
-
-    String dbQuery =
-        '''Select residentDetails.id_code, residentDetails.dhamma_name, residentDetails.passport_name,residentDetails.kuti, residentDetails.country, interviews.stime, interviews.teacher, interviews.pk
-          FROM residentDetails, interviews
-          WHERE residentDetails.id_code = interviews.id_code
-          ORDER BY interviews.stime DESC''';
-
-    List<Map> list = await _db.rawQuery(dbQuery);
-    return list
-        .map((interviewdetails) => InterviewDetails.fromJson(interviewdetails))
-        .toList();
-
-    //return list.map((trail) => Trail.fromJson(trail)).toList();
-  }
-*/
-
+    }
     return defs;
   }
 
@@ -466,5 +406,79 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
       FROM dictionary_history ORDER BY date;
       ''');
     return maps.map((x) => DictionaryHistory.fromMap(x)).toList();
+  }
+
+  String formatPeuTable(String word, String definitionHtml) {
+    // Parse the HTML using Beautiful Soup for Dart
+    BeautifulSoup soup = BeautifulSoup(definitionHtml);
+
+    // Extract text from the <p> tag
+    String? definitionText = soup.text;
+
+    // Define the patterns for confidence level
+    RegExp clPattern = RegExp(r"CL=(\d+)");
+    RegExp googleTranslatePattern = RegExp(r"Google Translate");
+
+    String confidence;
+    String breakup;
+    String cleanedDefinition;
+
+    if (googleTranslatePattern.hasMatch(definitionText)) {
+      confidence = "Google Translation";
+      // Split at "Google Translate" to separate breakup and definition
+      List<String> parts = definitionText!.split("Google Translate");
+      breakup = parts[0].trim();
+      cleanedDefinition = parts.length > 1 ? parts[1].trim() : '';
+    } else {
+      // Handle regular "CL=" case
+      RegExpMatch? clMatch = clPattern.firstMatch(definitionText ?? '');
+      confidence = clMatch != null ? clMatch.group(1)! : 'Unknown';
+      List<String> parts = definitionText!.split(clPattern);
+      breakup = parts[0].trim();
+      cleanedDefinition = parts.length > 1 ? parts[1].trim() : '';
+    }
+
+    // Format sub-definitions
+    cleanedDefinition = formatDefinitions(cleanedDefinition);
+
+    // Build the HTML table
+    return buildHtmlTable(word, breakup, confidence, cleanedDefinition);
+  }
+
+  String formatDefinitions(String definitions) {
+    // Handle sub-definitions formatting for both numbers and letters
+    return definitions.replaceAllMapped(RegExp(r"\(([1-9]|[a-zA-Z])\)"),
+        (Match match) {
+      // Ensure we don't place <BR> before the very first definition
+      if (match.start > 0) {
+        return "<BR>${match.group(0)}";
+      }
+      return match.group(
+          0)!; // Return without modification for the first sub-definition
+    });
+  }
+
+  String buildHtmlTable(String word, String breakup, String confidence,
+      String cleanedDefinition) {
+    return '''
+<table border="0" cellpadding="5" cellspacing="0">
+  <tr>
+    <th style="vertical-align: top;">Word</th>
+    <td>$word</td>
+  </tr>
+  <tr>
+    <th style="vertical-align: top;">Breakup</th>
+    <td>$breakup</td>
+  </tr>
+  <tr>
+    <th style="vertical-align: top;">Confidence</th>
+    <td>$confidence</td>
+  </tr>
+  <tr>
+    <th style="vertical-align: top;">Definition</th>
+    <td>$cleanedDefinition</td>
+  </tr>
+</table>
+''';
   }
 }
