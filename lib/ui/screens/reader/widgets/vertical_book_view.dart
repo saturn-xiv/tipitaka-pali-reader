@@ -134,6 +134,10 @@ class _VerticalBookViewState extends State<VerticalBookView>
         shortcuts: <LogicalKeySet, Intent>{
           LogicalKeySet(LogicalKeyboardKey.pageUp): const PageUpIntent(),
           LogicalKeySet(LogicalKeyboardKey.pageDown): const PageDownIntent(),
+          LogicalKeySet(LogicalKeyboardKey.navigatePrevious):
+              const PageUpIntent(),
+          LogicalKeySet(LogicalKeyboardKey.navigateNext):
+              const PageDownIntent(),
           LogicalKeySet(LogicalKeyboardKey.arrowUp): const ScrollUpIntent(),
           LogicalKeySet(LogicalKeyboardKey.arrowDown): const ScrollDownIntent(),
           LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.equal):
