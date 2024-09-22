@@ -6,6 +6,7 @@ import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
 import '../../business_logic/models/dictionary_history.dart';
+import 'package:tipitaka_pali/business_logic/models/dpd_inflection.dart';
 
 abstract class DictionaryRepository {
   Future<List<Definition>> getDefinition(String id);
@@ -14,6 +15,7 @@ abstract class DictionaryRepository {
   Future<List<String>> getSuggestions(String word);
   Future<String> getDpdWordSplit(String word);
   Future<String> getDprStem(String word);
+  Future<DpdInflection?> getDpdInflection(int wordId);
   Future<String> getDpdHeadwords(String word);
   Future<String> getDpdLikeHeadwords(String word);
   Future<int> insertOrReplace(DictionaryHistory dictionaryHistory);
@@ -83,13 +85,18 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
     for (var element in words) {
       word = element.trimLeft();
       final sql = '''
-      SELECT word, definition, user_order, name from dpd, dictionary_books 
+      SELECT dpd.id as id, word, definition, user_order, name from dpd, dictionary_books 
       WHERE word = '$word' AND user_choice =1  AND dictionary_books.id = dpd.book_id
     ''';
       List<Map<String, dynamic>> maps = await db.rawQuery(sql);
       List<Definition> defs = maps.map((x) => Definition.fromJson(x)).toList();
       if (defs.isNotEmpty) {
-        htmlDefs = defs[0].definition;
+        String def = defs[0].definition;
+        if (def.contains('</details>')) {
+          def = def.replaceFirst('</details>', '<br/><a href="inflect://${defs[0].id}">Inflections</a></details>');
+        }
+        htmlDefs = def;
+
 
         if (htmlDefs.isNotEmpty) {} // added this extra
         stripDefs += htmlDefs;
@@ -109,6 +116,32 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
         userOrder: order);
 
     return def;
+  }
+
+  @override
+  Future<DpdInflection?> getDpdInflection(int wordId) async {
+
+    final db = await databaseHelper.database;
+    final sql = '''
+      SELECT 
+        dpd__inflections.id as id,
+        dpd__inflections.stem as stem,
+        dpd__inflections.pattern as pattern,
+        dpd__inflections.inflections as inflections,
+        dpd.word as word
+      FROM
+        dpd__inflections 
+      JOIN 
+        dpd on dpd.id = dpd__inflections.id
+      WHERE dpd__inflections.id = '$wordId';
+    ''';
+    List<Map<String, dynamic>> maps = await db.rawQuery(sql);
+    List<DpdInflection> defs = maps.map((x) => DpdInflection.fromJson(x)).toList();
+    if (defs.isNotEmpty) {
+      return defs[0];
+    }
+
+    return null;
   }
 
   @override

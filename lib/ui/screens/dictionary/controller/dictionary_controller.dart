@@ -309,8 +309,9 @@ class DictionaryController with ChangeNotifier {
 
       // Apply font styling to the book name and definition content
       formattedDefinition += _addStyleToBook(definition.bookName, fontStyling);
-      formattedDefinition +=
-          '<div style="$fontStyling">${definition.definition}</div>';
+
+      String def = definition.definition;
+      formattedDefinition += '<div style="$fontStyling">${def}</div>';
     }
     return formattedDefinition;
   }
@@ -546,5 +547,11 @@ class DictionaryController with ChangeNotifier {
       default:
         return null; // Default font if none of the cases match
     }
+  }
+
+  getDpdInflection(int wordId) {
+    final dictionaryProvider =
+    DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
+    return dictionaryProvider.getDpdInflection(wordId);
   }
 }

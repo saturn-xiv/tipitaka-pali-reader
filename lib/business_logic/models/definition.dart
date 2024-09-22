@@ -23,19 +23,23 @@ String definitionToJson(List<Definition> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Definition {
+  int id;
   String word;
   String definition;
   String bookName;
   int userOrder;
 
   Definition(
-      {this.word = "",
+      {
+        this.id = 0,
+        this.word = "",
       this.definition = "",
       this.bookName = "",
       this.userOrder = 0});
 
   factory Definition.fromJson(Map<dynamic, dynamic> json) {
     return Definition(
+      id: json["id"] ?? 0,
       word: json["word"] ?? "n/a",
       definition: json["definition"] ?? "n/a",
       bookName: json["name"] ?? "n/a",

@@ -1,3 +1,4 @@
+import 'package:tipitaka_pali/business_logic/models/dpd_inflection.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
 import '../../business_logic/models/definition.dart';
@@ -57,6 +58,10 @@ class DictionarySerice {
 
   Future<String> getDprStem(String word) async {
     return dictionaryRepository.getDprStem(word);
+  }
+
+  Future<DpdInflection?> getDpdInflection(int wordId) async {
+    return dictionaryRepository.getDpdInflection(wordId);
   }
 
   Future<String> getDpdHeadwords(String word) async {

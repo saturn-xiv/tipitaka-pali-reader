@@ -131,6 +131,7 @@ flutter:
     - assets/images/anki.png
     - assets/images/remnote.jpg
     - assets/images/vecteezy_md.jpg
+    - assets/inflectionTemplates.json
     - .env
 
 

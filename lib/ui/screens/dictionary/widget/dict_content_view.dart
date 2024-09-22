@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
+import 'package:tipitaka_pali/business_logic/models/dpd_inflection.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/services/repositories/dictionary_history_repo.dart';
@@ -115,16 +119,25 @@ class DictionaryContentView extends StatelessWidget {
                       */
                       final href = element.attributes['href'];
                       if (href != null) {
-                        String linkText = href.contains("wikipedia")
+                        String linkText =
+                        href.contains("inflect") ? "Inflect" :
+                        href.contains("wikipedia")
                             ? "Wikipedia"
                             : "Submit a correction";
 
                         return InkWell(
                           onTap: () {
+                            if (href.startsWith("inflect://")) {
+                              int id = int.parse(href.substring("inflect://".length));
+                              debugPrint('WIll inflect: ${id}');
+                              showDeclension(context, id);
+
+                              return;
+                            }
                             launchUrl(Uri.parse(href),
                                 mode: LaunchMode.externalApplication);
 
-                            debugPrint('will launch $href.');
+                            debugPrint('will launch $href. --> $textKey');
                           },
                           child: Text(
                             linkText,
@@ -153,15 +166,177 @@ class DictionaryContentView extends StatelessWidget {
             ));
   }
 
-  showDeclension(BuildContext context) {
-    const String declension = '''Hellow world
-''';
+  String superscripterUni(String text) {
+    // Superscript using unicode characters.
+    text = text.replaceAllMapped(
+      RegExp(r'( )(\d)'),
+          (Match match) => '\u200A${match.group(2)}',
+    );
+    text = text.replaceAll('0', '⁰');
+    text = text.replaceAll('1', '¹');
+    text = text.replaceAll('2', '²');
+    text = text.replaceAll('3', '³');
+    text = text.replaceAll('4', '⁴');
+    text = text.replaceAll('5', '⁵');
+    text = text.replaceAll('6', '⁶');
+    text = text.replaceAll('7', '⁷');
+    text = text.replaceAll('8', '⁸');
+    text = text.replaceAll('9', '⁹');
+    text = text.replaceAll('.', '·');
+    return text;
+  }
+
+
+  showDeclension(BuildContext context, int wordId) async {
+    var dictionaryController = context.read<DictionaryController>();
+    DpdInflection? inflection = await dictionaryController.getDpdInflection(wordId);
+    if (inflection == null) {
+      debugPrint('Could not find inflection.');
+      return;
+    }
+    debugPrint('Inflection: ${inflection}');
+
+    String data = await DefaultAssetBundle.of(context).loadString("assets/inflectionTemplates.json");
+    List inflectionTemplates = jsonDecode(data);
+    final template = inflectionTemplates.firstWhereOrNull((map) => map['pattern'] == inflection.pattern);
+    if (template == null) {
+      debugPrint('Could not find template...');
+      return;
+    }
+    debugPrint('Template: ${template}');
+
+    String html = "<table border='1' width='100%'>";
+    var stem = inflection.stem.replaceAll(RegExp(r'[!*]'), '');
+    debugPrint('STEM: "${inflection.stem}", "$stem"');
+
+    template['data'].asMap().forEach((index, value) {
+      int rowNumber = index;
+      List<List<String>> rowData = (value as List)
+          .map((e) => (e as List).map((item) => item as String).toList())
+          .toList();
+      html += "<tr>";
+
+      for (var column in rowData.asMap().entries) {
+        int columnNumber = column.key;
+        List<String> cellData = column.value;
+
+        if (rowNumber == 0) {
+          if (columnNumber == 0) {
+            html += "<th></th>";
+          } else if (columnNumber % 2 == 1) {
+            html += "<th>${cellData[0]}</th>";
+          }
+        } else if (rowNumber > 0) {
+          if (columnNumber == 0) {
+            html += "<th>${cellData[0]}</th>";
+          } else if (columnNumber % 2 == 1 && columnNumber > 0) {
+            String title = rowData[columnNumber + 1][0];
+
+            for (var inflection in cellData) {
+              if (inflection.isEmpty) {
+                html += "<td title='$title'></td>";
+              } else {
+                String wordClean = "$stem$inflection";
+                String word;
+
+                // if (allTipitakaWords.contains(wordClean)) {
+                //   word = "$stem<b>$inflection</b>";
+                // } else {
+                //   word = "<span class='gray'>$stem<b>$inflection</b></span>";
+                // }
+                word = "$stem<b>$inflection</b>";
+
+                if (cellData.length == 1) {
+                  html += "<td title='$title'>$word</td>";
+                } else {
+                  if (inflection == cellData[0]) {
+                    html += "<td title='$title'>$word<br>";
+                  } else if (inflection != cellData.last) {
+                    html += "$word<br>";
+                  } else {
+                    html += "$word</td>";
+                  }
+                }
+
+                // if (!inflectionsList.contains(wordClean)) {
+                //   inflectionsList.add(wordClean);
+                // }
+              }
+            }
+          }
+        }
+      }
+
+      html += "</tr>";
+    });
+
+    html += "</table>";
+    debugPrint(html);
+
+    // =========================================================================
+    // Change to use the HTML table
+    // =========================================================================
+    var useHtml = false;
+
+    List<TableRow> rows = template['data'].asMap().entries.map<TableRow>((rowEntry) {
+      int rowIndex = rowEntry.key;
+      List<List<String>> row = (rowEntry.value as List).map((e) => (e as List).map((item) => item as String).toList())
+          .toList();
+
+      return TableRow(
+        children: row.asMap().entries.map<Padding?>((entry) {
+          int colIndex = entry.key;
+          List<String> cell = entry.value;
+          if (colIndex == 0) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(cell[0], style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.orange)),
+            );
+          }
+          if (colIndex % 2 != 1) {
+            return null;
+          }
+          List<InlineSpan> spans = [];
+
+          cell.asMap().forEach((index, value) {
+            if (index > 0 ) {
+              spans.add(const TextSpan(text: '\n'));
+            }
+            if (rowIndex == 0) {
+              spans.add(TextSpan(text: value, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange)));
+            } else if (value.isNotEmpty){
+              spans.add(TextSpan(text: stem));
+              spans.add(TextSpan(text: value, style: const TextStyle(fontWeight: FontWeight.bold)));
+            }
+          });
+
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text.rich(
+              TextSpan(children: spans)
+            ),
+          );
+        }).where((cell) => cell != null).cast<Padding>().toList(),
+      );
+    }).toList();
 
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: const Text('Oh No'),
-              content: const HtmlWidget(declension),
+              title: Text(superscripterUni(inflection.word)),
+              content: SingleChildScrollView(
+                child: SizedBox(
+                  width: double.maxFinite,
+                  child: useHtml ?
+                  HtmlWidget(
+                    html,
+                  ) :
+                  Table(
+                    border: TableBorder.all(),
+                    children: rows,
+                  ),
+                ),
+              ),
               actions: [
                 TextButton(
                     onPressed: () => Navigator.pop(context),
