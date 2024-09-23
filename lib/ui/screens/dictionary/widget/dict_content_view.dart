@@ -107,46 +107,60 @@ class DictionaryContentView extends StatelessWidget {
                       return null;
                     },
                     customWidgetBuilder: (element) {
-                      /*             if (element.localName == "button") {
-                        final value = element.attributes['value'];
-                        if (value != null) {
-                          debugPrint("found button: $value");
-                          return TextButton(
-                              onPressed: showDeclension(context),
-                              child: const Text("Declension"));
-                        }
-                      }
-                      */
                       final href = element.attributes['href'];
                       if (href != null) {
-                        String linkText =
-                        href.contains("inflect") ? "Inflect" :
-                        href.contains("wikipedia")
-                            ? "Wikipedia"
-                            : "Submit a correction";
+                        // Determine the link text
+                        String linkText = href.contains("inflect")
+                            ? "Inflect"
+                            : href.contains("wikipedia")
+                                ? "Wikipedia"
+                                : "Submit a correction";
 
-                        return InkWell(
-                          onTap: () {
-                            if (href.startsWith("inflect://")) {
-                              int id = int.parse(href.substring("inflect://".length));
-                              debugPrint('WIll inflect: ${id}');
-                              showDeclension(context, id);
-
-                              return;
-                            }
-                            launchUrl(Uri.parse(href),
-                                mode: LaunchMode.externalApplication);
-
-                            debugPrint('will launch $href. --> $textKey');
-                          },
-                          child: Text(
-                            linkText,
-                            style: const TextStyle(
+                        if (href.startsWith("inflect://")) {
+                          // Return a small button for "inflect" links
+                          int id =
+                              int.parse(href.substring("inflect://".length));
+                          return SizedBox(
+                            height:
+                                24, // Adjust height to make the button smaller
+                            child: ElevatedButton(
+                              style: TextButton.styleFrom(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                minimumSize: const Size(0,
+                                    0), // Removes default minimum size constraints
+                                tapTargetSize: MaterialTapTargetSize
+                                    .shrinkWrap, // Reduces button padding
+                              ),
+                              onPressed: () {
+                                debugPrint('Will inflect: $id');
+                                showDeclension(context, id);
+                              },
+                              child: Text(
+                                linkText,
+                                style: const TextStyle(
+                                    fontSize: 10), // Set font size to 10pt
+                              ),
+                            ),
+                          );
+                        } else {
+                          // Use InkWell with 10pt font for other links
+                          return InkWell(
+                            onTap: () {
+                              launchUrl(Uri.parse(href),
+                                  mode: LaunchMode.externalApplication);
+                              debugPrint('Will launch $href. --> $textKey');
+                            },
+                            child: Text(
+                              linkText,
+                              style: const TextStyle(
                                 decoration: TextDecoration.underline,
                                 color: Colors.blue,
-                                fontSize: 10),
-                          ),
-                        );
+                                fontSize: 10, // Set font size to 10pt
+                              ),
+                            ),
+                          );
+                        }
                       }
                       return null;
                     },
@@ -170,7 +184,7 @@ class DictionaryContentView extends StatelessWidget {
     // Superscript using unicode characters.
     text = text.replaceAllMapped(
       RegExp(r'( )(\d)'),
-          (Match match) => '\u200A${match.group(2)}',
+      (Match match) => '\u200A${match.group(2)}',
     );
     text = text.replaceAll('0', '⁰');
     text = text.replaceAll('1', '¹');
@@ -186,19 +200,21 @@ class DictionaryContentView extends StatelessWidget {
     return text;
   }
 
-
   showDeclension(BuildContext context, int wordId) async {
     var dictionaryController = context.read<DictionaryController>();
-    DpdInflection? inflection = await dictionaryController.getDpdInflection(wordId);
+    DpdInflection? inflection =
+        await dictionaryController.getDpdInflection(wordId);
     if (inflection == null) {
       debugPrint('Could not find inflection.');
       return;
     }
     debugPrint('Inflection: ${inflection}');
 
-    String data = await DefaultAssetBundle.of(context).loadString("assets/inflectionTemplates.json");
+    String data = await DefaultAssetBundle.of(context)
+        .loadString("assets/inflectionTemplates.json");
     List inflectionTemplates = jsonDecode(data);
-    final template = inflectionTemplates.firstWhereOrNull((map) => map['pattern'] == inflection.pattern);
+    final template = inflectionTemplates
+        .firstWhereOrNull((map) => map['pattern'] == inflection.pattern);
     if (template == null) {
       debugPrint('Could not find template...');
       return;
@@ -278,45 +294,58 @@ class DictionaryContentView extends StatelessWidget {
     // =========================================================================
     var useHtml = false;
 
-    List<TableRow> rows = template['data'].asMap().entries.map<TableRow>((rowEntry) {
+    List<TableRow> rows =
+        template['data'].asMap().entries.map<TableRow>((rowEntry) {
       int rowIndex = rowEntry.key;
-      List<List<String>> row = (rowEntry.value as List).map((e) => (e as List).map((item) => item as String).toList())
+      List<List<String>> row = (rowEntry.value as List)
+          .map((e) => (e as List).map((item) => item as String).toList())
           .toList();
 
       return TableRow(
-        children: row.asMap().entries.map<Padding?>((entry) {
-          int colIndex = entry.key;
-          List<String> cell = entry.value;
-          if (colIndex == 0) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(cell[0], style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.orange)),
-            );
-          }
-          if (colIndex % 2 != 1) {
-            return null;
-          }
-          List<InlineSpan> spans = [];
+        children: row
+            .asMap()
+            .entries
+            .map<Padding?>((entry) {
+              int colIndex = entry.key;
+              List<String> cell = entry.value;
+              if (colIndex == 0) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(cell[0],
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600, color: Colors.orange)),
+                );
+              }
+              if (colIndex % 2 != 1) {
+                return null;
+              }
+              List<InlineSpan> spans = [];
 
-          cell.asMap().forEach((index, value) {
-            if (index > 0 ) {
-              spans.add(const TextSpan(text: '\n'));
-            }
-            if (rowIndex == 0) {
-              spans.add(TextSpan(text: value, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.orange)));
-            } else if (value.isNotEmpty){
-              spans.add(TextSpan(text: stem));
-              spans.add(TextSpan(text: value, style: const TextStyle(fontWeight: FontWeight.bold)));
-            }
-          });
+              cell.asMap().forEach((index, value) {
+                if (index > 0) {
+                  spans.add(const TextSpan(text: '\n'));
+                }
+                if (rowIndex == 0) {
+                  spans.add(TextSpan(
+                      text: value,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.orange)));
+                } else if (value.isNotEmpty) {
+                  spans.add(TextSpan(text: stem));
+                  spans.add(TextSpan(
+                      text: value,
+                      style: const TextStyle(fontWeight: FontWeight.bold)));
+                }
+              });
 
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text.rich(
-              TextSpan(children: spans)
-            ),
-          );
-        }).where((cell) => cell != null).cast<Padding>().toList(),
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text.rich(TextSpan(children: spans)),
+              );
+            })
+            .where((cell) => cell != null)
+            .cast<Padding>()
+            .toList(),
       );
     }).toList();
 
@@ -327,14 +356,14 @@ class DictionaryContentView extends StatelessWidget {
               content: SingleChildScrollView(
                 child: SizedBox(
                   width: double.maxFinite,
-                  child: useHtml ?
-                  HtmlWidget(
-                    html,
-                  ) :
-                  Table(
-                    border: TableBorder.all(),
-                    children: rows,
-                  ),
+                  child: useHtml
+                      ? HtmlWidget(
+                          html,
+                        )
+                      : Table(
+                          border: TableBorder.all(),
+                          children: rows,
+                        ),
                 ),
               ),
               actions: [

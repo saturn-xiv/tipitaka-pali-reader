@@ -92,11 +92,15 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
       List<Definition> defs = maps.map((x) => Definition.fromJson(x)).toList();
       if (defs.isNotEmpty) {
         String def = defs[0].definition;
-        if (def.contains('</details>')) {
-          def = def.replaceFirst('</details>', '<br/><a href="inflect://${defs[0].id}">Inflections</a></details>');
-        }
-        htmlDefs = def;
 
+        // Replace the last occurrence of the "Submit a correction" row start tag
+        def = replaceLast(
+          def,
+          '<tr><td colspan="2">',
+          '<tr><td><b>Extras</b></td><td><a href="inflect://${defs[0].id}">Inflections</a></td></tr><tr><td colspan="2">',
+        );
+
+        htmlDefs = def;
 
         if (htmlDefs.isNotEmpty) {} // added this extra
         stripDefs += htmlDefs;
@@ -120,7 +124,6 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
 
   @override
   Future<DpdInflection?> getDpdInflection(int wordId) async {
-
     final db = await databaseHelper.database;
     final sql = '''
       SELECT 
@@ -136,7 +139,8 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
       WHERE dpd__inflections.id = '$wordId';
     ''';
     List<Map<String, dynamic>> maps = await db.rawQuery(sql);
-    List<DpdInflection> defs = maps.map((x) => DpdInflection.fromJson(x)).toList();
+    List<DpdInflection> defs =
+        maps.map((x) => DpdInflection.fromJson(x)).toList();
     if (defs.isNotEmpty) {
       return defs[0];
     }
@@ -513,5 +517,14 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
   </tr>
 </table>
 ''';
+  }
+
+  // Helper function to replace the last occurrence of a substring
+  String replaceLast(String text, String from, String to) {
+    int lastIndex = text.lastIndexOf(from);
+    if (lastIndex == -1) return text;
+    String before = text.substring(0, lastIndex);
+    String after = text.substring(lastIndex + from.length);
+    return before + to + after;
   }
 }
