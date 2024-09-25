@@ -85,7 +85,11 @@ class _DetailNavigationPaneState extends State<DetailNavigationPane> {
       //   return const SearchPage();
       // }
       case 4:
-        return const DictionaryPage();
+        return NestedNavigationHelper.buildPage(
+          context: context,
+          screen: const DictionaryPage(),
+          key: dictionaryNavigationKey,
+        );
       // only in desktop
       case 5:
         // clean navigation stacks

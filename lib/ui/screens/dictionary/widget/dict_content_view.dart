@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/business_logic/models/dpd_inflection.dart';
+import 'package:tipitaka_pali/routes.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/services/repositories/dictionary_history_repo.dart';
@@ -238,12 +239,17 @@ class DictionaryContentView extends StatelessWidget {
         if (!context.mounted) return;
 
         // Navigate to the desired page (e.g., DownloadView)
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const DownloadView(),
-          ),
-        );
+        final route =
+            MaterialPageRoute(builder: (context) => const DownloadView());
+        NestedNavigationHelper.goto(
+            context: context, route: route, navkey: dictionaryNavigationKey);
+
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => const DownloadView(),
+        //   ),
+        // );
       }
 
       // Return since there's no inflection data
