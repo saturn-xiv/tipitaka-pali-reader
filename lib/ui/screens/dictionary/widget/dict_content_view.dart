@@ -10,6 +10,7 @@ import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
 import 'package:tipitaka_pali/services/repositories/dictionary_history_repo.dart';
 import 'package:tipitaka_pali/ui/screens/dictionary/widget/dictionary_history_view.dart';
+import 'package:tipitaka_pali/ui/screens/settings/download_view.dart';
 import 'package:tipitaka_pali/utils/pali_script.dart';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
 import 'package:tipitaka_pali/utils/script_detector.dart';
@@ -210,19 +211,42 @@ class DictionaryContentView extends StatelessWidget {
 
     // not found, give user some feedback.
     if (inflection == null) {
-      showDialog(
+      // Await the user's response from the dialog
+      bool? shouldNavigate = await showDialog<bool>(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
           title: Text(AppLocalizations.of(context)!.inflectionNoDataTitle),
           content: Text(AppLocalizations.of(context)!.inflectionNoDataMessage),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(AppLocalizations.of(context)!.ok),
+              onPressed: () {
+                Navigator.of(dialogContext)
+                    .pop(true); // Return true to indicate navigation
+              },
+              child: const Text("Go to Extensions"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(AppLocalizations.of(context)!.close),
             ),
           ],
         ),
       );
+
+      // Check the result and navigate if needed
+      if (shouldNavigate == true) {
+        if (!context.mounted) return;
+
+        // Navigate to the desired page (e.g., DownloadView)
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const DownloadView(),
+          ),
+        );
+      }
+
+      // Return since there's no inflection data
       return;
     }
     debugPrint('Inflection: $inflection');

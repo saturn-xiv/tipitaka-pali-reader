@@ -138,11 +138,18 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
         dpd on dpd.id = dpd__inflections.id
       WHERE dpd__inflections.id = '$wordId';
     ''';
-    List<Map<String, dynamic>> maps = await db.rawQuery(sql);
-    List<DpdInflection> defs =
-        maps.map((x) => DpdInflection.fromJson(x)).toList();
-    if (defs.isNotEmpty) {
-      return defs[0];
+
+    try {
+      List<Map<String, dynamic>> maps = await db.rawQuery(sql);
+      List<DpdInflection> defs =
+          maps.map((x) => DpdInflection.fromJson(x)).toList();
+      if (defs.isNotEmpty) {
+        return defs[0];
+      }
+    } catch (e) {
+      // will get error if the table is not created from extension
+      // return no data
+      return null;
     }
 
     return null;
