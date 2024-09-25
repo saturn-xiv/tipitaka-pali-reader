@@ -183,5 +183,7 @@
   "hidescrollbars": "Hide Scrollbars",
   "dpdSettings": "DPD Settings",
   "hideIPA": "Hide IPA",
-  "hideSanskrit":"Hide Sanskrit"
+  "hideSanskrit":"Hide Sanskrit",
+  "inflectionNoDataTitle": "Inflection Not Found",
+  "inflectionNoDataMessage" : "Selected word has no data."
 }

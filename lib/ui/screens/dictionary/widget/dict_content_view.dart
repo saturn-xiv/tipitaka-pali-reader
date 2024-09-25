@@ -204,11 +204,28 @@ class DictionaryContentView extends StatelessWidget {
     var dictionaryController = context.read<DictionaryController>();
     DpdInflection? inflection =
         await dictionaryController.getDpdInflection(wordId);
+
+    // prevent using context across asynch gaps
+    if (!context.mounted) return;
+
+    // not found, give user some feedback.
     if (inflection == null) {
-      debugPrint('Could not find inflection.');
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(AppLocalizations.of(context)!.inflectionNoDataTitle),
+          content: Text(AppLocalizations.of(context)!.inflectionNoDataMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(AppLocalizations.of(context)!.ok),
+            ),
+          ],
+        ),
+      );
       return;
     }
-    debugPrint('Inflection: ${inflection}');
+    debugPrint('Inflection: $inflection');
 
     String data = await DefaultAssetBundle.of(context)
         .loadString("assets/inflectionTemplates.json");
@@ -219,7 +236,7 @@ class DictionaryContentView extends StatelessWidget {
       debugPrint('Could not find template...');
       return;
     }
-    debugPrint('Template: ${template}');
+    debugPrint('Template: $template');
 
     String html = "<table border='1' width='100%'>";
     var stem = inflection.stem.replaceAll(RegExp(r'[!*]'), '');
@@ -252,7 +269,7 @@ class DictionaryContentView extends StatelessWidget {
               if (inflection.isEmpty) {
                 html += "<td title='$title'></td>";
               } else {
-                String wordClean = "$stem$inflection";
+                //String wordClean = "$stem$inflection";
                 String word;
 
                 // if (allTipitakaWords.contains(wordClean)) {
@@ -348,6 +365,7 @@ class DictionaryContentView extends StatelessWidget {
             .toList(),
       );
     }).toList();
+    if (!context.mounted) return;
 
     showDialog(
         context: context,
@@ -369,7 +387,7 @@ class DictionaryContentView extends StatelessWidget {
               actions: [
                 TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('OK'))
+                    child: Text(AppLocalizations.of(context)!.ok))
               ],
             ));
   }
