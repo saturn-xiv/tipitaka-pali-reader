@@ -28,6 +28,7 @@ class DownloadListItem {
   String name;
   String releaseDate;
   String type;
+  String category;
   String url;
   String filename;
   String size;
@@ -36,6 +37,7 @@ class DownloadListItem {
       {this.name = "",
       this.releaseDate = "",
       this.type = "",
+      this.category = "",
       this.url = "",
       this.filename = "",
       this.size = ""});
@@ -45,6 +47,7 @@ class DownloadListItem {
       name: json["name"] ?? "n/a",
       releaseDate: json["release_date"] ?? "n/a",
       type: json['type'] ?? "n/a",
+      category: json['category'] ?? "n/a",
       url: json['url'] ?? "n/a",
       filename: json['filename'] ?? "n/a",
       size: json['size'] ?? "n/a",

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tipitaka_pali/ui/widgets/colored_text.dart';
-import '../../../business_logic/models/download_list_item.dart';
+import 'package:http/http.dart' as http;
+import 'package:tipitaka_pali/business_logic/models/download_list_item.dart';
 import 'download_service.dart';
 import 'download_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:http/http.dart' as http;
-
-import 'dart:async';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
@@ -31,26 +28,21 @@ class DownloadView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      height: 50, // height fixed for two lines of text
+                      height: 50,
                       alignment: Alignment.center,
                       child: Center(
-                        child: ColoredText(
+                        child: Text(
                           downloadModel.message,
-                          maxLines: 2, // max two lines of text
-                          overflow: TextOverflow
-                              .ellipsis, // if the text is too long, show ellipsis
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
                     if (downloadModel.downloading ||
                         downloadModel.connectionChecking)
                       const CircularProgressIndicator(),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
                     FutureBuilder<bool>(
                       future: checkInternetConnection(downloadModel),
                       builder: (context, snapshot) {
@@ -72,10 +64,8 @@ class DownloadView extends StatelessWidget {
                                             .appBarTheme
                                             .backgroundColor
                                         : null),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                ColoredText(AppLocalizations.of(context)!
+                                const SizedBox(height: 20),
+                                Text(AppLocalizations.of(context)!
                                     .turnOnInternet),
                               ],
                             ),
@@ -103,11 +93,8 @@ class DownloadView extends StatelessWidget {
     return hasInternet;
   }
 
-  getDownload(BuildContext context, DownloadNotifier dn,
+  Future<void> getDownload(BuildContext context, DownloadNotifier dn,
       DownloadListItem downloadListItem) async {
-    // give another check before downloading..
-    // two times this is called..   to get the list.. and once before downloading
-    // handled here in this view.
     if (await checkInternetConnection(dn)) {
       DownloadService downloadService = DownloadService(
           downloadNotifier: dn, downloadListItem: downloadListItem);
@@ -119,37 +106,106 @@ class DownloadView extends StatelessWidget {
     }
   }
 
-  getFutureBuilder(context, DownloadNotifier downloadModel) {
+  Widget getFutureBuilder(
+      BuildContext context, DownloadNotifier downloadModel) {
     if (downloadModel.downloading) {
       return const SizedBox.shrink();
     } else {
       return Expanded(
-        child: FutureBuilder(
+        child: FutureBuilder<http.Response>(
           future: http.get(Uri.parse(
               'https://github.com/bksubhuti/tpr_downloads/raw/master/download_source_files/download_list.json')),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
+            if (!snapshot.hasData || snapshot.hasError) {
+              return const Center(
+                child: Text('Error fetching data'),
+              );
+            }
+
+            // Parse the JSON data
             List<DownloadListItem> dlList =
                 downloadListItemFromJson(snapshot.data!.body);
 
+            // Group the items by category
+            Map<String, List<DownloadListItem>> categorizedItems = {};
+            for (var item in dlList) {
+              String category = item.category ?? 'Uncategorized';
+              if (!categorizedItems.containsKey(category)) {
+                categorizedItems[category] = [];
+              }
+              categorizedItems[category]!.add(item);
+            }
+
+            // Convert the map entries to a list for indexed access
+            final categories = categorizedItems.entries.toList();
+
+            // Use a ScrollController if needed
+            final ScrollController scrollController = ScrollController();
+
             return ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: false,
-              itemCount: dlList.length,
+              controller: scrollController,
+              itemCount: categories.length,
               itemBuilder: (context, index) {
+                final GlobalKey expansionTileKey = GlobalKey();
+                final entry = categories[index];
+                String category = entry.key;
+                List<DownloadListItem> items = entry.value;
+
                 return Card(
-                  elevation: 5.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
                   ),
-                  child: ListTile(
-                    title: Text("${dlList[index].name} ${dlList[index].size}"),
-                    leading: Text(dlList[index].releaseDate),
-                    onTap: () async {
-                      await getDownload(context, downloadModel, dlList[index]);
+                  child: ExpansionTile(
+                    key: expansionTileKey,
+                    onExpansionChanged: (isExpanding) {
+                      if (isExpanding) {
+                        // Delay scrolling a bit to allow for the expansion animation to start.
+                        Future.delayed(const Duration(milliseconds: 200))
+                            .then((value) {
+                          RenderObject? renderObject = expansionTileKey
+                              .currentContext
+                              ?.findRenderObject();
+                          renderObject?.showOnScreen(
+                            rect: renderObject.semanticBounds,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.ease,
+                          );
+                        });
+                      }
                     },
+                    initiallyExpanded: Prefs.expandedBookList,
+                    title: Text(
+                      category,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    tilePadding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    childrenPadding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    children: items.map<Widget>((item) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 4.0),
+                        elevation: 2.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: ListTile(
+                          title: Text("${item.name} (${item.size})"),
+                          subtitle: Text(item.releaseDate),
+                          onTap: () async {
+                            await getDownload(context, downloadModel, item);
+                          },
+                          minVerticalPadding: 4,
+                        ),
+                      );
+                    }).toList(),
                   ),
                 );
               },
