@@ -2,6 +2,7 @@ import 'package:beautiful_soup_dart/beautiful_soup.dart';
 import 'package:flutter/material.dart';
 import 'package:tipitaka_pali/business_logic/models/definition.dart';
 import 'package:tipitaka_pali/business_logic/models/dictionary.dart';
+import 'package:tipitaka_pali/business_logic/models/dpd_root_family.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
@@ -16,6 +17,7 @@ abstract class DictionaryRepository {
   Future<String> getDpdWordSplit(String word);
   Future<String> getDprStem(String word);
   Future<DpdInflection?> getDpdInflection(int wordId);
+  Future<DpdRootFamily?> getDpdRootFamily(int wordId);
   Future<String> getDpdHeadwords(String word);
   Future<String> getDpdLikeHeadwords(String word);
   Future<int> insertOrReplace(DictionaryHistory dictionaryHistory);
@@ -94,10 +96,15 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
         String def = defs[0].definition;
 
         // Replace the last occurrence of the "Submit a correction" row start tag
+        final extras = {
+          "inflect": "Inflect",
+          "root-family": "Root Family"
+        };
+        final links = extras.entries.map((entry) => '<a href="dpd://${entry.key}:${defs[0].id}">${entry.value}</a>').toList().join(' ');
         def = replaceLast(
           def,
           '<tr><td colspan="2">',
-          '<tr><td><b>Extras</b></td><td><a href="inflect://${defs[0].id}">Inflections</a></td></tr><tr><td colspan="2">',
+          '<tr><td><b>Extras</b></td><td>$links</td></tr><tr><td colspan="2">',
         );
 
         htmlDefs = def;
@@ -143,6 +150,38 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
       List<Map<String, dynamic>> maps = await db.rawQuery(sql);
       List<DpdInflection> defs =
           maps.map((x) => DpdInflection.fromJson(x)).toList();
+      if (defs.isNotEmpty) {
+        return defs[0];
+      }
+    } catch (e) {
+      // will get error if the table is not created from extension
+      // return no data
+      return null;
+    }
+
+    return null;
+  }
+
+  @override
+  Future<DpdRootFamily?> getDpdRootFamily(int wordId) async {
+    final db = await databaseHelper.database;
+    final sql = '''
+      SELECT 
+        dpd.word as word,
+        dpd__family_root.*
+      FROM
+        dpd 
+      JOIN 
+        dpd__word_family_root on dpd__word_family_root.id = dpd.id
+      JOIN
+        dpd__family_root on dpd__family_root.root_family = dpd__word_family_root.family_root
+      WHERE dpd.id = '$wordId';
+    ''';
+
+    try {
+      List<Map<String, dynamic>> maps = await db.rawQuery(sql);
+      List<DpdRootFamily> defs =
+      maps.map((x) => DpdRootFamily.fromJson(x)).toList();
       if (defs.isNotEmpty) {
         return defs[0];
       }

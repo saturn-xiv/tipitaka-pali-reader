@@ -554,4 +554,10 @@ class DictionaryController with ChangeNotifier {
     DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
     return dictionaryProvider.getDpdInflection(wordId);
   }
+
+  getDpdRootFamily(int wordId) {
+    final dictionaryProvider =
+    DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
+    return dictionaryProvider.getDpdRootFamily(wordId);
+  }
 }

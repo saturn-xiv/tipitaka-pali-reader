@@ -2,6 +2,7 @@ import 'package:tipitaka_pali/business_logic/models/dpd_inflection.dart';
 import 'package:tipitaka_pali/services/prefs.dart';
 
 import '../../business_logic/models/definition.dart';
+import '../../business_logic/models/dpd_root_family.dart';
 import '../../utils/pali_stemmer.dart';
 import '../repositories/dictionary_repo.dart';
 
@@ -62,6 +63,10 @@ class DictionarySerice {
 
   Future<DpdInflection?> getDpdInflection(int wordId) async {
     return dictionaryRepository.getDpdInflection(wordId);
+  }
+
+  Future<DpdRootFamily?> getDpdRootFamily(int wordId) async {
+    return dictionaryRepository.getDpdRootFamily(wordId);
   }
 
   Future<String> getDpdHeadwords(String word) async {

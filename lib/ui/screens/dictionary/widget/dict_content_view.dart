@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:provider/provider.dart';
 import 'package:tipitaka_pali/business_logic/models/dpd_inflection.dart';
+import 'package:tipitaka_pali/business_logic/models/dpd_root_family.dart';
 import 'package:tipitaka_pali/routes.dart';
 import 'package:tipitaka_pali/services/database/database_helper.dart';
 import 'package:tipitaka_pali/services/provider/theme_change_notifier.dart';
@@ -112,34 +113,36 @@ class DictionaryContentView extends StatelessWidget {
                       final href = element.attributes['href'];
                       if (href != null) {
                         // Determine the link text
-                        String linkText = href.contains("inflect")
-                            ? "Inflect"
-                            : href.contains("wikipedia")
+                        String linkText = href.contains("wikipedia")
                                 ? "Wikipedia"
                                 : "Submit a correction";
 
-                        if (href.startsWith("inflect://")) {
-                          // Return a small button for "inflect" links
-                          int id =
-                              int.parse(href.substring("inflect://".length));
+                        if (href.startsWith("dpd://")) {
+                          // Return a small button for DPD extra links
+
+                          Uri parsedUri = Uri.parse(href);
+                          String extra = parsedUri.host;
+                          int id = parsedUri.port;
+
                           return SizedBox(
                             height:
-                                24, // Adjust height to make the button smaller
+                            24, // Adjust height to make the button smaller
                             child: ElevatedButton(
                               style: TextButton.styleFrom(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                const EdgeInsets.symmetric(horizontal: 8.0),
                                 minimumSize: const Size(0,
                                     0), // Removes default minimum size constraints
                                 tapTargetSize: MaterialTapTargetSize
                                     .shrinkWrap, // Reduces button padding
                               ),
                               onPressed: () {
-                                debugPrint('Will inflect: $id');
-                                showDeclension(context, id);
+                                debugPrint('DPD "$extra" extra operation for: $id');
+                                showDpdExtra(context, extra, id);
+
                               },
                               child: Text(
-                                linkText,
+                                '${element.text}',
                                 style: const TextStyle(
                                     fontSize: 10), // Set font size to 10pt
                               ),
@@ -202,10 +205,21 @@ class DictionaryContentView extends StatelessWidget {
     return text;
   }
 
+  showDpdExtra(BuildContext context, String extra, int wordId) async {
+    switch (extra) {
+      case "inflect":
+        showDeclension(context, wordId);
+        break;
+      case "root-family":
+        showRootFamily(context, wordId);
+        break;
+    }
+  }
+
   showDeclension(BuildContext context, int wordId) async {
     var dictionaryController = context.read<DictionaryController>();
     DpdInflection? inflection =
-        await dictionaryController.getDpdInflection(wordId);
+    await dictionaryController.getDpdInflection(wordId);
 
     // prevent using context across asynch gaps
     if (!context.mounted) return;
@@ -240,7 +254,7 @@ class DictionaryContentView extends StatelessWidget {
 
         // Navigate to the desired page (e.g., DownloadView)
         final route =
-            MaterialPageRoute(builder: (context) => const DownloadView());
+        MaterialPageRoute(builder: (context) => const DownloadView());
         NestedNavigationHelper.goto(
             context: context, route: route, navkey: dictionaryNavigationKey);
 
@@ -342,7 +356,7 @@ class DictionaryContentView extends StatelessWidget {
     var useHtml = false;
 
     List<TableRow> rows =
-        template['data'].asMap().entries.map<TableRow>((rowEntry) {
+    template['data'].asMap().entries.map<TableRow>((rowEntry) {
       int rowIndex = rowEntry.key;
       List<List<String>> row = (rowEntry.value as List)
           .map((e) => (e as List).map((item) => item as String).toList())
@@ -353,43 +367,43 @@ class DictionaryContentView extends StatelessWidget {
             .asMap()
             .entries
             .map<Padding?>((entry) {
-              int colIndex = entry.key;
-              List<String> cell = entry.value;
-              if (colIndex == 0) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(cell[0],
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600, color: Colors.orange)),
-                );
-              }
-              if (colIndex % 2 != 1) {
-                return null;
-              }
-              List<InlineSpan> spans = [];
+          int colIndex = entry.key;
+          List<String> cell = entry.value;
+          if (colIndex == 0) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(cell[0],
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, color: Colors.orange)),
+            );
+          }
+          if (colIndex % 2 != 1) {
+            return null;
+          }
+          List<InlineSpan> spans = [];
 
-              cell.asMap().forEach((index, value) {
-                if (index > 0) {
-                  spans.add(const TextSpan(text: '\n'));
-                }
-                if (rowIndex == 0) {
-                  spans.add(TextSpan(
-                      text: value,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.orange)));
-                } else if (value.isNotEmpty) {
-                  spans.add(TextSpan(text: stem));
-                  spans.add(TextSpan(
-                      text: value,
-                      style: const TextStyle(fontWeight: FontWeight.bold)));
-                }
-              });
+          cell.asMap().forEach((index, value) {
+            if (index > 0) {
+              spans.add(const TextSpan(text: '\n'));
+            }
+            if (rowIndex == 0) {
+              spans.add(TextSpan(
+                  text: value,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.orange)));
+            } else if (value.isNotEmpty) {
+              spans.add(TextSpan(text: stem));
+              spans.add(TextSpan(
+                  text: value,
+                  style: const TextStyle(fontWeight: FontWeight.bold)));
+            }
+          });
 
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text.rich(TextSpan(children: spans)),
-              );
-            })
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text.rich(TextSpan(children: spans)),
+          );
+        })
             .where((cell) => cell != null)
             .cast<Padding>()
             .toList(),
@@ -400,18 +414,106 @@ class DictionaryContentView extends StatelessWidget {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text(superscripterUni(inflection.word)),
+          title: Text(superscripterUni(inflection.word)),
+          content: SingleChildScrollView(
+            child: SizedBox(
+              width: double.maxFinite,
+              child: useHtml
+                  ? HtmlWidget(
+                html,
+              )
+                  : Table(
+                border: TableBorder.all(),
+                children: rows,
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(AppLocalizations.of(context)!.ok))
+          ],
+        ));
+  }
+
+  showRootFamily(BuildContext context, int wordId) async {
+    var dictionaryController = context.read<DictionaryController>();
+    DpdRootFamily? rootFamily =
+    await dictionaryController.getDpdRootFamily(wordId);
+
+    // prevent using context across asynch gaps
+    if (!context.mounted) return;
+
+    if (rootFamily == null) {
+      // TODO not all words have root family, so need to show a 'install' dialog
+      //  only if the root family tables do not exist
+
+      return;
+    }
+
+    debugPrint('Root family: $rootFamily');
+    if (!context.mounted) return;
+
+    List<dynamic> jsonData = json.decode(rootFamily.data);
+
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(superscripterUni(rootFamily.word)),
               content: SingleChildScrollView(
                 child: SizedBox(
                   width: double.maxFinite,
-                  child: useHtml
-                      ? HtmlWidget(
-                          html,
-                        )
-                      : Table(
-                          border: TableBorder.all(),
-                          children: rows,
-                        ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text.rich(TextSpan(children: [
+                        TextSpan(text: '${rootFamily.count}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        const TextSpan(text: ' words belong to the root family '),
+                        TextSpan(text: rootFamily.rootFamily, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: ' (${rootFamily.rootMeaning})'),
+                      ]), textAlign: TextAlign.left,),
+                      Table(
+                        border: TableBorder.all(),
+                        columnWidths: const {
+                          0: IntrinsicColumnWidth(),
+                          1: IntrinsicColumnWidth(),
+                          2: FlexColumnWidth(),
+                        },
+                        children: jsonData.map((item) {
+                          return TableRow(
+                            children: [
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    item[0],
+                                    style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    item[1],
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    '${item[2]} ${item[3]}',
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  )
                 ),
               ),
               actions: [

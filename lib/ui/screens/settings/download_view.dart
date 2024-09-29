@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:tipitaka_pali/business_logic/models/download_list_item.dart';
@@ -131,11 +133,28 @@ class DownloadView extends StatelessWidget {
 
             // Group the items by category
             Map<String, List<DownloadListItem>> categorizedItems = {};
+            var inserted = false;
             for (var item in dlList) {
               String category = item.category ?? 'Uncategorized';
               if (!categorizedItems.containsKey(category)) {
                 categorizedItems[category] = [];
               }
+              // if (!inserted && category == "Other Beta") {
+              //   inserted = true;
+              //   categorizedItems[category]!.insert(0, DownloadListItem.fromJson(
+              //     json.decode(
+              //         """{
+              //           "name": "DPD Root family",
+              //           "release_date": "29.9.2024",
+              //           "type": "dictionary",
+              //           "url": "https://pali.tools/dpd__family_root.zip",
+              //           "filename": "dpd__family_root.sql",
+              //           "size": "674 KB"
+              //         }
+              //         """
+              //     ),
+              //   ));
+              // }
               categorizedItems[category]!.add(item);
             }
 
