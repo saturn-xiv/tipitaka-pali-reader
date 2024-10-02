@@ -91,17 +91,29 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
     for (var element in words) {
       word = element.trimLeft();
       final sql = '''
-      SELECT dpd.id as id, word, definition, user_order, name from dpd, dictionary_books 
+      SELECT dpd.id as id, word, definition, user_order, name, has_inflections, has_root_family from dpd, dictionary_books
       WHERE word = '$word' AND user_choice =1  AND dictionary_books.id = dpd.book_id
     ''';
       List<Map<String, dynamic>> maps = await db.rawQuery(sql);
       List<Definition> defs = maps.map((x) => Definition.fromJson(x)).toList();
       if (defs.isNotEmpty) {
         String def = defs[0].definition;
-
         if (hasExtras) {
           // Include "Inflect" and "Root Family" links
-          final extras = {"inflect": "Inflect", "root-family": "Root Family"};
+
+          // The extension is installed, now check for records for the wordId
+          Map<String, String> extras = {};
+
+          // Check for 'inflect'
+          if (defs[0].hasInflections == 1) {
+            extras['inflect'] = 'Inflect';
+          }
+
+          if (defs[0].hasRootFamily == 1) {
+            extras['root-family'] = 'Root Family';
+          }
+
+          //final extras = {"inflect": "Inflect", "root-family": "Root Family"};
           final links = extras.entries
               .map((entry) =>
                   '<a href="dpd://${entry.key}:${defs[0].id}">${entry.value}</a>')
