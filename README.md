@@ -1,6 +1,6 @@
 # Tipitaka Pali Reader
 
-To get this working, you need to **download the database** from https://drive.google.com/file/d/1SGyUxSkRQHhTucepBq24zCdOzspQGmn8/view?usp=drive_link
+To get this working, you need to **download the database** from https://drive.google.com/file/d/14tmx6I3N4tBoaLbpJkCGrCnZpSvuJdqU/view?usp=sharing
 
 
 **Extract into the assets database folder, and then run the script to break it up.  The database will be deleted.  Make sure the zip file or complete unzipped db are not in the assets folder when making for release.. (it is big).**
@@ -26,7 +26,7 @@ Function Requirements Document (FRC)
 * 8.)  ~~Right click word "To search"~~
 * 9.)  Include 2 or 3 dpd features (Grammar DPD is comming as well as word family and compounds)
 * 10.) use expanded widgets with html for dictionary instead of raw html
-* 11.)  Import the MAT tables and have true MAT path by MM Paranum
+* 11.)  ~~Import the MAT tables and have true MAT path by MM Paranum~~
 * 12.) Put extra books as a basket.. use db instead of hardcode
 * 13.) Add ~~chanting book~~ Theragatha, Therigatha, ~~DhpA (english)~~, JaA (english)  to downloads
 * 14.) System menu so that if anki is installed, we can see it on system menu?
@@ -66,8 +66,8 @@ Normalize the paragraphs by db instead of <div>
 Normalize the data in the database
 
 # Phase 4
-firestore implementation
-   clud and multi-device sync for bookmarks
+firestore implementation **some bookmark features are on cloud**
+   ~~clud and multi-device sync for bookmarks~~  **sink not implemented**
    sticky group highlights
    dictionary submission
    
