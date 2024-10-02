@@ -84,6 +84,10 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
     String bookName = '';
     int order = 0;
 
+    List<Map<String, dynamic>> result = await db.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='dpd__inflections';");
+    bool hasExtras = result.isNotEmpty;
+
     for (var element in words) {
       word = element.trimLeft();
       final sql = '''
@@ -95,21 +99,30 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
       if (defs.isNotEmpty) {
         String def = defs[0].definition;
 
-        // Replace the last occurrence of the "Submit a correction" row start tag
-        final extras = {
-          "inflect": "Inflect",
-          "root-family": "Root Family"
-        };
-        final links = extras.entries.map((entry) => '<a href="dpd://${entry.key}:${defs[0].id}">${entry.value}</a>').toList().join(' ');
-        def = replaceLast(
-          def,
-          '<tr><td colspan="2">',
-          '<tr><td><b>Extras</b></td><td>$links</td></tr><tr><td colspan="2">',
-        );
+        if (hasExtras) {
+          // Include "Inflect" and "Root Family" links
+          final extras = {"inflect": "Inflect", "root-family": "Root Family"};
+          final links = extras.entries
+              .map((entry) =>
+                  '<a href="dpd://${entry.key}:${defs[0].id}">${entry.value}</a>')
+              .join(' ');
+          def = replaceLast(
+            def,
+            '<tr><td colspan="2">',
+            '<tr><td><b>Extras</b></td><td>$links</td></tr><tr><td colspan="2">',
+          );
+        } else {
+          // Table does not exist; include "Get Extras" link
+          final getExtrasLink =
+              '<a href="dpd://get-extras:${defs[0].id}"><b>Get Extras</b></a>';
+          def = replaceLast(
+            def,
+            '<tr><td colspan="2">',
+            '<tr><td colspan="2" style="text-align: center;">$getExtrasLink</td></tr><tr><td colspan="2">',
+          );
+        }
 
         htmlDefs = def;
-
-        if (htmlDefs.isNotEmpty) {} // added this extra
         stripDefs += htmlDefs;
         order = maps.first['user_order'];
         bookName = maps.first['name'];
@@ -181,7 +194,7 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
     try {
       List<Map<String, dynamic>> maps = await db.rawQuery(sql);
       List<DpdRootFamily> defs =
-      maps.map((x) => DpdRootFamily.fromJson(x)).toList();
+          maps.map((x) => DpdRootFamily.fromJson(x)).toList();
       if (defs.isNotEmpty) {
         return defs[0];
       }

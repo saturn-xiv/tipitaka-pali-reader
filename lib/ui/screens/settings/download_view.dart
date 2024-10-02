@@ -175,7 +175,7 @@ class DownloadView extends StatelessWidget {
 
                 return Card(
                   margin: const EdgeInsets.symmetric(
-                    horizontal: 12,
+                    horizontal: 0,
                     vertical: 6,
                   ),
                   child: ExpansionTile(
