@@ -15,6 +15,7 @@ import 'package:tipitaka_pali/ui/screens/dictionary/widget/dictionary_history_vi
 import 'package:tipitaka_pali/ui/screens/settings/download_view.dart';
 import 'package:tipitaka_pali/utils/pali_script.dart';
 import 'package:tipitaka_pali/utils/pali_script_converter.dart';
+import 'package:tipitaka_pali/utils/platform_info.dart';
 import 'package:tipitaka_pali/utils/script_detector.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -379,7 +380,7 @@ class DictionaryContentView extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(cell[0],
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontWeight: FontWeight.w600, color: Colors.orange)),
                 );
               }
@@ -398,10 +399,15 @@ class DictionaryContentView extends StatelessWidget {
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.orange)));
                 } else if (value.isNotEmpty) {
-                  spans.add(TextSpan(text: stem));
+                  spans.add(TextSpan(
+                      text: stem,
+                      style: TextStyle(
+                          fontSize: Prefs.dictionaryFontSize.toDouble())));
                   spans.add(TextSpan(
                       text: value,
-                      style: const TextStyle(fontWeight: FontWeight.bold)));
+                      style: TextStyle(
+                          fontSize: Prefs.dictionaryFontSize.toDouble(),
+                          fontWeight: FontWeight.bold)));
                 }
               });
 
@@ -482,9 +488,13 @@ class DictionaryContentView extends StatelessWidget {
                                 text: ' words belong to the root family '),
                             TextSpan(
                                 text: rootFamily.rootFamily,
-                                style: const TextStyle(
+                                style: TextStyle(
+                                    fontSize:
+                                        Prefs.dictionaryFontSize.toDouble(),
                                     fontWeight: FontWeight.bold)),
-                            TextSpan(text: ' (${rootFamily.rootMeaning})'),
+                            TextSpan(
+                              text: ' (${rootFamily.rootMeaning})',
+                            )
                           ]),
                           textAlign: TextAlign.left,
                         ),
@@ -503,7 +513,9 @@ class DictionaryContentView extends StatelessWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       item[0],
-                                      style: const TextStyle(
+                                      style: TextStyle(
+                                          fontSize: Prefs.dictionaryFontSize
+                                              .toDouble(),
                                           color: Colors.orange,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -514,7 +526,9 @@ class DictionaryContentView extends StatelessWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       item[1],
-                                      style: const TextStyle(
+                                      style: TextStyle(
+                                          fontSize: Prefs.dictionaryFontSize
+                                              .toDouble(),
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -522,9 +536,10 @@ class DictionaryContentView extends StatelessWidget {
                                 TableCell(
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      '${item[2]} ${item[3]}',
-                                    ),
+                                    child: Text('${item[2]} ${item[3]}',
+                                        style: TextStyle(
+                                            fontSize: Prefs.dictionaryFontSize
+                                                .toDouble())),
                                   ),
                                 ),
                               ],
