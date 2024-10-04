@@ -156,7 +156,7 @@ class DictionaryContentView extends StatelessWidget {
                                 }
                               },
                               child: Text(
-                                '${element.text}',
+                                element.text,
                                 style: const TextStyle(
                                     fontSize: 10), // Set font size to 10pt
                               ),
@@ -235,10 +235,10 @@ class DictionaryContentView extends StatelessWidget {
     DpdInflection? inflection =
         await dictionaryController.getDpdInflection(wordId);
 
-    // prevent using context across asynch gaps
+    // prevent using context across async gaps
     if (!context.mounted) return;
 
-    // not found, give user some feedback.
+    // not found, give user some feedback
     if (inflection == null) {
       // Await the user's response from the dialog
       bool? shouldNavigate = await showDialog<bool>(
@@ -264,18 +264,12 @@ class DictionaryContentView extends StatelessWidget {
             MaterialPageRoute(builder: (context) => const DownloadView());
         NestedNavigationHelper.goto(
             context: context, route: route, navkey: dictionaryNavigationKey);
-
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => const DownloadView(),
-        //   ),
-        // );
       }
 
       // Return since there's no inflection data
       return;
     }
+
     debugPrint('Inflection: $inflection');
 
     String data = await DefaultAssetBundle.of(context)
@@ -283,85 +277,15 @@ class DictionaryContentView extends StatelessWidget {
     List inflectionTemplates = jsonDecode(data);
     final template = inflectionTemplates
         .firstWhereOrNull((map) => map['pattern'] == inflection.pattern);
+
     if (template == null) {
       debugPrint('Could not find template...');
       return;
     }
+
     debugPrint('Template: $template');
 
-    String html = "<table border='1' width='100%'>";
-    var stem = inflection.stem.replaceAll(RegExp(r'[!*]'), '');
-    debugPrint('STEM: "${inflection.stem}", "$stem"');
-
-    template['data'].asMap().forEach((index, value) {
-      int rowNumber = index;
-      List<List<String>> rowData = (value as List)
-          .map((e) => (e as List).map((item) => item as String).toList())
-          .toList();
-      html += "<tr>";
-
-      for (var column in rowData.asMap().entries) {
-        int columnNumber = column.key;
-        List<String> cellData = column.value;
-
-        if (rowNumber == 0) {
-          if (columnNumber == 0) {
-            html += "<th></th>";
-          } else if (columnNumber % 2 == 1) {
-            html += "<th>${cellData[0]}</th>";
-          }
-        } else if (rowNumber > 0) {
-          if (columnNumber == 0) {
-            html += "<th>${cellData[0]}</th>";
-          } else if (columnNumber % 2 == 1 && columnNumber > 0) {
-            String title = rowData[columnNumber + 1][0];
-
-            for (var inflection in cellData) {
-              if (inflection.isEmpty) {
-                html += "<td title='$title'></td>";
-              } else {
-                //String wordClean = "$stem$inflection";
-                String word;
-
-                // if (allTipitakaWords.contains(wordClean)) {
-                //   word = "$stem<b>$inflection</b>";
-                // } else {
-                //   word = "<span class='gray'>$stem<b>$inflection</b></span>";
-                // }
-                word = "$stem<b>$inflection</b>";
-
-                if (cellData.length == 1) {
-                  html += "<td title='$title'>$word</td>";
-                } else {
-                  if (inflection == cellData[0]) {
-                    html += "<td title='$title'>$word<br>";
-                  } else if (inflection != cellData.last) {
-                    html += "$word<br>";
-                  } else {
-                    html += "$word</td>";
-                  }
-                }
-
-                // if (!inflectionsList.contains(wordClean)) {
-                //   inflectionsList.add(wordClean);
-                // }
-              }
-            }
-          }
-        }
-      }
-
-      html += "</tr>";
-    });
-
-    html += "</table>";
-    debugPrint(html);
-
-    // =========================================================================
-    // Change to use the HTML table
-    // =========================================================================
-    var useHtml = false;
-
+    // Prepare the table rows from the template data
     List<TableRow> rows =
         template['data'].asMap().entries.map<TableRow>((rowEntry) {
       int rowIndex = rowEntry.key;
@@ -380,7 +304,7 @@ class DictionaryContentView extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(cell[0],
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontWeight: FontWeight.w600, color: Colors.orange)),
                 );
               }
@@ -400,7 +324,7 @@ class DictionaryContentView extends StatelessWidget {
                           fontWeight: FontWeight.bold, color: Colors.orange)));
                 } else if (value.isNotEmpty) {
                   spans.add(TextSpan(
-                      text: stem,
+                      text: inflection.stem,
                       style: TextStyle(
                           fontSize: Prefs.dictionaryFontSize.toDouble())));
                   spans.add(TextSpan(
@@ -421,31 +345,31 @@ class DictionaryContentView extends StatelessWidget {
             .toList(),
       );
     }).toList();
+
     if (!context.mounted) return;
 
+    // Show the table in a dialog
     showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text(superscripterUni(inflection.word)),
-              content: SingleChildScrollView(
-                child: SizedBox(
-                  width: double.maxFinite,
-                  child: useHtml
-                      ? HtmlWidget(
-                          html,
-                        )
-                      : Table(
-                          border: TableBorder.all(),
-                          children: rows,
-                        ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(AppLocalizations.of(context)!.ok))
-              ],
-            ));
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(superscripterUni(inflection.word)),
+        content: SingleChildScrollView(
+          child: SizedBox(
+            width: double.maxFinite,
+            child: Table(
+              border: TableBorder.all(),
+              children: rows,
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(AppLocalizations.of(context)!.ok),
+          ),
+        ],
+      ),
+    );
   }
 
   showRootFamily(BuildContext context, int wordId) async {
