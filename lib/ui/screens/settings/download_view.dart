@@ -155,6 +155,9 @@ class DownloadView extends StatelessWidget {
               //     ),
               //   ));
               // }
+              // if (category == "Other Beta") {
+              //   item.url = 'https://pali.tools/dpd__extras.zip';
+              // }
               categorizedItems[category]!.add(item);
             }
 

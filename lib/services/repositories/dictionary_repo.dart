@@ -9,6 +9,8 @@ import 'package:tipitaka_pali/services/prefs.dart';
 import '../../business_logic/models/dictionary_history.dart';
 import 'package:tipitaka_pali/business_logic/models/dpd_inflection.dart';
 
+import '../../business_logic/models/dpd_compound_family.dart';
+
 abstract class DictionaryRepository {
   Future<List<Definition>> getDefinition(String id);
   Future<Definition> getDpdDefinition(String headwords);
@@ -18,6 +20,7 @@ abstract class DictionaryRepository {
   Future<String> getDprStem(String word);
   Future<DpdInflection?> getDpdInflection(int wordId);
   Future<DpdRootFamily?> getDpdRootFamily(int wordId);
+  Future<List<DpdCompoundFamily>?> getDpdCompoundFamilies(int wordId);
   Future<String> getDpdHeadwords(String word);
   Future<String> getDpdLikeHeadwords(String word);
   Future<int> insertOrReplace(DictionaryHistory dictionaryHistory);
@@ -91,7 +94,7 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
     for (var element in words) {
       word = element.trimLeft();
       final sql = '''
-      SELECT dpd.id as id, word, definition, user_order, name, has_inflections, has_root_family from dpd, dictionary_books
+      SELECT dpd.id as id, word, definition, user_order, name, has_inflections, has_root_family, has_compound_family from dpd, dictionary_books
       WHERE word = '$word' AND user_choice =1  AND dictionary_books.id = dpd.book_id
     ''';
       List<Map<String, dynamic>> maps = await db.rawQuery(sql);
@@ -111,6 +114,10 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
 
           if (defs[0].hasRootFamily == 1) {
             extras['root-family'] = 'Root Family';
+          }
+
+          if (defs[0].hasCompoundFamily == 1) {
+            extras['compound-family'] = 'Compound Family';
           }
 
           //final extras = {"inflect": "Inflect", "root-family": "Root Family"};
@@ -185,6 +192,95 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
     }
 
     return null;
+  }
+
+  @override
+  Future<List<DpdCompoundFamily>?> getDpdCompoundFamilies(int wordId) async {
+    final db = await databaseHelper.database;
+    // =========================================================================
+    // Get word
+    // =========================================================================
+    List<Map<String, dynamic>> words = await db.rawQuery(
+      '''
+      SELECT 
+        *
+      FROM
+        dpd
+      WHERE 
+        id = $wordId
+      '''
+    );
+    final mappedWord = words[0];
+    final word = mappedWord['word'];
+
+    // =========================================================================
+
+    final sql = '''
+      SELECT
+        *
+      FROM
+        dpd__word_family_compound 
+      WHERE 
+        id = $wordId;
+    ''';
+
+    Map<String, dynamic>? familyCompound;
+    try {
+      List<Map<String, dynamic>> compounds = await db.rawQuery(sql);
+      if (compounds.isNotEmpty) {
+        // This would contain:
+        // - id
+        // - family_compound
+        familyCompound = compounds[0];
+      }
+    } catch (e) {
+      // will get error if the table is not created from extension
+    }
+
+    debugPrint('Family compound: $familyCompound');
+
+    // =========================================================================
+    //
+    // Two ways to find compound families:
+    // (based on https://github.com/digitalpalidictionary/dpd-db/blob/2ca534cde4dc397d9204b5955acc975a2199846d/tools/exporter_functions.py#L14)
+    //
+    // 1. if the word has an assigned compound family use that
+    // 2. Search for compound families equaling the word clean lemma
+
+    if (familyCompound == null) {
+      final cleanLemma = mappedWord['word'].replaceAll(RegExp(r" \d.*$"), '');
+      final sql = '''
+        SELECT
+          dpd__family_compound.*
+        FROM
+          dpd__family_compound 
+        WHERE 
+          dpd__family_compound.compound_family = '$cleanLemma';
+      ''';
+      try {
+        List<Map<String, dynamic>> maps = await db.rawQuery(sql);
+        return maps.map((x) => DpdCompoundFamily.fromJson(x)..word = word).toList();
+      } catch (e) {
+        return null;
+      }
+    } else {
+      final familyList = familyCompound['family_compound'].split(' ').map((s) => '"$s"').join(", ");
+      final sql = '''
+        SELECT
+          dpd__family_compound.*
+        FROM
+          dpd__family_compound 
+        WHERE 
+          dpd__family_compound.compound_family IN ($familyList);
+      ''';
+      try {
+        List<Map<String, dynamic>> maps = await db.rawQuery(sql);
+        return maps.map((x) => DpdCompoundFamily.fromJson(x)..word = word).toList();
+      } catch (e) {
+        debugPrint('eee: $e');
+        return null;
+      }
+    }
   }
 
   @override

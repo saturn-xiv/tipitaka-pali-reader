@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
@@ -20,13 +21,16 @@ import 'package:tipitaka_pali/utils/script_detector.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../../business_logic/models/dpd_compound_family.dart';
 import '../../../../services/prefs.dart';
 import '../controller/dictionary_controller.dart';
 import '../controller/dictionary_state.dart';
 
 class DictionaryContentView extends StatelessWidget {
   final ScrollController? scrollController;
+
   const DictionaryContentView({super.key, this.scrollController});
+
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +121,11 @@ class DictionaryContentView extends StatelessWidget {
                         String linkText = href.contains("wikipedia")
                             ? "Wikipedia"
                             : "Submit a correction";
+                        final allowedExtras = [
+                          'inflect',
+                          'root-family',
+                          'compound-family'
+                        ];
 
                         if (href.startsWith("dpd://")) {
                           // Return a small button for DPD extra links
@@ -146,8 +155,7 @@ class DictionaryContentView extends StatelessWidget {
                                         builder: (context) =>
                                             const DownloadView()),
                                   );
-                                } else if (extra == 'inflect' ||
-                                    extra == 'root-family') {
+                                } else if (allowedExtras.contains(extra)) {
                                   debugPrint(
                                       'DPD "$extra" extra operation for: $id');
                                   showDpdExtra(context, extra, id);
@@ -226,6 +234,9 @@ class DictionaryContentView extends StatelessWidget {
         break;
       case "root-family":
         showRootFamily(context, wordId);
+        break;
+      case "compound-family":
+        showCompoundFamily(context, wordId);
         break;
     }
   }
@@ -479,6 +490,141 @@ class DictionaryContentView extends StatelessWidget {
                     child: Text(AppLocalizations.of(context)!.ok))
               ],
             ));
+  }
+
+  showCompoundFamily(BuildContext context, int wordId) async {
+    var dictionaryController = context.read<DictionaryController>();
+    List<DpdCompoundFamily>? compoundFamilies =
+    await dictionaryController.getDpdCompoundFamilies(wordId);
+
+    // prevent using context across asynch gaps
+    if (!context.mounted) return;
+
+    if (compoundFamilies == null || compoundFamilies.isEmpty) {
+      // TODO not all words have root family, so need to show a 'install' dialog
+      //  only if the root family tables do not exist
+
+      return;
+    }
+
+    debugPrint('Compound families count: ${compoundFamilies.length}');
+    if (!context.mounted) return;
+
+    List<dynamic> jsonData = [];
+    for (final compoundFamily in compoundFamilies) {
+      jsonData.addAll(json.decode(compoundFamily.data));
+    }
+
+    final DpdCompoundFamily first = compoundFamilies[0];
+    final count = compoundFamilies.fold(0, (sum, cf) => sum + cf.count);
+
+    final horizontal = ScrollController();
+    final vertical = ScrollController();
+    final isMobile = Mobile.isPhone(context);
+
+    const insetPadding = 10.0;
+
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(superscripterUni(first.word)),
+              contentPadding: isMobile ? EdgeInsets.zero : null,
+              insetPadding: isMobile ? const EdgeInsets.all(insetPadding) : null,
+              content: SizedBox(
+                height: isMobile ? null : 400,
+                width: isMobile ? MediaQuery.of(context).size.width - 2 * insetPadding : 800,
+                child: Scrollbar(
+                  controller: vertical,
+                  thumbVisibility: true,
+                  trackVisibility: true,
+                  child: Scrollbar(
+                    controller: horizontal,
+                    thumbVisibility: true,
+                    trackVisibility: true,
+                    notificationPredicate: (notif) => notif.depth == 1,
+                    child: SingleChildScrollView(
+                      controller: vertical,
+                      child: SingleChildScrollView(
+                          controller: horizontal,
+                          scrollDirection: Axis.horizontal,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text.rich(
+                                TextSpan(children: [
+                                  TextSpan(
+                                      text: '$count',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  const TextSpan(
+                                      text: ' compounds which contain '),
+                                  TextSpan(
+                                      text: first.word
+                                          .replaceAll(RegExp(r" \d.*$"), ''),
+                                      style: TextStyle(
+                                          fontSize: Prefs.dictionaryFontSize
+                                              .toDouble(),
+                                          fontWeight: FontWeight.bold)),
+                                ]),
+                                textAlign: TextAlign.left,
+                              ),
+                              _getCompoundFamilyTable(jsonData)
+                            ],
+                          )),
+                    ),
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(AppLocalizations.of(context)!.ok))
+              ],
+            ));
+  }
+
+  Table _getCompoundFamilyTable(List<dynamic> jsonData) {
+    return Table(
+      border: TableBorder.all(),
+      defaultColumnWidth: const IntrinsicColumnWidth(),
+      children: jsonData.map((item) {
+        return TableRow(
+          children: [
+            TableCell(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  item[0],
+                  style: TextStyle(
+                      fontSize: Prefs.dictionaryFontSize.toDouble(),
+                      color: Colors.orange,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            TableCell(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  item[1],
+                  style: TextStyle(
+                      fontSize: Prefs.dictionaryFontSize.toDouble(),
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            TableCell(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('${item[2]} ${item[3]}',
+                    style: TextStyle(
+                        fontSize: Prefs.dictionaryFontSize.toDouble())),
+              ),
+            ),
+          ],
+        );
+      }).toList(),
+    );
   }
 
   String getLeftCharacters(String text, int offset) {

@@ -560,4 +560,10 @@ class DictionaryController with ChangeNotifier {
     DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
     return dictionaryProvider.getDpdRootFamily(wordId);
   }
+
+  getDpdCompoundFamilies(int wordId) {
+    final dictionaryProvider =
+    DictionarySerice(DictionaryDatabaseRepository(DatabaseHelper()));
+    return dictionaryProvider.getDpdCompoundFamilies(wordId);
+  }
 }
