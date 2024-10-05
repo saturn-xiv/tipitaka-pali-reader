@@ -31,7 +31,6 @@ class DictionaryContentView extends StatelessWidget {
 
   const DictionaryContentView({super.key, this.scrollController});
 
-
   @override
   Widget build(BuildContext context) {
     final state = context.select<DictionaryController, DictionaryState>(
@@ -326,7 +325,7 @@ class DictionaryContentView extends StatelessWidget {
 
               cell.asMap().forEach((index, value) {
                 if (index > 0) {
-                  spans.add(const TextSpan(text: '\n'));
+                  spans.add(const TextSpan(text: ''));
                 }
                 if (rowIndex == 0) {
                   spans.add(TextSpan(
@@ -359,17 +358,38 @@ class DictionaryContentView extends StatelessWidget {
 
     if (!context.mounted) return;
 
-    // Show the table in a dialog
+    // Show the table in a dialog with improved sizing
+    final horizontal = ScrollController();
+    final vertical = ScrollController();
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(superscripterUni(inflection.word)),
-        content: SingleChildScrollView(
-          child: SizedBox(
-            width: double.maxFinite,
-            child: Table(
-              border: TableBorder.all(),
-              children: rows,
+        content: SizedBox(
+          height: 400,
+          width: 600,
+          child: Scrollbar(
+            controller: vertical,
+            thumbVisibility: true,
+            trackVisibility: true,
+            child: Scrollbar(
+              controller: horizontal,
+              thumbVisibility: true,
+              trackVisibility: true,
+              notificationPredicate: (notif) => notif.depth == 1,
+              child: SingleChildScrollView(
+                controller: vertical,
+                child: SingleChildScrollView(
+                  controller: horizontal,
+                  scrollDirection: Axis.horizontal,
+                  child: Table(
+                    border: TableBorder.all(),
+                    defaultColumnWidth: const IntrinsicColumnWidth(),
+                    children: rows,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -388,114 +408,137 @@ class DictionaryContentView extends StatelessWidget {
     DpdRootFamily? rootFamily =
         await dictionaryController.getDpdRootFamily(wordId);
 
-    // prevent using context across asynch gaps
+    // Prevent using context across async gaps
     if (!context.mounted) return;
 
     if (rootFamily == null) {
-      // TODO not all words have root family, so need to show a 'install' dialog
-      //  only if the root family tables do not exist
-
+      // Handle the case where root family data is not available
       return;
     }
 
     debugPrint('Root family: $rootFamily');
-    if (!context.mounted) return;
 
     List<dynamic> jsonData = json.decode(rootFamily.data);
 
+    // Scroll controllers for horizontal and vertical scrolling
+    final horizontal = ScrollController();
+    final vertical = ScrollController();
+    final isMobile = Mobile.isPhone(context);
+
+    const insetPadding = 10.0;
+
     showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: Text(superscripterUni(rootFamily.word)),
-              content: SingleChildScrollView(
-                child: SizedBox(
-                    width: double.maxFinite,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text.rich(
-                          TextSpan(children: [
-                            TextSpan(
-                                text: '${rootFamily.count}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                            const TextSpan(
-                                text: ' words belong to the root family '),
-                            TextSpan(
-                                text: rootFamily.rootFamily,
-                                style: TextStyle(
-                                    fontSize:
-                                        Prefs.dictionaryFontSize.toDouble(),
-                                    fontWeight: FontWeight.bold)),
-                            TextSpan(
-                              text: ' (${rootFamily.rootMeaning})',
-                            )
-                          ]),
-                          textAlign: TextAlign.left,
-                        ),
-                        Table(
-                          border: TableBorder.all(),
-                          columnWidths: const {
-                            0: IntrinsicColumnWidth(),
-                            1: IntrinsicColumnWidth(),
-                            2: FlexColumnWidth(),
-                          },
-                          children: jsonData.map((item) {
-                            return TableRow(
-                              children: [
-                                TableCell(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      item[0],
-                                      style: TextStyle(
-                                          fontSize: Prefs.dictionaryFontSize
-                                              .toDouble(),
-                                          color: Colors.orange,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                                TableCell(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      item[1],
-                                      style: TextStyle(
-                                          fontSize: Prefs.dictionaryFontSize
-                                              .toDouble(),
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                                TableCell(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text('${item[2]} ${item[3]}',
-                                        style: TextStyle(
-                                            fontSize: Prefs.dictionaryFontSize
-                                                .toDouble())),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    )),
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(superscripterUni(rootFamily.word)),
+        contentPadding: isMobile ? EdgeInsets.zero : null,
+        insetPadding: isMobile ? const EdgeInsets.all(insetPadding) : null,
+        content: SizedBox(
+          height: isMobile ? null : 400,
+          width: isMobile
+              ? MediaQuery.of(context).size.width - 2 * insetPadding
+              : 800,
+          child: Scrollbar(
+            controller: vertical,
+            thumbVisibility: true,
+            trackVisibility: true,
+            child: Scrollbar(
+              controller: horizontal,
+              thumbVisibility: true,
+              trackVisibility: true,
+              notificationPredicate: (notif) => notif.depth == 1,
+              child: SingleChildScrollView(
+                controller: vertical,
+                child: SingleChildScrollView(
+                  controller: horizontal,
+                  scrollDirection: Axis.horizontal,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text.rich(
+                        TextSpan(children: [
+                          TextSpan(
+                              text: '${rootFamily.count}',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          const TextSpan(
+                              text: ' words belong to the root family '),
+                          TextSpan(
+                              text: rootFamily.rootFamily,
+                              style: TextStyle(
+                                  fontSize: Prefs.dictionaryFontSize.toDouble(),
+                                  fontWeight: FontWeight.bold)),
+                          TextSpan(
+                            text: ' (${rootFamily.rootMeaning})',
+                          )
+                        ]),
+                        textAlign: TextAlign.left,
+                      ),
+                      _getRootFamilyTable(jsonData),
+                    ],
+                  ),
+                ),
               ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(AppLocalizations.of(context)!.ok))
-              ],
-            ));
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(AppLocalizations.of(context)!.ok))
+        ],
+      ),
+    );
+  }
+
+  Table _getRootFamilyTable(List<dynamic> jsonData) {
+    return Table(
+      border: TableBorder.all(),
+      defaultColumnWidth: const IntrinsicColumnWidth(),
+      children: jsonData.map((item) {
+        return TableRow(
+          children: [
+            TableCell(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  item[0],
+                  style: TextStyle(
+                      fontSize: Prefs.dictionaryFontSize.toDouble(),
+                      color: Colors.orange,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            TableCell(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  item[1],
+                  style: TextStyle(
+                      fontSize: Prefs.dictionaryFontSize.toDouble(),
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            TableCell(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('${item[2]} ${item[3]}',
+                    style: TextStyle(
+                        fontSize: Prefs.dictionaryFontSize.toDouble())),
+              ),
+            ),
+          ],
+        );
+      }).toList(),
+    );
   }
 
   showCompoundFamily(BuildContext context, int wordId) async {
     var dictionaryController = context.read<DictionaryController>();
     List<DpdCompoundFamily>? compoundFamilies =
-    await dictionaryController.getDpdCompoundFamilies(wordId);
+        await dictionaryController.getDpdCompoundFamilies(wordId);
 
     // prevent using context across asynch gaps
     if (!context.mounted) return;
@@ -507,7 +550,7 @@ class DictionaryContentView extends StatelessWidget {
       return;
     }
 
-    debugPrint('Compound families count: ${compoundFamilies.length}');
+    debugPrint('Compound families count: \${compoundFamilies.length}');
     if (!context.mounted) return;
 
     List<dynamic> jsonData = [];
@@ -529,10 +572,13 @@ class DictionaryContentView extends StatelessWidget {
         builder: (context) => AlertDialog(
               title: Text(superscripterUni(first.word)),
               contentPadding: isMobile ? EdgeInsets.zero : null,
-              insetPadding: isMobile ? const EdgeInsets.all(insetPadding) : null,
+              insetPadding:
+                  isMobile ? const EdgeInsets.all(insetPadding) : null,
               content: SizedBox(
                 height: isMobile ? null : 400,
-                width: isMobile ? MediaQuery.of(context).size.width - 2 * insetPadding : 800,
+                width: isMobile
+                    ? MediaQuery.of(context).size.width - 2 * insetPadding
+                    : 800,
                 child: Scrollbar(
                   controller: vertical,
                   thumbVisibility: true,
@@ -553,14 +599,14 @@ class DictionaryContentView extends StatelessWidget {
                               Text.rich(
                                 TextSpan(children: [
                                   TextSpan(
-                                      text: '$count',
+                                      text: '\$count',
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   const TextSpan(
                                       text: ' compounds which contain '),
                                   TextSpan(
                                       text: first.word
-                                          .replaceAll(RegExp(r" \d.*$"), ''),
+                                          .replaceAll(RegExp(r" \d.*\$"), ''),
                                       style: TextStyle(
                                           fontSize: Prefs.dictionaryFontSize
                                               .toDouble(),
@@ -616,7 +662,7 @@ class DictionaryContentView extends StatelessWidget {
             TableCell(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('${item[2]} ${item[3]}',
+                child: Text('\${item[2]} \${item[3]}',
                     style: TextStyle(
                         fontSize: Prefs.dictionaryFontSize.toDouble())),
               ),
@@ -768,7 +814,7 @@ class _CliakableWordTextViewState extends State<CliakableWordTextView> {
                               wordList[i]
                                   .trim()
                                   .replaceAll(
-                                      RegExp(r'${widget.alphabets}'), "")
+                                      RegExp(r'\${widget.alphabets}'), "")
                                   .trim(),
                               selectedWordIndex);
                         }

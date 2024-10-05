@@ -113,11 +113,11 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
           }
 
           if (defs[0].hasRootFamily == 1) {
-            extras['root-family'] = 'Root Family';
+            extras['root-family'] = 'rt-fmly';
           }
 
           if (defs[0].hasCompoundFamily == 1) {
-            extras['compound-family'] = 'Compound Family';
+            extras['compound-family'] = 'cmpd-fmly';
           }
 
           //final extras = {"inflect": "Inflect", "root-family": "Root Family"};
@@ -200,16 +200,14 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
     // =========================================================================
     // Get word
     // =========================================================================
-    List<Map<String, dynamic>> words = await db.rawQuery(
-      '''
+    List<Map<String, dynamic>> words = await db.rawQuery('''
       SELECT 
         *
       FROM
         dpd
       WHERE 
         id = $wordId
-      '''
-    );
+      ''');
     final mappedWord = words[0];
     final word = mappedWord['word'];
 
@@ -259,12 +257,17 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
       ''';
       try {
         List<Map<String, dynamic>> maps = await db.rawQuery(sql);
-        return maps.map((x) => DpdCompoundFamily.fromJson(x)..word = word).toList();
+        return maps
+            .map((x) => DpdCompoundFamily.fromJson(x)..word = word)
+            .toList();
       } catch (e) {
         return null;
       }
     } else {
-      final familyList = familyCompound['family_compound'].split(' ').map((s) => '"$s"').join(", ");
+      final familyList = familyCompound['family_compound']
+          .split(' ')
+          .map((s) => '"$s"')
+          .join(", ");
       final sql = '''
         SELECT
           dpd__family_compound.*
@@ -275,7 +278,9 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
       ''';
       try {
         List<Map<String, dynamic>> maps = await db.rawQuery(sql);
-        return maps.map((x) => DpdCompoundFamily.fromJson(x)..word = word).toList();
+        return maps
+            .map((x) => DpdCompoundFamily.fromJson(x)..word = word)
+            .toList();
       } catch (e) {
         debugPrint('eee: $e');
         return null;
