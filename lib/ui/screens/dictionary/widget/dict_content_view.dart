@@ -325,7 +325,7 @@ class DictionaryContentView extends StatelessWidget {
 
               cell.asMap().forEach((index, value) {
                 if (index > 0) {
-                  spans.add(const TextSpan(text: ''));
+                  spans.add(const TextSpan(text: '\n'));
                 }
                 if (rowIndex == 0) {
                   spans.add(TextSpan(
