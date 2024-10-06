@@ -361,14 +361,20 @@ class DictionaryContentView extends StatelessWidget {
     // Show the table in a dialog with improved sizing
     final horizontal = ScrollController();
     final vertical = ScrollController();
+    final isMobile = Mobile.isPhone(context);
+    const insetPadding = 10.0;
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(superscripterUni(inflection.word)),
+        contentPadding: isMobile ? EdgeInsets.zero : null,
+        insetPadding: isMobile ? const EdgeInsets.all(insetPadding) : null,
         content: SizedBox(
-          height: 400,
-          width: 600,
+          height: isMobile ? null : 400,
+          width: isMobile
+              ? MediaQuery.of(context).size.width - 2 * insetPadding
+              : 800,
           child: Scrollbar(
             controller: vertical,
             thumbVisibility: true,
@@ -550,7 +556,7 @@ class DictionaryContentView extends StatelessWidget {
       return;
     }
 
-    debugPrint('Compound families count: \${compoundFamilies.length}');
+    debugPrint('Compound families count: ${compoundFamilies.length}');
     if (!context.mounted) return;
 
     List<dynamic> jsonData = [];
@@ -599,7 +605,7 @@ class DictionaryContentView extends StatelessWidget {
                               Text.rich(
                                 TextSpan(children: [
                                   TextSpan(
-                                      text: '\$count',
+                                      text: '$count',
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold)),
                                   const TextSpan(
@@ -703,135 +709,3 @@ writeHistory(String word, String context, int page, String bookId) async {
 
   await dictionaryHistoryRepository.insert(word, context, page, bookId);
 }
-
-/*
-class ClickableFactory extends WidgetFactory {
-  final WordChanged? onClicked;
-  ClickableFactory({this.onClicked});
-
-  @override
-  Widget? buildText(BuildMetadata meta, TextStyleHtml tsh, InlineSpan text) {
-    if (meta.overflow == TextOverflow.clip && text is TextSpan) {
-      if (text.text?.isNotEmpty == true) {
-        String inlineText = text.text!;
-        // inlineText = inlineText.replaceAll('+', ' + '); // add space between +
-        // add space before + if not exist
-        inlineText =
-            inlineText.replaceAllMapped(RegExp(r'(?<!\s)\+'), (match) => ' +');
-        // add space after + if not exist
-        inlineText =
-            inlineText.replaceAllMapped(RegExp(r'\+(?!\s)'), (match) => '+ ');
-        // add space after . if not exist
-        inlineText =
-            inlineText.replaceAllMapped(RegExp(r'\.(?!\s)'), (match) => '. ');
-
-        return CliakableWordTextView(
-          text: inlineText,
-          style: tsh.style,
-          maxLines: meta.maxLines > 0 ? meta.maxLines : null,
-          textAlign: tsh.textAlign ?? TextAlign.start,
-          textDirection: tsh.textDirection,
-          onWordTapped: (word, index) {
-            onClicked?.call(word);
-          },
-        );
-      }
-    }
-
-    return super.buildText(meta, tsh, text);
-  }
-}
-
-class CliakableWordTextView extends StatefulWidget {
-  final String text;
-  final Function(String word, int? index)? onWordTapped;
-  final bool highlight;
-  final Color? highlightColor;
-  final String alphabets;
-  final TextStyle? style;
-  final int? maxLines;
-  final TextAlign textAlign;
-  final TextDirection textDirection;
-  const CliakableWordTextView(
-      {Key? key,
-      required this.text,
-      this.onWordTapped,
-      this.highlight = true,
-      this.highlightColor,
-      this.alphabets = '[a-zA-Z]',
-      this.style,
-      this.maxLines,
-      this.textAlign = TextAlign.start,
-      this.textDirection = TextDirection.ltr})
-      : super(key: key);
-
-  @override
-  State<CliakableWordTextView> createState() => _CliakableWordTextViewState();
-}
-
-class _CliakableWordTextViewState extends State<CliakableWordTextView> {
-  int? selectedWordIndex;
-  Color? highlightColor;
-
-  @override
-  void initState() {
-    selectedWordIndex = -1;
-    if (widget.highlightColor == null) {
-      highlightColor = Colors.pink.withOpacity(0.3);
-    } else {
-      highlightColor = widget.highlightColor;
-    }
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    List<String> wordList = widget.text
-        .replaceAll(RegExp(r'(\n)+'), "#")
-        .trim()
-        .split(RegExp(r'\s|(?<=#)'));
-
-    return Text.rich(
-      TextSpan(
-        children: [
-          for (int i = 0; i < wordList.length; i++)
-            TextSpan(
-              children: [
-                TextSpan(
-                    text: wordList[i].replaceAll("#", ""),
-                    style: TextStyle(
-                        backgroundColor:
-                            selectedWordIndex == i && widget.highlight
-                                ? highlightColor
-                                : Colors.transparent),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        setState(() {
-                          selectedWordIndex = i;
-                        });
-                        if (widget.onWordTapped != null) {
-                          widget.onWordTapped!(
-                              wordList[i]
-                                  .trim()
-                                  .replaceAll(
-                                      RegExp(r'\${widget.alphabets}'), "")
-                                  .trim(),
-                              selectedWordIndex);
-                        }
-                      }),
-                wordList[i].contains("#")
-                    ? const TextSpan(text: "\n\n")
-                    : const TextSpan(text: " "),
-              ],
-            )
-          // generateSpans()
-        ],
-      ),
-      style: widget.style,
-      maxLines: widget.maxLines,
-      textAlign: widget.textAlign,
-      textDirection: widget.textDirection,
-    );
-  }
-}
-*/
