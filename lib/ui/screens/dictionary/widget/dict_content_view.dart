@@ -662,7 +662,7 @@ class DictionaryContentView extends StatelessWidget {
             TableCell(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('\${item[2]} \${item[3]}',
+                child: Text('${item[2]} ${item[3]}',
                     style: TextStyle(
                         fontSize: Prefs.dictionaryFontSize.toDouble())),
               ),
