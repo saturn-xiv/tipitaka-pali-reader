@@ -113,11 +113,11 @@ class DictionaryDatabaseRepository implements DictionaryRepository {
           }
 
           if (defs[0].hasRootFamily == 1) {
-            extras['root-family'] = 'rt-fmly';
+            extras['root-family'] = '√ family';
           }
 
           if (defs[0].hasCompoundFamily == 1) {
-            extras['compound-family'] = 'cmpd-fmly';
+            extras['compound-family'] = 'Samāsas';
           }
 
           //final extras = {"inflect": "Inflect", "root-family": "Root Family"};

@@ -245,12 +245,11 @@ class DictionaryContentView extends StatelessWidget {
     DpdInflection? inflection =
         await dictionaryController.getDpdInflection(wordId);
 
-    // prevent using context across async gaps
+    // Prevent using context across async gaps
     if (!context.mounted) return;
 
-    // not found, give user some feedback
+    // Handle case where no inflection data is found
     if (inflection == null) {
-      // Await the user's response from the dialog
       bool? shouldNavigate = await showDialog<bool>(
         context: context,
         builder: (dialogContext) => AlertDialog(
@@ -265,18 +264,14 @@ class DictionaryContentView extends StatelessWidget {
         ),
       );
 
-      // Check the result and navigate if needed
       if (shouldNavigate == true) {
         if (!context.mounted) return;
-
-        // Navigate to the desired page (e.g., DownloadView)
         final route =
             MaterialPageRoute(builder: (context) => const DownloadView());
         NestedNavigationHelper.goto(
             context: context, route: route, navkey: dictionaryNavigationKey);
       }
 
-      // Return since there's no inflection data
       return;
     }
 
@@ -358,11 +353,24 @@ class DictionaryContentView extends StatelessWidget {
 
     if (!context.mounted) return;
 
-    // Show the table in a dialog with improved sizing
+    // Similar scrollable dialog structure as compound family
     final horizontal = ScrollController();
     final vertical = ScrollController();
     final isMobile = Mobile.isPhone(context);
     const insetPadding = 10.0;
+
+    final content = isMobile
+        ? SizedBox(
+            width: MediaQuery.of(context).size.width - 2 * insetPadding,
+            child: _getInflectionWidget(rows),
+          )
+        : Container(
+            constraints: const BoxConstraints(
+              maxHeight: 400,
+              maxWidth: 800,
+            ),
+            child: _getInflectionWidget(rows),
+          );
 
     showDialog(
       context: context,
@@ -370,41 +378,41 @@ class DictionaryContentView extends StatelessWidget {
         title: Text(superscripterUni(inflection.word)),
         contentPadding: isMobile ? EdgeInsets.zero : null,
         insetPadding: isMobile ? const EdgeInsets.all(insetPadding) : null,
-        content: SizedBox(
-          height: isMobile ? null : 400,
-          width: isMobile
-              ? MediaQuery.of(context).size.width - 2 * insetPadding
-              : 800,
-          child: Scrollbar(
-            controller: vertical,
-            thumbVisibility: true,
-            trackVisibility: true,
-            child: Scrollbar(
-              controller: horizontal,
-              thumbVisibility: true,
-              trackVisibility: true,
-              notificationPredicate: (notif) => notif.depth == 1,
-              child: SingleChildScrollView(
-                controller: vertical,
-                child: SingleChildScrollView(
-                  controller: horizontal,
-                  scrollDirection: Axis.horizontal,
-                  child: Table(
-                    border: TableBorder.all(),
-                    defaultColumnWidth: const IntrinsicColumnWidth(),
-                    children: rows,
-                  ),
-                ),
-              ),
+        content: content,
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(AppLocalizations.of(context)!.ok)),
+        ],
+      ),
+    );
+  }
+
+  Scrollbar _getInflectionWidget(List<TableRow> rows) {
+    final horizontal = ScrollController();
+    final vertical = ScrollController();
+
+    return Scrollbar(
+      controller: vertical,
+      thumbVisibility: true,
+      trackVisibility: true,
+      child: Scrollbar(
+        controller: horizontal,
+        thumbVisibility: true,
+        trackVisibility: true,
+        notificationPredicate: (notification) => notification.depth == 1,
+        child: SingleChildScrollView(
+          controller: vertical,
+          child: SingleChildScrollView(
+            controller: horizontal,
+            scrollDirection: Axis.horizontal,
+            child: Table(
+              border: TableBorder.all(),
+              defaultColumnWidth: const IntrinsicColumnWidth(),
+              children: rows,
             ),
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.ok),
-          ),
-        ],
       ),
     );
   }
@@ -417,8 +425,9 @@ class DictionaryContentView extends StatelessWidget {
     // Prevent using context across async gaps
     if (!context.mounted) return;
 
+    // Handle case where no root family data is found
     if (rootFamily == null) {
-      // Handle the case where root family data is not available
+      // Optionally, you can add a dialog to handle cases where root family is not found
       return;
     }
 
@@ -430,8 +439,21 @@ class DictionaryContentView extends StatelessWidget {
     final horizontal = ScrollController();
     final vertical = ScrollController();
     final isMobile = Mobile.isPhone(context);
-
     const insetPadding = 10.0;
+
+    // Prepare the content widget with scrollbars
+    final content = isMobile
+        ? SizedBox(
+            width: MediaQuery.of(context).size.width - 2 * insetPadding,
+            child: _getRootFamilyWidget(rootFamily, jsonData),
+          )
+        : Container(
+            constraints: const BoxConstraints(
+              maxHeight: 400,
+              maxWidth: 800,
+            ),
+            child: _getRootFamilyWidget(rootFamily, jsonData),
+          );
 
     showDialog(
       context: context,
@@ -439,61 +461,65 @@ class DictionaryContentView extends StatelessWidget {
         title: Text(superscripterUni(rootFamily.word)),
         contentPadding: isMobile ? EdgeInsets.zero : null,
         insetPadding: isMobile ? const EdgeInsets.all(insetPadding) : null,
-        content: SizedBox(
-          height: isMobile ? null : 400,
-          width: isMobile
-              ? MediaQuery.of(context).size.width - 2 * insetPadding
-              : 800,
-          child: Scrollbar(
-            controller: vertical,
-            thumbVisibility: true,
-            trackVisibility: true,
-            child: Scrollbar(
-              controller: horizontal,
-              thumbVisibility: true,
-              trackVisibility: true,
-              notificationPredicate: (notif) => notif.depth == 1,
-              child: SingleChildScrollView(
-                controller: vertical,
-                child: SingleChildScrollView(
-                  controller: horizontal,
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text.rich(
-                        TextSpan(children: [
-                          TextSpan(
-                              text: '${rootFamily.count}',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
-                          const TextSpan(
-                              text: ' words belong to the root family '),
-                          TextSpan(
-                              text: rootFamily.rootFamily,
-                              style: TextStyle(
-                                  fontSize: Prefs.dictionaryFontSize.toDouble(),
-                                  fontWeight: FontWeight.bold)),
-                          TextSpan(
-                            text: ' (${rootFamily.rootMeaning})',
-                          )
-                        ]),
-                        textAlign: TextAlign.left,
-                      ),
-                      _getRootFamilyTable(jsonData),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+        content: content,
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(AppLocalizations.of(context)!.ok))
+              child: Text(AppLocalizations.of(context)!.ok)),
         ],
       ),
+    );
+  }
+
+  Scrollbar _getRootFamilyWidget(
+      DpdRootFamily rootFamily, List<dynamic> jsonData) {
+    final horizontal = ScrollController();
+    final vertical = ScrollController();
+
+    return Scrollbar(
+      controller: vertical,
+      thumbVisibility: true,
+      trackVisibility: true,
+      child: Scrollbar(
+        controller: horizontal,
+        thumbVisibility: true,
+        trackVisibility: true,
+        notificationPredicate: (notification) => notification.depth == 1,
+        child: SingleChildScrollView(
+          controller: vertical,
+          child: SingleChildScrollView(
+            controller: horizontal,
+            scrollDirection: Axis.horizontal,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _getRootFamilyHeader(rootFamily),
+                _getRootFamilyTable(jsonData),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Text _getRootFamilyHeader(DpdRootFamily rootFamily) {
+    return Text.rich(
+      TextSpan(children: [
+        TextSpan(
+            text: '${rootFamily.count}',
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        const TextSpan(text: ' words belong to the root family '),
+        TextSpan(
+            text: rootFamily.rootFamily,
+            style: TextStyle(
+                fontSize: Prefs.dictionaryFontSize.toDouble(),
+                fontWeight: FontWeight.bold)),
+        TextSpan(
+          text: ' (${rootFamily.rootMeaning})',
+        )
+      ]),
+      textAlign: TextAlign.left,
     );
   }
 
@@ -570,19 +596,17 @@ class DictionaryContentView extends StatelessWidget {
     const insetPadding = 10.0;
     final word = first.word.replaceAll(RegExp(r" \d.*\$"), '');
 
-    final content = isMobile ? SizedBox(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width - 2 * insetPadding,
-      child: _getCompoundFamilyWidget(count, word, jsonData),
-    ) : Container(
-        constraints: const BoxConstraints(
-          maxHeight: 400,
-          maxWidth: 800,
-        ),
-        child: _getCompoundFamilyWidget(count, word, jsonData)
-    );
+    final content = isMobile
+        ? SizedBox(
+            width: MediaQuery.of(context).size.width - 2 * insetPadding,
+            child: _getCompoundFamilyWidget(count, word, jsonData),
+          )
+        : Container(
+            constraints: const BoxConstraints(
+              maxHeight: 400,
+              maxWidth: 800,
+            ),
+            child: _getCompoundFamilyWidget(count, word, jsonData));
 
     showDialog(
         context: context,
@@ -634,15 +658,12 @@ class DictionaryContentView extends StatelessWidget {
       TextSpan(children: [
         TextSpan(
             text: '$count',
-            style: const TextStyle(
-                fontWeight: FontWeight.bold)),
-        const TextSpan(
-            text: ' compounds which contain '),
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        const TextSpan(text: ' compounds which contain '),
         TextSpan(
             text: word,
             style: TextStyle(
-                fontSize: Prefs.dictionaryFontSize
-                    .toDouble(),
+                fontSize: Prefs.dictionaryFontSize.toDouble(),
                 fontWeight: FontWeight.bold)),
       ]),
       textAlign: TextAlign.left,
