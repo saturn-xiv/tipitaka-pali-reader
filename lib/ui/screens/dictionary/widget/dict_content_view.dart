@@ -566,12 +566,23 @@ class DictionaryContentView extends StatelessWidget {
 
     final DpdCompoundFamily first = compoundFamilies[0];
     final count = compoundFamilies.fold(0, (sum, cf) => sum + cf.count);
-
-    final horizontal = ScrollController();
-    final vertical = ScrollController();
     final isMobile = Mobile.isPhone(context);
-
     const insetPadding = 10.0;
+    final word = first.word.replaceAll(RegExp(r" \d.*\$"), '');
+
+    final content = isMobile ? SizedBox(
+      width: MediaQuery
+          .of(context)
+          .size
+          .width - 2 * insetPadding,
+      child: _getCompoundFamilyWidget(count, word, jsonData),
+    ) : Container(
+        constraints: const BoxConstraints(
+          maxHeight: 400,
+          maxWidth: 800,
+        ),
+        child: _getCompoundFamilyWidget(count, word, jsonData)
+    );
 
     showDialog(
         context: context,
@@ -580,59 +591,62 @@ class DictionaryContentView extends StatelessWidget {
               contentPadding: isMobile ? EdgeInsets.zero : null,
               insetPadding:
                   isMobile ? const EdgeInsets.all(insetPadding) : null,
-              content: SizedBox(
-                height: isMobile ? null : 400,
-                width: isMobile
-                    ? MediaQuery.of(context).size.width - 2 * insetPadding
-                    : 800,
-                child: Scrollbar(
-                  controller: vertical,
-                  thumbVisibility: true,
-                  trackVisibility: true,
-                  child: Scrollbar(
-                    controller: horizontal,
-                    thumbVisibility: true,
-                    trackVisibility: true,
-                    notificationPredicate: (notif) => notif.depth == 1,
-                    child: SingleChildScrollView(
-                      controller: vertical,
-                      child: SingleChildScrollView(
-                          controller: horizontal,
-                          scrollDirection: Axis.horizontal,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text.rich(
-                                TextSpan(children: [
-                                  TextSpan(
-                                      text: '$count',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  const TextSpan(
-                                      text: ' compounds which contain '),
-                                  TextSpan(
-                                      text: first.word
-                                          .replaceAll(RegExp(r" \d.*\$"), ''),
-                                      style: TextStyle(
-                                          fontSize: Prefs.dictionaryFontSize
-                                              .toDouble(),
-                                          fontWeight: FontWeight.bold)),
-                                ]),
-                                textAlign: TextAlign.left,
-                              ),
-                              _getCompoundFamilyTable(jsonData)
-                            ],
-                          )),
-                    ),
-                  ),
-                ),
-              ),
+              content: content,
               actions: [
                 TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text(AppLocalizations.of(context)!.ok))
               ],
             ));
+  }
+
+  Scrollbar _getCompoundFamilyWidget(count, word, jsonData) {
+    final horizontal = ScrollController();
+    final vertical = ScrollController();
+    return Scrollbar(
+      controller: vertical,
+      thumbVisibility: true,
+      trackVisibility: true,
+      child: Scrollbar(
+        controller: horizontal,
+        thumbVisibility: true,
+        trackVisibility: true,
+        notificationPredicate: (notification) => notification.depth == 1,
+        child: SingleChildScrollView(
+          controller: vertical,
+          child: SingleChildScrollView(
+              controller: horizontal,
+              scrollDirection: Axis.horizontal,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _getCompoundFamilyHeader(count, word),
+                  _getCompoundFamilyTable(jsonData)
+                ],
+              )),
+        ),
+      ),
+    );
+  }
+
+  Text _getCompoundFamilyHeader(count, word) {
+    return Text.rich(
+      TextSpan(children: [
+        TextSpan(
+            text: '$count',
+            style: const TextStyle(
+                fontWeight: FontWeight.bold)),
+        const TextSpan(
+            text: ' compounds which contain '),
+        TextSpan(
+            text: word,
+            style: TextStyle(
+                fontSize: Prefs.dictionaryFontSize
+                    .toDouble(),
+                fontWeight: FontWeight.bold)),
+      ]),
+      textAlign: TextAlign.left,
+    );
   }
 
   Table _getCompoundFamilyTable(List<dynamic> jsonData) {
