@@ -308,7 +308,7 @@ class DictionaryContentView extends StatelessWidget {
               if (colIndex == 0) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(cell[0],
+                  child: SelectableText(cell[0],
                       style: const TextStyle(
                           fontWeight: FontWeight.w600, color: Colors.orange)),
                 );
@@ -342,7 +342,7 @@ class DictionaryContentView extends StatelessWidget {
 
               return Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text.rich(TextSpan(children: spans)),
+                child: SelectableText.rich(TextSpan(children: spans)),
               );
             })
             .where((cell) => cell != null)
@@ -353,9 +353,6 @@ class DictionaryContentView extends StatelessWidget {
 
     if (!context.mounted) return;
 
-    // Similar scrollable dialog structure as compound family
-    final horizontal = ScrollController();
-    final vertical = ScrollController();
     final isMobile = Mobile.isPhone(context);
     const insetPadding = 10.0;
 
@@ -435,9 +432,6 @@ class DictionaryContentView extends StatelessWidget {
 
     List<dynamic> jsonData = json.decode(rootFamily.data);
 
-    // Scroll controllers for horizontal and vertical scrolling
-    final horizontal = ScrollController();
-    final vertical = ScrollController();
     final isMobile = Mobile.isPhone(context);
     const insetPadding = 10.0;
 
@@ -503,8 +497,8 @@ class DictionaryContentView extends StatelessWidget {
     );
   }
 
-  Text _getRootFamilyHeader(DpdRootFamily rootFamily) {
-    return Text.rich(
+  SelectableText _getRootFamilyHeader(DpdRootFamily rootFamily) {
+    return SelectableText.rich(
       TextSpan(children: [
         TextSpan(
             text: '${rootFamily.count}',
@@ -533,7 +527,7 @@ class DictionaryContentView extends StatelessWidget {
             TableCell(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
+                child: SelectableText(
                   item[0],
                   style: TextStyle(
                       fontSize: Prefs.dictionaryFontSize.toDouble(),
@@ -545,7 +539,7 @@ class DictionaryContentView extends StatelessWidget {
             TableCell(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
+                child: SelectableText(
                   item[1],
                   style: TextStyle(
                       fontSize: Prefs.dictionaryFontSize.toDouble(),
@@ -556,7 +550,7 @@ class DictionaryContentView extends StatelessWidget {
             TableCell(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('${item[2]} ${item[3]}',
+                child: SelectableText('${item[2]} ${item[3]}',
                     style: TextStyle(
                         fontSize: Prefs.dictionaryFontSize.toDouble())),
               ),
@@ -653,8 +647,8 @@ class DictionaryContentView extends StatelessWidget {
     );
   }
 
-  Text _getCompoundFamilyHeader(count, word) {
-    return Text.rich(
+  SelectableText _getCompoundFamilyHeader(count, word) {
+    return SelectableText.rich(
       TextSpan(children: [
         TextSpan(
             text: '$count',
@@ -680,7 +674,7 @@ class DictionaryContentView extends StatelessWidget {
             TableCell(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
+                child: SelectableText(
                   item[0],
                   style: TextStyle(
                       fontSize: Prefs.dictionaryFontSize.toDouble(),
@@ -692,7 +686,7 @@ class DictionaryContentView extends StatelessWidget {
             TableCell(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
+                child: SelectableText(
                   item[1],
                   style: TextStyle(
                       fontSize: Prefs.dictionaryFontSize.toDouble(),
@@ -703,7 +697,7 @@ class DictionaryContentView extends StatelessWidget {
             TableCell(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('${item[2]} ${item[3]}',
+                child: SelectableText('${item[2]} ${item[3]}',
                     style: TextStyle(
                         fontSize: Prefs.dictionaryFontSize.toDouble())),
               ),
